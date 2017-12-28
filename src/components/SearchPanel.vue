@@ -19,8 +19,6 @@ import axios from 'axios'
 import L from 'leaflet'
 import SearchResult from './SearchResult.vue'
 
-import config from '../config'
-
 import Icon from 'vue-awesome/components/Icon'
 import 'vue-awesome/icons/spinner'
 
@@ -59,7 +57,7 @@ export default {
     },
     results () {
       var all = []
-      config.searches.forEach(search => {
+      this.$store.config.searches.forEach(search => {
         if (this.resultsPartials[search.name]) {
           all.push.apply(all, this.resultsPartials[search.name])
         }
@@ -102,7 +100,7 @@ export default {
       this.layerGeoJson.clearLayers()
 
       let self = this
-      config.searches.forEach(search => {
+      this.$store.config.searches.forEach(search => {
         var searchUrl = search.url
 
         self.searchsRunning += 1
