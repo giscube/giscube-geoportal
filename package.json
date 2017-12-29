@@ -6,14 +6,14 @@
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
-    "devcustom": "webpack-dev-server --inline --progress --config build/webpack.devcustom.conf.js",
+    "dev:lib": "webpack --config build/webpack.lib.conf.js --watch --progress --hide-modules",
     "start": "npm run dev",
     "unit": "jest --config test/unit/jest.conf.js --coverage",
     "e2e": "node test/e2e/runner.js",
     "test": "npm run unit && npm run e2e",
     "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs",
     "build": "node build/build.js",
-    "buildcustom": "node build/build_custom.js"
+    "build:lib": "node build/build-lib.js"
   },
   "dependencies": {
     "axios": "^0.17.1",

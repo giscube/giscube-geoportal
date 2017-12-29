@@ -47,7 +47,16 @@ module.exports = {
     // just be aware of this issue when enabling this option.
     cssSourceMap: false,
   },
-
+  lib: {
+    env: require('./prod.env'),
+    assetsRoot: path.resolve(__dirname, '../dist'),
+    assetsSubDirectory: 'lib',
+    assetsPublicPath: '/',
+    productionSourceMap: true,
+    productionGzip: false,
+    productionGzipExtensions: ['js', 'css'],
+    bundleAnalyzerReport: process.env.npm_config_report
+  },
   build: {
     // Template for index.html
     index: path.resolve(__dirname, '../dist/index.html'),
