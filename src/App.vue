@@ -49,14 +49,10 @@ export default {
   mounted () {
     // {% block js_ready_start %}{% endblock %}
     this.map = L.map('map', { 'zoomControl': false })
-    let map = this.map
     // this.$store.commit('setMap', map)
 
-    // {% block map_controls %}
-    var zoomControl = L.control.zoom({'position': 'bottomright'})
-    map.addControl(zoomControl)
-    // {% endblock %}
-
+    this.addZoomControl()
+    this.addLayersControl()
     this.addBaseMaps()
 
     // $('#search_input').focus();
@@ -66,20 +62,27 @@ export default {
   },
   methods: {
     addBaseMaps () {
-      // FIXME: read from config.js
-      var osm = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png').addTo(this.map)
-
-      var baseMaps = {'OpenStreetMap': osm}
-      var overlayMaps = {}
-
-      // create the tile layer with correct attribution
-      // var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-      // var osmAttrib = 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
-      // var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 19, attribution: osmAttrib})
-      // map.addLayer(osm)
-
-      var layerswitcher = L.control.layers(baseMaps, overlayMaps, {collapsed: false}).addTo(this.map)
-      this.map.layerswitcher = layerswitcher
+      this.$store.config.basemaps.forEach(basemap => {
+        var baselayer
+        if (basemap.type === 'tilelayer') {
+          baselayer = L.tileLayer(basemap.url, basemap)
+        } else if (basemap.type === 'wms') {
+          baselayer = L.tileLayer.wms(basemap.url, basemap)
+        }
+        this.layerswitcher.addBaseLayer(baselayer, basemap.name)
+        if (basemap.default) {
+          this.map.addLayer(baselayer)
+        }
+      })
+    },
+    addLayersControl () {
+      this.layerswitcher = L.control.layers({}, {}, {collapsed: false})
+      this.layerswitcher.addTo(this.map)
+      this.map.layerswitcher = this.layerswitcher
+    },
+    addZoomControl () {
+      this.zoomControl = L.control.zoom({'position': 'bottomright'})
+      this.map.addControl(this.zoomControl)
     },
     onMapReady (map) {
       this.map = map
