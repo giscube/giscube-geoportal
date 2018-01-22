@@ -51,8 +51,7 @@ export default {
     this.map = L.map('map', { 'zoomControl': false })
     // this.$store.commit('setMap', map)
 
-    this.addZoomControl()
-    this.addLayersControl()
+    this.addControls()
     this.addBaseMaps()
 
     // $('#search_input').focus();
@@ -75,10 +74,19 @@ export default {
         }
       })
     },
+    addControls () {
+      this.addScaleControl()
+      this.addZoomControl()
+      this.addLayersControl()
+    },
     addLayersControl () {
       this.layerswitcher = L.control.layers({}, {}, {collapsed: false})
       this.layerswitcher.addTo(this.map)
       this.map.layerswitcher = this.layerswitcher
+    },
+    addScaleControl () {
+      this.scaleControl = L.control.scale({metric: true, imperial: false, 'position': 'bottomright'})
+      this.map.addControl(this.scaleControl)
     },
     addZoomControl () {
       this.zoomControl = L.control.zoom({'position': 'bottomright'})
