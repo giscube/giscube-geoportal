@@ -76,5 +76,7 @@ export default {
 </script>
 
 <style lang="scss">
-#map { height: 100%; width: 100%; background-color: #ddd; border: 1px dashed #ccc }
+#map { height: 100%; width: 100%; background-color: #ddd; border: 1px dashed #ccc;
+  cursor: default;
+}
 </style>
