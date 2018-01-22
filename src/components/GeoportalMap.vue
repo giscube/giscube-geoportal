@@ -64,12 +64,23 @@ export default {
         zoomControl: false
       }
     },
+    onMapClick (event) {
+      var latlng = event.latlng
+      console.log('map clicked on ' + new Date() + ' at ' + latlng)
+    },
     onMapReady () {
+      this._enableMapClickEvent()
       this.$emit('map-ready', this.map)
     },
     setInitialView () {
       // World
       this.map.setView([0, 0], 2)
+    },
+    _disableMapClickEvent () {
+      this.map.off('click', this.onMapClick, this)
+    },
+    _enableMapClickEvent () {
+      this.map.on('click', this.onMapClick, this)
     }
   }
 }
