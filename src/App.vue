@@ -47,58 +47,9 @@ export default {
     }
   },
   mounted () {
-    // {% block js_ready_start %}{% endblock %}
-    let options = this.getMapOptions()
-    this.map = L.map('map', options)
-    window.map = this.map
-    // this.$store.commit('setMap', map)
-
-    this.addControls()
-    this.addBaseMaps()
-
-    // $('#search_input').focus();
     this.$nextTick(() => this.$refs.header.$refs.search_input.focus())
-
-    this.setInitialView()
   },
   methods: {
-    addBaseMaps () {
-      this.$store.config.basemaps.forEach(basemap => {
-        var baselayer
-        if (basemap.type === 'tilelayer') {
-          baselayer = L.tileLayer(basemap.url, basemap)
-        } else if (basemap.type === 'wms') {
-          baselayer = L.tileLayer.wms(basemap.url, basemap)
-        }
-        this.layerswitcher.addBaseLayer(baselayer, basemap.name)
-        if (basemap.default) {
-          this.map.addLayer(baselayer)
-        }
-      })
-    },
-    addControls () {
-      this.addScaleControl()
-      this.addZoomControl()
-      this.addLayersControl()
-    },
-    addLayersControl () {
-      this.layerswitcher = L.control.layers({}, {}, {collapsed: false})
-      this.layerswitcher.addTo(this.map)
-      this.map.layerswitcher = this.layerswitcher
-    },
-    addScaleControl () {
-      this.scaleControl = L.control.scale({metric: true, imperial: false, 'position': 'bottomright'})
-      this.map.addControl(this.scaleControl)
-    },
-    addZoomControl () {
-      this.zoomControl = L.control.zoom({'position': 'bottomright'})
-      this.map.addControl(this.zoomControl)
-    },
-    getMapOptions () {
-      return {
-        zoomControl: false
-      }
-    },
     onMapReady (map) {
       this.map = map
     },
@@ -108,10 +59,6 @@ export default {
     },
     onVisibilityChanged (visible) {
       this.sidebarVisible = visible
-    },
-    setInitialView () {
-      // World
-      this.map.setView([0, 0], 2)
     }
   }
 }
@@ -144,7 +91,6 @@ export default {
   background-size:cover;
 }
 
-#map { height: 100%; width: 100%; background-color: #ddd; border: 1px dashed #ccc }
 
 label {
     font-weight: normal !important;
