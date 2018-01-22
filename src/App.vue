@@ -20,7 +20,6 @@ import AppHeader from '@/components/AppHeader'
 import AppFooter from '@/components/AppFooter'
 import GeoportalMap from '@/components/GeoportalMap'
 import Sidebar from '@/components/Sidebar'
-require('../node_modules/leaflet-sidebar/src/L.Control.Sidebar.css')
 require('../node_modules/leaflet-sidebar/src/L.Control.Sidebar.js')
 
 // FIX leaflet's default icon path problems with webpack
