@@ -48,7 +48,9 @@ export default {
   },
   mounted () {
     // {% block js_ready_start %}{% endblock %}
-    this.map = L.map('map', { 'zoomControl': false })
+    let options = this.getMapOptions()
+    this.map = L.map('map', options)
+    window.map = this.map
     // this.$store.commit('setMap', map)
 
     this.addControls()
@@ -91,6 +93,11 @@ export default {
     addZoomControl () {
       this.zoomControl = L.control.zoom({'position': 'bottomright'})
       this.map.addControl(this.zoomControl)
+    },
+    getMapOptions () {
+      return {
+        zoomControl: false
+      }
     },
     onMapReady (map) {
       this.map = map
