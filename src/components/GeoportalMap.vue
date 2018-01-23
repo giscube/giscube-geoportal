@@ -1,27 +1,32 @@
 <template>
   <div class="center-container">
     <div class="center-row">
-      <div id="map"></div>
+      <v-map ref='map' :zoom='initialZoom' :center="initialLatLng"
+             :options='getMapOptions()' @l-ready='onMapReady'>
+        <v-tilelayer url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"></v-tilelayer>
+      </v-map>
     </div>
   </div>
 </template>
 
 <script>
 import L from 'leaflet'
+import Vue from 'vue'
+
+import Vue2Leaflet from 'vue2-leaflet'
+Vue.component('v-map', Vue2Leaflet.Map)
+Vue.component('v-tilelayer', Vue2Leaflet.TileLayer)
+Vue.component('v-marker', Vue2Leaflet.Marker)
 
 export default {
   data () {
     return {
-      map: null
+      map: null,
+      initialZoom: 2,
+      initialLatLng: [0, 0]
     }
   },
   mounted () {
-    let options = this.getMapOptions()
-    this.map = L.map('map', options)
-    this.map.whenReady(this.onMapReady, this)
-    window.map = this.map
-    // this.$store.commit('setMap', map)
-
     this.addControls()
     this.addBaseMaps()
     this.setInitialView()
@@ -69,6 +74,7 @@ export default {
       console.log('map clicked on ' + new Date() + ' at ' + latlng)
     },
     onMapReady () {
+      this.map = this.$refs.map.mapObject
       this._enableMapClickEvent()
       this.$emit('map-ready', this.map)
     },
