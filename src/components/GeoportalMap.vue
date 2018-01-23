@@ -1,7 +1,7 @@
 <template>
   <div class="center-container">
     <div class="center-row">
-      <v-map ref='map' :zoom='initialZoom' :center="initialLatLng"
+      <v-map ref='map' :zoom='2' :center="[0, 0]"
              :options='getMapOptions()' @l-ready='onMapReady'>
       </v-map>
     </div>
@@ -24,14 +24,14 @@ export default {
   data () {
     return {
       map: null,
-      initialZoom: 2,
-      initialLatLng: [0, 0]
+      mapClicks: 0,
+      mapClickDelay: 500,
+      mapClickTimer: null
     }
   },
   mounted () {
     this.addControls()
     this.addBaseMaps()
-    this.setInitialView()
   },
   methods: {
     addBaseMaps () {
@@ -71,7 +71,21 @@ export default {
         zoomControl: false
       }
     },
-    onMapClick (event) {
+    onMapClick: function (event) {
+      this.mapClicks += 1
+      if (this.mapClicks === 1) {
+        let self = this
+        this.mapClickTimer = setTimeout(function () {
+          self.onMapSingleClick(event)
+          self.mapClicks = 0
+        }, this.mapClickDelay)
+      } else {
+        clearTimeout(this.mapClickTimer)
+        this.onMapDoubleClick(event.type)
+        this.mapClicks = 0
+      }
+    },
+    onMapSingleClick (event) {
       var latlng = event.latlng
       console.log('map clicked on ' + new Date() + ' at ' + latlng)
 
@@ -86,14 +100,13 @@ export default {
         .setContent(content.$mount().$el)
         .openOn(this.map)
     },
+    onMapDoubleClick (event) {
+      console.log('Double click')
+    },
     onMapReady () {
       this.map = this.$refs.map.mapObject
       this._enableMapClickEvent()
       this.$emit('map-ready', this.map)
-    },
-    setInitialView () {
-      // World
-      this.map.setView([0, 0], 2)
     },
     _disableMapClickEvent () {
       this.map.off('click', this.onMapClick, this)
