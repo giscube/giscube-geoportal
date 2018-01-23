@@ -3,7 +3,6 @@
     <div class="center-row">
       <v-map ref='map' :zoom='initialZoom' :center="initialLatLng"
              :options='getMapOptions()' @l-ready='onMapReady'>
-        <v-tilelayer url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"></v-tilelayer>
       </v-map>
     </div>
   </div>
@@ -14,11 +13,14 @@ import L from 'leaflet'
 import Vue from 'vue'
 
 import Vue2Leaflet from 'vue2-leaflet'
-Vue.component('v-map', Vue2Leaflet.Map)
-Vue.component('v-tilelayer', Vue2Leaflet.TileLayer)
-Vue.component('v-marker', Vue2Leaflet.Marker)
+
+import LatLngPopup from '@/components/LatLngPopup.vue'
+let MyLatLngPopup = Vue.extend(LatLngPopup)
 
 export default {
+  components: {
+    'v-map': Vue2Leaflet.Map
+  },
   data () {
     return {
       map: null,
@@ -72,6 +74,17 @@ export default {
     onMapClick (event) {
       var latlng = event.latlng
       console.log('map clicked on ' + new Date() + ' at ' + latlng)
+
+      let content = new MyLatLngPopup({
+        propsData: {
+          latlng: latlng
+        }
+      })
+
+      L.popup()
+        .setLatLng(latlng)
+        .setContent(content.$mount().$el)
+        .openOn(this.map)
     },
     onMapReady () {
       this.map = this.$refs.map.mapObject
