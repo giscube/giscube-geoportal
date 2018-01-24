@@ -29,10 +29,15 @@ export default {
 </script>
 
 <style lang="scss">
+.popup {
+  max-height: 300px;
+  overflow: auto;
+}
+
 .layer .title {
   font-size: 1.2em;
   font-weight: bold;
-  min-width: 200px; 
+  min-width: 200px;
 }
 
 .layer .feature {
