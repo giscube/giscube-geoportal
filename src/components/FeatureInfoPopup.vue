@@ -4,7 +4,7 @@
       <div class='title'>{{ layer.attributes.name }}</div>
       <div v-for='feature in layer.elements' class='feature'>
         Feature {{ feature.attributes.id }}
-        <table class="table table-striped">
+        <table class="table table-striped table-hover">
           <tbody>
             <tr v-for='attr in feature.elements' class='attr'>
               <th>{{ attr.attributes.name }}</th>

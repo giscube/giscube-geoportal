@@ -78,11 +78,6 @@ export default {
       }
     },
     onMapClick: function (event) {
-      if (this.marker) {
-        this.marker = null
-        return
-      }
-
       this.mapClicks += 1
       if (this.mapClicks === 1) {
         let self = this
@@ -101,68 +96,70 @@ export default {
       var latlng = event.latlng
       console.log('map clicked on ' + new Date() + ' at ' + latlng)
 
-      this.marker = new L.Marker(latlng)
-      this.marker.addTo(this.map)
-
-      // check wms services
-      var overlays = 0
-      this.map.layerswitcher._layers.forEach(layer => {
-        if (layer.overlay) {
-          overlays += 1
-          let wmsParams = layer.layer.wmsParams
-
-          var sw = this.map.getBounds().getSouthWest()
-          var ne = this.map.getBounds().getNorthEast()
-          if (wmsParams.srs === 'EPSG:3857') {
-            sw = L.CRS.EPSG3857.project(sw)
-            ne = L.CRS.EPSG3857.project(ne)
-          }
-          let bbox = [sw.x, sw.y, ne.x, ne.y].join(',')
-
-          var params = {
-            'request': 'GetFeatureInfo',
-            'info_format': 'text/xml',
-            'query_layers': wmsParams.layers,
-            'bbox': bbox,
-            'x': event.containerPoint.x,
-            'y': event.containerPoint.y,
-            'width': this.map.getSize().x,
-            'height': this.map.getSize().y
-          }
-
-          let searchUrl = layer.layer._url
-          axios.get(searchUrl, {
-            params: L.extend({}, wmsParams, params)
-          })
-          .then(response => {
-            let result = convert.xml2js(response.data, {compact: false})
-            let results = result.elements[0].elements
-            if (results.length > 0 && results[0].elements) {
-              this.marker.bindPopup(this._getFeatureInfoPopup(results).$mount().$el).openPopup()
-            } else {
-              this.marker.bindPopup(this._getLatLngPopup(latlng).$mount().$el).openPopup()
-            }
-          })
-          .catch(error => {
-            console.log('error', error)
-            this.marker.bindPopup(this._getLatLngPopup(latlng).$mount().$el).openPopup()
-          })
-        }
-      })
-
-      if (overlays == 0) {
-        this.marker.bindPopup(this._getLatLngPopup(latlng).$mount().$el).openPopup()
+      if (this.marker) {
+        this.marker = null
+        return
       }
 
-      this.marker.on('popupclose', function (e) {
+      let marker = new L.Marker(latlng)
+      marker.addTo(this.map)
+      this.marker = marker
+
+      // check wms services
+      var overlays = this._getMapOverlays()
+      overlays.forEach(layer => {
+        let wmsParams = layer.layer.wmsParams
+
+        var sw = this.map.getBounds().getSouthWest()
+        var ne = this.map.getBounds().getNorthEast()
+        if (wmsParams.srs === 'EPSG:3857') {
+          sw = L.CRS.EPSG3857.project(sw)
+          ne = L.CRS.EPSG3857.project(ne)
+        }
+        let bbox = [sw.x, sw.y, ne.x, ne.y].join(',')
+
+        var params = {
+          'request': 'GetFeatureInfo',
+          'info_format': 'text/xml',
+          'query_layers': wmsParams.layers,
+          'bbox': bbox,
+          'x': event.containerPoint.x,
+          'y': event.containerPoint.y,
+          'width': this.map.getSize().x,
+          'height': this.map.getSize().y
+        }
+
+        let searchUrl = layer.layer._url
+        axios.get(searchUrl, {
+          params: L.extend({}, wmsParams, params)
+        })
+        .then(response => {
+          let result = convert.xml2js(response.data, {compact: false})
+          let results = result.elements[0].elements
+          if (results.length > 0 && results[0].elements) {
+            marker.bindPopup(this._getFeatureInfoPopup(results).$mount().$el).openPopup()
+          } else {
+            marker.bindPopup(this._getLatLngPopup(latlng).$mount().$el).openPopup()
+          }
+        })
+        .catch(error => {
+          console.log('error', error)
+          marker.bindPopup(this._getLatLngPopup(latlng).$mount().$el).openPopup()
+        })
+      })
+
+      if (overlays.length == 0) {
+        marker.bindPopup(this._getLatLngPopup(latlng).$mount().$el).openPopup()
+      }
+
+      marker.on('popupclose', function (e) {
         e.sourceTarget.remove()
-        let me = self.marker
-        // use setTimeout to prevent race condition with onMapClick
+        // use setTimeout to prevent race condition with next onMapSingleClick
         setTimeout(function () {
-          if (self.marker === me) {
+          if (self.marker === marker) {
             self.marker = null
           }
-        }, 500)
+        }, 1000)
       })
     },
     onMapDoubleClick (event) {
@@ -191,6 +188,12 @@ export default {
         propsData: {
           latlng: latlng
         }
+      })
+    },
+    _getMapOverlays () {
+      return this.map.layerswitcher._layers.filter(layer => {
+        // filter layers of type overlay and added to map (visible)
+        return layer.overlay && this.map._layers[layer.layer._leaflet_id]
       })
     }
   }
