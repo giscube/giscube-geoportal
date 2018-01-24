@@ -11,11 +11,16 @@
 <script>
 import L from 'leaflet'
 import Vue from 'vue'
+import axios from 'axios'
+
+import convert from 'xml-js'
 
 import Vue2Leaflet from 'vue2-leaflet'
 
 import LatLngPopup from '@/components/LatLngPopup.vue'
 let MyLatLngPopup = Vue.extend(LatLngPopup)
+import FeatureInfoPopup from '@/components/FeatureInfoPopup.vue'
+let MyFeatureInfoPopup = Vue.extend(FeatureInfoPopup)
 
 export default {
   components: {
@@ -92,22 +97,73 @@ export default {
       }
     },
     onMapSingleClick (event) {
+      let self = this
       var latlng = event.latlng
       console.log('map clicked on ' + new Date() + ' at ' + latlng)
 
       this.marker = new L.Marker(latlng)
       this.marker.addTo(this.map)
 
-      let content = new MyLatLngPopup({
-        propsData: {
-          latlng: latlng
+      // check wms services
+      var overlays = 0
+      this.map.layerswitcher._layers.forEach(layer => {
+        if (layer.overlay) {
+          overlays += 1
+          let wmsParams = layer.layer.wmsParams
+
+          var sw = this.map.getBounds().getSouthWest()
+          var ne = this.map.getBounds().getNorthEast()
+          if (wmsParams.srs === 'EPSG:3857') {
+            sw = L.CRS.EPSG3857.project(sw)
+            ne = L.CRS.EPSG3857.project(ne)
+          }
+          let bbox = [sw.x, sw.y, ne.x, ne.y].join(',')
+
+          var params = {
+            'request': 'GetFeatureInfo',
+            'info_format': 'text/xml',
+            'query_layers': wmsParams.layers,
+            'bbox': bbox,
+            'x': event.containerPoint.x,
+            'y': event.containerPoint.y,
+            'width': this.map.getSize().x,
+            'height': this.map.getSize().y
+          }
+
+          let searchUrl = layer.layer._url
+          axios.get(searchUrl, {
+            params: L.extend({}, wmsParams, params)
+          })
+          .then(response => {
+            let result = convert.xml2js(response.data, {compact: false})
+            let results = result.elements[0].elements
+            if (results.length > 0 && results[0].elements) {
+              this.marker.bindPopup(this._getFeatureInfoPopup(results).$mount().$el).openPopup()
+            } else {
+              this.marker.bindPopup(this._getLatLngPopup(latlng).$mount().$el).openPopup()
+            }
+          })
+          .catch(error => {
+            console.log('error', error)
+            this.marker.bindPopup(this._getLatLngPopup(latlng).$mount().$el).openPopup()
+          })
         }
       })
 
+      if (overlays == 0) {
+        this.marker.bindPopup(this._getLatLngPopup(latlng).$mount().$el).openPopup()
+      }
+
       this.marker.on('popupclose', function (e) {
         e.sourceTarget.remove()
+        let me = self.marker
+        // use setTimeout to prevent race condition with onMapClick
+        setTimeout(function () {
+          if (self.marker === me) {
+            self.marker = null
+          }
+        }, 500)
       })
-      this.marker.bindPopup(content.$mount().$el).openPopup()
     },
     onMapDoubleClick (event) {
       console.log('Double click')
@@ -122,6 +178,20 @@ export default {
     },
     _enableMapClickEvent () {
       this.map.on('click', this.onMapClick, this)
+    },
+    _getFeatureInfoPopup (info) {
+      return new MyFeatureInfoPopup({
+        propsData: {
+          info: info
+        }
+      })
+    },
+    _getLatLngPopup (latlng) {
+      return new MyLatLngPopup({
+        propsData: {
+          latlng: latlng
+        }
+      })
     }
   }
 }
