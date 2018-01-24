@@ -26,7 +26,8 @@ export default {
       map: null,
       mapClicks: 0,
       mapClickDelay: 500,
-      mapClickTimer: null
+      mapClickTimer: null,
+      marker: null
     }
   },
   mounted () {
@@ -72,6 +73,11 @@ export default {
       }
     },
     onMapClick: function (event) {
+      if (this.marker) {
+        this.marker = null
+        return
+      }
+
       this.mapClicks += 1
       if (this.mapClicks === 1) {
         let self = this
@@ -89,16 +95,19 @@ export default {
       var latlng = event.latlng
       console.log('map clicked on ' + new Date() + ' at ' + latlng)
 
+      this.marker = new L.Marker(latlng)
+      this.marker.addTo(this.map)
+
       let content = new MyLatLngPopup({
         propsData: {
           latlng: latlng
         }
       })
 
-      L.popup()
-        .setLatLng(latlng)
-        .setContent(content.$mount().$el)
-        .openOn(this.map)
+      this.marker.on('popupclose', function (e) {
+        e.sourceTarget.remove()
+      })
+      this.marker.bindPopup(content.$mount().$el).openPopup()
     },
     onMapDoubleClick (event) {
       console.log('Double click')
