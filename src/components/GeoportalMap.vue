@@ -18,8 +18,8 @@ import convert from 'xml-js'
 import Vue2Leaflet from 'vue2-leaflet'
 
 import LatLngPopup from '@/components/LatLngPopup.vue'
-let MyLatLngPopup = Vue.extend(LatLngPopup)
 import FeatureInfoPopup from '@/components/FeatureInfoPopup.vue'
+let MyLatLngPopup = Vue.extend(LatLngPopup)
 let MyFeatureInfoPopup = Vue.extend(FeatureInfoPopup)
 
 export default {
@@ -91,9 +91,9 @@ export default {
         this.mapClicks = 0
       }
     },
-    onMapSingleClick (event) {
+    async onMapSingleClick (event) {
       let self = this
-      var latlng = event.latlng
+      let latlng = event.latlng
       console.log('map clicked on ' + new Date() + ' at ' + latlng)
 
       if (this.marker) {
@@ -105,9 +105,66 @@ export default {
       marker.addTo(this.map)
       this.marker = marker
 
+      var queryResult = null
+      // query before querying Overlays
+      await this.queryBeforeOverlays(event, marker).then(result => {
+        queryResult = result
+      })
+
+      // query Overlays if there is still no result
+      if (!queryResult) {
+        await this.queryOverlays(event, marker).then(result => {
+          queryResult = result
+        })
+      }
+
+      // query after querying Overlays if there is still no result
+      if (!queryResult) {
+        await this.queryAfterOverlays(event, marker).then(result => {
+          queryResult = result
+        })
+      }
+
+      if (!queryResult) {
+        marker.bindPopup(this._getLatLngPopup(latlng).$mount().$el).openPopup()
+      }
+
+      marker.on('popupclose', function (e) {
+        e.sourceTarget.remove()
+        // use setTimeout to prevent race condition with next onMapSingleClick
+        setTimeout(function () {
+          if (self.marker === marker) {
+            self.marker = null
+          }
+        }, 1000)
+      })
+    },
+    onMapDoubleClick (event) {
+      console.log('Double click')
+    },
+    onMapReady () {
+      this.map = this.$refs.map.mapObject
+      this._enableMapClickEvent()
+      this.$emit('map-ready', this.map)
+    },
+    async queryAfterOverlays (event, marker) {
+      // override this function to query for results after querying overlays
+      // return null for no results
+      return null
+    },
+    async queryBeforeOverlays (event, marker) {
+      // override this function to query for results before query overlays
+      // return null for no results
+      return null
+    },
+    async queryOverlays (event, marker) {
       // check wms services
+      let latlng = event.latlng
+      var queryResults = null
       var overlays = this._getMapOverlays()
-      overlays.forEach(layer => {
+      while (!queryResults && overlays.length > 0) {
+        let layer = overlays.shift()
+
         let wmsParams = layer.layer.wmsParams
 
         var sw = this.map.getBounds().getSouthWest()
@@ -130,7 +187,8 @@ export default {
         }
 
         let searchUrl = layer.layer._url
-        axios.get(searchUrl, {
+
+        await axios.get(searchUrl, {
           params: L.extend({}, wmsParams, params)
         })
         .then(response => {
@@ -138,37 +196,16 @@ export default {
           let results = result.elements[0].elements
           if (results.length > 0 && results[0].elements) {
             marker.bindPopup(this._getFeatureInfoPopup(results).$mount().$el).openPopup()
-          } else {
-            marker.bindPopup(this._getLatLngPopup(latlng).$mount().$el).openPopup()
+            queryResults = results
           }
         })
         .catch(error => {
           console.log('error', error)
-          marker.bindPopup(this._getLatLngPopup(latlng).$mount().$el).openPopup()
         })
-      })
-
-      if (overlays.length == 0) {
-        marker.bindPopup(this._getLatLngPopup(latlng).$mount().$el).openPopup()
       }
 
-      marker.on('popupclose', function (e) {
-        e.sourceTarget.remove()
-        // use setTimeout to prevent race condition with next onMapSingleClick
-        setTimeout(function () {
-          if (self.marker === marker) {
-            self.marker = null
-          }
-        }, 1000)
-      })
-    },
-    onMapDoubleClick (event) {
-      console.log('Double click')
-    },
-    onMapReady () {
-      this.map = this.$refs.map.mapObject
-      this._enableMapClickEvent()
-      this.$emit('map-ready', this.map)
+      // return null for no results
+      return queryResults
     },
     _disableMapClickEvent () {
       this.map.off('click', this.onMapClick, this)
