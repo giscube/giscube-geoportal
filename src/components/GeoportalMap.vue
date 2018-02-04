@@ -159,7 +159,7 @@ export default {
     },
     async queryOverlays (event, marker) {
       // check wms services
-      let latlng = event.latlng
+      // let latlng = event.latlng
       var queryResults = null
       var overlays = this._getMapOverlays()
       while (!queryResults && overlays.length > 0) {
