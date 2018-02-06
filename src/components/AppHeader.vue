@@ -7,7 +7,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="#">{{ brand }}</a>
+        <a class="navbar-brand" href="#" v-html="brand"></a>
       </div>
       <div class="collapse navbar-collapse">
         <form @submit="submit" id="search_form" class="navbar-form navbar-left" role="search">
