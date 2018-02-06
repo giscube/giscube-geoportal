@@ -1,8 +1,9 @@
 <template>
   <div class="center-container">
     <div class="center-row">
-      <v-map ref='map' :zoom='2' :center="[0, 0]"
-             :options='getMapOptions()' @l-ready='onMapReady'>
+      <!-- :options='getMapOptions()' -->
+      <v-map ref='map' :zoom='15' :center="[41.973, 2.780]"
+             @l-ready='onMapReady'>
       </v-map>
     </div>
   </div>
@@ -69,6 +70,9 @@ export default {
       this.map.addControl(this.scaleControl)
     },
     addZoomControl () {
+      if (this.map.zoomControl) {
+        this.map.zoomControl.remove()
+      }
       this.zoomControl = L.control.zoom({'position': 'bottomright'})
       this.map.addControl(this.zoomControl)
     },
@@ -159,7 +163,7 @@ export default {
     },
     async queryOverlays (event, marker) {
       // check wms services
-      let latlng = event.latlng
+      // let latlng = event.latlng
       var queryResults = null
       var overlays = this._getMapOverlays()
       while (!queryResults && overlays.length > 0) {
