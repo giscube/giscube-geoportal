@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <h3>Giscube Geoportal</h3>
+    <p class="hello-title">Giscube Geoportal</p>
     <p>Useful links</p>
     <ul>
       <li><a href="https://www.giscube.com" target="_blank">Giscube</a></li>
@@ -34,4 +34,12 @@ li {
 a {
   color: #42b983;
 }
+
+.hello {
+    padding: 15px;
+}
+.hello-title {
+  font-size: 1.5em;
+}
+
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h4>Results for {{ q }}
-      <icon v-show="searching" name="spinner" pulse label="Searching"></icon></h4>
+    <p class="results-title">Results for {{ q }}
+      <icon v-show="searching" name="spinner" pulse label="Searching"></icon></p>
 
     <p v-if="showSearchError" class="list-group-item">Error retrieving results</p>
     <p v-if="showSearchEmpty && !showSearchError" class="list-group-item">No matches found</p>
@@ -165,6 +165,13 @@ export default {
 </script>
 
 <style>
+.results-title {
+    font-size: 1.3em;
+    font-weight: bold;
+    margin: 5px;
+    padding: 5px;
+}
+
 .list-group-item {
   min-height: 65px;
 }
