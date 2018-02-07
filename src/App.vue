@@ -9,7 +9,7 @@
 
     <AppFooter ref="footer" />
 
-    <Sidebar ref="sidebar" :map='map' :visible="sidebarVisible"
+    <Sidebar ref="sidebar" :map='map' :visible="$store.state.sidebarVisible"
              @visibility-changed="onVisibilityChanged" />
   </div>
 </template>
@@ -41,7 +41,6 @@ export default {
   data () {
     return {
       map: null,
-      sidebarVisible: null,
       counter: 0
     }
   },
@@ -53,11 +52,11 @@ export default {
       this.map = map
     },
     onSearchStart (q) {
-      this.sidebarVisible = true
+      this.$store.commit('setSidebarVisible', true)
       this.$router.push('/search/' + q + '/')
     },
     onVisibilityChanged (visible) {
-      this.sidebarVisible = visible
+      this.$store.commit('setSidebarVisible', visible)
     }
   }
 }

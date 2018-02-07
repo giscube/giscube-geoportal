@@ -10,7 +10,8 @@ export default new Vuex.Store({
     searching: false,
     count: 0,
     result: null,
-    autoselectResult: false
+    autoselectResult: false,
+    sidebarVisible: null
   },
   mutations: {
     setAutoselectResult: (state, value) => {
@@ -19,6 +20,9 @@ export default new Vuex.Store({
     setMap: (state, map) => {
       state.map = map
       console.log('MAP now set', state)
+    },
+    setSidebarVisible: (state, value) => {
+      state.sidebarVisible = value
     },
     selectResult: (state, result) => {
       state.result = result
