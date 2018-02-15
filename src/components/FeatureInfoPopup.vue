@@ -1,6 +1,6 @@
 <template>
   <div class='popup'>
-    <div v-for='layer in info' class='layer'>
+    <div v-for='layer in results' class='layer'>
       <div class='title'>{{ layer.attributes.name }}</div>
       <div v-for='feature in layer.elements' class='feature'>
         Feature {{ feature.attributes.id }}
@@ -20,7 +20,7 @@
 <script>
 
 export default {
-  props: ['info'],
+  props: ['results'],
   data () {
     return {
     }
