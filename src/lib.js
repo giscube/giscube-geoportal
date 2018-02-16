@@ -18,5 +18,6 @@ export {
   GeoportalPanel,
   PlacePanel,
   SearchPanel,
+  QueryOnClick,
   store
 }
