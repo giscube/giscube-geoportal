@@ -6,6 +6,7 @@ import Sidebar from '@/components/Sidebar'
 import GeoportalPanel from '@/components/GeoportalPanel'
 import PlacePanel from '@/components/PlacePanel'
 import SearchPanel from '@/components/SearchPanel'
+import QueryOnClick from '@/components/QueryOnClick'
 import store from '@/store'
 
 export {
