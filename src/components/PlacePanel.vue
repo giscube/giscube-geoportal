@@ -65,13 +65,22 @@ export default {
       let visible
       let latLng
       let geom = element.geojson.geometry
+      var diff = 0
+
+      if (sidebar.clientWidth !== this.map._container.clientWidth) {
+        diff = sidebarCover / 2
+      }
+
       if (geom.type === 'Feature') {
         console.error('FEATURE', element)
+      } else if (geom.type === 'Polygon') {
+        var polygon = L.geoJSON(geom)
+        polygon.addTo(this.map)
+        // this.map.fitBounds(polygon.getBounds())
+        latLng = polygon.getBounds().getCenter()
+        latLng.lng = latLng.lng - diff
+        visible = false
       } else if (geom.type === 'Point') {
-        var diff = 0
-        if (sidebar.clientWidth !== this.map._container.clientWidth) {
-          diff = sidebarCover / 2
-        }
         latLng = L.latLng(
           geom.coordinates[1],
           geom.coordinates[0] - diff)
