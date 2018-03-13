@@ -10,17 +10,6 @@
         <a class="navbar-brand" href="#" v-html="brand"></a>
       </div>
       <div class="collapse navbar-collapse">
-        <form @submit="submit" id="search_form" class="navbar-form navbar-left" role="search">
-          <div class="input-group">
-              <input ref="search_input" id="search_input" type="text" class="form-control" placeholder="Search"
-                     style="width: 400px">
-              <span class="input-group-btn">
-                <button class="btn btn-default" type="submit">
-                  <span class="glyphicon glyphicon-search"></span>
-                </button>
-              </span>
-          </div><!-- /input-group -->
-        </form>
       </div><!--/.nav-collapse -->
     </div>
   </div>
@@ -35,12 +24,7 @@ export default {
     return {}
   },
   methods: {
-    submit (event) {
-      event.preventDefault()
-      let q = this.$refs.search_input.value
-      this.$store.commit('setAutoselectResult', true)
-      this.$emit('search-start', q)
-    }
+
   }
 }
 </script>

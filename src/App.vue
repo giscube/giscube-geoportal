@@ -1,16 +1,16 @@
 <template>
   <div id="app">
     <!-- Fixed navbar -->
-    <AppHeader ref="header" brand="GISCube Geoportal"
-      @search-start="onSearchStart"/>
+    <AppHeader ref="header" brand="GISCube Geoportal" />
 
     <!-- Begin page content -->
     <GeoportalMap @map-ready="onMapReady" />
 
-    <AppFooter ref="footer" />
+    <!-- <AppFooter ref="footer" /> -->
 
     <Sidebar ref="sidebar" :map='map' :visible="$store.state.sidebarVisible"
-             @visibility-changed="onVisibilityChanged" />
+             @visibility-changed="onVisibilityChanged"
+             @search-start="onSearchStart" />
   </div>
 </template>
 
@@ -45,7 +45,7 @@ export default {
     }
   },
   mounted () {
-    this.$nextTick(() => this.$refs.header.$refs.search_input.focus())
+    // this.$nextTick(() => this.$refs.header.$refs.search_input.focus())
   },
   methods: {
     onMapReady (map) {
@@ -70,9 +70,9 @@ export default {
   min-height: 100%;
   height: 100%;
   /* Negative indent footer by its height */
-  margin: 0 auto -35px 0;
+  // margin: 0 auto -35px 0;
   /* Pad bottom by footer height */
-  padding: 0 0 35px 0;
+  // padding: 0 0 35px 0;
 }
 
 #app > .center-container {

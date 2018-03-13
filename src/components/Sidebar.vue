@@ -1,7 +1,22 @@
 <template>
-  <div ref="sidebar" id="sidebar">
-      <router-view :map='map' />
+  <div>
+    <form @submit="submit" id="search_form" class="search-form" role="search">
+      <div class="input-group">
+          <input ref="search_input" id="search_input" type="text" class="form-control" placeholder="Search"
+                 style="width: 400px">
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="submit">
+              <span class="glyphicon glyphicon-search"></span>
+            </button>
+          </span>
+      </div><!-- /input-group -->
+    </form>
+
+    <div ref="sidebar" id="sidebar" class="sidebar">
+        <router-view :map='map' />
+    </div>
   </div>
+
 </template>
 
 <script>
@@ -36,6 +51,12 @@ export default {
     })
   },
   methods: {
+    submit (event) {
+      event.preventDefault()
+      let q = this.$refs.search_input.value
+      this.$store.commit('setAutoselectResult', true)
+      this.$emit('search-start', q)
+    },
     mapChanged () {
       this.map.addControl(this.sidebar)
 
@@ -55,6 +76,14 @@ export default {
 </script>
 
 <style lang="scss">
+.search-form {
+  position: absolute;
+  top: 75px;
+  left: 14px;
+  z-index: 10000;
+}
+
+
 .leaflet-sidebar {
   padding: 0px;
 
@@ -62,6 +91,7 @@ export default {
     border-radius: 0px;
     background: #eeed;
     padding: 0px;
+    padding-top: 60px;
   }
 
   .close {
