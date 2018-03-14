@@ -1,7 +1,8 @@
 <template>
   <div id="app">
     <!-- Fixed navbar -->
-    <AppHeader ref="header" brand="GISCube Geoportal" />
+    <AppHeader ref="header" brand="GISCube Geoportal"
+        @home='navHome' />
 
     <!-- Begin page content -->
     <GeoportalMap @map-ready="onMapReady" />
@@ -48,6 +49,10 @@ export default {
     // this.$nextTick(() => this.$refs.header.$refs.search_input.focus())
   },
   methods: {
+    navHome () {
+      let home = this.$store.config.home
+      this.map.flyTo(new L.LatLng(home.center.lat, home.center.lng), home.zoom)
+    },
     onMapReady (map) {
       this.map = map
     },

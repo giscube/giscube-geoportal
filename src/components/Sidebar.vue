@@ -1,21 +1,20 @@
 <template>
   <div>
-    <div class="search-form">
-      <form @submit="submit" id="search_form" role="search">
-        <div id="custom-search-input">
-          <div class="input-group">
-              <input ref="search_input" id="search_input" type="text" class="form-control input-lg" placeholder="Search">
-              <span class="input-group-btn">
-                <button class="btn btn-info btn-lg" type="submit">
-                  <span class="oi oi-magnifying-glass"></span>
-                </button>
-              </span>
-          </div><!-- /input-group -->
-        </div>
-      </form>
+    <form @submit="submit" id="search_form" role="search">
+      <div id="custom-search-input">
+        <div class="input-group">
+            <input ref="search_input" id="search_input" type="text" class="form-control input-lg" placeholder="Search">
+            <span class="input-group-btn">
+              <button class="btn btn-info btn-lg" type="submit">
+                <span class="oi oi-magnifying-glass"></span>
+              </button>
+            </span>
+        </div><!-- /input-group -->
+      </div>
 
-      <a class="sidebar-close"><span class="oi oi-caret-left"></span></a>
-    </div>
+      <a v-show="closeButtonVisible" @click.preventDefault="close"
+         class="sidebar-close"><span class="oi oi-caret-left"></span></a>
+    </form>
 
     <div ref="sidebar" id="sidebar" class="sidebar">
         <router-view :map='map' />
@@ -31,7 +30,8 @@ export default {
   props: ['map', 'visible'],
   data () {
     return {
-      sidebar: null
+      sidebar: null,
+      closeButtonVisible: false
     }
   },
   watch: {
@@ -41,7 +41,7 @@ export default {
   mounted () {
     this.sidebar = L.control.sidebar('sidebar', {
       position: 'left',
-      closeButton: true,
+      closeButton: false,
       autoPan: false
     })
 
@@ -54,8 +54,15 @@ export default {
     this.sidebar.on('hide', function () {
       self.$emit('visibility-changed', false)
     })
+    this.sidebar.on('shown', function () {
+      self.sidebarShown()
+    })
   },
   methods: {
+    close () {
+      this.sidebar.hide()
+      this.closeButtonVisible = false
+    },
     submit (event) {
       event.preventDefault()
       let q = this.$refs.search_input.value
@@ -71,6 +78,9 @@ export default {
         self.$emit('visibility-changed', true)
       }, 500)
     },
+    sidebarShown () {
+      this.closeButtonVisible = true
+    },
     visibleChanged () {
       if (this.visible) {
         this.sidebar.show()
@@ -81,42 +91,16 @@ export default {
 </script>
 
 <style lang="scss">
-/* sidebar */
-.leaflet-sidebar {
-    position: absolute;
-    height: 100%;
-    width:100%;
-    box-sizing: border-box;
-    // z-index: 200;
-    background: #eeed;
-    box-sizing: border-box;
-    padding: 15px;
-    font-size: 1.1em;
-    box-shadow: 0 1px 7px rgba(0,0,0,.65);
-    padding: 15px 20px;
-    font-size: .8em
-}
-
-.leaflet-sidebar.left {
-    left: -500px;
-    transition: left .5s, width .5s;
-}
-
-.leaflet-sidebar.left.visible {
-  left: 0;
-  // top: 60px;
-}
-
-.search-form {
+/* search form */
+#search_form {
   position: absolute;
-  top: 75px;
+  top: 60px;
   z-index: 5000;
   padding: 15px 20px;
-  border: 1px solid red;
   transition: left .5s, width .5s;
+  width: 100%;
 }
 
-/* cercador */
 #custom-search-input {
   border: solid 1px #E4E4E4;
   border-radius: 4px;
@@ -152,8 +136,10 @@ export default {
   font-size: .8em;
 }
 
+/* sidebar */
 .leaflet-sidebar {
   padding: 0px;
+  box-shadow: 0 1px 7px rgba(0,0,0,.65);
 
   > .leaflet-control {
     border-radius: 0px;
@@ -190,7 +176,7 @@ a.sidebar-close {
   border-radius: 4px;
 }
 
-a.sidebar-close {
+a.sidebar-close span {
   color: #fff
 }
 
@@ -204,7 +190,7 @@ a.sidebar-close:hover {
     .nav-item.user {
       border-top: none
     }
-    .leaflet-sidebar, .search-form {
+    .leaflet-sidebar, #search_form {
       width: 305px;
     }
     .leaflet-sidebar .plega {
@@ -216,20 +202,20 @@ a.sidebar-close:hover {
       margin-right: 0
     }
     a.sidebar-close {
-      right: -22px;
+      right: -23px;
       padding: 13px 8px;
       border-radius: 0 4px 4px 0;
     }
 }
 
 @media (min-width: 992px) {
-    .leaflet-sidebar, .search-form {
+    .leaflet-sidebar, #search_form {
       width: 360px;
     }
 }
 
 @media (min-width: 1200px) {
-    .leaflet-sidebar, .search-form {
+    .leaflet-sidebar, #search_form {
       width: 466px;
     }
 }

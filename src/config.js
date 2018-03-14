@@ -1,4 +1,11 @@
 export default {
+  home: {
+    'zoom': 15,
+    'center': {
+      'lat': 41.973,
+      'lng':  2.780
+    }
+  },
   searches: [
     {
       'name': 'geoportal',

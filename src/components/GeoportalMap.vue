@@ -1,7 +1,9 @@
 <template>
     <div class="center-row">
       <!-- :options='getMapOptions()' -->
-      <v-map ref='map' :zoom='15' :center="[41.973, 2.780]"
+      <v-map ref='map'
+             :zoom='$store.config.home.zoom'
+             :center="$store.config.home.center"
              @l-ready='onMapReady'>
         <query-on-click></query-on-click>
       </v-map>
