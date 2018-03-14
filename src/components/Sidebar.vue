@@ -1,16 +1,19 @@
 <template>
   <div>
-    <form @submit="submit" id="search_form" class="search-form" role="search">
-      <div class="input-group">
-          <input ref="search_input" id="search_input" type="text" class="form-control" placeholder="Search"
-                 style="width: 400px">
-          <span class="input-group-btn">
-            <button class="btn btn-default" type="submit">
-              <span class="glyphicon glyphicon-search"></span>
-            </button>
-          </span>
-      </div><!-- /input-group -->
-    </form>
+    <div class="search-form">
+      <form @submit="submit" id="search_form" role="search">
+        <div id="custom-search-input">
+          <div class="input-group">
+              <input ref="search_input" id="search_input" type="text" class="form-control input-lg" placeholder="Search">
+              <span class="input-group-btn">
+                <button class="btn btn-info btn-lg" type="submit">
+                  <span class="oi oi-magnifying-glass"></span>
+                </button>
+              </span>
+          </div><!-- /input-group -->
+        </div>
+      </form>
+    </div>
 
     <div ref="sidebar" id="sidebar" class="sidebar">
         <router-view :map='map' />
@@ -79,10 +82,46 @@ export default {
 .search-form {
   position: absolute;
   top: 75px;
-  left: 14px;
-  z-index: 10000;
+  z-index: 5000;
+  padding: 15px 20px;
+  border: 1px solid red;
 }
 
+/* cercador */
+#custom-search-input {
+  border: solid 1px #E4E4E4;
+  border-radius: 4px;
+  background-color: #fff;
+  margin-bottom: 20px;
+  margin-right: 40px;
+}
+
+#custom-search-input input {
+  border: 0;
+  box-shadow: none;
+}
+
+#custom-search-input button {
+  margin: 4px 0;
+  background: none;
+  box-shadow: none;
+  border: 0;
+  color: #7c7c7d;
+  padding: 0 12px;
+  border-left: solid 1px #ddd;
+  border-radius: 0;
+}
+
+#custom-search-input button:hover {
+  border: 0;
+  box-shadow: none;
+  border-left: solid 1px #ccc;
+  color: #000;
+}
+
+#custom-search-input span {
+  font-size: .8em;
+}
 
 .leaflet-sidebar {
   padding: 0px;
@@ -106,4 +145,35 @@ export default {
     border: 0px;
   }
 }
+
+/*media query*/
+@media (min-width: 768px) {
+    .nav-item.user {
+      border-top: none
+    }
+    .leaflet-sidebar, .search-form {
+      width: 305px;
+    }
+    .leaflet-sidebar .plega {
+      right: -22px;
+      padding: 13px 8px;
+      border-radius:0 4px 4px 0
+    }
+    #custom-search-input {
+      margin-right: 0
+    }
+}
+
+@media (min-width: 992px) {
+    .leaflet-sidebar, .search-form {
+      width: 360px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .leaflet-sidebar, .search-form {
+      width: 466px;
+    }
+}
+
 </style>
