@@ -1,5 +1,4 @@
 <template>
-  <div class="center-container">
     <div class="center-row">
       <!-- :options='getMapOptions()' -->
       <v-map ref='map' :zoom='15' :center="[41.973, 2.780]"
@@ -7,7 +6,6 @@
         <query-on-click></query-on-click>
       </v-map>
     </div>
-  </div>
 </template>
 
 <script>

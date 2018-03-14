@@ -9,7 +9,8 @@ store.config = config
 
 Vue.config.productionTip = false
 
-require('../node_modules/bootstrap/less/bootstrap.less')
+require('../node_modules/bootstrap/scss/bootstrap.scss')
+require('../node_modules/open-iconic/font/css/open-iconic-bootstrap.less')
 require('../node_modules/leaflet-sidebar/src/L.Control.Sidebar.css')
 require('../node_modules/leaflet/dist/leaflet.css')
 

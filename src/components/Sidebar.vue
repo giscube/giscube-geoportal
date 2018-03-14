@@ -13,6 +13,8 @@
           </div><!-- /input-group -->
         </div>
       </form>
+
+      <a class="sidebar-close"><span class="oi oi-caret-left"></span></a>
     </div>
 
     <div ref="sidebar" id="sidebar" class="sidebar">
@@ -79,12 +81,39 @@ export default {
 </script>
 
 <style lang="scss">
+/* sidebar */
+.leaflet-sidebar {
+    position: absolute;
+    height: 100%;
+    width:100%;
+    box-sizing: border-box;
+    // z-index: 200;
+    background: #eeed;
+    box-sizing: border-box;
+    padding: 15px;
+    font-size: 1.1em;
+    box-shadow: 0 1px 7px rgba(0,0,0,.65);
+    padding: 15px 20px;
+    font-size: .8em
+}
+
+.leaflet-sidebar.left {
+    left: -500px;
+    transition: left .5s, width .5s;
+}
+
+.leaflet-sidebar.left.visible {
+  left: 0;
+  // top: 60px;
+}
+
 .search-form {
   position: absolute;
   top: 75px;
   z-index: 5000;
   padding: 15px 20px;
   border: 1px solid red;
+  transition: left .5s, width .5s;
 }
 
 /* cercador */
@@ -146,6 +175,30 @@ export default {
   }
 }
 
+a.sidebar-close {
+  z-index: 1800;
+  right: 20px;
+  top: 16px;
+  position: absolute;
+  font-size: 25px;
+  line-height: 1em;
+  text-align: center;
+  background: #3b99fc;
+  cursor: pointer;
+  font-size: .85em;
+  padding: 13px 16px;
+  border-radius: 4px;
+}
+
+a.sidebar-close {
+  color: #fff
+}
+
+a.sidebar-close:hover {
+  color: #fff;
+  background: #636363;
+}
+
 /*media query*/
 @media (min-width: 768px) {
     .nav-item.user {
@@ -161,6 +214,11 @@ export default {
     }
     #custom-search-input {
       margin-right: 0
+    }
+    a.sidebar-close {
+      right: -22px;
+      padding: 13px 8px;
+      border-radius: 0 4px 4px 0;
     }
 }
 
