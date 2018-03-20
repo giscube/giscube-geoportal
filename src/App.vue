@@ -1,7 +1,9 @@
 <template>
   <div id="app">
     <!-- Fixed navbar -->
-    <AppHeader ref="header" @home='navHome' />
+    <AppHeader ref="header" @home='navHome'
+        @sidebar-visibility-changed="onVisibilityChanged"
+        />
 
     <!-- Begin page content -->
     <GeoportalMap @map-ready="onMapReady" />
@@ -20,7 +22,7 @@ import AppHeader from '@/components/AppHeader'
 import AppFooter from '@/components/AppFooter'
 import GeoportalMap from '@/components/GeoportalMap'
 import Sidebar from '@/components/Sidebar'
-require('../node_modules/leaflet-sidebar/src/L.Control.Sidebar.js')
+require('leaflet-sidebar')
 
 // FIX leaflet's default icon path problems with webpack
 delete L.Icon.Default.prototype._getIconUrl
