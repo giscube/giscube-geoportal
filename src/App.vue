@@ -1,8 +1,7 @@
 <template>
   <div id="app">
     <!-- Fixed navbar -->
-    <AppHeader ref="header" brand="GISCube Geoportal"
-        @home='navHome' />
+    <AppHeader ref="header" @home='navHome' />
 
     <!-- Begin page content -->
     <GeoportalMap @map-ready="onMapReady" />
