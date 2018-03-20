@@ -11,6 +11,9 @@
           <a @click="$emit('home')"
              class="nav-link" href="#/"><span class="oi oi-home"></span> Home <span class="sr-only">(current)</span></a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" href="mailto:contact@example.com"><span class="oi oi-envelope-closed"></span>Contact</a>
+        </li>
       </ul>
 
     </div>
