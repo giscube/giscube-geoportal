@@ -143,7 +143,7 @@ export default {
 
   > .leaflet-control {
     border-radius: 0px;
-    background: #eeed;
+    background-color: #eeeeeeeb;
     padding: 0px;
     padding-top: 60px;
   }
