@@ -140,12 +140,13 @@ export default {
 .leaflet-sidebar {
   padding: 0px;
   box-shadow: 0 1px 7px rgba(0,0,0,.65);
+  padding-top: 70px;
+  background-color: #eeeeeeeb;
 
   > .leaflet-control {
     border-radius: 0px;
-    background-color: #eeeeeeeb;
+    background-color: transparent;
     padding: 0px;
-    padding-top: 60px;
   }
 
   .close {

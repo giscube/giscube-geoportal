@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <p class="results-title">Results for {{ q }}
+  <div class="panel">
+    <p class="panel-title">Results for {{ q }}
       <icon v-show="searching" name="spinner" pulse label="Searching"></icon></p>
 
     <p v-if="showSearchError" class="list-group-item">Error retrieving results</p>
@@ -164,12 +164,16 @@ export default {
 }
 </script>
 
-<style>
-.results-title {
-    font-size: 1.3em;
-    font-weight: bold;
-    margin: 5px;
-    padding: 5px;
+<style scoped>
+.panel {
+    padding: 0;
+}
+.panel-title {
+  font-size: 1.5em;
+  font-family: 'Lato', sans-serif;
+  font-weight: 400;
+  padding: 0 20px 15px 20px;
+  margin: 0;
 }
 
 .list-group-item {

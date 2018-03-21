@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <h4>{{ result.title }}</h4>
+  <div class="panel">
+    <p class="panel-title">{{ result.title }}</p>
 
     <div v-if="result">
       {{ properties.adreca }}
@@ -100,5 +100,14 @@ export default {
 <style>
 .list-group-item {
   min-height: 65px;
+}
+.panel {
+    padding: 0 20px 15px 20px;
+}
+.panel-title {
+  font-size: 1.5em;
+  font-family: 'Lato', sans-serif;
+  font-weight: 400;
+  margin-bottom: 10px;
 }
 </style>

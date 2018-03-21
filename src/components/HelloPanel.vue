@@ -1,9 +1,9 @@
 <template>
-  <div class="hello">
-    <p class="hello-title">Giscube Geoportal</p>
+  <div class="panel">
+    <p class="panel-title">Welcome!</p>
     <p>Useful links</p>
     <ul>
-      <li><a href="https://www.giscube.com" target="_blank">Giscube</a></li>
+      <li><a href="https://www.github.com/giscube" target="_blank">Giscube at GitHub</a></li>
     </ul>
   </div>
 </template>
@@ -35,11 +35,14 @@ a {
   color: #42b983;
 }
 
-.hello {
-    padding: 15px;
+.panel {
+    padding: 0 20px 15px 20px;
 }
-.hello-title {
+.panel-title {
   font-size: 1.5em;
+  font-family: 'Lato', sans-serif;
+  font-weight: 400;
+  margin-bottom: 10px;
 }
 
 </style>
