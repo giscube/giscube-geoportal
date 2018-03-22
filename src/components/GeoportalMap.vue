@@ -5,6 +5,7 @@
              :zoom='$store.config.home.zoom'
              :center="$store.config.home.center"
              @l-ready='onMapReady'>
+        <LayersControl ref="layersControl"></LayersControl>
         <query-on-click></query-on-click>
       </v-map>
     </div>
@@ -15,11 +16,13 @@ import L from 'leaflet'
 import Vue2Leaflet from 'vue2-leaflet'
 
 import QueryOnClick from '@/components/QueryOnClick.vue'
+import LayersControl from '@/components/LayersControl.vue'
 
 export default {
   components: {
     'v-map': Vue2Leaflet.Map,
-    'query-on-click': QueryOnClick
+    'query-on-click': QueryOnClick,
+    LayersControl
   },
   data () {
     return {
@@ -40,7 +43,9 @@ export default {
         } else if (basemap.type === 'wms') {
           baselayer = L.tileLayer.wms(basemap.url, basemap)
         }
-        this.layerswitcher.addBaseLayer(baselayer, basemap.name)
+        this.layerswitcher.addBaseLayer(baselayer, basemap.name, {
+          default: basemap.default
+        })
         if (basemap.default) {
           this.map.addLayer(baselayer)
         }
@@ -52,8 +57,10 @@ export default {
       this.addLayersControl()
     },
     addLayersControl () {
-      this.layerswitcher = L.control.layers({}, {}, {collapsed: false})
-      this.layerswitcher.addTo(this.map)
+      // leaflet's Layers Control
+      // this.layerswitcher = L.control.layers({}, {}, {collapsed: false})
+      // this.layerswitcher.addTo(this.map)
+      this.layerswitcher = this.$refs.layersControl
       this.map.layerswitcher = this.layerswitcher
     },
     addScaleControl () {

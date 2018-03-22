@@ -190,7 +190,11 @@ export default {
       this.map.on('click', this.onMapClick, this)
     },
     _getMapOverlays () {
-      return this.map.layerswitcher._layers.filter(layer => {
+      var layers = this.map.layerswitcher._layers
+      if (!layers) {
+        layers = this.map.layerswitcher.layers
+      }
+      return layers.filter(layer => {
         // filter layers of type overlay and added to map (visible)
         return layer.overlay && this.map._layers[layer.layer._leaflet_id]
       })
