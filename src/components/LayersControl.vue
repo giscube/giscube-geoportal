@@ -135,7 +135,9 @@ export default {
       return this.$el
     },
     removeLayer (options) {
-      this.layers.splice(options, 1)
+      this.layers.splice(this.layers.findIndex(function (el) {
+        return el.id === options.id
+      }), 1)
       this.map.removeLayer(options.layer)
     },
     toggleLayer (options) {
