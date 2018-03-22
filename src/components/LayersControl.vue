@@ -9,7 +9,7 @@
     <div class="layers-list">
       <ul v-if="baseLayerSelected">
         <li @click="baseLayerSelect=!baseLayerSelect">
-          <a @click.prevent.stop="toggleLayer(layer)" class="toggleLayer"
+          <a @click.prevent.stop="baseLayerSelect=!baseLayerSelect" class="toggleLayer"
              ><icon name="globe" label="base layer"></icon></a>
           <a class="label">{{ baseLayerSelected.name }}</a>
         </li>
