@@ -6,6 +6,11 @@
       {{ properties.adreca }}
     </div>
 
+    <div class="link">
+      <span class="oi oi-zoom-in"></span>
+      <a @click="zoomResult(result)">Zoom a les dades</a>
+    </div>
+
     <div v-for="(child, index) in result.children" :key="index"
          style="padding: 10px 0 5px 0">
       <span style="padding: 5px 8px; background: #ccddee; border-radius: 4px; font-size: 0.8em"
@@ -55,9 +60,6 @@ export default {
           maxZoom: 22
         }).addTo(map)
         map.layerswitcher.addOverlay(wms, this.result.title)
-        // FIXME: check visible, fly
-        console.log('wms bounds missing')
-        map.flyTo(new L.LatLng(41.973, 2.775), 14)
       } else if (element.type === 'TMS') {
         var tms = L.tileLayer(element.url, {
           transparent: true,
@@ -65,6 +67,11 @@ export default {
         }).addTo(map)
         map.layerswitcher.addOverlay(tms, this.result.title)
       }
+    },
+    zoomResult () {
+      // FIXME: check visible, fly
+      console.log('wms bounds missing')
+      this.map.flyTo(new L.LatLng(41.973, 2.775), 14)
     }
   }
 }
@@ -79,5 +86,8 @@ export default {
   font-family: 'Lato', sans-serif;
   font-weight: 400;
   margin-bottom: 10px;
+}
+div.link {
+  cursor: pointer;
 }
 </style>
