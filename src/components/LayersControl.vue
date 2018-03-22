@@ -210,7 +210,7 @@ export default {
   }
 
   li a.label {
-    text-overflow: ellipsis; 
+    text-overflow: ellipsis;
   }
 
   li a.removeLayer, li a.toggleLayer {
