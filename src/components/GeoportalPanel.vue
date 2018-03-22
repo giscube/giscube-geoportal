@@ -8,7 +8,12 @@
 
     <div class="link">
       <span class="oi oi-zoom-in"></span>
-      <a @click="zoomResult(result)">Zoom a les dades</a>
+      <a @click="zoomResult()">Zoom to data</a>
+    </div>
+
+    <div class="link">
+      <span class="oi oi-eye"></span>
+      <a @click="viewResult()">Add to map</a>
     </div>
 
     <div v-for="(child, index) in result.children" :key="index"
@@ -89,5 +94,8 @@ export default {
 }
 div.link {
   cursor: pointer;
+  line-height: 1.5em;
+  display: inline-block;
+  padding: 10px;
 }
 </style>
