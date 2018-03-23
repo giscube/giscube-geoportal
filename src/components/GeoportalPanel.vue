@@ -6,6 +6,10 @@
       {{ properties.adreca }}
     </div>
 
+    <div v-if="result">
+      {{ result.description }}
+    </div>
+
     <div class="link">
       <span class="oi oi-zoom-in"></span>
       <a @click="zoomResult()">Zoom to data</a>
