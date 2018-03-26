@@ -15,7 +15,7 @@ export default new Router({
       component: HelloPanel
     },
     { path: '/place/:q/', component: PlacePanel },
-    { path: '/search/:q/', component: SearchPanel },
+    { path: '/search/:q/', component: SearchPanel, name: 'search' },
     { path: '/geoportal/:q/', component: GeoportalPanel }
   ]
 })
