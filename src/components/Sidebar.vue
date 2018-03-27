@@ -63,6 +63,33 @@ export default {
       this.sidebar.hide()
       this.closeButtonVisible = false
     },
+    getMapInfo () {
+      var info = {
+        // isVisible: whether the map is not fully covered
+        // visibleBounds: visible bounds, null if fully covered
+      }
+
+      let sidebar = this.sidebar._container
+      let mapBounds = this.map.getBounds()
+      let west = mapBounds.getWest()
+      let east = mapBounds.getEast()
+      let sidebarCover = (east - west) * sidebar.clientWidth / this.map._container.clientWidth
+
+      info.isVisible = sidebar.clientWidth !== this.map._container.clientWidth
+      info.coveredLng = sidebarCover
+      // mapBounds without the area covered by the sidebar
+      info.visibleBounds = L.latLngBounds([
+        [mapBounds.getSouthWest().lat, mapBounds.getSouthWest().lng + sidebarCover],
+        [mapBounds.getNorthEast().lat, mapBounds.getNorthEast().lng]
+      ])
+      info.widthLng = east - west
+      info.visibleWidthPx = this.map._container.clientWidth - sidebar.clientWidth
+      info.visibleHeightPx = this.map._container.clientHeight
+      info.visibleWidthMeters = mapBounds.getNorthEast().distanceTo(mapBounds.getNorthWest())
+      info.visibleHeightMeters = mapBounds.getSouthEast().distanceTo(mapBounds.getNorthEast())
+
+      return info
+    },
     submit (event) {
       event.preventDefault()
       let q = this.$refs.search_input.value

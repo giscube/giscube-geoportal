@@ -51,25 +51,11 @@ export default {
         return
       }
 
-      let sidebar = this.$parent.$refs.sidebar
-      var mapBounds = this.map.getBounds()
-      let west = mapBounds.getWest()
-      let east = mapBounds.getEast()
-      let sidebarCover = (east - west) * sidebar.clientWidth / this.map._container.clientWidth
-      // mapBounds without the area covered by the sidebar
-      mapBounds = L.latLngBounds([
-        [mapBounds.getSouthWest().lat, mapBounds.getSouthWest().lng + sidebarCover],
-        [mapBounds.getNorthEast().lat, mapBounds.getNorthEast().lng]
-      ])
-
+      let mapInfo = this.map.giscube.getMapInfo()
       let visible
       let latLng
       let geom = element.geojson.geometry
-      var diff = 0
-
-      if (sidebar.clientWidth !== this.map._container.clientWidth) {
-        diff = sidebarCover / 2
-      }
+      let diff = mapInfo.coveredLng / 2
 
       if (geom.type === 'Feature') {
         console.error('FEATURE', element)
@@ -81,14 +67,23 @@ export default {
         latLng.lng = latLng.lng - diff
         visible = false
       } else if (geom.type === 'Point') {
-        latLng = L.latLng(
+        var point = L.latLng(
           geom.coordinates[1],
-          geom.coordinates[0] - diff)
-        let bounds = latLng.toBounds(250)
-        visible = mapBounds.contains(bounds)
+          geom.coordinates[0])
+        let bounds = point.toBounds(
+          Math.min(mapInfo.visibleHeightMeters, mapInfo.visibleWidthMeters) * .5)
+
+        visible = mapInfo.visibleBounds.contains(bounds)
+        if (mapInfo.isVisible) {
+          latLng = L.latLng(
+            geom.coordinates[1],
+            geom.coordinates[0] - diff)
+        } else {
+          latLng = point
+        }
       }
 
-      if (!visible) {
+      if (!visible || !mapInfo.isVisible) {
         this.map.flyTo(latLng)
       }
       element.layer.openPopup()
