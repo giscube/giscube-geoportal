@@ -71,7 +71,7 @@ export default {
           geom.coordinates[1],
           geom.coordinates[0])
         let bounds = point.toBounds(
-          Math.min(mapInfo.visibleHeightMeters, mapInfo.visibleWidthMeters) * .5)
+          Math.min(mapInfo.visibleHeightMeters, mapInfo.visibleWidthMeters) * 0.5)
 
         visible = mapInfo.visibleBounds.contains(bounds)
         if (mapInfo.isVisible) {
