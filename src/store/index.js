@@ -10,10 +10,15 @@ export default new Vuex.Store({
     searching: false,
     count: 0,
     result: null,
+    resultsLayer: null,
     autoselectResult: false,
     sidebarVisible: null
   },
   mutations: {
+    createResultsLayer: (state, value) => {
+      state.resultsLayer = value
+      console.log('state.resultsLayer', state.resultsLayer)
+    },
     setAutoselectResult: (state, value) => {
       state.autoselectResult = value
     },

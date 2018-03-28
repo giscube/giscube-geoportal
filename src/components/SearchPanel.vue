@@ -8,7 +8,7 @@
 
     <div v-if="results">
       <SearchResult v-for="(result, index) in results" :result='result'
-        :key="index" :map='map' :layerGeoJson='layerGeoJson' />
+        :key="index" :map='map' :resultsLayer='resultsLayer' />
     </div>
   </div>
 </template>
@@ -38,6 +38,9 @@ export default {
     }
   },
   computed: {
+    resultsLayer () {
+      return this.$store.state.resultsLayer
+    },
     searching () {
       return this.searchsRunning > 0
     },
@@ -79,25 +82,30 @@ export default {
     this.q = to.params.q
     next()
   },
-  mounted () {
-    this.layerGeoJson = L.geoJson('', {
-      onEachFeature: function (feature, layer) {
-        layer.bindPopup(feature.properties.title)
-      }
-    })
+  created () {
+    if (!this.resultsLayer) {
+      let layerGeoJson = L.geoJson('', {
+        onEachFeature: function (feature, layer) {
+          layer.bindPopup(feature.properties.title)
+        }
+      })
+      this.$store.commit('createResultsLayer', layerGeoJson)
+    }
+  },
+  destroyed () {
+    this.resultsLayer.clearLayers()
   },
   methods: {
     qChanged () {
       if (this.map) {
-        this.map.removeLayer(this.layerGeoJson)
-        this.layerGeoJson.addTo(this.map)
+        this.resultsLayer.addTo(this.map)
       }
 
       // reset
       this.resultsPartials = {}
       this.searchEmpty = false
       this.searchError = false
-      this.layerGeoJson.clearLayers()
+      this.resultsLayer.clearLayers()
 
       let self = this
       this.$store.config.searches.forEach(search => {
@@ -136,7 +144,7 @@ export default {
         data.results.forEach(element => {
           var layer = L.GeoJSON.geometryToLayer(element.geojson)
           layer.bindPopup(element.geojson.properties.title)
-          this.layerGeoJson.addLayer(layer)
+          this.resultsLayer.addLayer(layer)
           element.layer = layer
         })
       }

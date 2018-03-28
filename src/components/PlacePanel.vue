@@ -36,8 +36,16 @@ export default {
         return {}
       }
     },
+    resultsLayer () {
+      return this.$store.state.resultsLayer
+    },
     isResultClickable () {
       return this.result.geojson
+    }
+  },
+  destroyed () {
+    if (this.result.layer) {
+      this.result.layer.removeFrom(this.resultsLayer)
     }
   },
   methods: {
@@ -76,10 +84,12 @@ export default {
         bounds = point.toBounds(
           Math.min(mapInfo.visibleHeightMeters, mapInfo.visibleWidthMeters) * 0.5)
       } else {
-        let geojson = L.geoJSON(geom)
-        geojson.addTo(this.map)
-        bounds = geojson.getBounds().pad(0.1)
+        if (!element.layer) {
+          element.layer = L.geoJSON.geometryToLayer(geom)
+        }
+        bounds = element.layer.getBounds().pad(0.1)
       }
+      this.resultsLayer.addLayer(element.layer)
 
       let visible = mapInfo.visibleBounds.contains(bounds)
 
