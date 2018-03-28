@@ -52,39 +52,38 @@ export default {
       }
 
       let mapInfo = this.map.giscube.getMapInfo()
-      let visible
-      let latLng
+      let bounds
       let geom = element.geojson.geometry
-      let diff = mapInfo.coveredLng / 2
 
-      if (geom.type === 'Feature') {
-        console.error('FEATURE', element)
-      } else if (geom.type === 'Polygon') {
-        var polygon = L.geoJSON(geom)
-        polygon.addTo(this.map)
-        // this.map.fitBounds(polygon.getBounds())
-        latLng = polygon.getBounds().getCenter()
-        latLng.lng = latLng.lng - diff
-        visible = false
-      } else if (geom.type === 'Point') {
+      if (geom.type === 'Point') {
         var point = L.latLng(
           geom.coordinates[1],
           geom.coordinates[0])
-        let bounds = point.toBounds(
+        bounds = point.toBounds(
           Math.min(mapInfo.visibleHeightMeters, mapInfo.visibleWidthMeters) * 0.5)
-
-        visible = mapInfo.visibleBounds.contains(bounds)
-        if (mapInfo.isVisible) {
-          latLng = L.latLng(
-            geom.coordinates[1],
-            geom.coordinates[0] - diff)
-        } else {
-          latLng = point
-        }
+      } else {
+        let geojson = L.geoJSON(geom)
+        geojson.addTo(this.map)
+        bounds = geojson.getBounds().pad(0.1)
       }
 
+      let visible = mapInfo.visibleBounds.contains(bounds)
+
       if (!visible || !mapInfo.isVisible) {
-        this.map.flyTo(latLng)
+        let latLng = bounds.getCenter()
+        // use zoom/pan options in flyTo instead?
+        if (mapInfo.isVisible) {
+          latLng.lng = latLng.lng - mapInfo.coveredLng / 2
+        }
+
+        // do we need a smaller zoom?
+        let maxZoom = this.map.getBoundsZoom(bounds)
+
+        if (this.map.getZoom() > maxZoom) {
+          this.map.flyTo(latLng, maxZoom)
+        } else {
+          this.map.flyTo(latLng)
+        }
       }
       element.layer.openPopup()
     }
