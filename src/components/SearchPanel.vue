@@ -82,25 +82,11 @@ export default {
     this.q = to.params.q
     next()
   },
-  created () {
-    if (!this.resultsLayer) {
-      let layerGeoJson = L.geoJson('', {
-        onEachFeature: function (feature, layer) {
-          layer.bindPopup(feature.properties.title)
-        }
-      })
-      this.$store.commit('createResultsLayer', layerGeoJson)
-    }
-  },
   destroyed () {
     this.resultsLayer.clearLayers()
   },
   methods: {
     qChanged () {
-      if (this.map) {
-        this.resultsLayer.addTo(this.map)
-      }
-
       // reset
       this.resultsPartials = {}
       this.searchEmpty = false

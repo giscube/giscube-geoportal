@@ -29,6 +29,21 @@ export default {
       map: null
     }
   },
+  computed: {
+    resultsLayer () {
+      return this.$store.state.resultsLayer
+    }
+  },
+  created () {
+    if (!this.resultsLayer) {
+      let layerGeoJson = L.geoJson('', {
+        onEachFeature: function (feature, layer) {
+          layer.bindPopup(feature.properties.title)
+        }
+      })
+      this.$store.commit('createResultsLayer', layerGeoJson)
+    }
+  },
   mounted () {
     this.map = this.$refs.map.mapObject
     this.addControls()
@@ -81,6 +96,7 @@ export default {
     },
     onMapReady () {
       this.map = this.$refs.map.mapObject
+      this.resultsLayer.addTo(this.map)
       this.$emit('map-ready', this.map)
     }
   }
