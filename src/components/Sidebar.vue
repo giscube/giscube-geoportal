@@ -87,6 +87,7 @@ export default {
       info.visibleHeightPx = this.map._container.clientHeight
       info.visibleWidthMeters = mapBounds.getNorthEast().distanceTo(mapBounds.getNorthWest())
       info.visibleHeightMeters = mapBounds.getSouthEast().distanceTo(mapBounds.getNorthEast())
+      info.sidebarWidthPx = sidebar.clientWidth
 
       return info
     },
