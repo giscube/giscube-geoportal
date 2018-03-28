@@ -105,6 +105,11 @@ export default {
         self.sidebar.show()
         self.$emit('visibility-changed', true)
       }, 500)
+      // extend map functionality the hacky way
+      if (!this.map.giscube) {
+        this.map.giscube = {}
+      }
+      this.map.giscube.getMapInfo = this.getMapInfo
     },
     sidebarShown () {
       this.closeButtonVisible = true
