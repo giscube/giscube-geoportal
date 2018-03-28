@@ -11,13 +11,15 @@
     </div>
 
     <div class="action">
-      <span class="oi oi-zoom-in"></span>
-      <a @click="zoomResult()">Zoom to data</a>
+      <a @click="zoomResult()">
+        <span class="oi oi-zoom-in"></span>
+        Zoom to data</a>
     </div>
 
     <div class="action">
-      <span class="oi oi-eye"></span>
-      <a @click="viewResult()">Add to map</a>
+      <a @click="viewResult()">
+        <span class="oi oi-eye"></span>
+        Add to map</a>
     </div>
 
     <div class="keywords">
