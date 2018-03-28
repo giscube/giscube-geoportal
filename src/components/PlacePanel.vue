@@ -5,6 +5,12 @@
     <div v-if="result">
       {{ properties.adreca }}
     </div>
+
+    <div class="action">
+      <a @click="zoomResult()">
+        <span class="oi oi-zoom-in"></span>
+        Zoom</a>
+    </div>
   </div>
 </template>
 
@@ -35,22 +41,30 @@ export default {
     }
   },
   methods: {
-    viewResult () {
+    isValidResult () {
       if (!this.isResultClickable) {
         console.log('Result is not clickable')
-        return
+        return false
       }
 
       let element = this.result
       if (!element.geojson) {
         console.log('Result is not Geojson')
-        return
+        return false
       }
       if (!('type' in element.geojson && element.geojson['type'] === 'Feature')) {
         console.log('Result is not Feature')
+        return false
+      }
+
+      return true
+    },
+    viewResult () {
+      if (!this.isValidResult()) {
         return
       }
 
+      let element = this.result
       let mapInfo = this.map.giscube.getMapInfo()
       let bounds
       let geom = element.geojson.geometry
@@ -86,6 +100,20 @@ export default {
         }
       }
       element.layer.openPopup()
+    },
+    zoomResult () {
+      if (!this.isValidResult()) {
+        return
+      }
+
+      let element = this.result
+      let mapInfo = this.map.giscube.getMapInfo()
+      let geojson = L.geoJSON(element.geojson.geometry)
+      let bounds = geojson.getBounds().pad(0.1)
+
+      this.map.flyToBounds(bounds, {
+        paddingTopLeft: [mapInfo.sidebarWidthPx, 0]
+      })
     }
   }
 }
@@ -103,5 +131,11 @@ export default {
   font-family: 'Lato', sans-serif;
   font-weight: 400;
   margin-bottom: 10px;
+}
+div.action {
+  cursor: pointer;
+  line-height: 1.5em;
+  display: inline-block;
+  padding: 10px;
 }
 </style>
