@@ -1,6 +1,6 @@
 <template>
   <div @click.prevent.stop=""
-       @doubleClick.prevent.stop=""
+       @dblclick.prevent.stop=""
        class="giscube-layers-control">
 
     <a class="layers" data-toggle="collapse" href="#collapseControls" role="button" aria-expanded="true" aria-controls="collapseControls"
@@ -9,7 +9,7 @@
     <div class="layers-list">
       <ul v-if="baseLayerSelected">
         <li @click="baseLayerSelect=!baseLayerSelect">
-          <a @click.prevent.stop="baseLayerSelect=!baseLayerSelect" class="toggleLayer"
+          <a class="toggleLayer"
              ><icon name="globe" label="base layer"></icon></a>
           <a class="label">{{ baseLayerSelected.name }}</a>
         </li>
@@ -17,7 +17,7 @@
 
       <ul v-if="baseLayerSelect">
         <li v-for="layer in baseLayers" :key="layer.id" @click="changeBaseLayer(layer)">
-          <a @click.prevent.stop="toggleLayer(layer)" class="toggleLayer option"
+          <a class="toggleLayer option"
              ><icon name="chevron-right" label="option"></icon></a>
           <a class="label">{{ layer.name }}</a>
         </li>
@@ -25,10 +25,10 @@
 
       <ul>
         <li v-for="layer in layers" :key="layer.id" @click="toggleLayer(layer)">
-          <a @click.prevent.stop="toggleLayer(layer)" class="toggleLayer"
+          <a class="toggleLayer"
              ><icon v-if="layer.visible" name="check" label="selected"></icon></a>
           <a class="label">{{ layer.name }}</a>
-          <a @click.prevent.stop="removeLayer(layer)" class="removeLayer"
+          <a @click="removeLayer(layer)" class="removeLayer"
              ><icon name="trash-o" label="selected"></icon></a>
         </li>
       </ul>
