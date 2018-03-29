@@ -5,6 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    currentTool: null,
     map: null,
     searchQ: '',
     searching: false,
@@ -21,6 +22,9 @@ export default new Vuex.Store({
     },
     setAutoselectResult: (state, value) => {
       state.autoselectResult = value
+    },
+    setCurrentTool: (state, value) => {
+      state.currentTool = value
     },
     setMap: (state, map) => {
       state.map = map

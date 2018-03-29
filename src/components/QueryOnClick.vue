@@ -40,6 +40,11 @@ export default {
       query: null
     }
   },
+  computed: {
+    currentTool () {
+      return this.$store.state.currentTool
+    }
+  },
   mounted () {
     if (this.$parent._isMounted) {
       this.deferredMountedTo(this.$parent.mapObject)
@@ -71,6 +76,11 @@ export default {
       }
     },
     async onMapSingleClick (event) {
+      if (this.currentTool) {
+        console.log("A tool is active, skip querying map")
+        return
+      }
+
       let latlng = event.latlng
       console.log('map clicked on ' + new Date() + ' at ' + latlng)
 
