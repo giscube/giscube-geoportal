@@ -25,7 +25,7 @@
     <div class="keywords">
       <div class="keywords-title">Keywords</div>
       <router-link v-for="keyword in keywords_items"
-        :to="{name: 'search', params: {q: keyword}}"
+        :to="{name: 'search', params: {q: keyword}}" :key="keyword"
         class="keyword">{{ keyword }}</router-link>
     </div>
 

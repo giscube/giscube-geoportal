@@ -77,7 +77,7 @@ export default {
     },
     async onMapSingleClick (event) {
       if (this.currentTool) {
-        console.log("A tool is active, skip querying map")
+        console.log('A tool is active, skip querying map')
         return
       }
 
