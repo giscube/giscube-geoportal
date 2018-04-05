@@ -15,7 +15,7 @@
      <div v-show="panelOpen" class="layerinfo">
        <div class="opacity">
          <span>Opacitat:</span>
-         <el-slider v-model="opacity" @change="opacityChanged"></el-slider>
+         <el-slider v-model="opacity" @input="opacityChanged"></el-slider>
        </div>
      </div>
   </li>
