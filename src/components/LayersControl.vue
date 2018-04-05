@@ -142,6 +142,7 @@ export default {
       this.mapObject.addTo(parent)
     },
     onAdd () {
+      L.DomEvent.disableClickPropagation(this.$el)
       return this.$el
     },
     removeLayer (options) {
@@ -215,7 +216,7 @@ export default {
     margin-bottom: 0;
   }
 
-  li {
+  li div.layeritem {
     position: relative;
     cursor: pointer;
     display: flex;

@@ -106,7 +106,7 @@ export default {
         if (this.map.getZoom() > maxZoom) {
           this.map.flyTo(latLng, maxZoom)
         } else {
-          this.map.flyTo(latLng)
+          this.map.flyTo(latLng, {maxZoom: 19})
         }
       }
       element.layer.openPopup()
