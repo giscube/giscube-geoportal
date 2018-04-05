@@ -1,15 +1,15 @@
 <template>
   <li>
-    <div class="layeritem" @click="$emit('toggle-layer', layer)">
-      <a class="toggleLayer"
+    <div class="flex-nowrap-start link" @click="$emit('toggle-layer', layer)">
+      <a class="flex-icon"
          ><icon v-if="layer.visible" name="check-square-o" label="selected"></icon>
           <icon v-if="!layer.visible" name="square-o" label="selected"></icon></a>
-      <a class="label">{{ layer.name }}</a>
+      <a class="flex-label">{{ layer.name }}</a>
       <a v-if="showActions"
-         @click.stop="$emit('remove-layer', layer)" class="removeLayer"
+         @click.stop="$emit('remove-layer', layer)" class="flex-icon hover-invert"
          ><icon name="trash-o" label="selected"></icon></a>
       <a v-if="!showActions"
-         @click.stop="panelOpen = !panelOpen" class="removeLayer layer-options"
+         @click.stop="panelOpen = !panelOpen" class="flex-icon gray-svg hover-invert"
          ><icon name="chevron-down" label="selected"></icon></a>
      </div>
      <div v-show="panelOpen" class="layerinfo">

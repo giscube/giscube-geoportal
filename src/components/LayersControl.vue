@@ -4,28 +4,30 @@
        class="giscube-layers-control leaflet-control"
        :class="{'showActions': showActions}">
 
-    <div class="layers">
-      <a class="layers" data-toggle="collapse" href="#collapseControls" role="button" aria-expanded="true" aria-controls="collapseControls"
-         ><icon name="clone" label="Layers"></icon>Layers</a>
-
-      <a @click="showActions = !showActions" class="configure"
-         ><icon name="trash-o" label="selected"></icon></a>
+    <div class="flex-nowrap-start layers">
+      <a class="flex-icon link"
+         ><icon name="clone" label="Layers"></icon></a>
+      <a class="flex-label link">Layers</a>
+      <a @click="showActions = !showActions" class="flex-icon flex-shrink link configure"
+         ><icon name="trash-o" label="configure"></icon></a>
     </div>
 
-    <div class="layers-list">
+    <div>
       <ul v-if="baseLayerSelected">
-        <li @click="baseLayerSelect=!baseLayerSelect">
-          <a class="toggleLayer"
+        <li class="flex-nowrap-start link" @click="baseLayerSelect=!baseLayerSelect">
+          <a class="flex-icon"
              ><icon name="globe" label="base layer"></icon></a>
-          <a class="label">{{ baseLayerSelected.name }}</a>
+          <a class="flex-label">{{ baseLayerSelected.name }}</a>
         </li>
       </ul>
 
       <ul v-if="baseLayerSelect">
-        <li v-for="layer in baseLayers" :key="layer.id" @click="changeBaseLayer(layer)">
-          <a class="toggleLayer option"
+        <li v-for="layer in baseLayers" :key="layer.id"
+            class="flex-nowrap-start link"
+            @click="changeBaseLayer(layer)">
+          <a class="flex-icon option gray"
              ><icon name="chevron-right" label="option"></icon></a>
-          <a class="label">{{ layer.name }}</a>
+          <a class="flex-label link">{{ layer.name }}</a>
         </li>
       </ul>
 
@@ -167,42 +169,42 @@ export default {
 .giscube-layers-control {
   display: block;
   background-color: white;
-  box-shadow: 0 1px 8px rgba(0,0,0,.3);
+  box-shadow: 0 4px 8px rgba(0,0,0,.3);
   min-width: 180px;
   max-width: 300px;
   line-height: 1em;
 
-  div.layers {
-    background: #0b1923;
+  .flex-nowrap-start {
     display: flex;
-    justify-content: space-between;
-    cursor: pointer;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
   }
-
-  a.layers {
-    display: block;
-    padding: 10px 18px;
-    color: #fff;
-    text-transform: uppercase;
-    font-family: 'Lato', sans-serif;
-    font-weight: 400;
-    text-decoration: none;
-    font-size: 1.1em;
-  }
-
-  a.layers svg {
-    margin-right: 8px;
-    vertical-align: middle;
-  }
-
-  a.configure {
-    color: white;
-    height: 100%;
-    flex: 0;
+  .flex-icon {
+    padding: 10px 0;
     min-width: 40px;
     text-align: center;
+  }
+  .flex-label {
     padding: 10px 0;
-    vertical-align: middle;
+    flex: 1;
+    text-overflow: ellipsis;
+  }
+  .link {
+    cursor: pointer;
+  }
+  .flex-shrink {
+    flex: 0;
+  }
+
+  div.layers {
+    background: #0b1923;
+    color: white;
+    font-family: 'Lato', sans-serif;
+    font-weight: 400;
+    font-size: 1.3em;
+    text-transform: uppercase;
+    text-decoration: none;
   }
 
   a.configure:hover {
@@ -216,54 +218,22 @@ export default {
     margin-bottom: 0;
   }
 
-  li div.layeritem {
-    position: relative;
-    cursor: pointer;
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
+  .gray-svg svg {
+    color: gray;
   }
 
-  li > * {
-    display: inline-block;
-    vertical-align: middle;
-  }
-
-  li a.toggleLayer.option svg {
+  .option svg {
     color: #bbb;
     margin-left: 5px;
-    // text-align: right;
-  }
-
-  li a {
-    // border: 1px solid red;
-    padding: 10px 0;
-    flex: 1;
-    vertical-align: middle;
-  }
-
-  li a.label {
-    text-overflow: ellipsis;
   }
 
   li:hover {
     background-color: #a1d7f5;
   }
 
-  li a.removeLayer, li a.toggleLayer {
-    height: 100%;
-    flex: 0;
-    min-width: 40px;
-    text-align: center;
-  }
-
-  li a.removeLayer:hover {
+  a.hover-invert:hover, a.hover-invert:hover svg {
     color: white;
     background-color: #0b1923;
-  }
-
-  .layer-options {
-    color: gray;
   }
 }
 
