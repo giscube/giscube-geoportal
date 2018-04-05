@@ -1,10 +1,16 @@
 <template>
   <div @click.prevent.stop=""
        @dblclick.prevent.stop=""
-       class="giscube-layers-control">
+       class="giscube-layers-control leaflet-control"
+       :class="{'showActions': showActions}">
 
-    <a class="layers" data-toggle="collapse" href="#collapseControls" role="button" aria-expanded="true" aria-controls="collapseControls"
-       ><icon name="clone" label="Layers"></icon>Layers</a>
+    <div class="layers">
+      <a class="layers" data-toggle="collapse" href="#collapseControls" role="button" aria-expanded="true" aria-controls="collapseControls"
+         ><icon name="clone" label="Layers"></icon>Layers</a>
+
+      <a @click="showActions = !showActions" class="configure"
+         ><icon name="trash-o" label="selected"></icon></a>
+    </div>
 
     <div class="layers-list">
       <ul v-if="baseLayerSelected">
@@ -24,13 +30,11 @@
       </ul>
 
       <ul>
-        <li v-for="layer in layers" :key="layer.id" @click="toggleLayer(layer)">
-          <a class="toggleLayer"
-             ><icon v-if="layer.visible" name="check" label="selected"></icon></a>
-          <a class="label">{{ layer.name }}</a>
-          <a @click="removeLayer(layer)" class="removeLayer"
-             ><icon name="trash-o" label="selected"></icon></a>
-        </li>
+        <LayerItem v-for="layer in layers" :key="layer.id" :layer="layer" :map="map"
+                   :showActions="showActions"
+                   @remove-layer="removeLayer"
+                   @toggle-layer="toggleLayer"
+                   ></LayerItem>
       </ul>
     </div>
   </div>
@@ -41,20 +45,26 @@ import L from 'leaflet'
 
 import Icon from 'vue-awesome/components/Icon'
 import 'vue-awesome/icons/check'
+import 'vue-awesome/icons/chevron-down'
 import 'vue-awesome/icons/chevron-right'
 import 'vue-awesome/icons/clone'
+import 'vue-awesome/icons/cog'
 import 'vue-awesome/icons/globe'
 import 'vue-awesome/icons/trash-o'
 
+import LayerItem from '@/components/LayerItem.vue'
+
 export default {
   components: {
-    Icon
+    Icon,
+    LayerItem
   },
   data () {
     return {
       baseLayers: [],
       baseLayerSelected: null,
       baseLayerSelect: false,
+      showActions: false,
       layerLastId: 0,
       layers: [],
       map: null,
@@ -152,16 +162,23 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .giscube-layers-control {
   display: block;
   background-color: white;
   box-shadow: 0 1px 8px rgba(0,0,0,.3);
   min-width: 180px;
   max-width: 300px;
+  line-height: 1em;
+
+  div.layers {
+    background: #0b1923;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+  }
 
   a.layers {
-    background: #0b1923;
     display: block;
     padding: 10px 18px;
     color: #fff;
@@ -175,6 +192,21 @@ export default {
   a.layers svg {
     margin-right: 8px;
     vertical-align: middle;
+  }
+
+  a.configure {
+    color: white;
+    height: 100%;
+    flex: 0;
+    min-width: 40px;
+    text-align: center;
+    padding: 10px 0;
+    vertical-align: middle;
+  }
+
+  a.configure:hover {
+    color: #0b1923;
+    background-color: white;
   }
 
   ul {
@@ -213,6 +245,10 @@ export default {
     text-overflow: ellipsis;
   }
 
+  li:hover {
+    background-color: #a1d7f5;
+  }
+
   li a.removeLayer, li a.toggleLayer {
     height: 100%;
     flex: 0;
@@ -225,9 +261,14 @@ export default {
     background-color: #0b1923;
   }
 
-  li:hover {
-    background-color: #a1d7f5;
+  .layer-options {
+    color: gray;
   }
-
 }
+
+.giscube-layers-control.showActions {
+  // min-width: 280px;
+  max-width: 500px;
+}
+
 </style>
