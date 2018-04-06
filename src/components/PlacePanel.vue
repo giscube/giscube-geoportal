@@ -46,6 +46,7 @@ export default {
   destroyed () {
     if (this.result.layer) {
       this.result.layer.removeFrom(this.resultsLayer)
+      this.$store.commit('selectResult', null)
     }
   },
   methods: {
