@@ -2,6 +2,7 @@
   <div class="panel">
     <p class="panel-title">Catalog</p>
 
+    <div v-if="!categories"><icon name="spinner" pulse label="Searching"></icon></div>
     <div v-if="categories" class="categories">
       <el-collapse class="category">
         <el-collapse-item v-for="category in categories"
