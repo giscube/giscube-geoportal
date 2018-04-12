@@ -11,6 +11,10 @@
           <a @click="$emit('home')"
              class="nav-link" href="#/"><span class="oi oi-home"></span> Home <span class="sr-only">(current)</span></a>
         </li>
+        <li class="nav-item nav-catalog">
+          <a @click="$emit('sidebar-visibility-changed', true)"
+             class="nav-link" href="#/catalog/"><span class="oi oi-compass"></span>Catalog</a>
+        </li>
         <li class="nav-item">
           <a class="nav-link" href="mailto:contact@example.com"><span class="oi oi-envelope-closed"></span>Contact</a>
         </li>

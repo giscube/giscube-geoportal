@@ -22,15 +22,9 @@
 </template>
 
 <script>
-import Vue from 'vue'
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
-
 import Icon from 'vue-awesome/components/Icon'
 import 'vue-awesome/icons/check-square-o'
 import 'vue-awesome/icons/square-o'
-
-Vue.use(ElementUI)
 
 export default {
   components: {

@@ -5,9 +5,14 @@ import App from './App'
 import router from './router'
 import store from './store'
 import config from './config'
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+
 store.config = config
 
 Vue.config.productionTip = false
+
+Vue.use(ElementUI)
 
 require('../node_modules/bootstrap/scss/bootstrap.scss')
 require('../node_modules/open-iconic/font/css/open-iconic-bootstrap.less')
