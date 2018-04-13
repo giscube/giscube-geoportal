@@ -8,6 +8,10 @@
       <component v-bind:is="query.component" :results='query.results' :latlng='query.latlng'>
         test
       </component>
+      <div class="tools" v-if="query.component">
+        <div class="tool-remove-query"
+            @click="_removeQuery"><icon name="trash-o" label="selected"></icon></div>
+      </div>
     </v-popup>
   </v-marker>
 </template>
@@ -83,13 +87,6 @@ export default {
 
       let latlng = event.latlng
       console.log('map clicked on ' + new Date() + ' at ' + latlng)
-
-      if (this.query) {
-        this.query = null
-        this.$store.commit('setQuery', this.query)
-        console.log('query deleted')
-        return
-      }
 
       let query = {
         latlng: latlng,
@@ -195,6 +192,14 @@ export default {
       // return null for no results
       return queryResults
     },
+    _removeQuery () {
+      if (this.query) {
+        this.query = null
+        this.$store.commit('setQuery', this.query)
+        console.log('query deleted')
+        return
+      }
+    },
     _disableMapClickEvent () {
       this.map.off('click', this.onMapClick, this)
     },
@@ -215,5 +220,19 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.tools {
+  border-top: 1px dashed #ddd;
+  margin-top: 10px;
+  padding: 8px 0px 0px 0px;
+}
+.tool-remove-query {
+  font-size: 0.8em;
+  text-align: center;
+  display: inline-block;
+  background-color: #eee;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
 </style>
