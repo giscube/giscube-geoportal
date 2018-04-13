@@ -197,7 +197,6 @@ export default {
         this.query = null
         this.$store.commit('setQuery', this.query)
         console.log('query deleted')
-        return
       }
     },
     _disableMapClickEvent () {
