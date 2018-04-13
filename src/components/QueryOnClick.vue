@@ -86,6 +86,7 @@ export default {
 
       if (this.query) {
         this.query = null
+        this.$store.commit('setQuery', this.query)
         console.log('query deleted')
         return
       }
@@ -96,6 +97,7 @@ export default {
         visible: true
       }
       this.query = query
+      this.$store.commit('setQuery', this.query)
 
       // query before querying Overlays
       await this.queryBeforeOverlays(event, query).then(result => {

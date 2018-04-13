@@ -30,6 +30,9 @@ export default new Vuex.Store({
       state.map = map
       console.log('MAP now set', state)
     },
+    setQuery: (state, query) => {
+      state.query = query
+    },
     setSidebarVisible: (state, value) => {
       state.sidebarVisible = value
     },
