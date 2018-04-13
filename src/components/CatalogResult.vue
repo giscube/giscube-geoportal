@@ -78,6 +78,11 @@ export default {
 .catalog-result {
   cursor: pointer;
   padding: 8px 10px 8px 20px;
+  border-bottom: 1px solid #eee;
+  min-height: 50px;
+}
+.catalog-result:hover {
+  background-color: #dddddd;
 }
 .catalog-result-title {
   display: block;
@@ -89,5 +94,10 @@ export default {
   border-radius: 5px;
   padding: 5px 10px;
   cursor: pointer;
+  margin: 0 0 0 10px;
 }
+.catalog-result-add-to-map:hover {
+  background-color: #c9c9c9;
+}
+
 </style>
