@@ -27,6 +27,7 @@ import LatLngPopup from '@/components/LatLngPopup.vue'
 import FeatureInfoPopup from '@/components/FeatureInfoPopup.vue'
 
 import Icon from 'vue-awesome/components/Icon'
+import 'vue-awesome/icons/trash-o'
 
 export default {
   name: 'query-on-click',
