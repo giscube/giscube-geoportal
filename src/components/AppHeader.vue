@@ -18,6 +18,10 @@
         <li class="nav-item">
           <a class="nav-link" href="mailto:contact@example.com"><span class="oi oi-envelope-closed"></span>Contact</a>
         </li>
+        <li class="nav-item">
+          <a @click="$emit('sidebar-visibility-changed', true)"
+             class="nav-link" href="#/measure/"><span class="oi"><img src="../assets/ruler2.svg" /></span>Measure</a>
+        </li>
       </ul>
 
     </div>
