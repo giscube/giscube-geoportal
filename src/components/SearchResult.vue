@@ -28,7 +28,6 @@ export default {
   },
   computed: {
     properties () {
-      console.log('properties: ', this.result.geojson)
       if (this.result.geojson) {
         return this.result.geojson.properties
       } else {

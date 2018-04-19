@@ -34,7 +34,7 @@ export default {
       if (this.feature.layer) {
         this.feature.layer.remove()
       }
-    },
+    }
   }
 }
 </script>
