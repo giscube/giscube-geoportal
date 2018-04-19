@@ -18,6 +18,7 @@ import Vue from 'vue'
 import axios from 'axios'
 import L from 'leaflet'
 import SearchResult from './SearchResult.vue'
+import SearchResultPopup from './SearchResultPopup';
 
 import Icon from 'vue-awesome/components/Icon'
 import 'vue-awesome/icons/spinner'
@@ -129,7 +130,13 @@ export default {
         console.log('add layers to map', search.name)
         data.results.forEach(element => {
           var layer = L.GeoJSON.geometryToLayer(element.geojson)
-          layer.bindPopup(element.geojson.properties.title)
+          let popupContent = Vue.extend(SearchResultPopup)
+          let popup = new popupContent({
+            propsData: {
+              feature: element
+            }
+          })
+          layer.bindPopup(popup.$mount().$el)
           this.resultsLayer.addLayer(layer)
           element.layer = layer
         })
