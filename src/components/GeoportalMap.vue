@@ -17,6 +17,8 @@ import Vue2Leaflet from 'vue2-leaflet'
 
 import QueryOnClick from '@/components/QueryOnClick.vue'
 import LayersControl from '@/components/LayersControl.vue'
+require('microdisseny-leaflet-measure')
+require('microdisseny-leaflet-measure/dist/leaflet-measure.css')
 
 export default {
   components: {
@@ -70,6 +72,7 @@ export default {
       this.addScaleControl()
       this.addZoomControl()
       this.addLayersControl()
+      this.addMeasureControl()
     },
     addLayersControl () {
       // leaflet's Layers Control
@@ -77,6 +80,14 @@ export default {
       // this.layerswitcher.addTo(this.map)
       this.layerswitcher = this.$refs.layersControl
       this.map.layerswitcher = this.layerswitcher
+    },
+    addMeasureControl () {
+      this.measureControl = new L.Control.Measure({
+        measureUnit: 'meters',
+        createButton: false
+      })
+      this.map.measureControl = this.measureControl
+      this.map.addControl(this.measureControl)
     },
     addScaleControl () {
       this.scaleControl = L.control.scale({metric: true, imperial: false, 'position': 'bottomright'})
