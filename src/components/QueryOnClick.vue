@@ -170,7 +170,8 @@ export default {
           'x': event.containerPoint.x,
           'y': event.containerPoint.y,
           'width': this.map.getSize().x,
-          'height': this.map.getSize().y
+          'height': this.map.getSize().y,
+          'feature_count': 100
         }
 
         let searchUrl = layer.layer._url
