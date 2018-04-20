@@ -1,9 +1,15 @@
 <template>
-  <div>
-    <h4>{{ result.title }}</h4>
+  <div class="panel">
+    <p class="panel-title">{{ result.title }}</p>
 
     <div v-if="result">
       {{ properties.adreca }}
+    </div>
+
+    <div class="action">
+      <a @click="zoomResult()">
+        <span class="oi oi-zoom-in"></span>
+        Zoom</a>
     </div>
   </div>
 </template>
@@ -30,68 +36,95 @@ export default {
         return {}
       }
     },
+    resultsLayer () {
+      return this.$store.state.resultsLayer
+    },
     isResultClickable () {
       return this.result.geojson
     }
   },
+  destroyed () {
+    if (this.result.layer) {
+      this.result.layer.removeFrom(this.resultsLayer)
+      this.$store.commit('selectResult', null)
+    }
+  },
   methods: {
-    viewResult () {
+    isValidResult () {
       if (!this.isResultClickable) {
         console.log('Result is not clickable')
-        return
+        return false
       }
 
       let element = this.result
       if (!element.geojson) {
         console.log('Result is not Geojson')
-        return
+        return false
       }
       if (!('type' in element.geojson && element.geojson['type'] === 'Feature')) {
         console.log('Result is not Feature')
+        return false
+      }
+
+      return true
+    },
+    viewResult () {
+      if (!this.isValidResult()) {
         return
       }
 
-      let sidebar = this.$parent.$refs.sidebar
-      var mapBounds = this.map.getBounds()
-      let west = mapBounds.getWest()
-      let east = mapBounds.getEast()
-      let sidebarCover = (east - west) * sidebar.clientWidth / this.map._container.clientWidth
-      // mapBounds without the area covered by the sidebar
-      mapBounds = L.latLngBounds([
-        [mapBounds.getSouthWest().lat, mapBounds.getSouthWest().lng + sidebarCover],
-        [mapBounds.getNorthEast().lat, mapBounds.getNorthEast().lng]
-      ])
-
-      let visible
-      let latLng
+      let element = this.result
+      let mapInfo = this.map.giscube.getMapInfo()
+      let bounds
       let geom = element.geojson.geometry
-      var diff = 0
 
-      if (sidebar.clientWidth !== this.map._container.clientWidth) {
-        diff = sidebarCover / 2
-      }
-
-      if (geom.type === 'Feature') {
-        console.error('FEATURE', element)
-      } else if (geom.type === 'Polygon') {
-        var polygon = L.geoJSON(geom)
-        polygon.addTo(this.map)
-        // this.map.fitBounds(polygon.getBounds())
-        latLng = polygon.getBounds().getCenter()
-        latLng.lng = latLng.lng - diff
-        visible = false
-      } else if (geom.type === 'Point') {
-        latLng = L.latLng(
+      if (geom.type === 'Point') {
+        var point = L.latLng(
           geom.coordinates[1],
-          geom.coordinates[0] - diff)
-        let bounds = latLng.toBounds(250)
-        visible = mapBounds.contains(bounds)
+          geom.coordinates[0])
+        bounds = point.toBounds(
+          Math.min(mapInfo.visibleHeightMeters, mapInfo.visibleWidthMeters) * 0.5)
+      } else {
+        if (!element.layer) {
+          element.layer = L.geoJSON.geometryToLayer(geom)
+        }
+        bounds = element.layer.getBounds().pad(0.1)
       }
+      this.resultsLayer.addLayer(element.layer)
 
-      if (!visible) {
-        this.map.flyTo(latLng)
+      let visible = mapInfo.visibleBounds.contains(bounds)
+
+      if (!visible || !mapInfo.isVisible) {
+        let latLng = bounds.getCenter()
+        // use zoom/pan options in flyTo instead?
+        if (mapInfo.isVisible) {
+          latLng.lng = latLng.lng - mapInfo.coveredLng / 2
+        }
+
+        // do we need a smaller zoom?
+        let maxZoom = this.map.getBoundsZoom(bounds)
+
+        if (this.map.getZoom() > maxZoom) {
+          this.map.flyTo(latLng, maxZoom)
+        } else {
+          this.map.flyTo(latLng, {maxZoom: 19})
+        }
       }
       element.layer.openPopup()
+    },
+    zoomResult () {
+      if (!this.isValidResult()) {
+        return
+      }
+
+      let element = this.result
+      let mapInfo = this.map.giscube.getMapInfo()
+      let geojson = L.geoJSON(element.geojson.geometry)
+      let bounds = geojson.getBounds().pad(0.1)
+
+      this.map.flyToBounds(bounds, {
+        paddingTopLeft: [mapInfo.sidebarWidthPx, 0]
+      })
     }
   }
 }
@@ -100,5 +133,20 @@ export default {
 <style>
 .list-group-item {
   min-height: 65px;
+}
+.panel {
+    padding: 0 20px 15px 20px;
+}
+.panel-title {
+  font-size: 1.5em;
+  font-family: 'Lato', sans-serif;
+  font-weight: 400;
+  margin-bottom: 10px;
+}
+div.action {
+  cursor: pointer;
+  line-height: 1.5em;
+  display: inline-block;
+  padding: 10px;
 }
 </style>

@@ -14,6 +14,11 @@ baseWebpackConfig.entry = {
 }
 
 var webpackConfig = merge(baseWebpackConfig, {
+  externals: [
+    'leaflet',
+    'vue',
+    'vue2-leaflet',
+  ],
   module: {
     rules: utils.styleLoaders({
       sourceMap: config.lib.productionSourceMap,

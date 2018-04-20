@@ -22,12 +22,13 @@ export default {
   components: {
     Icon
   },
-  props: ['result', 'map', 'layerGeoJson'],
+  props: ['result', 'map', 'resultsLayer'],
   data () {
     return {}
   },
   computed: {
     properties () {
+      console.log('properties: ', this.result.geojson)
       if (this.result.geojson) {
         return this.result.geojson.properties
       } else {
