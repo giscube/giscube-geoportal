@@ -10,7 +10,8 @@
     </el-radio-group>
 
     <el-row class="start-measuring">
-      <el-button>Start measuring</el-button>
+      <el-button v-if="!measuring" @click="startMeasuring">Start measuring</el-button>
+      <el-button v-if="measuring" @click="stopMeasuring">Stop measuring</el-button>
     </el-row>
 
   </div>
@@ -28,8 +29,13 @@ export default {
   data () {
     return {
       q: '',
-      measureType: 'Path'
+      measureType: 'Path',
+      measuring: false
     }
+  },
+  watch: {
+    'map': 'mapChanged',
+    'measureType': 'measureTypeChanged'
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
@@ -41,12 +47,42 @@ export default {
     vm.q = to.params.q
     next()
   },
+  destroyed () {
+    this.stopMeasuring()
+  },
   methods: {
+    mapChanged () {
+      if (this.map === null) {
+        return
+      }
+      this.map.on('measure:measurestop', () => {
+        if (this.measuring) {
+          this.stopMeasuring()
+        }
+      })
+    },
+    measureTypeChanged () {
+      if (this.measuring) {
+        this.map.measureControl.startMeasuring(
+          {'measureArea': this.measureType === 'Area'})
+      }
+    },
+    startMeasuring () {
+      this.$store.commit('setCurrentTool', this.map.measureControl)
+      this.map.measureControl.startMeasuring(
+        {'measureArea': this.measureType === 'Area'})
+      this.measuring = true
+    },
+    stopMeasuring () {
+      this.measuring = false
+      this.$store.commit('setCurrentTool', null)
+      this.map.measureControl.stopMeasuring()
+    }
   }
 }
 </script>
 
-<style>
+<style scoped>
 .list-group-item {
   min-height: 65px;
 }
