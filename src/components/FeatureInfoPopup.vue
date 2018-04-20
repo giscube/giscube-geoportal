@@ -1,6 +1,6 @@
 <template>
   <div class='popup'>
-    <el-tabs @tab-click="handleClick">
+    <el-tabs>
       <div v-for='layer in results' class='layer'>
         <el-tab-pane class='popup-content'>
           <span v-if="layer.elements.length === 1" slot="label">{{ layer.attributes.name }}</span>
