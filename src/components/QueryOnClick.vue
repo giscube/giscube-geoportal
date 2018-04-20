@@ -89,6 +89,17 @@ export default {
       let latlng = event.latlng
       console.log('map clicked on ' + new Date() + ' at ' + latlng)
 
+      // remove query and return control to Vue
+      this.query = null
+
+      // schedule a new map query after Vue is done removing current query
+      const self = this
+      this.$nextTick(() => {
+        self.onMapSingleClickQuery(event)
+      })
+    },
+    async onMapSingleClickQuery (event) {
+      let latlng = event.latlng
       let query = {
         latlng: latlng,
         results: null,
