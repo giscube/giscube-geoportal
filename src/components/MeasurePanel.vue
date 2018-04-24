@@ -14,16 +14,20 @@
       <el-button v-if="measuring" @click="stopMeasuring">Stop measuring</el-button>
     </el-row>
 
+    <MeasureList ref="measureList" @remove-measure="removeMeasure"></MeasureList>
+
   </div>
 </template>
 
 <script>
 import Icon from 'vue-awesome/components/Icon'
 import 'vue-awesome/icons/spinner'
+import MeasureList from '@/components/MeasureList.vue'
 
 export default {
   components: {
-    Icon
+    Icon,
+    MeasureList
   },
   props: ['map'],
   data () {
@@ -60,6 +64,9 @@ export default {
           this.stopMeasuring()
         }
       })
+      this.map.on('measure:finishedpath', (e) => {
+        this.$refs.measureList.measures.push(e.measure)
+      })
     },
     measureTypeChanged () {
       if (this.measuring) {
@@ -77,6 +84,9 @@ export default {
       this.measuring = false
       this.$store.commit('setCurrentTool', null)
       this.map.measureControl.stopMeasuring()
+    },
+    removeMeasure (measure) {
+      this.map.measureControl.removeMeasure(measure.layer)
     }
   }
 }
