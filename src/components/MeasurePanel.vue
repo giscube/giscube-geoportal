@@ -20,9 +20,11 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import Icon from 'vue-awesome/components/Icon'
 import 'vue-awesome/icons/spinner'
 import MeasureList from '@/components/MeasureList.vue'
+import MeasureResultPopup from '@/components/MeasureResultPopup.vue'
 
 export default {
   components: {
@@ -55,6 +57,17 @@ export default {
     this.stopMeasuring()
   },
   methods: {
+    addPopupToLayer (measure) {
+      let PopupContent = Vue.extend(MeasureResultPopup)
+      let popup = new PopupContent({
+        propsData: {
+          measure: measure
+        }
+      })
+      for (let layerId in measure.layer._layers) {
+        measure.layer._layers[layerId].bindPopup(popup.$mount().$el)
+      }
+    },
     mapChanged () {
       if (this.map === null) {
         return
@@ -66,6 +79,7 @@ export default {
       })
       this.map.on('measure:finishedpath', (e) => {
         this.$refs.measureList.measures.push(e.measure)
+        this.addPopupToLayer(e.measure)
       })
     },
     measureTypeChanged () {
