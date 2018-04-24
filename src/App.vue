@@ -1,16 +1,18 @@
 <template>
   <div id="app">
     <!-- Fixed navbar -->
-    <AppHeader ref="header" brand="GISCube Geoportal"
-      @search-start="onSearchStart"/>
+    <AppHeader ref="header" @home='navHome'
+        @sidebar-visibility-changed="onVisibilityChanged"
+        />
 
     <!-- Begin page content -->
     <GeoportalMap @map-ready="onMapReady" />
 
-    <AppFooter ref="footer" />
+    <!-- <AppFooter ref="footer" /> -->
 
     <Sidebar ref="sidebar" :map='map' :visible="$store.state.sidebarVisible"
-             @visibility-changed="onVisibilityChanged" />
+             @visibility-changed="onVisibilityChanged"
+             @search-start="onSearchStart" />
   </div>
 </template>
 
@@ -20,7 +22,7 @@ import AppHeader from '@/components/AppHeader'
 import AppFooter from '@/components/AppFooter'
 import GeoportalMap from '@/components/GeoportalMap'
 import Sidebar from '@/components/Sidebar'
-require('../node_modules/leaflet-sidebar/src/L.Control.Sidebar.js')
+require('leaflet-sidebar')
 
 // FIX leaflet's default icon path problems with webpack
 delete L.Icon.Default.prototype._getIconUrl
@@ -45,9 +47,13 @@ export default {
     }
   },
   mounted () {
-    this.$nextTick(() => this.$refs.header.$refs.search_input.focus())
+    // this.$nextTick(() => this.$refs.header.$refs.search_input.focus())
   },
   methods: {
+    navHome () {
+      let home = this.$store.config.home
+      this.map.flyTo(new L.LatLng(home.center.lat, home.center.lng), home.zoom)
+    },
     onMapReady (map) {
       this.map = map
     },
@@ -70,9 +76,9 @@ export default {
   min-height: 100%;
   height: 100%;
   /* Negative indent footer by its height */
-  margin: 0 auto -35px 0;
+  // margin: 0 auto -35px 0;
   /* Pad bottom by footer height */
-  padding: 0 0 35px 0;
+  // padding: 0 0 35px 0;
 }
 
 #app > .center-container {

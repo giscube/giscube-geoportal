@@ -1,13 +1,14 @@
 <template>
-  <div class="center-container">
     <div class="center-row">
       <!-- :options='getMapOptions()' -->
-      <v-map ref='map' :zoom='15' :center="[41.973, 2.780]"
+      <v-map ref='map'
+             :zoom='$store.config.home.zoom'
+             :center="$store.config.home.center"
              @l-ready='onMapReady'>
+        <LayersControl ref="layersControl"></LayersControl>
         <query-on-click></query-on-click>
       </v-map>
     </div>
-  </div>
 </template>
 
 <script>
@@ -15,15 +16,34 @@ import L from 'leaflet'
 import Vue2Leaflet from 'vue2-leaflet'
 
 import QueryOnClick from '@/components/QueryOnClick.vue'
+import LayersControl from '@/components/LayersControl.vue'
+require('microdisseny-leaflet-measure')
+require('microdisseny-leaflet-measure/dist/leaflet-measure.css')
 
 export default {
   components: {
     'v-map': Vue2Leaflet.Map,
-    'query-on-click': QueryOnClick
+    'query-on-click': QueryOnClick,
+    LayersControl
   },
   data () {
     return {
       map: null
+    }
+  },
+  computed: {
+    resultsLayer () {
+      return this.$store.state.resultsLayer
+    }
+  },
+  created () {
+    if (!this.resultsLayer) {
+      let layerGeoJson = L.geoJson('', {
+        onEachFeature: function (feature, layer) {
+          layer.bindPopup(feature.properties.title)
+        }
+      })
+      this.$store.commit('createResultsLayer', layerGeoJson)
     }
   },
   mounted () {
@@ -40,7 +60,9 @@ export default {
         } else if (basemap.type === 'wms') {
           baselayer = L.tileLayer.wms(basemap.url, basemap)
         }
-        this.layerswitcher.addBaseLayer(baselayer, basemap.name)
+        this.layerswitcher.addBaseLayer(baselayer, basemap.name, {
+          default: basemap.default
+        })
         if (basemap.default) {
           this.map.addLayer(baselayer)
         }
@@ -50,11 +72,22 @@ export default {
       this.addScaleControl()
       this.addZoomControl()
       this.addLayersControl()
+      this.addMeasureControl()
     },
     addLayersControl () {
-      this.layerswitcher = L.control.layers({}, {}, {collapsed: false})
-      this.layerswitcher.addTo(this.map)
+      // leaflet's Layers Control
+      // this.layerswitcher = L.control.layers({}, {}, {collapsed: false})
+      // this.layerswitcher.addTo(this.map)
+      this.layerswitcher = this.$refs.layersControl
       this.map.layerswitcher = this.layerswitcher
+    },
+    addMeasureControl () {
+      this.measureControl = new L.Control.Measure({
+        measureUnit: 'meters',
+        createButton: false
+      })
+      this.map.measureControl = this.measureControl
+      this.map.addControl(this.measureControl)
     },
     addScaleControl () {
       this.scaleControl = L.control.scale({metric: true, imperial: false, 'position': 'bottomright'})
@@ -74,6 +107,7 @@ export default {
     },
     onMapReady () {
       this.map = this.$refs.map.mapObject
+      this.resultsLayer.addTo(this.map)
       this.$emit('map-ready', this.map)
     }
   }

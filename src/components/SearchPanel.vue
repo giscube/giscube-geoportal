@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <p class="results-title">Results for {{ q }}
+  <div class="panel">
+    <p class="panel-title">Results for {{ q }}
       <icon v-show="searching" name="spinner" pulse label="Searching"></icon></p>
 
     <p v-if="showSearchError" class="list-group-item">Error retrieving results</p>
@@ -8,7 +8,7 @@
 
     <div v-if="results">
       <SearchResult v-for="(result, index) in results" :result='result'
-        :key="index" :map='map' :layerGeoJson='layerGeoJson' />
+        :key="index" :map='map' :resultsLayer='resultsLayer' />
     </div>
   </div>
 </template>
@@ -18,6 +18,7 @@ import Vue from 'vue'
 import axios from 'axios'
 import L from 'leaflet'
 import SearchResult from './SearchResult.vue'
+import SearchResultPopup from './SearchResultPopup'
 
 import Icon from 'vue-awesome/components/Icon'
 import 'vue-awesome/icons/spinner'
@@ -38,6 +39,9 @@ export default {
     }
   },
   computed: {
+    resultsLayer () {
+      return this.$store.state.resultsLayer
+    },
     searching () {
       return this.searchsRunning > 0
     },
@@ -79,25 +83,16 @@ export default {
     this.q = to.params.q
     next()
   },
-  mounted () {
-    this.layerGeoJson = L.geoJson('', {
-      onEachFeature: function (feature, layer) {
-        layer.bindPopup(feature.properties.title)
-      }
-    })
+  destroyed () {
+    this.resultsLayer.clearLayers()
   },
   methods: {
     qChanged () {
-      if (this.map) {
-        this.map.removeLayer(this.layerGeoJson)
-        this.layerGeoJson.addTo(this.map)
-      }
-
       // reset
       this.resultsPartials = {}
       this.searchEmpty = false
       this.searchError = false
-      this.layerGeoJson.clearLayers()
+      this.resultsLayer.clearLayers()
 
       let self = this
       this.$store.config.searches.forEach(search => {
@@ -135,8 +130,14 @@ export default {
         console.log('add layers to map', search.name)
         data.results.forEach(element => {
           var layer = L.GeoJSON.geometryToLayer(element.geojson)
-          layer.bindPopup(element.geojson.properties.title)
-          this.layerGeoJson.addLayer(layer)
+          let PopupContent = Vue.extend(SearchResultPopup)
+          let popup = new PopupContent({
+            propsData: {
+              feature: element
+            }
+          })
+          layer.bindPopup(popup.$mount().$el)
+          this.resultsLayer.addLayer(layer)
           element.layer = layer
         })
       }
@@ -164,12 +165,16 @@ export default {
 }
 </script>
 
-<style>
-.results-title {
-    font-size: 1.3em;
-    font-weight: bold;
-    margin: 5px;
-    padding: 5px;
+<style scoped>
+.panel {
+    padding: 0;
+}
+.panel-title {
+  font-size: 1.5em;
+  font-family: 'Lato', sans-serif;
+  font-weight: 400;
+  padding: 0 20px 15px 20px;
+  margin: 0;
 }
 
 .list-group-item {

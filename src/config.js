@@ -1,4 +1,15 @@
 export default {
+  catalog: {
+    'categories': 'http://www.giscube.org/apps/giscube-admin/api/v1/geoportal/category/',
+    'search': 'http://www.giscube.org/apps/giscube-admin/geoportal/catalog/'
+  },
+  home: {
+    'zoom': 15,
+    'center': {
+      'lat': 41.973,
+      'lng': 2.780
+    }
+  },
   searches: [
     {
       'name': 'geoportal',

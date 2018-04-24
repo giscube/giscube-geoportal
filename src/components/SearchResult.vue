@@ -22,7 +22,7 @@ export default {
   components: {
     Icon
   },
-  props: ['result', 'map', 'layerGeoJson'],
+  props: ['result', 'map', 'resultsLayer'],
   data () {
     return {}
   },

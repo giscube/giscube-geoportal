@@ -12,9 +12,10 @@ export default {
       if (vm.$store.state.result) {
         vm.result = vm.$store.state.result
         vm.viewResult()
+        vm.$store.commit('selectResult', null)
       } else {
         vm.$store.commit('setAutoselectResult', true)
-        vm.$router.push('/search/' + vm.q + '/')
+        vm.$router.replace('/search/' + vm.q + '/')
       }
     })
   },
@@ -24,9 +25,10 @@ export default {
     if (vm.$store.state.result) {
       vm.result = vm.$store.state.result
       vm.viewResult()
+      vm.$store.commit('selectResult', null)
     } else {
       vm.$store.commit('setAutoselectResult', true)
-      vm.$router.push('/search/' + vm.q + '/')
+      vm.$router.replace('/search/' + vm.q + '/')
     }
     next()
   }

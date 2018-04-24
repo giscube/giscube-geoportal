@@ -8,6 +8,10 @@
       <component v-bind:is="query.component" :results='query.results' :latlng='query.latlng'>
         test
       </component>
+      <div class="tools" v-if="query.component">
+        <div class="tool-remove-query"
+            @click="_removeQuery"><icon name="trash-o" label="selected"></icon></div>
+      </div>
     </v-popup>
   </v-marker>
 </template>
@@ -23,6 +27,7 @@ import LatLngPopup from '@/components/LatLngPopup.vue'
 import FeatureInfoPopup from '@/components/FeatureInfoPopup.vue'
 
 import Icon from 'vue-awesome/components/Icon'
+import 'vue-awesome/icons/trash-o'
 
 export default {
   name: 'query-on-click',
@@ -38,6 +43,11 @@ export default {
       mapClickDelay: 300,
       mapClickTimer: null,
       query: null
+    }
+  },
+  computed: {
+    currentTool () {
+      return this.$store.state.currentTool
     }
   },
   mounted () {
@@ -71,21 +81,32 @@ export default {
       }
     },
     async onMapSingleClick (event) {
-      let latlng = event.latlng
-      console.log('map clicked on ' + new Date() + ' at ' + latlng)
-
-      if (this.query) {
-        this.query = null
-        console.log('query deleted')
+      if (this.currentTool) {
+        console.log('A tool is active, skip querying map')
         return
       }
 
+      let latlng = event.latlng
+      console.log('map clicked on ' + new Date() + ' at ' + latlng)
+
+      // remove query and return control to Vue
+      this.query = null
+
+      // schedule a new map query after Vue is done removing current query
+      const self = this
+      this.$nextTick(() => {
+        self.onMapSingleClickQuery(event)
+      })
+    },
+    async onMapSingleClickQuery (event) {
+      let latlng = event.latlng
       let query = {
         latlng: latlng,
         results: null,
         visible: true
       }
       this.query = query
+      this.$store.commit('setQuery', this.query)
 
       // query before querying Overlays
       await this.queryBeforeOverlays(event, query).then(result => {
@@ -160,7 +181,8 @@ export default {
           'x': event.containerPoint.x,
           'y': event.containerPoint.y,
           'width': this.map.getSize().x,
-          'height': this.map.getSize().y
+          'height': this.map.getSize().y,
+          'feature_count': 100
         }
 
         let searchUrl = layer.layer._url
@@ -183,6 +205,13 @@ export default {
       // return null for no results
       return queryResults
     },
+    _removeQuery () {
+      if (this.query) {
+        this.query = null
+        this.$store.commit('setQuery', this.query)
+        console.log('query deleted')
+      }
+    },
     _disableMapClickEvent () {
       this.map.off('click', this.onMapClick, this)
     },
@@ -190,7 +219,11 @@ export default {
       this.map.on('click', this.onMapClick, this)
     },
     _getMapOverlays () {
-      return this.map.layerswitcher._layers.filter(layer => {
+      var layers = this.map.layerswitcher._layers
+      if (!layers) {
+        layers = this.map.layerswitcher.layers
+      }
+      return layers.filter(layer => {
         // filter layers of type overlay and added to map (visible)
         return layer.overlay && this.map._layers[layer.layer._leaflet_id]
       })
@@ -199,5 +232,19 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.tools {
+  border-top: 1px dashed #ddd;
+  margin-top: 10px;
+  padding: 8px 0px 0px 0px;
+}
+.tool-remove-query {
+  font-size: 0.8em;
+  text-align: center;
+  display: inline-block;
+  background-color: #eee;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
 </style>
