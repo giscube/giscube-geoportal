@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div class="result">
-      <div v-if="measure.type === 'path'" class="">{{ measure.measure.length }} {{ measure.measure.units }}</div>
-      <div v-if="measure.type === 'area'" class="">{{ measure.measure.area }} {{ measure.measure.units }}<sup>2</sup></div>
+    <div v-if="measure" class="result">
+      <div v-if="measure.type === 'path'" class="">{{ measure.length }} {{ measure.units }}</div>
+      <div v-if="measure.type === 'area'" class="">{{ measure.area }} {{ measure.units }}<sup>2</sup></div>
     </div>
     <div class="tools" v-if="measure">
       <div class="tool-remove-result"
