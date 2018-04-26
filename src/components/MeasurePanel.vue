@@ -14,6 +14,7 @@
       <el-button v-if="measuring" @click="stopMeasuring">Stop measuring</el-button>
     </el-row>
 
+    <p class="panel-subtitle">Measurements</p>
     <div class='measures-list-container'>
       <div v-for='(measure, key) in measureControl.measures' class='measure'>
         <div>
@@ -137,6 +138,14 @@ export default {
 
 .start-measuring {
   text-align: right;
+}
+
+.panel-subtitle {
+  font-size: 1.4em;
+  font-family: 'Lato', sans-serif;
+  font-weight: 400;
+  margin-top: 20px;
+  margin-bottom: 10px;
 }
 
 .link {
