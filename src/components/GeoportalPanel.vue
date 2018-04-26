@@ -38,9 +38,12 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import L from 'leaflet'
+import axios from 'axios'
 
 import BaseResultMixin from './BaseResultMixin.js'
+import FeaturePopup from './FeaturePopup'
 
 export default {
   mixins: [BaseResultMixin],
@@ -77,7 +80,48 @@ export default {
       let map = this.map
       let element = this.result.children[0]
 
-      if (element.type === 'WMS') {
+      if (element.type === 'GeoJSON') {
+        const dataUrl = element.url
+        const self = this
+        axios.get(
+          dataUrl
+        )
+        .then(function (response) {
+          const options = {}
+          const style = response.data.metadata.style
+          if (style.shapetype === 'Circle') {
+            var geojsonMarkerOptions = {
+              radius: style.shape_radius,
+              fillColor: style.fill_color,
+              color: style.stroke_color,
+              weight: style.stroke_width,
+              opacity: 1,
+              fillOpacity: style.fill_opacity
+            }
+
+            options['pointToLayer'] = function (feature, latlng) {
+              return L.circleMarker(latlng, geojsonMarkerOptions)
+            }
+          }
+          options['onEachFeature'] = function(feature, layer) {
+            // FIXME: use on 'click' instead of building all popups upfront
+            let PopupContent = Vue.extend(FeaturePopup)
+            let popup = new PopupContent({
+              propsData: {
+                feature: feature,
+                title: self.result.title
+              }
+            })
+            layer.bindPopup(popup.$mount().$el)
+          }
+
+          const geojson = L.geoJson(response.data, options).addTo(map)
+          map.layerswitcher.addOverlay(geojson, self.result.title)
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+      } else if (element.type === 'WMS') {
         var wms = L.tileLayer.wms(element.url, {
           layers: element.layers,
           format: 'image/png',
