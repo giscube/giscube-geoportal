@@ -128,7 +128,9 @@ export default {
           transparent: true,
           maxZoom: 22
         }).addTo(map)
-        map.layerswitcher.addOverlay(wms, this.result.title)
+        map.layerswitcher.addOverlay(wms, this.result.title, {
+          layerType: 'WMS'
+        })
       } else if (element.type === 'TMS') {
         var tms = L.tileLayer(element.url, {
           transparent: true,
