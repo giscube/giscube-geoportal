@@ -103,7 +103,7 @@ export default {
               return L.circleMarker(latlng, geojsonMarkerOptions)
             }
           }
-          options['onEachFeature'] = function(feature, layer) {
+          options['onEachFeature'] = function (feature, layer) {
             // FIXME: use on 'click' instead of building all popups upfront
             let PopupContent = Vue.extend(FeaturePopup)
             let popup = new PopupContent({
