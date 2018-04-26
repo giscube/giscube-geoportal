@@ -15,7 +15,16 @@
     </el-row>
 
     <p class="panel-subtitle">Measurements</p>
-    <MeasureList ref="measureList" @remove-measure="removeMeasure"></MeasureList>
+    <div class='measures-list-container'>
+      <div v-for='(measure, key) in measureControl.measures' class='measure'>
+        <div>
+          <a @click="removeMeasure(measure)" class="flex-icon flex-shrink link"
+             ><icon name="trash-o" label="configure"></icon></a>
+          <span v-if="!measure.area" class='title'>{{ measure.length }} {{ measure.units_desc }}</span>
+          <span v-if="measure.area" class='title'>{{ measure.area }} {{ measure.units_desc }}<sup>2</sup></span>
+        </div>
+      </div>
+    </div>
 
   </div>
 </template>
@@ -24,13 +33,11 @@
 import Vue from 'vue'
 import Icon from 'vue-awesome/components/Icon'
 import 'vue-awesome/icons/spinner'
-import MeasureList from '@/components/MeasureList.vue'
 import MeasureResultPopup from '@/components/MeasureResultPopup.vue'
 
 export default {
   components: {
-    Icon,
-    MeasureList
+    Icon
   },
   props: ['map'],
   data () {
@@ -38,6 +45,15 @@ export default {
       q: '',
       measureType: 'Path',
       measuring: false
+    }
+  },
+  computed: {
+    measureControl () {
+      if (this.map && this.map.measureControl) {
+        return this.map.measureControl
+      } else {
+        return {}
+      }
     }
   },
   watch: {
@@ -78,8 +94,7 @@ export default {
           this.stopMeasuring()
         }
       })
-      this.map.on('measure:finishedpath', (e) => {
-        this.$refs.measureList.measures.push(e.measure)
+      this.map.on('measure:finishedpath', e => {
         this.addPopupToLayer(e.measure)
       })
     },
@@ -101,7 +116,7 @@ export default {
       this.map.measureControl.stopMeasuring()
     },
     removeMeasure (measure) {
-      this.map.measureControl.removeMeasure(measure.layer)
+      measure.layer.remove()
     }
   }
 }
@@ -126,10 +141,14 @@ export default {
 }
 
 .panel-subtitle {
-font-size: 1.4em;
-font-family: 'Lato', sans-serif;
-font-weight: 400;
-margin-top: 20px;
-margin-bottom: 10px;
+  font-size: 1.4em;
+  font-family: 'Lato', sans-serif;
+  font-weight: 400;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.link {
+  cursor: pointer;
 }
 </style>
