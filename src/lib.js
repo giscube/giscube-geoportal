@@ -4,6 +4,8 @@ import AppFooter from '@/components/AppFooter'
 import GeoportalMap from '@/components/GeoportalMap'
 import CatalogPanel from '@/components/CatalogPanel'
 import CatalogResult from '@/components/CatalogResult'
+import IconBase from '@/components/IconBase'
+import IconRuler from '@/components/icons/IconRuler'
 import Sidebar from '@/components/Sidebar'
 import GeoportalPanel from '@/components/GeoportalPanel'
 import MeasurePanel from '@/components/MeasurePanel'
@@ -20,6 +22,8 @@ export {
   CatalogPanel,
   CatalogResult,
   GeoportalMap,
+  IconBase,
+  IconRuler,
   Sidebar,
   GeoportalPanel,
   MeasurePanel,

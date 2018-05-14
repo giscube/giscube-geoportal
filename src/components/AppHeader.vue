@@ -20,7 +20,7 @@
         </li>
         <li class="nav-item">
           <a @click="$emit('sidebar-visibility-changed', true)"
-             class="nav-link" href="#/measure/"><span class="oi"><img src="../assets/ruler2.svg" /></span>Measure</a>
+             class="nav-link" href="#/measure/"><span class="oi" style="height: 15px"><icon-base icon-name="write"><icon-ruler /></icon-base></span>Measure</a>
         </li>
       </ul>
 
@@ -31,10 +31,14 @@
 <script>
 import Icon from 'vue-awesome/components/Icon'
 import 'vue-awesome/icons/question-circle'
+import IconBase from './IconBase.vue'
+import IconRuler from './icons/IconRuler.vue'
 
 export default {
   components: {
-    Icon
+    Icon,
+    IconBase,
+    IconRuler
   },
   props: [
     'brand'
