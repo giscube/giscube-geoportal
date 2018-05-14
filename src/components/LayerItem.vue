@@ -39,7 +39,9 @@ export default {
   },
   methods: {
     opacityChanged (value) {
-      this.layer.layer.setOpacity(value / 100.0)
+      if (this.layer.layer.setOpacity) {
+        this.layer.layer.setOpacity(value / 100.0)
+      }
     }
   }
 }
