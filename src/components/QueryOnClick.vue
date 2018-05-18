@@ -140,6 +140,12 @@ export default {
       if (this.$refs.popup) {
         // force the popup to be created again with proper dimensions
         this.$refs.popup.mapObject.update()
+        this.$nextTick(() => {
+          if (this.$refs.popup) {
+            // Proper size in Firefox
+            this.$refs.popup.mapObject.update()
+          }
+        })
       }
     },
     onMapDoubleClick (event) {

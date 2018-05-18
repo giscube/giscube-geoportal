@@ -105,4 +105,8 @@ label {
 .results-header { background-color: #ddd; font-weight: bold }
 .results-children { margin: 0 0 5px 10px }
 .results-children .list-group-item { background-color: #eeeef4 }
+
+.leaflet-popup-content {
+  min-width: 200px;
+}
 </style>
