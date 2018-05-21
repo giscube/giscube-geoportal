@@ -4,13 +4,13 @@
        class="giscube-layers-control leaflet-control"
        :class="{'showActions': showActions}">
 
-    <div class="flex-nowrap-start layers">
+    <div class="flex-nowrap-start layers" @click="collapsed = !collapsed">
       <a class="flex-icon link"
          ><icon name="clone" label="Layers"></icon></a>
       <a class="flex-label link">Layers</a>
     </div>
 
-    <div>
+    <div v-if="!collapsed">
       <ul v-if="baseLayerSelected">
         <li class="flex-nowrap-start link" @click="baseLayerSelect=!baseLayerSelect">
           <a class="flex-icon"
@@ -66,6 +66,7 @@ export default {
       baseLayers: [],
       baseLayerSelected: null,
       baseLayerSelect: false,
+      collapsed: false,
       showActions: false,
       layerLastId: 0,
       layers: [],
