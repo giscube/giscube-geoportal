@@ -152,8 +152,6 @@ export default {
       this.mapObject.addTo(parent)
     },
     layersChanged (event) {
-      console.log('Moved!', event)
-      console.log('layers', this.layers)
       let zIndex = this.lastZIndex
       this.layers.forEach(options => {
         options.layer.setZIndex(zIndex)
