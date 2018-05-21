@@ -52,6 +52,7 @@ export default {
     padding: 10px 20px;
     width: 100%;
     background-color: #eee;
+    border-bottom: 1px dashed #ccc;
   }
 
   .opacity {

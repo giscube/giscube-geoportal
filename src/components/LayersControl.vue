@@ -31,12 +31,16 @@
         </li>
       </ul>
 
+      <div v-if="layers.length > 0" class="sep"></div>
+
       <ul>
-        <LayerItem v-for="layer in layers" :key="layer.id" :layer="layer" :map="map"
-                   :showActions="showActions"
-                   @remove-layer="removeLayer"
-                   @toggle-layer="toggleLayer"
-                   ></LayerItem>
+        <draggable v-model="layers" @change="layersChanged" @start="drag=true" @end="drag=false">
+          <LayerItem v-for="layer in layers" :key="layer.id" :layer="layer" :map="map"
+                     :showActions="showActions"
+                     @remove-layer="removeLayer"
+                     @toggle-layer="toggleLayer"
+                     ></LayerItem>
+        </draggable>
       </ul>
     </div>
   </div>
@@ -54,10 +58,13 @@ import 'vue-awesome/icons/cog'
 import 'vue-awesome/icons/globe'
 import 'vue-awesome/icons/trash-o'
 
+import draggable from 'vuedraggable'
+
 import LayerItem from '@/components/LayerItem.vue'
 
 export default {
   components: {
+    draggable,
     Icon,
     LayerItem
   },
@@ -106,7 +113,7 @@ export default {
       options['name'] = name
       options['visible'] = this.map.hasLayer(layer)
       options['overlay'] = true
-      this.layers.push(options)
+      this.layers.unshift(options)
 
       if (options.layer.setZIndex) {
         this.lastZIndex++
@@ -143,6 +150,15 @@ export default {
       this.parent = parent
       this.map = parent
       this.mapObject.addTo(parent)
+    },
+    layersChanged (event) {
+      console.log('Moved!', event)
+      console.log('layers', this.layers)
+      let zIndex = this.lastZIndex
+      this.layers.forEach(options => {
+        options.layer.setZIndex(zIndex)
+        zIndex--
+      })
     },
     onAdd () {
       L.DomEvent.disableClickPropagation(this.$el)
@@ -217,6 +233,11 @@ export default {
     list-style: none;
     padding-left: 0;
     margin-bottom: 0;
+  }
+
+  div.sep {
+    height: 1px;
+    border-bottom: 1px solid #9c9c9c;
   }
 
   .gray-svg svg {
