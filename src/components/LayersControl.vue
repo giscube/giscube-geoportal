@@ -8,8 +8,6 @@
       <a class="flex-icon link"
          ><icon name="clone" label="Layers"></icon></a>
       <a class="flex-label link">Layers</a>
-      <a @click="showActions = !showActions" class="flex-icon flex-shrink link configure"
-         ><icon name="trash-o" label="configure"></icon></a>
     </div>
 
     <div>
@@ -18,6 +16,8 @@
           <a class="flex-icon"
              ><icon name="globe" label="base layer"></icon></a>
           <a class="flex-label">{{ baseLayerSelected.name }}</a>
+          <span class="flex-icon"></span>
+          <span class="flex-icon"></span>
         </li>
       </ul>
 
@@ -186,7 +186,7 @@ export default {
     text-align: center;
   }
   .flex-label {
-    padding: 10px 0;
+    padding: 10px 10px 10px 0;
     flex: 1;
     text-overflow: ellipsis;
   }
@@ -231,6 +231,12 @@ export default {
     background-color: #a1d7f5;
   }
 
+  li a.visible-on-hover {
+    color: transparent;
+  }
+  li:hover a.visible-on-hover {
+    color: #555;
+  }
   a.hover-invert:hover, a.hover-invert:hover svg {
     color: white;
     background-color: #0b1923;
