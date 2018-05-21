@@ -6,7 +6,7 @@
 
     <div class="flex-nowrap-start layers" @click="collapsed = !collapsed">
       <a class="flex-icon link"
-         ><icon name="clone" label="Layers"></icon></a>
+         ><icon-base icon-name="layers" icon-color="#fff" viewBox="0 0 24 24"><icon-layers /></icon-base></a>
       <a class="flex-label link">Layers</a>
     </div>
 
@@ -60,12 +60,16 @@ import 'vue-awesome/icons/trash-o'
 
 import draggable from 'vuedraggable'
 
+import IconBase from './IconBase.vue'
+import IconLayers from './icons/IconLayers.vue'
 import LayerItem from '@/components/LayerItem.vue'
 
 export default {
   components: {
     draggable,
     Icon,
+    IconBase,
+    IconLayers,
     LayerItem
   },
   data () {
