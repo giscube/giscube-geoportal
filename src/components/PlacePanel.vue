@@ -104,10 +104,15 @@ export default {
         // do we need a smaller zoom?
         let maxZoom = this.map.getBoundsZoom(bounds)
 
-        if (this.map.getZoom() > maxZoom) {
-          this.map.flyTo(latLng, maxZoom)
-        } else {
-          this.map.flyTo(latLng, {maxZoom: 19})
+        try {
+          this.map.flyTo(latLng, this.map.getZoom() > maxZoom ? maxZoom : {maxZoom: 19})
+        } catch (e) {
+          console.error(e)
+          mapInfo = this.map.giscube.getMapInfo()
+          if (!mapInfo.isViewValid) {
+            console.log('view is not valid, try to recover view')
+            this.map.setView(latLng, 19)
+          }
         }
       }
       element.layer.openPopup()

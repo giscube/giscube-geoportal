@@ -25,6 +25,7 @@
 
 <script>
 import L from 'leaflet'
+const worldBounds = L.latLngBounds([[-90, -180], [90, 180]])
 
 export default {
   props: ['map', 'visible'],
@@ -88,6 +89,7 @@ export default {
       info.visibleWidthMeters = mapBounds.getNorthEast().distanceTo(mapBounds.getNorthWest())
       info.visibleHeightMeters = mapBounds.getSouthEast().distanceTo(mapBounds.getNorthEast())
       info.sidebarWidthPx = sidebar.clientWidth
+      info.isViewValid = worldBounds.contains(info.visibleBounds)
 
       return info
     },
