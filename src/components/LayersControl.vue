@@ -10,7 +10,7 @@
       <a class="flex-label link">Layers</a>
     </div>
 
-    <div v-if="!collapsed">
+    <div v-show="!collapsed">
       <ul v-if="baseLayerSelected">
         <li class="flex-nowrap-start link" @click="baseLayerSelect=!baseLayerSelect">
           <a class="flex-icon"
