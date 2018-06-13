@@ -45,6 +45,7 @@ export default {
       closeButton: false,
       autoPan: false
     })
+    L.DomEvent.disableClickPropagation(this.sidebar._container)
 
     // Available events:
     // show: Show animation is starting, sidebar will be visible.
