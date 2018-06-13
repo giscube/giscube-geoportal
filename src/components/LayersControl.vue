@@ -189,7 +189,6 @@ export default {
   display: block;
   background-color: white;
   box-shadow: 0 4px 8px rgba(0,0,0,.3);
-  min-width: 180px;
   max-width: 300px;
   line-height: 1em;
 
@@ -224,6 +223,7 @@ export default {
     font-size: 1.3em;
     text-transform: uppercase;
     text-decoration: none;
+    padding-right: 7px;
   }
 
   a.configure:hover {
