@@ -16,8 +16,8 @@
          class="sidebar-close"><span class="oi oi-caret-left"></span></a>
     </form>
 
-    <div ref="sidebar" id="sidebar" class="sidebar">
-        <router-view :map='map' />
+    <div ref="sidebar" id="sidebar" class="sidebar wide">
+        <router-view :map='map' @needs-wide='setWide' />
     </div>
   </div>
 
@@ -92,6 +92,19 @@ export default {
       info.isViewValid = worldBounds.contains(info.visibleBounds)
 
       return info
+    },
+    setWide (isWide) {
+      let klass = this.sidebar._container.className
+      if (isWide) {
+        if (!klass.includes('wide')) {
+          klass += ' wide'
+        }
+      } else {
+        if (klass.includes('wide')) {
+          klass = klass.replace('wide', '')
+        }
+      }
+      this.sidebar._container.className = klass
     },
     submit (event) {
       event.preventDefault()
@@ -169,6 +182,10 @@ export default {
 
 #custom-search-input span {
   font-size: .8em;
+}
+
+.leaflet-sidebar.wide {
+  width: 70%;
 }
 
 /* sidebar */
