@@ -1,13 +1,13 @@
 <template>
     <div class="center-row">
       <!-- :options='getMapOptions()' -->
-      <v-map ref='map'
+      <l-map ref='map'
              :zoom='$store.config.home.zoom'
              :center="$store.config.home.center"
              @l-ready='onMapReady'>
         <LayersControl ref="layersControl"></LayersControl>
         <query-on-click></query-on-click>
-      </v-map>
+      </l-map>
     </div>
 </template>
 
@@ -22,7 +22,7 @@ require('microdisseny-leaflet-measure/dist/leaflet-measure.css')
 
 export default {
   components: {
-    'v-map': Vue2Leaflet.Map,
+    'l-map': Vue2Leaflet.Map,
     'query-on-click': QueryOnClick,
     LayersControl
   },
