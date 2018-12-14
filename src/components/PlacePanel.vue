@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import L from 'leaflet'
+import L from '@/leaflet'
 
 import Icon from 'vue-awesome/components/Icon'
 import 'vue-awesome/icons/spinner'

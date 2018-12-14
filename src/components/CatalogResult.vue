@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import L from 'leaflet'
+import L from '@/leaflet'
 
 export default {
   props: ['result', 'map'],

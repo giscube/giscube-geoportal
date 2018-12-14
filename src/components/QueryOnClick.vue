@@ -1,7 +1,7 @@
 <template>
-  <v-marker v-if="query" :visible="query.visible" :lat-lng="query.latlng"
+  <l-marker v-if="query" :visible="query.visible" :lat-lng="query.latlng"
             @l-add="$event.target.openPopup()">
-    <v-popup ref="popup">
+    <l-popup ref="popup">
       <div v-if="!query.component" style="text-align: center;">
         <icon name="spinner" pulse label="Searching"></icon>
       </div>
@@ -12,16 +12,14 @@
         <div class="tool-remove-query"
             @click="_removeQuery"><icon name="trash-o" label="selected"></icon></div>
       </div>
-    </v-popup>
-  </v-marker>
+    </l-popup>
+  </l-marker>
 </template>
 
 <script>
-import L from 'leaflet'
+import {L, Vue2Leaflet} from '@/leaflet'
 import axios from 'axios'
 import convert from 'xml-js'
-
-import Vue2Leaflet from 'vue2-leaflet'
 
 import LatLngPopup from '@/components/LatLngPopup.vue'
 import FeatureInfoPopup from '@/components/FeatureInfoPopup.vue'
@@ -32,8 +30,8 @@ import 'vue-awesome/icons/trash-o'
 export default {
   name: 'query-on-click',
   components: {
-    'v-marker': Vue2Leaflet.Marker,
-    'v-popup': Vue2Leaflet.Popup,
+    'l-marker': Vue2Leaflet.LMarker,
+    'l-popup': Vue2Leaflet.LPopup,
     Icon
   },
   data () {

@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import L from 'leaflet'
+import L from '@/leaflet'
 const worldBounds = L.latLngBounds([[-90, -180], [90, 180]])
 
 export default {

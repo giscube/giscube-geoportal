@@ -12,17 +12,16 @@
 </template>
 
 <script>
-import L from 'leaflet'
-import Vue2Leaflet from 'vue2-leaflet'
+import Vue from 'vue'
+
+import {L, Vue2Leaflet} from '@/leaflet'
 
 import QueryOnClick from '@/components/QueryOnClick.vue'
 import LayersControl from '@/components/LayersControl.vue'
-require('microdisseny-leaflet-measure')
-require('microdisseny-leaflet-measure/dist/leaflet-measure.css')
 
 export default {
   components: {
-    'l-map': Vue2Leaflet.Map,
+    'l-map': Vue2Leaflet.LMap,
     'query-on-click': QueryOnClick,
     LayersControl
   },
@@ -47,9 +46,11 @@ export default {
     }
   },
   mounted () {
-    this.map = this.$refs.map.mapObject
-    this.addControls()
-    this.addBaseMaps()
+    Vue.nextTick(() => {
+      this.map = this.$refs.map.mapObject
+      this.addControls()
+      this.addBaseMaps()
+    })
   },
   methods: {
     addBaseMaps () {

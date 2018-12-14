@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import L from 'leaflet'
+import L from '@/leaflet'
 import AppHeader from '@/components/AppHeader'
 import AppFooter from '@/components/AppFooter'
 import GeoportalMap from '@/components/GeoportalMap'
