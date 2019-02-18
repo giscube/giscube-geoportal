@@ -6,11 +6,12 @@
         />
 
     <!-- Begin page content -->
-    <GeoportalMap @map-ready="onMapReady" />
+    <GeoportalMap ref="map" @map-ready="onMapReady" />
 
     <!-- <AppFooter ref="footer" /> -->
 
     <Sidebar ref="sidebar" :map='map' :visible="$store.state.sidebarVisible"
+             :geoportalMap="$refs.map"
              @visibility-changed="onVisibilityChanged"
              @search-start="onSearchStart" />
   </div>

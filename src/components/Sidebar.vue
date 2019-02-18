@@ -17,7 +17,9 @@
     </form>
 
     <div ref="sidebar" id="sidebar" class="sidebar wide">
-        <router-view :map='map' @needs-wide='setWide' />
+        <router-view :map='map' @needs-wide='setWide'
+          :geoportalMap="geoportalMap"
+          />
     </div>
   </div>
 
@@ -28,7 +30,7 @@ import L from 'leaflet'
 const worldBounds = L.latLngBounds([[-90, -180], [90, 180]])
 
 export default {
-  props: ['map', 'visible'],
+  props: ['map', 'visible', 'geoportalMap'],
   data () {
     return {
       sidebar: null,
