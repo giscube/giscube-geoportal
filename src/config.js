@@ -1,6 +1,6 @@
 export default {
   catalog: {
-    'categories': 'http://www.giscube.org/apps/giscube-admin/api/v1/geoportal/category/',
+    'categories': 'http://www.giscube.org/apps/giscube-admin/api/v1/giscube/category/',
     'search': 'http://www.giscube.org/apps/giscube-admin/geoportal/catalog/'
   },
   home: {

@@ -1,31 +1,33 @@
 <template>
   <div class="panel">
-    <p class="panel-title">Measure</p>
 
-    <p>Please choose measure type and click the "start measuring" button.</p>
+    <div class="panel-content">
+      <p class="panel-title">Measure</p>
 
-    <el-radio-group v-model="measureType">
-      <el-radio-button label="Path"></el-radio-button>
-      <el-radio-button label="Area"></el-radio-button>
-    </el-radio-group>
+      <p>Please choose measure type and click the "start measuring" button.</p>
 
-    <el-row class="start-measuring">
-      <el-button v-if="!measuring" @click="startMeasuring">Start measuring</el-button>
-      <el-button v-if="measuring" @click="stopMeasuring">Stop measuring</el-button>
-    </el-row>
+      <el-radio-group v-model="measureType">
+        <el-radio-button label="Path"></el-radio-button>
+        <el-radio-button label="Area"></el-radio-button>
+      </el-radio-group>
 
-    <p class="panel-subtitle">Measurements</p>
-    <div class='measures-list-container'>
-      <div v-for='(measure, key) in measureControl.measures' class='measure'>
-        <div>
-          <a @click="removeMeasure(measure)" class="flex-icon flex-shrink link"
-             ><icon name="trash-o" label="configure"></icon></a>
-          <span v-if="!measure.area" class='title'>{{ measure.length }} {{ measure.units_desc }}</span>
-          <span v-if="measure.area" class='title'>{{ measure.area }} {{ measure.units_desc }}<sup>2</sup></span>
+      <el-row class="start-measuring">
+        <el-button v-if="!measuring" @click="startMeasuring">Start measuring</el-button>
+        <el-button v-if="measuring" @click="stopMeasuring">Stop measuring</el-button>
+      </el-row>
+
+      <p class="panel-subtitle">Measurements</p>
+      <div class='measures-list-container'>
+        <div v-for='(measure, key) in measureControl.measures' class='measure' :key="key">
+          <div>
+            <a @click="removeMeasure(measure)" class="flex-icon flex-shrink link"
+               ><icon name="trash" label="configure"></icon></a>
+            <span v-if="!measure.area" class='title'>{{ measure.length }} {{ measure.units_desc }}</span>
+            <span v-if="measure.area" class='title'>{{ measure.area }} {{ measure.units_desc }}<sup>2</sup></span>
+          </div>
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -33,7 +35,7 @@
 import Vue from 'vue'
 import Icon from 'vue-awesome/components/Icon'
 import 'vue-awesome/icons/spinner'
-import MeasureResultPopup from '@/components/MeasureResultPopup.vue'
+import MeasureResultPopup from 'components/MeasureResultPopup.vue'
 
 export default {
   components: {
@@ -101,13 +103,13 @@ export default {
     measureTypeChanged () {
       if (this.measuring) {
         this.map.measureControl.startMeasuring(
-          {'measureArea': this.measureType === 'Area'})
+          { 'measureArea': this.measureType === 'Area' })
       }
     },
     startMeasuring () {
       this.$store.commit('setCurrentTool', this.map.measureControl)
       this.map.measureControl.startMeasuring(
-        {'measureArea': this.measureType === 'Area'})
+        { 'measureArea': this.measureType === 'Area' })
       this.measuring = true
     },
     stopMeasuring () {
@@ -126,26 +128,9 @@ export default {
 .list-group-item {
   min-height: 65px;
 }
-.panel {
-    padding: 0 20px 15px 20px;
-}
-.panel-title {
-  font-size: 1.5em;
-  font-family: 'Lato', sans-serif;
-  font-weight: 400;
-  margin-bottom: 10px;
-}
 
 .start-measuring {
   text-align: right;
-}
-
-.panel-subtitle {
-  font-size: 1.4em;
-  font-family: 'Lato', sans-serif;
-  font-weight: 400;
-  margin-top: 20px;
-  margin-bottom: 10px;
 }
 
 .link {

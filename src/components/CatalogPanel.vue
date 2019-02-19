@@ -1,29 +1,32 @@
 <template>
   <div class="panel">
-    <p class="panel-title">Catalog</p>
+    <div class="panel-content">
+      <p class="panel-title">Catalog</p>
 
-    <div v-if="!categories"><icon name="spinner" pulse label="Searching"></icon></div>
-    <div v-if="categories" class="categories">
-      <el-collapse class="category">
-        <el-collapse-item v-for="category in categories"
-          v-if="category.parent === null"
-          :key="category.id"
-          :title="category.name" :name="category.id">
-          <el-collapse class="subcategory"
-            @item-click="subcategoryChange">
-            <el-collapse-item v-for="subcategory in category.subcategories"
-              v-if="subcategory"
-              :key="subcategory.id"
-              :title="subcategory.name" :name="subcategory.id">
-              <div v-if="!subcategory.results"><icon name="spinner" pulse label="Searching"></icon></div>
-              <div v-if="subcategory.results">
-                <CatalogResult v-for="(result, index) in subcategory.results" :result='result'
-                  :key="index" :map='map' />
-              </div>
-            </el-collapse-item>
-          </el-collapse>
-        </el-collapse-item>
-      </el-collapse>
+      <div v-if="!categories"><icon name="spinner" pulse label="Searching"></icon></div>
+      <div v-if="categories" class="categories">
+        <el-collapse class="category">
+          <el-collapse-item v-for="category in categories"
+            v-show="category.parent === null"
+            :key="category.id"
+            :title="category.name" :name="category.id">
+            <el-collapse class="subcategory"
+              @item-click="subcategoryChange">
+              <el-collapse-item v-for="subcategory in category.subcategories"
+                v-show="subcategory"
+                :key="subcategory.id"
+                :title="subcategory.name" :name="subcategory.id">
+                <div v-if="!subcategory.results"><icon name="spinner" pulse label="Searching"></icon></div>
+                <div v-if="subcategory.results">
+                  <CatalogResult v-for="(result, index) in subcategory.results" :result='result'
+                    :key="index" :map='map' />
+                </div>
+              </el-collapse-item>
+            </el-collapse>
+          </el-collapse-item>
+        </el-collapse>
+      </div>
+
     </div>
   </div>
 </template>
@@ -64,19 +67,19 @@ export default {
     checkCategories () {
       let apiUrl = this.$store.config.catalog.categories
       axios.get(apiUrl)
-      .then(response => {
-        this.categories = response.data
-        this.categories.forEach(category => {
-          if (category.parent == null) {
-            category.subcategories = this.getSubcategories(category.id)
-          }
+        .then(response => {
+          this.categories = response.data
+          this.categories.forEach(category => {
+            if (category.parent == null) {
+              category.subcategories = this.getSubcategories(category.id)
+            }
+          })
+          window.categories = this.categories
         })
-        window.categories = this.categories
-      })
-      .catch(error => {
-        console.log(error)
-        this.searchError = true
-      })
+        .catch(error => {
+          console.log(error)
+          this.searchError = true
+        })
     },
     getSubcategories (id) {
       return this.categories.filter(category => {
@@ -87,12 +90,12 @@ export default {
       let api = this.$store.config.catalog.search
       let apiUrl = api + '?category_id=' + category.id
       axios.get(apiUrl)
-      .then(response => {
-        Vue.set(category, 'results', response.data.results)
-      })
-      .catch(error => {
-        console.log(error)
-      })
+        .then(response => {
+          Vue.set(category, 'results', response.data.results)
+        })
+        .catch(error => {
+          console.log(error)
+        })
     },
     subcategoryChange (val) {
       let categoryId = val.name
@@ -109,15 +112,6 @@ export default {
 <style>
 .list-group-item {
   min-height: 65px;
-}
-.panel {
-    padding: 0 20px 15px 20px;
-}
-.panel-title {
-  font-size: 1.5em;
-  font-family: 'Lato', sans-serif;
-  font-weight: 400;
-  margin-bottom: 10px;
 }
 
 .category .el-collapse-item__header {

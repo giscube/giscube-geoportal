@@ -10,7 +10,7 @@
       </component>
       <div class="tools" v-if="query.component">
         <div class="tool-remove-query"
-            @click="_removeQuery"><icon name="trash-o" label="selected"></icon></div>
+            @click="_removeQuery"><icon name="trash" label="selected"></icon></div>
       </div>
     </v-popup>
   </v-marker>
@@ -23,11 +23,11 @@ import convert from 'xml-js'
 
 import Vue2Leaflet from 'vue2-leaflet'
 
-import LatLngPopup from '@/components/LatLngPopup.vue'
-import FeatureInfoPopup from '@/components/FeatureInfoPopup.vue'
+import LatLngPopup from 'components/LatLngPopup.vue'
+import FeatureInfoPopup from 'components/FeatureInfoPopup.vue'
 
 import Icon from 'vue-awesome/components/Icon'
-import 'vue-awesome/icons/trash-o'
+import 'vue-awesome/icons/trash'
 
 export default {
   name: 'query-on-click',
@@ -200,16 +200,16 @@ export default {
         await axios.get(searchUrl, {
           params: L.extend({}, wmsParams, params)
         })
-        .then(response => {
-          let result = convert.xml2js(response.data, {compact: false})
-          let results = result.elements[0].elements
-          if (results.length > 0 && results[0].elements) {
-            queryResults = results
-          }
-        })
-        .catch(error => {
-          console.log('error', error)
-        })
+          .then(response => {
+            let result = convert.xml2js(response.data, { compact: false })
+            let results = result.elements[0].elements
+            if (results.length > 0 && results[0].elements) {
+              queryResults = results
+            }
+          })
+          .catch(error => {
+            console.log('error', error)
+          })
       }
 
       // return null for no results
