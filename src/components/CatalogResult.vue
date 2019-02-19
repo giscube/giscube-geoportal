@@ -1,10 +1,10 @@
 <template>
   <div>
     <div class="catalog-result"
-         @click="viewResultMain">
+         @click="viewResultMain">
       <span class="catalog-result-add-to-map"
             @click.stop="viewResult"
-            ><span class="oi oi-eye"></span> Add to map</span>
+            ><q-icon name="layers"></q-icon> Add to map</span>
       <span class="catalog-result-title">{{ result.title }}</span>
       <span class="catalog-result-description">{{ result.description }}</span>
     </div>
@@ -66,7 +66,7 @@ export default {
         // FIXME: base this on search used
         if (this.result.geojson) {
           // this.$router.push('/place/' + element.title + '/')
-          this.$router.push({name: 'place', params: {q: element.title}})
+          this.$router.push({ name: 'place', params: { q: element.title } })
         } else {
           this.$router.push('/geoportal/' + element.title + '/')
         }

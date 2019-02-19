@@ -1,39 +1,41 @@
 <template>
-  <div class="panel">
-    <p class="panel-title">{{ result.title }}</p>
+  <div class="panel geoportal-panel">
 
-    <div v-if="result">
-      {{ properties.adreca }}
+    <div class="panel-content">
+
+      <p class="panel-title">{{ result.title }}</p>
+
+      <div v-if="result">
+        {{ properties.adreca }}
+      </div>
+
+      <div v-if="result" class="description">
+        {{ result.description }}
+      </div>
+
+      <div class="row reverse">
+        <q-btn flat stretch no-caps
+          icon="zoom_in"
+          label="Zoom to data"
+          @click="zoomResult"
+        />
+
+        <q-btn flat stretch no-caps
+          icon="layers"
+          label="Add to map"
+          @click="viewResult"
+        />
+      </div>
+
+      <div class="keywords">
+        <div class="keywords-title">Keywords</div>
+        <q-chip v-for="keyword in keywords_items" :key="keyword"
+            clickable square
+            @click="$router.push({name: 'search', params: {q: keyword}})"
+          >{{ keyword }}</q-chip>
+      </div>
+
     </div>
-
-    <div v-if="result">
-      {{ result.description }}
-    </div>
-
-    <div class="action">
-      <a @click="zoomResult()">
-        <span class="oi oi-zoom-in"></span>
-        Zoom to data</a>
-    </div>
-
-    <div class="action">
-      <a @click="viewResult()">
-        <span class="oi oi-eye"></span>
-        Add to map</a>
-    </div>
-
-    <div class="keywords">
-      <div class="keywords-title">Keywords</div>
-      <router-link v-for="keyword in keywords_items"
-        :to="{name: 'search', params: {q: keyword}}" :key="keyword"
-        class="keyword">{{ keyword }}</router-link>
-    </div>
-
-    <!-- <div v-for="(child, index) in result.children" :key="index"
-         style="padding: 10px 0 5px 0">
-      <span style="padding: 5px 8px; background: #ccddee; border-radius: 4px; font-size: 0.8em"
-        >{{ child.type }}</span>
-    </div> -->
   </div>
 </template>
 
@@ -86,41 +88,41 @@ export default {
         axios.get(
           dataUrl
         )
-        .then(function (response) {
-          const options = {}
-          const style = response.data.metadata.style
-          if (style.shapetype === 'Circle') {
-            var geojsonMarkerOptions = {
-              radius: style.shape_radius,
-              fillColor: style.fill_color,
-              color: style.stroke_color,
-              weight: style.stroke_width,
-              opacity: 1,
-              fillOpacity: style.fill_opacity
-            }
-
-            options['pointToLayer'] = function (feature, latlng) {
-              return L.circleMarker(latlng, geojsonMarkerOptions)
-            }
-          }
-          options['onEachFeature'] = function (feature, layer) {
-            // FIXME: use on 'click' instead of building all popups upfront
-            let PopupContent = Vue.extend(FeaturePopup)
-            let popup = new PopupContent({
-              propsData: {
-                feature: feature,
-                title: self.result.title
+          .then(function (response) {
+            const options = {}
+            const style = response.data.metadata.style
+            if (style.shapetype === 'Circle') {
+              var geojsonMarkerOptions = {
+                radius: style.shape_radius,
+                fillColor: style.fill_color,
+                color: style.stroke_color,
+                weight: style.stroke_width,
+                opacity: 1,
+                fillOpacity: style.fill_opacity
               }
-            })
-            layer.bindPopup(popup.$mount().$el)
-          }
 
-          const geojson = L.geoJson(response.data, options).addTo(map)
-          map.layerswitcher.addOverlay(geojson, self.result.title)
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
+              options['pointToLayer'] = function (feature, latlng) {
+                return L.circleMarker(latlng, geojsonMarkerOptions)
+              }
+            }
+            options['onEachFeature'] = function (feature, layer) {
+              // FIXME: use on 'click' instead of building all popups upfront
+              let PopupContent = Vue.extend(FeaturePopup)
+              let popup = new PopupContent({
+                propsData: {
+                  feature: feature,
+                  title: self.result.title
+                }
+              })
+              layer.bindPopup(popup.$mount().$el)
+            }
+
+            const geojson = L.geoJson(response.data, options).addTo(map)
+            map.layerswitcher.addOverlay(geojson, self.result.title)
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
       } else if (element.type === 'WMS') {
         var wms = L.tileLayer.wms(element.url, {
           layers: element.layers,
@@ -148,33 +150,25 @@ export default {
 }
 </script>
 
-<style scoped>
-.panel {
-    padding: 0 20px 15px 20px;
-}
-.panel-title {
-  font-size: 1.5em;
-  font-family: 'Lato', sans-serif;
-  font-weight: 400;
-  margin-bottom: 10px;
-}
-div.action {
-  cursor: pointer;
-  line-height: 1.5em;
-  display: inline-block;
-  padding: 10px;
-}
-.keywords-title {
-  font-size: 1.2em;
-  font-weight: 400;
-  margin: 10px 0 5px 0;
-}
-.keywords a {
-  display: inline-block;
-  padding: 5px 10px;
-  margin: 5px 10px;
-  border-radius: 5px;
-  color: #0a1923;
-  background-color: #a1d7f5;
+<style lang="scss">
+.geoportal-panel {
+  .panel-title {
+    margin-bottom: 20px;
+  }
+
+  .description {
+    margin-bottom: 15px;
+  }
+
+  .keywords-title {
+    font-size: 1.2em;
+    font-weight: 400;
+    margin: 20px 0 5px 0;
+  }
+
+  .q-chip {
+    color: #0a1923;
+    background-color: #a1d7f5 !important;
+  }
 }
 </style>

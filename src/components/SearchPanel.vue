@@ -1,14 +1,22 @@
 <template>
   <div class="panel">
-    <p class="panel-title">Results for {{ q }}
-      <icon v-show="searching" name="spinner" pulse label="Searching"></icon></p>
 
-    <p v-if="showSearchError" class="list-group-item">Error retrieving results</p>
-    <p v-if="showSearchEmpty && !showSearchError" class="list-group-item">No matches found</p>
+    <search-bar @search-start="qChanged" />
 
-    <div v-if="results">
-      <SearchResult v-for="(result, index) in results" :result='result'
-        :key="index" :map='map' :resultsLayer='resultsLayer' />
+    <div class="panel-content">
+
+      <p v-if="!q">Please type something to search</p>
+
+      <p v-if="q" class="panel-title">Results for {{ q }}
+        <icon v-show="searching" name="spinner" pulse label="Searching"></icon></p>
+
+      <p v-if="showSearchError" class="list-group-item">Error retrieving results</p>
+      <p v-if="q && showSearchEmpty && !showSearchError" class="list-group-item">No matches found</p>
+
+      <div v-if="results">
+        <SearchResult v-for="(result, index) in results" :result='result'
+          :key="index" :map='map' :resultsLayer='resultsLayer' />
+      </div>
     </div>
   </div>
 </template>
@@ -17,6 +25,7 @@
 import Vue from 'vue'
 import axios from 'axios'
 import L from 'leaflet'
+import SearchBar from 'components/SearchBar.vue'
 import SearchResult from './SearchResult.vue'
 import SearchResultPopup from './SearchResultPopup'
 
@@ -26,12 +35,12 @@ import 'vue-awesome/icons/spinner'
 export default {
   components: {
     Icon,
+    SearchBar,
     SearchResult
   },
   props: ['map'],
   data () {
     return {
-      q: '',
       searchsRunning: 0,
       searchError: false,
       searchEmpty: false,
@@ -39,6 +48,9 @@ export default {
     }
   },
   computed: {
+    q () {
+      return this.$store.state.searchQ
+    },
     resultsLayer () {
       return this.$store.state.resultsLayer
     },
@@ -76,11 +88,13 @@ export default {
   beforeRouteEnter (to, from, next) {
     next(vm => {
       console.log('Ajax search for term:', to.params.q)
-      vm.q = to.params.q
+      vm.$store.commit('search', to.params.q)
+      vm.qChanged()
     })
   },
   beforeRouteUpdate (to, from, next) {
-    this.q = to.params.q
+    this.$store.commit('search', to.params.q)
+    this.qChanged()
     next()
   },
   destroyed () {
@@ -94,6 +108,10 @@ export default {
       this.searchError = false
       this.resultsLayer.clearLayers()
 
+      if (this.q === undefined || this.q === '') {
+        return
+      }
+
       let self = this
       this.$store.config.searches.forEach(search => {
         var searchUrl = search.url
@@ -104,15 +122,15 @@ export default {
             q: self.q
           }
         })
-        .then(function (response) {
-          self.parseResults(search, response.data)
-          self.searchsRunning -= 1
-        })
-        .catch(function (error) {
-          console.log(error)
-          self.searchsRunning -= 1
-          self.searchError = true
-        })
+          .then(function (response) {
+            self.parseResults(search, response.data)
+            self.searchsRunning -= 1
+          })
+          .catch(function (error) {
+            console.log(error)
+            self.searchsRunning -= 1
+            self.searchError = true
+          })
       })
     },
     parseResults (search, data) {
@@ -166,17 +184,6 @@ export default {
 </script>
 
 <style scoped>
-.panel {
-    padding: 0;
-}
-.panel-title {
-  font-size: 1.5em;
-  font-family: 'Lato', sans-serif;
-  font-weight: 400;
-  padding: 0 20px 15px 20px;
-  margin: 0;
-}
-
 .list-group-item {
   min-height: 65px;
 }

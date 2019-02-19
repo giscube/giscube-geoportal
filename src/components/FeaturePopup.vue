@@ -3,7 +3,7 @@
     <div class='title'>{{ title }}</div>
     <table class="table table-striped table-hover">
       <tbody>
-        <tr v-for='(value, name) in feature.properties' class='attr'>
+        <tr v-for='(value, name) in feature.properties' class='attr' :key="name">
           <th>{{ name }}</th>
           <td>{{ value }}</td>
         </tr>

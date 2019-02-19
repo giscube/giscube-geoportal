@@ -1,22 +1,22 @@
 <template>
-    <div class="center-row">
-      <!-- :options='getMapOptions()' -->
-      <v-map ref='map'
-             :zoom='$store.config.home.zoom'
-             :center="$store.config.home.center"
-             @l-ready='onMapReady'>
-        <LayersControl ref="layersControl"></LayersControl>
-        <query-on-click></query-on-click>
-      </v-map>
-    </div>
+  <q-page :styleFn="mapPageStyle">
+    <!-- :options='getMapOptions()' -->
+    <v-map ref='map'
+           :zoom='$store.config.home.zoom'
+           :center="$store.config.home.center"
+           @l-ready='onMapReady'>
+      <LayersControl ref="layersControl"></LayersControl>
+      <query-on-click></query-on-click>
+    </v-map>
+  </q-page>
 </template>
 
 <script>
 import L from 'leaflet'
 import Vue2Leaflet from 'vue2-leaflet'
 
-import QueryOnClick from '@/components/QueryOnClick.vue'
-import LayersControl from '@/components/LayersControl.vue'
+import QueryOnClick from 'components/QueryOnClick.vue'
+import LayersControl from 'components/LayersControl.vue'
 require('microdisseny-leaflet-measure')
 require('microdisseny-leaflet-measure/dist/leaflet-measure.css')
 
@@ -47,9 +47,9 @@ export default {
     }
   },
   mounted () {
-    this.map = this.$refs.map.mapObject
-    this.addControls()
-    this.addBaseMaps()
+    if (this.map) {
+      this.map.invalidateSize()
+    }
   },
   methods: {
     addBaseMaps () {
@@ -90,14 +90,14 @@ export default {
       this.map.addControl(this.measureControl)
     },
     addScaleControl () {
-      this.scaleControl = L.control.scale({metric: true, imperial: false, 'position': 'bottomright'})
+      this.scaleControl = L.control.scale({ metric: true, imperial: false, 'position': 'bottomright' })
       this.map.addControl(this.scaleControl)
     },
     addZoomControl () {
       if (this.map.zoomControl) {
         this.map.zoomControl.remove()
       }
-      this.zoomControl = L.control.zoom({'position': 'bottomright'})
+      this.zoomControl = L.control.zoom({ 'position': 'bottomright' })
       this.map.addControl(this.zoomControl)
     },
     getMapOptions () {
@@ -105,8 +105,15 @@ export default {
         zoomControl: false
       }
     },
+    mapPageStyle (offset) {
+      return {
+        height: (offset ? `calc(100vh - ${offset}px)` : `100vh`)
+      }
+    },
     onMapReady () {
       this.map = this.$refs.map.mapObject
+      this.addControls()
+      this.addBaseMaps()
       this.resultsLayer.addTo(this.map)
       this.$emit('map-ready', this.map)
     }
@@ -115,6 +122,10 @@ export default {
 </script>
 
 <style lang="scss">
+.center-row {
+  height: 100%;
+}
+
 #map { height: 100%; width: 100%; background-color: #ddd; border: 1px dashed #ccc;
   cursor: default;
 }

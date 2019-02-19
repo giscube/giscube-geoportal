@@ -1,112 +1,209 @@
 <template>
-  <nav class="navbar navbar-expand-md navbar-light bg-light fixed-top">
-    <a class="navbar-brand" href="#"><img src="../assets/logo_giscube.svg"><span>Giscube Geoportal</span></a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbars" aria-controls="navbars" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+  <q-header class="giscube-header">
+    <q-toolbar class="giscube-toolbar-buttons">
+      <a class="giscube-header-brand" href="#"><img src="../assets/logo_giscube.svg"><span>Giscube Geoportal</span></a>
 
-    <div class="collapse navbar-collapse" id="navbars">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <a @click="$emit('home')"
-             class="nav-link" href="#/"><span class="oi oi-home"></span> Home <span class="sr-only">(current)</span></a>
-        </li>
-        <li class="nav-item nav-catalog">
-          <a @click="$emit('sidebar-visibility-changed', true)"
-             class="nav-link" href="#/catalog/"><span class="oi oi-compass"></span>Catalog</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="mailto:contact@example.com"><span class="oi oi-envelope-closed"></span>Contact</a>
-        </li>
-        <li class="nav-item">
-          <a @click="$emit('sidebar-visibility-changed', true)"
-             class="nav-link" href="#/measure/"><span class="oi" style="height: 15px"><icon-base icon-name="write"><icon-ruler /></icon-base></span>Measure</a>
-        </li>
-      </ul>
+      <q-separator vertical class="gt-xs"/>
 
-    </div>
-  </nav>
+      <q-btn stack flat stretch
+        icon="home"
+        label="Home"
+        :to="{ name: 'home' }"
+        @click="$emit('home')"
+        class="gt-xs"
+      />
+
+      <q-separator vertical class="gt-xs" />
+
+      <q-btn stack flat stretch
+        icon="search"
+        label="Search"
+        @click="onSearch"
+        class="gt-xs"
+      />
+
+      <q-separator vertical class="gt-xs" />
+
+      <q-btn stack flat stretch
+        icon="ion-compass"
+        label="Catalog"
+        :to="{ name: 'catalog' }"
+        @click="$emit('sidebar-visibility-changed', true)"
+        class="gt-xs"
+      />
+
+      <q-separator vertical class="gt-xs" />
+
+      <q-btn stack flat stretch
+        icon="email"
+        label="Contact"
+        :to="{ name: 'contact' }"
+        @click="$emit('sidebar-visibility-changed', true)"
+        class="gt-xs"
+      />
+
+      <q-separator vertical class="gt-xs" />
+
+      <q-btn stack flat stretch
+        icon="mdi-ruler"
+        label="Measure"
+        :to="{ name: 'measure' }"
+        @click="$emit('sidebar-visibility-changed', true)"
+        class="gt-xs"
+      />
+
+      <q-space />
+
+      <q-btn class="lt-sm" dense flat round icon="menu">
+        <q-menu >
+          <div class="row no-wrap" style="min-width: 150px">
+            <div class="column col">
+              <q-btn flat v-close-menu align="left"
+                icon="home"
+                label="Home"
+                :to="{ name: 'home' }"
+                @click="$emit('home')"
+                class="full-width"
+              />
+
+              <q-btn flat v-close-menu align="left"
+                icon="search"
+                label="Search"
+                :to="{ name: 'search' }"
+                @click="onSearch"
+                class="full-width"
+              />
+
+              <q-separator />
+
+              <q-btn flat v-close-menu align="left"
+                icon="ion-compass"
+                label="Catalog"
+                :to="{ name: 'catalog' }"
+                @click="$emit('sidebar-visibility-changed', true)"
+                class="full-width"
+              />
+
+              <q-separator />
+
+              <q-btn flat v-close-menu align="left"
+                icon="email"
+                label="Contact"
+                :to="{ name: 'contact' }"
+                @click="$emit('sidebar-visibility-changed', true)"
+                class="full-width"
+              />
+
+              <q-separator />
+
+              <q-btn flat v-close-menu align="left"
+                icon="mdi-ruler"
+                label="Measure"
+                :to="{ name: 'measure' }"
+                @click="$emit('sidebar-visibility-changed', true)"
+                class="full-width"
+              />
+            </div>
+          </div>
+        </q-menu>
+      </q-btn>
+
+    </q-toolbar>
+
+  </q-header>
 </template>
 
 <script>
-import Icon from 'vue-awesome/components/Icon'
 import 'vue-awesome/icons/question-circle'
-import IconBase from './IconBase.vue'
-import IconRuler from './icons/IconRuler.vue'
 
 export default {
   components: {
-    Icon,
-    IconBase,
-    IconRuler
   },
   props: [
     'brand'
   ],
+  computed: {
+    q () {
+      return this.$store.state.searchQ
+    }
+  },
   data () {
     return {}
   },
   methods: {
-
+    onSearch () {
+      this.$emit('sidebar-visibility-changed', true)
+      if (this.q) {
+        this.$router.push({ name: 'search', params: { q: this.q } })
+      } else {
+        this.$router.push({ name: 'search' })
+      }
+    }
   }
 }
 </script>
 
 <style>
-body {
-  padding-top: 61px;
-}
-
-/* navbar */
-.navbar.bg-light {
+/* q-header */
+.giscube-header {
+  background-color: #f8f9fa !important;
   border-bottom: 1px solid #ccc;
   padding: 0px;
+  color: #0a1924;
+  font-family: 'Lato', sans-serif;
 }
-a.navbar-brand {
-  padding: 10px 4px 10px 14px;
+a.giscube-header-brand {
+  padding: 10px 20px 10px 0px;
+  color: #0a1924;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
-a.navbar-brand img {
+a.giscube-header-brand img {
   height: 40px;
   margin-right: 6px;
   vertical-align: top
 }
-a.navbar-brand span {
-  font-weight: 200;
+a.giscube-header-brand span {
+  font-weight: 300;
+  font-size: 20px;
   display: inline-block;
   line-height: 1em;
   margin-top: 9px;
 }
-.nav-item {
-  text-transform: uppercase;
-  font-family: 'Lato', sans-serif;
+.giscube-toolbar-buttons .q-btn {
   font-weight: 300;
-  font-size: .8em;
-  text-align: center;
-  padding: 0 10px;
-  border-left: 1px solid #ddd;
-  padding: 0;
-  margin: 0px;
+  padding: 6px 16px;
+  font-size: .9em;
+  text-transform: uppercase;
 }
-.navbar-expand-md .navbar-nav .nav-link {
-  padding:.7rem 1rem;
+.giscube-toolbar-buttons .q-btn i {
+  font-size: 20px;
 }
-.navbar-light .navbar-nav .nav-link {
-  color: #0a1924;
+@media (max-width: 991px) {
+  a.giscube-header-brand img {
+    height: 34px;
+  }
+  a.giscube-header-brand span {
+    font-size: 16px;
+  }
+  .giscube-toolbar-buttons .q-btn {
+    padding: 4px 14px;
+    font-size: .8em;
+  }
 }
-.navbar-light .navbar-nav .nav-link:focus, .navbar-light .navbar-nav .nav-link:hover {
-  color: rgba(0,0,0,.7);
-  background: #f1f1f1;
-}
-.nav-item span.oi, .nav-item i {
-  display: block;
-  margin-bottom: 4px;
-  font-size: 1.2em
-}
-.navbar-light .navbar-nav .active > .nav-link, .navbar-light .navbar-nav .nav-link.active, .navbar-light .navbar-nav .nav-link.show, .navbar-light .navbar-nav .show > .nav-link {
-  background: #e1e1e1;
-}
-.navbar-toggler {
-  margin-right: 20px
+
+@media (max-width: 767px) {
+  a.giscube-header-brand img {
+    height: 30px;
+  }
+  a.giscube-header-brand span {
+    font-size: 14px;
+  }
+  .giscube-toolbar-buttons .q-btn {
+    padding: 2px 10px;
+    font-size: .7em;
+  }
 }
 .nav-item.user {
   border-top: 1px solid #ddd

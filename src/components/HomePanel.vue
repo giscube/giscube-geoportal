@@ -1,16 +1,27 @@
 <template>
   <div class="panel">
-    <p class="panel-title">Welcome!</p>
-    <p>Useful links</p>
-    <ul>
-      <li><a href="https://www.github.com/giscube" target="_blank">Giscube at GitHub</a></li>
-    </ul>
+
+    <search-bar />
+
+    <div class="panel-content">
+      <p class="panel-title">Welcome!</p>
+
+      <p>Useful links</p>
+      <ul>
+        <li><a href="https://www.github.com/giscube" target="_blank">Giscube at GitHub</a></li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <script>
+import SearchBar from 'components/SearchBar.vue'
+
 export default {
-  name: 'HelloPanel',
+  name: 'HomePanel',
+  components: {
+    SearchBar
+  },
   data () {
     return {
     }
@@ -33,16 +44,6 @@ li {
 }
 a {
   color: #42b983;
-}
-
-.panel {
-    padding: 0 20px 15px 20px;
-}
-.panel-title {
-  font-size: 1.5em;
-  font-family: 'Lato', sans-serif;
-  font-weight: 400;
-  margin-bottom: 10px;
 }
 
 </style>

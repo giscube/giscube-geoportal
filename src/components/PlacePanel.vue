@@ -1,34 +1,46 @@
 <template>
-  <div class="panel">
-    <p class="panel-title">{{ result.title }}</p>
+  <div class="panel place-panel">
+    <div class="panel-content">
+      <p class="panel-title">{{ result.title }}</p>
 
-    <div v-if="result">
-      {{ properties.adreca }}
-    </div>
+      <div v-if="result" class="row-info">
+        <q-icon name="home" size="20px" /> {{ properties.adreca }}
+      </div>
 
-    <div class="action">
-      <a @click="zoomResult()">
-        <span class="oi oi-zoom-in"></span>
-        Zoom</a>
+      <div v-if="coordinates" class="row-info">
+        <q-icon name="place" size="20px" /> GPS: {{ coordinates }}
+      </div>
+
+      <div class="row reverse">
+        <q-btn flat stretch no-caps
+          icon="zoom_in"
+          label="Zoom"
+          @click="zoomResult"
+        />
+
+      </div>
+
     </div>
   </div>
 </template>
 
 <script>
 import L from 'leaflet'
-
-import Icon from 'vue-awesome/components/Icon'
 import 'vue-awesome/icons/spinner'
 
 import BaseResultMixin from './BaseResultMixin.js'
 
 export default {
   mixins: [BaseResultMixin],
-  components: {
-    Icon
-  },
   props: ['map'],
   computed: {
+    coordinates () {
+      if (this.result.latlng) {
+        return this.result.latlng.coordinates[0].toFixed(6) + ', ' + this.result.latlng.coordinates[1].toFixed(6)
+      } else {
+        return null
+      }
+    },
     properties () {
       if (this.result.geojson) {
         return this.result.geojson.properties
@@ -105,7 +117,7 @@ export default {
         let maxZoom = this.map.getBoundsZoom(bounds)
 
         try {
-          this.map.flyTo(latLng, this.map.getZoom() > maxZoom ? maxZoom : {maxZoom: 19})
+          this.map.flyTo(latLng, this.map.getZoom() > maxZoom ? maxZoom : { maxZoom: 19 })
         } catch (e) {
           console.error(e)
           mapInfo = this.map.giscube.getMapInfo()
@@ -135,23 +147,13 @@ export default {
 }
 </script>
 
-<style>
-.list-group-item {
-  min-height: 65px;
-}
-.panel {
-    padding: 0 20px 15px 20px;
-}
-.panel-title {
-  font-size: 1.5em;
-  font-family: 'Lato', sans-serif;
-  font-weight: 400;
-  margin-bottom: 10px;
-}
-div.action {
-  cursor: pointer;
-  line-height: 1.5em;
-  display: inline-block;
-  padding: 10px;
+<style lang="scss">
+.place-panel {
+  .panel-title {
+    margin-bottom: 20px;
+  }
+  .row-info {
+    margin-bottom: 15px;
+  }
 }
 </style>
