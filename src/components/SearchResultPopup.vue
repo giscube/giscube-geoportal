@@ -5,14 +5,14 @@
     </div>
     <div class="tools" v-if="properties">
       <div class="tool-remove-result"
-          @click="_removeResult"><icon name="trash-o" label="selected"></icon></div>
+          @click="_removeResult"><icon name="trash" label="selected"></icon></div>
     </div>
   </div>
 </template>
 
 <script>
 import Icon from 'vue-awesome/components/Icon'
-import 'vue-awesome/icons/trash-o'
+import 'vue-awesome/icons/trash'
 
 export default {
   name: 'SearchResultPopup',

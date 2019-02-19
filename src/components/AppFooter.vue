@@ -1,9 +1,8 @@
 <template>
-  <div id="footer">
+  <q-footer elevated class="app-footer">
     <div class="container">
-      <p><a href="http://github.com/giscube/">GISCube</a></p>
     </div>
-  </div>
+  </q-footer>
 </template>
 
 <script>
@@ -15,13 +14,13 @@ export default {
 </script>
 
 <style lang="scss">
-/* Set the fixed height of the footer here */
-#footer {
-  height: 35px;
+.app-footer {
   background-color: #f5f5f5;
+  color: #444;
+  z-index: 4000;
 }
 
-#footer > .container {
+.app-footer > .container {
   padding-left: 15px;
   padding-right: 15px;
 }

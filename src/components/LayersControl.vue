@@ -4,9 +4,9 @@
        class="giscube-layers-control leaflet-control"
        :class="{'showActions': showActions}">
 
-    <div class="flex-nowrap-start layers" @click="collapsed = !collapsed">
+    <div class="flex-nowrap-start layers-title" @click="collapsed = !collapsed">
       <a class="flex-icon link"
-         ><icon-base icon-name="layers" icon-color="#fff" viewBox="0 0 24 24"><icon-layers /></icon-base></a>
+         ><q-icon name="layers" size="18px"/></a>
       <a class="flex-label link">Layers</a>
     </div>
 
@@ -56,20 +56,16 @@ import 'vue-awesome/icons/chevron-right'
 import 'vue-awesome/icons/clone'
 import 'vue-awesome/icons/cog'
 import 'vue-awesome/icons/globe'
-import 'vue-awesome/icons/trash-o'
+import 'vue-awesome/icons/trash'
 
 import draggable from 'vuedraggable'
 
-import IconBase from './IconBase.vue'
-import IconLayers from './icons/IconLayers.vue'
-import LayerItem from '@/components/LayerItem.vue'
+import LayerItem from 'components/LayerItem.vue'
 
 export default {
   components: {
     draggable,
     Icon,
-    IconBase,
-    IconLayers,
     LayerItem
   },
   data () {
@@ -188,6 +184,7 @@ export default {
 .giscube-layers-control {
   display: block;
   background-color: white;
+  color: #212529;
   box-shadow: 0 4px 8px rgba(0,0,0,.3);
   max-width: 300px;
   line-height: 1em;
@@ -215,15 +212,18 @@ export default {
     flex: 0;
   }
 
-  div.layers {
+  div.layers-title {
     background: #0b1923;
-    color: white;
     font-family: 'Lato', sans-serif;
     font-weight: 400;
     font-size: 1.3em;
     text-transform: uppercase;
     text-decoration: none;
     padding-right: 7px;
+
+    a {
+      color: white;
+    }
   }
 
   a.configure:hover {
@@ -234,7 +234,11 @@ export default {
   ul {
     list-style: none;
     padding-left: 0;
+    margin-top: 0;
     margin-bottom: 0;
+    a {
+      color: #212529;
+    }
   }
 
   div.sep {

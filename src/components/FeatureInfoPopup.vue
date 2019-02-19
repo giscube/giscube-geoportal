@@ -1,14 +1,17 @@
 <template>
   <div class='popup'>
     <el-tabs>
-      <div v-for='layer in results' class='layer'>
+      <div v-for='(layer, layerIndex) in results' class='layer'
+           :key="'featureInfoPopup-' + layerIndex">
         <el-tab-pane class='popup-content'>
           <span v-if="layer.elements.length === 1" slot="label">{{ layer.attributes.name }}</span>
           <span v-if="layer.elements.length > 1" slot="label">{{ layer.attributes.name }} ({{ layer.elements.length }})</span>
-          <div v-for='feature in layer.elements' class='feature'>
+          <div v-for='(feature, featureIndex) in layer.elements' class='feature'
+              :key="'featureInfoPopup-' + layerIndex + '-feature-' + featureIndex">
             <table class="table table-striped table-hover">
               <tbody>
-                <tr v-for='attr in feature.elements' class='attr'>
+                <tr v-for='(attr, attrIndex) in feature.elements' class='attr'
+                    :key="'featureInfoPopup-' + layerIndex + '-feature-' + featureIndex + '-attr-' + attrIndex">
                   <th>{{ attr.attributes.name }}</th>
                   <td>{{ attr.attributes.value }}</td>
                 </tr>
