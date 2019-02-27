@@ -1,5 +1,5 @@
 {
-  "name": "giscube-geoportal-vuejs",
+  "name": "giscube-geoportal",
   "version": "1.0.0",
   "description": "Generic Geoportal based on Giscube",
   "productName": "Giscube Geoportal",
@@ -10,6 +10,7 @@
     "lint": "eslint --ext .js,.vue src",
     "test": "echo \"No test specified\" && exit 0"
   },
+  "main": "dist/lib/giscube-geoportal.min.js",
   "dependencies": {
     "@quasar/extras": "^1.0.0",
     "axios": "^0.18.0",

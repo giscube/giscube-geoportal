@@ -20,11 +20,7 @@ export default {
   name: 'App',
   data () {
     return {
-      counter: 0
     }
-  },
-  methods: {
-
   }
 }
 </script>

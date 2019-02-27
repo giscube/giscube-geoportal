@@ -2,6 +2,7 @@ import AppGeoportal from './App'
 import AppHeader from 'components/AppHeader'
 import AppFooter from 'components/AppFooter'
 import GeoportalMap from 'components/GeoportalMap'
+import GiscubeLayout from 'layouts/GiscubeLayout'
 import CatalogPanel from 'components/CatalogPanel'
 import CatalogResult from 'components/CatalogResult'
 import Sidebar from 'components/Sidebar'
@@ -20,6 +21,7 @@ export {
   CatalogPanel,
   CatalogResult,
   GeoportalMap,
+  GiscubeLayout,
   Sidebar,
   GeoportalPanel,
   MeasurePanel,

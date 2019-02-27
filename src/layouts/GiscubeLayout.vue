@@ -17,8 +17,7 @@
     <q-page-container class="max-height">
       <!-- Begin page content -->
       <GeoportalMap ref="map" @map-ready="onMapReady" />
-
-   </q-page-container>
+    </q-page-container>
 
    <AppFooter v-if="false" ref="footer" />
 
