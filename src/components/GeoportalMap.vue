@@ -1,5 +1,5 @@
 <template>
-  <q-page :styleFn="mapPageStyle">
+  <q-page class="max-height">
     <!-- :options='getMapOptions()' -->
     <v-map ref='map'
            :zoom='$store.config.home.zoom'
@@ -103,11 +103,6 @@ export default {
     getMapOptions () {
       return {
         zoomControl: false
-      }
-    },
-    mapPageStyle (offset) {
-      return {
-        height: (offset ? `calc(100vh - ${offset}px)` : `100vh`)
       }
     },
     onMapReady () {
