@@ -54,6 +54,13 @@
 
       <q-space />
 
+      <q-btn stack flat stretch
+        v-if="$q.fullscreen.isCapable"
+        :icon="$q.fullscreen.isActive ? 'fullscreen_exit' : 'fullscreen'"
+        @click="$q.fullscreen.toggle()"
+        class="gt-xs"
+      />
+
       <q-btn class="lt-sm" dense flat round icon="menu">
         <q-menu >
           <div class="row no-wrap" style="min-width: 150px">
@@ -101,6 +108,16 @@
                 label="Measure"
                 :to="{ name: 'measure' }"
                 @click="$emit('sidebar-visibility-changed', true)"
+                class="full-width"
+              />
+
+              <q-separator v-if="$q.fullscreen.isCapable" />
+
+              <q-btn flat v-close-menu align="left"
+                v-if="$q.fullscreen.isCapable"
+                :icon="$q.fullscreen.isActive ? 'fullscreen_exit' : 'fullscreen'"
+                :label="$q.fullscreen.isActive ? 'exit fullscreen' : 'fullscreen'"
+                @click="$q.fullscreen.toggle()"
                 class="full-width"
               />
             </div>
