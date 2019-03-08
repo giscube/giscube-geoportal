@@ -61,67 +61,83 @@
         class="gt-xs"
       />
 
-      <q-btn class="lt-sm" dense flat round icon="menu">
-        <q-menu >
-          <div class="row no-wrap" style="min-width: 150px">
-            <div class="column col">
-              <q-btn flat v-close-menu align="left"
-                icon="home"
-                label="Home"
-                :to="{ name: 'home' }"
-                @click="$emit('home')"
-                class="full-width"
-              />
+      <q-btn class="lt-sm" flat icon="menu">
+        <q-menu>
+          <q-list>
+            <q-item
+              clickable
+              v-close-menu
+              :to="{ name: 'home' }"
+              @click="$emit('home')"
+            >
+              <q-item-section side>
+                <q-icon name="home" />
+              </q-item-section>
+              <q-item-section>Home</q-item-section>
+            </q-item>
 
-              <q-btn flat v-close-menu align="left"
-                icon="search"
-                label="Search"
-                :to="{ name: 'search' }"
-                @click="onSearch"
-                class="full-width"
-              />
+            <q-item
+              clickable
+              v-close-menu
+              :to="{ name: 'search' }"
+              @click="onSearch"
+            >
+              <q-item-section side>
+                <q-icon name="search" />
+              </q-item-section>
+              <q-item-section>Search</q-item-section>
+            </q-item>
 
-              <q-separator />
+            <q-item
+              clickable
+              v-close-menu
+              :to="{ name: 'catalog' }"
+              @click="$emit('sidebar-visibility-changed', true)"
+            >
+              <q-item-section side>
+                <q-icon name="ion-compass" />
+              </q-item-section>
+              <q-item-section>Catalog</q-item-section>
+            </q-item>
 
-              <q-btn flat v-close-menu align="left"
-                icon="ion-compass"
-                label="Catalog"
-                :to="{ name: 'catalog' }"
-                @click="$emit('sidebar-visibility-changed', true)"
-                class="full-width"
-              />
+            <q-item
+              clickable
+              v-close-menu
+              :to="{ name: 'contact' }"
+              @click="$emit('sidebar-visibility-changed', true)"
+            >
+              <q-item-section side>
+                <q-icon name="email" />
+              </q-item-section>
+              <q-item-section>Contact</q-item-section>
+            </q-item>
 
-              <q-separator />
+            <q-item
+              clickable
+              v-close-menu
+              :to="{ name: 'measure' }"
+              @click="$emit('sidebar-visibility-changed', true)"
+            >
+              <q-item-section side>
+                <q-icon name="mdi-ruler" />
+              </q-item-section>
+              <q-item-section>Measure</q-item-section>
+            </q-item>
 
-              <q-btn flat v-close-menu align="left"
-                icon="email"
-                label="Contact"
-                :to="{ name: 'contact' }"
-                @click="$emit('sidebar-visibility-changed', true)"
-                class="full-width"
-              />
+            <q-separator />
 
-              <q-separator />
+            <q-item
+              clickable
+              v-close-menu
+              @click="$q.fullscreen.toggle()"
+            >
+              <q-item-section side>
+                <q-icon :name="$q.fullscreen.isActive ? 'fullscreen_exit' : 'fullscreen'" />
+              </q-item-section>
+              <q-item-section>{{ $q.fullscreen.isActive ? 'Exit fullscreen' : 'Fullscreen' }}</q-item-section>
+            </q-item>
 
-              <q-btn flat v-close-menu align="left"
-                icon="mdi-ruler"
-                label="Measure"
-                :to="{ name: 'measure' }"
-                @click="$emit('sidebar-visibility-changed', true)"
-                class="full-width"
-              />
-
-              <q-separator v-if="$q.fullscreen.isCapable" />
-
-              <q-btn flat v-close-menu align="left"
-                v-if="$q.fullscreen.isCapable"
-                :icon="$q.fullscreen.isActive ? 'fullscreen_exit' : 'fullscreen'"
-                :label="$q.fullscreen.isActive ? 'exit fullscreen' : 'fullscreen'"
-                @click="$q.fullscreen.toggle()"
-                class="full-width"
-              />
-            </div>
-          </div>
+          </q-list>
         </q-menu>
       </q-btn>
 
@@ -161,6 +177,10 @@ export default {
 </script>
 
 <style>
+.full-min-width {
+  min-width: 100% !important;
+  display: inline-block;
+}
 /* q-header */
 .giscube-header {
   background-color: #f8f9fa !important;

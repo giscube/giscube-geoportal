@@ -15,7 +15,8 @@ const routes = [
     path: '/',
     component: () => import('layouts/GiscubeLayout.vue'),
     children: [
-      { path: '', component: HomePanel, name: 'home' },
+      { path: '', redirect: { name: 'home' } },
+      { path: 'home/', component: HomePanel, name: 'home' },
       { path: 'catalog/:q?', component: CatalogPanel, name: 'catalog' },
       { path: 'contact/', component: ContactPanel, name: 'contact' },
       { path: 'measure/', component: MeasurePanel, name: 'measure' },
