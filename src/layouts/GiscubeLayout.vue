@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="hHh lpR fFf">
+  <q-layout view="hHh lpR fFf" class="max-height">
     <!-- Fixed navbar -->
     <AppHeader ref="header" @home='navHome'
         @sidebar-visibility-changed="onVisibilityChanged"
@@ -14,7 +14,7 @@
              @visibility-changed="onVisibilityChanged"
              @search-start="onSearchStart" />
 
-    <q-page-container>
+    <q-page-container class="max-height">
       <!-- Begin page content -->
       <GeoportalMap ref="map" @map-ready="onMapReady" />
 
