@@ -1,5 +1,5 @@
 <template>
-  <q-page class="max-height">
+  <q-page class="max-height" :style="containerStyle">
     <!-- :options='getMapOptions()' -->
     <v-map ref='map'
            :zoom='$store.config.home.zoom'
@@ -8,6 +8,8 @@
       <LayersControl ref="layersControl"></LayersControl>
       <query-on-click></query-on-click>
     </v-map>
+
+    <q-resize-observer @resize="onResize" />
   </q-page>
 </template>
 
@@ -28,7 +30,10 @@ export default {
   },
   data () {
     return {
-      map: null
+      map: null,
+      containerStyle: {
+        width: null
+      }
     }
   },
   computed: {
@@ -111,6 +116,15 @@ export default {
       this.addBaseMaps()
       this.resultsLayer.addTo(this.map)
       this.$emit('map-ready', this.map)
+    },
+    onResize (size) {
+      this.$store.commit('layout/setMapSize', size)
+    },
+    setMapWidth (width) {
+      this.containerStyle.width = width
+      this.$nextTick(() => {
+        this.map.invalidateSize(false)
+      })
     }
   }
 }

@@ -1,10 +1,22 @@
 <template>
-  <q-layout view="hHh lpR fFf" class="max-height">
+  <q-layout view="hHh lpR fFf"
+    class="max-height"
+    :class="appClasses"
+  >
     <!-- Fixed navbar -->
-    <AppHeader ref="header" @home='navHome'
+    <AppHeader v-if="!printPreview"
+        ref="header"
+        @home='navHome'
+        @print="print"
         @sidebar-visibility-changed="onVisibilityChanged"
         @right="right = !right"
         />
+
+    <PrintHeader v-if="printPreview"
+        ref="printheader"
+        :map="$refs.map"
+        @done="printDone"
+    />
 
     <q-drawer v-model="right" side="right" elevated>
     </q-drawer>
@@ -12,7 +24,9 @@
     <Sidebar ref="sidebar" :map='map' :visible="$store.state.sidebarVisible"
              :geoportalMap="$refs.map"
              @visibility-changed="onVisibilityChanged"
-             @search-start="onSearchStart" />
+             @search-start="onSearchStart"
+             class="sidebar-left"
+    />
 
     <q-page-container class="max-height">
       <!-- Begin page content -->
@@ -30,6 +44,7 @@ import L from 'leaflet'
 import AppFooter from 'components/AppFooter'
 import AppHeader from 'components/AppHeader'
 import GeoportalMap from 'components/GeoportalMap'
+import PrintHeader from 'components/PrintHeader'
 import Sidebar from 'components/Sidebar'
 
 export default {
@@ -38,12 +53,17 @@ export default {
     AppFooter,
     AppHeader,
     GeoportalMap,
+    PrintHeader,
     Sidebar
   },
   data () {
     return {
+      appClasses: {
+        printpreview: false
+      },
       leftDrawerOpen: this.$q.platform.is.desktop,
       map: null,
+      printPreview: false,
       right: false,
       left: true,
       width: 300
@@ -65,10 +85,21 @@ export default {
     },
     onVisibilityChanged (visible) {
       this.$store.commit('setSidebarVisible', visible)
+    },
+    print () {
+      this.printPreview = true
+      this.appClasses.printpreview = true
+    },
+    printDone () {
+      this.printPreview = false
+      this.appClasses.printpreview = false
     }
   }
 }
 </script>
 
-<style>
+<style lang="scss">
+.print {
+  display: none;
+}
 </style>
