@@ -43,6 +43,7 @@ module.exports = function (ctx) {
         'QItemSection',
         'QItemLabel',
         'QMenu',
+        'QResizeObserver',
         'QSeparator',
         'QSpace'
       ],
