@@ -48,7 +48,7 @@ import PrintHeader from 'components/PrintHeader'
 import Sidebar from 'components/Sidebar'
 
 export default {
-  name: 'MyLayout',
+  name: 'GiscubeLayout',
   components: {
     AppFooter,
     AppHeader,
