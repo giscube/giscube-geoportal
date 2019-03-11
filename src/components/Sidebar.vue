@@ -28,6 +28,9 @@ export default {
     }
   },
   computed: {
+    mapSize () {
+      return this.$store.state.layout.mapSize
+    },
     sidebarVisible: {
       get: function () {
         return this.$store.state.sidebarVisible
@@ -38,7 +41,7 @@ export default {
     }
   },
   watch: {
-    '$q.screen.width': 'onResize',
+    'mapSize': 'onResize',
     'map': 'mapChanged'
   },
   mounted () {
@@ -78,7 +81,7 @@ export default {
     },
     onResize () {
       debounce(() => {
-        let width = this.$q.screen.width / 3
+        let width = (this.mapSize && this.mapSize.width / 3) || 300
         this.width = Math.max(300, Math.min(400, width))
       }, 300, true)()
     },

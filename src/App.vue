@@ -7,6 +7,7 @@
 <script>
 import L from 'leaflet'
 require('../node_modules/leaflet/dist/leaflet.css')
+require('./assets/print.css')
 
 // FIX leaflet's default icon path problems with webpack
 delete L.Icon.Default.prototype._getIconUrl

@@ -52,6 +52,15 @@
         class="gt-xs"
       />
 
+      <q-separator vertical class="gt-xs" />
+
+      <q-btn stack flat stretch
+        icon="print"
+        label="Print"
+        @click="$emit('print')"
+        class="gt-xs"
+      />
+
       <q-space />
 
       <q-btn stack flat stretch
@@ -122,6 +131,19 @@
                 <q-icon name="mdi-ruler" />
               </q-item-section>
               <q-item-section>Measure</q-item-section>
+            </q-item>
+
+            <q-separator />
+
+            <q-item
+              clickable
+              v-close-menu
+              @click="$emit('print')"
+            >
+              <q-item-section side>
+                <q-icon name="print" />
+              </q-item-section>
+              <q-item-section>Print</q-item-section>
             </q-item>
 
             <q-separator />
