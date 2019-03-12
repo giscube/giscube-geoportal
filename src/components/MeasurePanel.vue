@@ -4,27 +4,39 @@
     <div class="panel-content">
       <p class="panel-title">Measure</p>
 
-      <p>Please choose measure type and click the "start measuring" button.</p>
+      <p>Please select measure type, then click on the map. Double-click to finish a measure.</p>
 
-      <el-radio-group v-model="measureType">
-        <el-radio-button label="Path"></el-radio-button>
-        <el-radio-button label="Area"></el-radio-button>
-      </el-radio-group>
+      <q-btn
+        flat
+        v-show="!measuring"
+        color="primary"
+        @click="startMeasuring(false)"
+        label="Path"
+      />
+      <q-btn
+        flat
+        v-show="!measuring"
+        color="primary"
+        @click="startMeasuring(true)"
+        label="Area"
+      />
+      <q-btn
+        v-show="measuring"
+        flat
+        color="primary"
+        @click="stopMapMeasuring"
+      >Stop measuring</q-btn>
 
-      <el-row class="start-measuring">
-        <el-button v-if="!measuring" @click="startMeasuring">Start measuring</el-button>
-        <el-button v-if="measuring" @click="stopMeasuring">Stop measuring</el-button>
-      </el-row>
-
-      <p class="panel-subtitle">Measurements</p>
-      <div class='measures-list-container'>
+      <div class='q-mt-md'>
         <div v-for='(measure, key) in measureControl.measures' class='measure' :key="key">
-          <div>
-            <a @click="removeMeasure(measure)" class="flex-icon flex-shrink link"
-               ><icon name="trash" label="configure"></icon></a>
-            <span v-if="!measure.area" class='title'>{{ measure.length }} {{ measure.units_desc }}</span>
-            <span v-if="measure.area" class='title'>{{ measure.area }} {{ measure.units_desc }}<sup>2</sup></span>
-          </div>
+          <q-chip
+            color="primary"
+            text-color="white"
+            removable
+            @remove="removeMeasure(measure)"
+          >
+            <span v-html="measurementText(measure)"></span>
+          </q-chip>
         </div>
       </div>
     </div>
@@ -33,20 +45,16 @@
 
 <script>
 import Vue from 'vue'
-import Icon from 'vue-awesome/components/Icon'
-import 'vue-awesome/icons/spinner'
 import MeasureResultPopup from 'components/MeasureResultPopup.vue'
 
 export default {
-  components: {
-    Icon
-  },
   props: ['map'],
   data () {
     return {
       q: '',
       measureType: 'Path',
-      measuring: false
+      measuring: false,
+      single: true
     }
   },
   computed: {
@@ -57,10 +65,6 @@ export default {
         return {}
       }
     }
-  },
-  watch: {
-    'map': 'mapChanged',
-    'measureType': 'measureTypeChanged'
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
@@ -76,6 +80,15 @@ export default {
     this.stopMeasuring()
   },
   methods: {
+    measurementText (measure) {
+      let result = ''
+      result += measure.area || measure.length
+      result += ' ' + measure.units_desc
+      if (measure.area) {
+        result += '<sup>2</sup>'
+      }
+      return result
+    },
     addPopupToLayer (measure) {
       let PopupContent = Vue.extend(MeasureResultPopup)
       let popup = new PopupContent({
@@ -87,35 +100,45 @@ export default {
         measure.layer._layers[layerId].bindPopup(popup.$mount().$el)
       }
     },
-    mapChanged () {
-      if (this.map === null) {
+    finishedpath () {
+      if (this.single) {
+        this.stopMapMeasuring()
+      }
+    },
+    startMeasuring (measureArea) {
+      if (!this.map) {
+        console.error('Measure control is missing the map property')
         return
       }
-      this.map.on('measure:measurestop', () => {
-        if (this.measuring) {
-          this.stopMeasuring()
-        }
-      })
-      this.map.on('measure:finishedpath', e => {
-        this.addPopupToLayer(e.measure)
-      })
-    },
-    measureTypeChanged () {
-      if (this.measuring) {
-        this.map.measureControl.startMeasuring(
-          { 'measureArea': this.measureType === 'Area' })
+      if (!this.map.measureControl) {
+        console.error('Measure control is missing the map measureControl')
+        return
       }
-    },
-    startMeasuring () {
-      this.$store.commit('setCurrentTool', this.map.measureControl)
-      this.map.measureControl.startMeasuring(
-        { 'measureArea': this.measureType === 'Area' })
       this.measuring = true
+      this.$store.commit('setCurrentTool', this.map.measureControl)
+      this.map.on('measure:measurestop', this.stopMeasuring)
+      this.map.on('measure:finishedpath', this.finishedpath)
+      this.$nextTick(_ => {
+        this.map.measureControl.startMeasuring({ measureArea })
+      })
+    },
+    stopMapMeasuring () {
+      this.$nextTick(_ => {
+        // $nextTick needed to prevent infinite event loop
+        this.map.measureControl.stopMeasuring()
+      })
     },
     stopMeasuring () {
+      if (!this.measuring) {
+        return
+      }
       this.measuring = false
-      this.$store.commit('setCurrentTool', null)
-      this.map.measureControl.stopMeasuring()
+      this.map.off('measure:measurestop', this.stopMeasuring)
+      this.map.off('measure:finishedpath', this.stopMeasuring)
+      // FIXME: hardcoded 300ms value from QueryOnClick, get from config.js
+      setTimeout(() => {
+        this.$store.commit('setCurrentTool', null)
+      }, 300)
     },
     removeMeasure (measure) {
       measure.layer.remove()
@@ -123,17 +146,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.list-group-item {
-  min-height: 65px;
-}
-
-.start-measuring {
-  text-align: right;
-}
-
-.link {
-  cursor: pointer;
-}
-</style>

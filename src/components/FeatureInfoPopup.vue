@@ -1,26 +1,32 @@
 <template>
   <div class='popup'>
-    <el-tabs>
-      <div v-for='(layer, layerIndex) in results' class='layer'
-           :key="'featureInfoPopup-' + layerIndex">
-        <el-tab-pane class='popup-content'>
-          <span v-if="layer.elements.length === 1" slot="label">{{ layer.attributes.name }}</span>
-          <span v-if="layer.elements.length > 1" slot="label">{{ layer.attributes.name }} ({{ layer.elements.length }})</span>
-          <div v-for='(feature, featureIndex) in layer.elements' class='feature'
-              :key="'featureInfoPopup-' + layerIndex + '-feature-' + featureIndex">
-            <table class="table table-striped table-hover">
-              <tbody>
-                <tr v-for='(attr, attrIndex) in feature.elements' class='attr'
-                    :key="'featureInfoPopup-' + layerIndex + '-feature-' + featureIndex + '-attr-' + attrIndex">
-                  <th>{{ attr.attributes.name }}</th>
-                  <td>{{ attr.attributes.value }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </el-tab-pane>
-      </div>
-    </el-tabs>
+    <q-tabs v-model="current">
+      <q-tab
+        v-for="(layer, layerIndex) in results"
+        :key="'featureInfoPopup-' + layerIndex"
+        :name="layerIndex"
+        :label="layer.attributes.name"
+      />
+    </q-tabs>
+
+    <table
+      v-if="results"
+      class="table table-striped table-hover"
+    >
+      <tbody
+        v-for='(feature, featureIndex) in layer.elements'
+        :key="'feature-' + featureIndex"
+      >
+        <tr
+          v-for='(attr, attrIndex) in feature.elements'
+          class='attr'
+          :key="'feature-' + featureIndex + '-attr-' + attrIndex"
+        >
+          <th>{{ attr.attributes.name }}</th>
+          <td>{{ attr.attributes.value }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
@@ -30,6 +36,12 @@ export default {
   props: ['results'],
   data () {
     return {
+      current: 0
+    }
+  },
+  computed: {
+    layer () {
+      return this.results[this.current]
     }
   }
 }
@@ -37,9 +49,8 @@ export default {
 
 <style lang="scss">
 .popup {
-}
-.popup-content {
-  max-height: 300px;
+  max-height: 40vh;
+  max-width: 50vw;
   overflow: auto;
 }
 

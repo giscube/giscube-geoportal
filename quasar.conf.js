@@ -7,8 +7,7 @@ module.exports = function (ctx) {
     // --> boot files are part of "main.js"
     boot: [
       'i18n',
-      'axios',
-      'element-ui'
+      'axios'
     ],
 
     css: [
@@ -19,33 +18,40 @@ module.exports = function (ctx) {
       'roboto-font',
       'material-icons', // optional, you are not bound to it
       'ionicons-v4',
+      'fontawesome-v5',
       'mdi-v3'
-      // 'fontawesome-v5',
       // 'eva-icons'
     ],
 
     // framework: 'all', // --- includes everything; for dev only!
     framework: {
       components: [
+        'QBtn',
+        'QBtnGroup',
         'QChip',
-        'QFooter',
-        'QLayout',
-        'QHeader',
+        'QCheckbox',
         'QDrawer',
+        'QExpansionItem',
+        'QFooter',
+        'QHeader',
+        'QIcon',
+        'QItem',
+        'QItemLabel',
+        'QItemSection',
+        'QLayout',
+        'QList',
+        'QMenu',
         'QPageContainer',
         'QPage',
-        'QToolbar',
-        'QToolbarTitle',
-        'QBtn',
-        'QIcon',
-        'QList',
-        'QItem',
-        'QItemSection',
-        'QItemLabel',
-        'QMenu',
         'QResizeObserver',
         'QSeparator',
-        'QSpace'
+        'QSlider',
+        'QSpace',
+        'QSpinner',
+        'QTab',
+        'QTabs',
+        'QToolbar',
+        'QToolbarTitle'
       ],
 
       directives: [
