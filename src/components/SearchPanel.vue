@@ -8,7 +8,8 @@
       <p v-if="!q">Please type something to search</p>
 
       <p v-if="q" class="panel-title">Results for {{ q }}
-        <icon v-show="searching" name="spinner" pulse label="Searching"></icon></p>
+        <q-spinner v-if="searching" />
+      </p>
 
       <p v-if="showSearchError" class="list-group-item">Error retrieving results</p>
       <p v-if="q && showSearchEmpty && !showSearchError" class="list-group-item">No matches found</p>
@@ -29,12 +30,8 @@ import SearchBar from 'components/SearchBar.vue'
 import SearchResult from './SearchResult.vue'
 import SearchResultPopup from './SearchResultPopup'
 
-import Icon from 'vue-awesome/components/Icon'
-import 'vue-awesome/icons/spinner'
-
 export default {
   components: {
-    Icon,
     SearchBar,
     SearchResult
   },

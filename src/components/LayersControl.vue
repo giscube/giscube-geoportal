@@ -14,7 +14,7 @@
       <ul v-if="baseLayerSelected">
         <li class="flex-nowrap-start link" @click="baseLayerSelect=!baseLayerSelect">
           <a class="flex-icon"
-             ><icon name="globe" label="base layer"></icon></a>
+             ><q-icon size="1.5em" name="ion-globe" label="base layer"></q-icon></a>
           <a class="flex-label">{{ baseLayerSelected.name }}</a>
           <span class="flex-icon"></span>
           <span class="flex-icon"></span>
@@ -26,38 +26,36 @@
             class="flex-nowrap-start link"
             @click="changeBaseLayer(layer)">
           <a class="flex-icon option gray"
-             ><icon name="chevron-right" label="option"></icon></a>
+             ><q-icon color="grey" size="2em" name="keyboard_arrow_right" /></a>
           <a class="flex-label link">{{ layer.name }}</a>
         </li>
       </ul>
 
       <div v-if="layers.length > 0" class="sep"></div>
 
-      <ul>
-        <draggable v-model="layers" @change="layersChanged" @start="drag=true" @end="drag=false">
-          <LayerItem v-for="layer in layers" :key="layer.id" :layer="layer" :map="map"
-                     :showActions="showActions"
-                     @remove-layer="removeLayer"
-                     @toggle-layer="toggleLayer"
-                     ></LayerItem>
-        </draggable>
-      </ul>
+      <draggable
+        v-model="layers"
+        tag="ul"
+        handle=".drag-handle"
+        @change="layersChanged"
+      >
+        <layer-item
+          v-for="layer in layers"
+          :key="layer.id"
+          :layer="layer"
+          :map="map"
+          :showActions="showActions"
+          @remove-layer="removeLayer"
+          @toggle-layer="toggleLayer"
+          @change-opacity="changeOpacity"
+        />
+      </draggable>
     </div>
   </div>
 </template>
 
 <script>
 import L from 'leaflet'
-
-import Icon from 'vue-awesome/components/Icon'
-import 'vue-awesome/icons/check'
-import 'vue-awesome/icons/chevron-down'
-import 'vue-awesome/icons/chevron-right'
-import 'vue-awesome/icons/clone'
-import 'vue-awesome/icons/cog'
-import 'vue-awesome/icons/globe'
-import 'vue-awesome/icons/trash'
-
 import draggable from 'vuedraggable'
 
 import LayerItem from 'components/LayerItem.vue'
@@ -65,7 +63,6 @@ import LayerItem from 'components/LayerItem.vue'
 export default {
   components: {
     draggable,
-    Icon,
     LayerItem
   },
   data () {
@@ -168,13 +165,17 @@ export default {
       }), 1)
       this.map.removeLayer(options.layer)
     },
-    toggleLayer (options) {
-      if (options.visible) {
-        this.map.removeLayer(options.layer)
-      } else {
+    toggleLayer ({ options, visible }) {
+      if (visible) {
         this.map.addLayer(options.layer)
+      } else {
+        this.map.removeLayer(options.layer)
       }
-      options.visible = !options.visible
+    },
+    changeOpacity ({ options, value }) {
+      if (options.layer.setOpacity) {
+        options.layer.setOpacity(value)
+      }
     }
   }
 }

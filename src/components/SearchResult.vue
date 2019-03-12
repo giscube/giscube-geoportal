@@ -4,7 +4,7 @@
          :style="{'cursor': this.resultCursor}"
          @click="viewResultMain()"
       ><div>{{ result.title }}</div>
-      <div v-if="properties.adreca" style="font-style: italic"><icon name="map-marker"></icon> {{ properties.adreca }}</div>
+      <div v-if="properties.adreca" style="font-style: italic"><q-icon name="location_on" /> {{ properties.adreca }}</div>
       <div v-for="(child, index) in result.children" :key="index"
            style="padding: 10px 0 5px 0">
         <span style="padding: 5px 8px; background: #ccddee; border-radius: 4px; font-size: 0.8em"
@@ -15,13 +15,7 @@
 </template>
 
 <script>
-import Icon from 'vue-awesome/components/Icon'
-import 'vue-awesome/icons/map-marker'
-
 export default {
-  components: {
-    Icon
-  },
   props: ['result', 'map', 'resultsLayer'],
   data () {
     return {}

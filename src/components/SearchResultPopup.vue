@@ -4,21 +4,16 @@
       {{ properties.title }}
     </div>
     <div class="tools" v-if="properties">
+      <!-- FIXME: use q-btn -->
       <div class="tool-remove-result"
-          @click="_removeResult"><icon name="trash" label="selected"></icon></div>
+          @click="_removeResult"><q-icon name="delete" /></div>
     </div>
   </div>
 </template>
 
 <script>
-import Icon from 'vue-awesome/components/Icon'
-import 'vue-awesome/icons/trash'
-
 export default {
   name: 'SearchResultPopup',
-  components: {
-    Icon
-  },
   props: ['feature'],
   computed: {
     properties () {

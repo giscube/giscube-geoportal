@@ -2,15 +2,18 @@
   <v-marker v-if="query" :visible="query.visible" :lat-lng="query.latlng"
             @l-add="$event.target.openPopup()">
     <v-popup ref="popup">
-      <div v-if="!query.component" style="text-align: center;">
-        <icon name="spinner" pulse label="Searching"></icon>
-      </div>
+      <q-spinner v-if="!query.component" />
       <component v-bind:is="query.component" :results='query.results' :latlng='query.latlng'>
         test
       </component>
       <div class="tools" v-if="query.component">
-        <div class="tool-remove-query"
-            @click="_removeQuery"><icon name="trash" label="selected"></icon></div>
+        <q-btn
+          size="sm"
+          flat
+          style="margin-top: 1em"
+          icon="delete"
+          @click="_removeQuery"
+        />
       </div>
     </v-popup>
   </v-marker>
@@ -26,15 +29,11 @@ import Vue2Leaflet from 'vue2-leaflet'
 import LatLngPopup from 'components/LatLngPopup.vue'
 import FeatureInfoPopup from 'components/FeatureInfoPopup.vue'
 
-import Icon from 'vue-awesome/components/Icon'
-import 'vue-awesome/icons/trash'
-
 export default {
   name: 'query-on-click',
   components: {
     'v-marker': Vue2Leaflet.Marker,
-    'v-popup': Vue2Leaflet.Popup,
-    Icon
+    'v-popup': Vue2Leaflet.Popup
   },
   data () {
     return {
@@ -188,8 +187,8 @@ export default {
           'info_format': 'text/xml',
           'query_layers': wmsParams.layers,
           'bbox': bbox,
-          'x': event.containerPoint.x,
-          'y': event.containerPoint.y,
+          'x': Math.floor(event.containerPoint.x),
+          'y': Math.floor(event.containerPoint.y),
           'width': this.map.getSize().x,
           'height': this.map.getSize().y,
           'feature_count': 100

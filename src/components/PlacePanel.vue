@@ -26,7 +26,6 @@
 
 <script>
 import L from 'leaflet'
-import 'vue-awesome/icons/spinner'
 
 import BaseResultMixin from './BaseResultMixin.js'
 

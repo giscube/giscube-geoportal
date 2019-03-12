@@ -5,21 +5,16 @@
       <div v-if="measure.type === 'area'" class="">{{ measure.area }} {{ measure.units }}<sup>2</sup></div>
     </div>
     <div class="tools" v-if="measure">
+      <!-- FIXME: use q-btn -->
       <div class="tool-remove-result"
-          @click="_removeResult"><icon name="trash" label="selected"></icon></div>
+          @click="_removeResult"><q-icon name="delete" /></div>
     </div>
   </div>
 </template>
 
 <script>
-import Icon from 'vue-awesome/components/Icon'
-import 'vue-awesome/icons/trash'
-
 export default {
   name: 'MeasureResultPopup',
-  components: {
-    Icon
-  },
   props: ['measure'],
   methods: {
     _removeResult () {

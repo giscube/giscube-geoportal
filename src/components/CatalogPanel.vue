@@ -3,28 +3,42 @@
     <div class="panel-content">
       <p class="panel-title">Catalog</p>
 
-      <div v-if="!categories"><icon name="spinner" pulse label="Searching"></icon></div>
-      <div v-if="categories" class="categories">
-        <el-collapse class="category">
-          <el-collapse-item v-for="category in categories"
+      <div class="categories">
+        <q-list>
+          <q-expansion-item v-for="category in categories"
             v-show="category.parent === null"
             :key="category.id"
-            :title="category.name" :name="category.id">
-            <el-collapse class="subcategory"
-              @item-click="subcategoryChange">
-              <el-collapse-item v-for="subcategory in category.subcategories"
-                v-show="subcategory"
-                :key="subcategory.id"
-                :title="subcategory.name" :name="subcategory.id">
-                <div v-if="!subcategory.results"><icon name="spinner" pulse label="Searching"></icon></div>
-                <div v-if="subcategory.results">
-                  <CatalogResult v-for="(result, index) in subcategory.results" :result='result'
-                    :key="index" :map='map' />
-                </div>
-              </el-collapse-item>
-            </el-collapse>
-          </el-collapse-item>
-        </el-collapse>
+            :label="category.name"
+          >
+            <q-expansion-item v-for="subcategory in category.subcategories"
+              :key="subcategory.id"
+              :header-inset-level="0.5"
+              :content-inset-level="1"
+              @show="subcategoryChange(subcategory)"
+            >
+              <template v-slot:header>
+                <q-item-section>
+                  {{ subcategory.name }}
+                </q-item-section>
+                <q-item-section side>
+                  <q-spinner v-if="subcategory.loading" />
+                </q-item-section>
+              </template>
+
+              <div>
+                <p v-if="subcategory.loading || subcategory.results === undefined">&nbsp;</p>
+                <p v-else-if="subcategory.results.length === 0">Empty</p>
+                <catalog-result
+                  v-else
+                  v-for="(result, index) in subcategory.results"
+                  :key="index"
+                  :result="result"
+                  :map="map"
+                />
+              </div>
+            </q-expansion-item>
+          </q-expansion-item>
+        </q-list>
       </div>
 
     </div>
@@ -34,21 +48,18 @@
 <script>
 import Vue from 'vue'
 import axios from 'axios'
-import Icon from 'vue-awesome/components/Icon'
-import 'vue-awesome/icons/spinner'
 
 import CatalogResult from './CatalogResult.vue'
 
 export default {
   components: {
-    Icon,
     CatalogResult
   },
   props: ['map'],
   data () {
     return {
       q: '',
-      categories: null
+      categories: []
     }
   },
   beforeRouteEnter (to, from, next) {
@@ -68,13 +79,12 @@ export default {
       let apiUrl = this.$store.config.catalog.categories
       axios.get(apiUrl)
         .then(response => {
-          this.categories = response.data
+          Vue.set(this, 'categories', response.data)
           this.categories.forEach(category => {
             if (category.parent == null) {
               category.subcategories = this.getSubcategories(category.id)
             }
           })
-          window.categories = this.categories
         })
         .catch(error => {
           console.log(error)
@@ -91,43 +101,20 @@ export default {
       let apiUrl = api + '?category_id=' + category.id
       axios.get(apiUrl)
         .then(response => {
+          Vue.delete(category, 'loading')
           Vue.set(category, 'results', response.data.results)
         })
         .catch(error => {
+          Vue.delete(category, 'loading')
           console.log(error)
         })
     },
-    subcategoryChange (val) {
-      let categoryId = val.name
-      let category = this.categories.find(element => element.id === categoryId)
-      if (!category.results) {
+    subcategoryChange (category) {
+      if (category.results === undefined) {
+        Vue.set(category, 'loading', true)
         this.getSubcategoriesResults(category)
-      } else {
       }
     }
   }
 }
 </script>
-
-<style>
-.list-group-item {
-  min-height: 65px;
-}
-
-.category .el-collapse-item__header {
-  padding-left: 10px;
-  font-size: 1.2em;
-  background-color: #dfdfdf;
-}
-.category .el-collapse-item__content {
-  padding: 0px;
-}
-
-.subcategory .el-collapse-item__header {
-  padding-left: 20px;
-  font-size: 1.1em;
-  background-color: #f5f5f5;
-}
-.subcategory .el-collapse-item__content {
-}
-</style>
