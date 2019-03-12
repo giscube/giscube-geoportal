@@ -169,11 +169,7 @@
 </template>
 
 <script>
-import 'vue-awesome/icons/question-circle'
-
 export default {
-  components: {
-  },
   props: [
     'brand'
   ],

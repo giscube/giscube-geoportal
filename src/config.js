@@ -1,7 +1,7 @@
 export default {
   catalog: {
-    'categories': 'http://www.giscube.org/apps/giscube-admin/api/v1/giscube/category/',
-    'search': 'http://www.giscube.org/apps/giscube-admin/geoportal/catalog/'
+    'categories': 'https://mapes.salt.cat/apps/giscube-admin/api/v1/giscube/category/',
+    'search': 'https://mapes.salt.cat/apps/giscube-admin/geoportal/catalog/'
   },
   home: {
     'zoom': 15,
@@ -11,16 +11,16 @@ export default {
     }
   },
   searches: [
-    {
-      'name': 'geoportal',
-      'title': 'Geoportal search',
-      'url': 'http://www.giscube.org/apps/giscube/geoportal/search/'
-    },
+    // {
+    //   'name': 'geoportal',
+    //   'title': 'Geoportal search',
+    //   'url': 'http://www.giscube.org/apps/giscube/geoportal/search/'
+    // },
     {
       'name': 'place',
       'title': 'General search',
       'is_geojson': true,
-      'url': 'http://www.giscube.org/apps/indexer/search/'
+      'url': 'https://mapes.salt.cat/apps/cercador/cercar/'
     }
   ],
   basemaps: [
