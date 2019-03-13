@@ -1,4 +1,9 @@
 export default {
+  layout: {
+    appHeader: () => import('components/AppHeader.vue'),
+    geoportalMap: () => import('components/GeoportalMap.vue'),
+    printHeader: () => import('components/PrintHeader.vue')
+  },
   catalog: {
     'categories': 'https://mapes.salt.cat/apps/giscube-admin/api/v1/giscube/category/',
     'search': 'https://mapes.salt.cat/apps/giscube-admin/geoportal/catalog/'
