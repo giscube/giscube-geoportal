@@ -4,7 +4,9 @@
     :class="appClasses"
   >
     <!-- Fixed navbar -->
-    <AppHeader v-if="!printPreview"
+    <!-- AppHeader -->
+    <component :is="$config.layout.appHeader"
+        v-if="!printPreview"
         ref="header"
         @home='navHome'
         @print="print"
@@ -12,7 +14,9 @@
         @right="right = !right"
         />
 
-    <PrintHeader v-if="printPreview"
+    <!-- PrintHeader -->
+    <component :is="$config.layout.printHeader"
+        v-if="printPreview"
         ref="printheader"
         :map="$refs.map"
         @done="printDone"
@@ -29,8 +33,10 @@
     />
 
     <q-page-container class="max-height">
-      <!-- Begin page content -->
-      <GeoportalMap ref="map" @map-ready="onMapReady" />
+      <!-- GeoportalMap -->
+      <component :is="$config.layout.geoportalMap"
+        ref="map" @map-ready="onMapReady"
+      />
     </q-page-container>
 
    <AppFooter v-if="false" ref="footer" />
@@ -42,7 +48,6 @@
 import { openURL } from 'quasar'
 import L from 'leaflet'
 import AppFooter from 'components/AppFooter'
-import AppHeader from 'components/AppHeader'
 import GeoportalMap from 'components/GeoportalMap'
 import PrintHeader from 'components/PrintHeader'
 import Sidebar from 'components/Sidebar'
@@ -51,7 +56,6 @@ export default {
   name: 'GiscubeLayout',
   components: {
     AppFooter,
-    AppHeader,
     GeoportalMap,
     PrintHeader,
     Sidebar
