@@ -2,30 +2,30 @@
   <div class="panel">
 
     <div class="panel-content">
-      <p class="panel-title">Measure</p>
+      <p class="panel-title">{{ t('title') }}</p>
 
-      <p>Please select measure type, then click on the map. Double-click to finish a measure.</p>
+      <p>{{ t('explanation') }}</p>
 
       <q-btn
         flat
         v-show="!measuring"
         color="primary"
         @click="startMeasuring(false)"
-        label="Path"
+        :label="t('path')"
       />
       <q-btn
         flat
         v-show="!measuring"
         color="primary"
         @click="startMeasuring(true)"
-        label="Area"
+        :label="t('area')"
       />
       <q-btn
         v-show="measuring"
         flat
         color="primary"
         @click="stopMapMeasuring"
-      >Stop measuring</q-btn>
+      >{{ t('stop') }}</q-btn>
 
       <div class='q-mt-md'>
         <div v-for='(measure, key) in measureControl.measures' class='measure' :key="key">
@@ -80,10 +80,13 @@ export default {
     this.stopMeasuring()
   },
   methods: {
+    t (key) {
+      return this.$t('tools.measure.' + key)
+    },
     measurementText (measure) {
       let result = ''
       result += measure.area || measure.length
-      result += ' ' + measure.units_desc
+      result += ' ' + this.$t('units.' + measure.units_desc)
       if (measure.area) {
         result += '<sup>2</sup>'
       }
