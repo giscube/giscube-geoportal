@@ -52,7 +52,6 @@ export default {
   max-height: 40vh;
   max-width: 50vw;
   overflow: auto;
-}
 
   .layer .title {
     font-size: 1.2em;
