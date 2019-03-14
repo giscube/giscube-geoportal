@@ -6,7 +6,7 @@ export default class Options {
   }
 
   merge (config) {
-    _.mergeWith(this, config, (objValue, srcValue, key) => {
+    return _.mergeWith(this, config, (objValue, srcValue, key) => {
       if (_.isArray(objValue)) {
         if (key.endsWith('__append')) {
           return objValue.concat(srcValue)
