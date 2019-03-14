@@ -15,6 +15,7 @@ import QueryOnClick from 'components/QueryOnClick'
 import LayersControl from 'components/LayersControl'
 import store from './store/index.js'
 import config from './config.js'
+import i18n from './i18n/index.js'
 
 export {
   AppGeoportal,
@@ -33,5 +34,6 @@ export {
   QueryOnClick,
   LayersControl,
   store,
-  config
+  config,
+  i18n
 }
