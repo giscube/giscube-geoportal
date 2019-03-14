@@ -1,4 +1,6 @@
-export default {
+import Options from './options.js'
+
+export default new Options({
   layout: {
     appHeader: () => import('components/AppHeader.vue'),
     geoportalMap: () => import('components/GeoportalMap.vue'),
@@ -57,4 +59,4 @@ export default {
       ext: 'png'
     }
   ]
-}
+})
