@@ -27,4 +27,7 @@ export default {
 </script>
 
 <style>
+#q-app {
+  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+}
 </style>
