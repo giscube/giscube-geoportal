@@ -3,161 +3,27 @@
     <q-toolbar class="giscube-toolbar-buttons">
       <a class="giscube-header-brand" href="#"><img src="../assets/logo_giscube.svg"><span>Giscube Geoportal</span></a>
 
-      <q-separator vertical class="gt-xs"/>
-
-      <q-btn stack flat stretch
-        icon="home"
-        label="Home"
-        :to="{ name: 'home' }"
-        @click="$emit('home')"
+      <header-item-holder
+        v-for="(item, i) in headerTools"
+        :key="'header-tools-' + item.name + '-' + i"
         class="gt-xs"
+        :item="item"
+        @sidebar-visibility-changed="$emit('sidebar-visibility-changed', $event)"
+        @event="emit"
       />
 
-      <q-separator vertical class="gt-xs" />
-
-      <q-btn stack flat stretch
-        icon="search"
-        label="Search"
-        @click="onSearch"
-        class="gt-xs"
-      />
-
-      <q-separator vertical class="gt-xs" />
-
-      <q-btn stack flat stretch
-        icon="ion-compass"
-        label="Catalog"
-        :to="{ name: 'catalog' }"
-        @click="$emit('sidebar-visibility-changed', true)"
-        class="gt-xs"
-      />
-
-      <q-separator vertical class="gt-xs" />
-
-      <q-btn stack flat stretch
-        icon="email"
-        label="Contact"
-        :to="{ name: 'contact' }"
-        @click="$emit('sidebar-visibility-changed', true)"
-        class="gt-xs"
-      />
-
-      <q-separator vertical class="gt-xs" />
-
-      <q-btn stack flat stretch
-        icon="mdi-ruler"
-        label="Measure"
-        :to="{ name: 'measure' }"
-        @click="$emit('sidebar-visibility-changed', true)"
-        class="gt-xs"
-      />
-
-      <q-separator vertical class="gt-xs" />
-
-      <q-btn stack flat stretch
-        icon="print"
-        label="Print"
-        @click="$emit('print')"
-        class="gt-xs"
-      />
-
-      <q-space />
-
-      <q-btn stack flat stretch
-        v-if="$q.fullscreen.isCapable"
-        :icon="$q.fullscreen.isActive ? 'fullscreen_exit' : 'fullscreen'"
-        @click="$q.fullscreen.toggle()"
-        class="gt-xs"
-      />
-
-      <q-btn class="lt-sm" flat icon="menu">
+      <q-space class="lt-sm" />
+      <q-btn flat icon="menu" class="lt-sm">
         <q-menu>
           <q-list>
-            <q-item
-              clickable
-              v-close-menu
-              :to="{ name: 'home' }"
-              @click="$emit('home')"
-            >
-              <q-item-section side>
-                <q-icon name="home" />
-              </q-item-section>
-              <q-item-section>Home</q-item-section>
-            </q-item>
-
-            <q-item
-              clickable
-              v-close-menu
-              :to="{ name: 'search' }"
-              @click="onSearch"
-            >
-              <q-item-section side>
-                <q-icon name="search" />
-              </q-item-section>
-              <q-item-section>Search</q-item-section>
-            </q-item>
-
-            <q-item
-              clickable
-              v-close-menu
-              :to="{ name: 'catalog' }"
-              @click="$emit('sidebar-visibility-changed', true)"
-            >
-              <q-item-section side>
-                <q-icon name="ion-compass" />
-              </q-item-section>
-              <q-item-section>Catalog</q-item-section>
-            </q-item>
-
-            <q-item
-              clickable
-              v-close-menu
-              :to="{ name: 'contact' }"
-              @click="$emit('sidebar-visibility-changed', true)"
-            >
-              <q-item-section side>
-                <q-icon name="email" />
-              </q-item-section>
-              <q-item-section>Contact</q-item-section>
-            </q-item>
-
-            <q-item
-              clickable
-              v-close-menu
-              :to="{ name: 'measure' }"
-              @click="$emit('sidebar-visibility-changed', true)"
-            >
-              <q-item-section side>
-                <q-icon name="mdi-ruler" />
-              </q-item-section>
-              <q-item-section>Measure</q-item-section>
-            </q-item>
-
-            <q-separator />
-
-            <q-item
-              clickable
-              v-close-menu
-              @click="$emit('print')"
-            >
-              <q-item-section side>
-                <q-icon name="print" />
-              </q-item-section>
-              <q-item-section>Print</q-item-section>
-            </q-item>
-
-            <q-separator />
-
-            <q-item
-              clickable
-              v-close-menu
-              @click="$q.fullscreen.toggle()"
-            >
-              <q-item-section side>
-                <q-icon :name="$q.fullscreen.isActive ? 'fullscreen_exit' : 'fullscreen'" />
-              </q-item-section>
-              <q-item-section>{{ $q.fullscreen.isActive ? 'Exit fullscreen' : 'Fullscreen' }}</q-item-section>
-            </q-item>
+            <header-item-holder
+              v-for="(item, i) in headerTools"
+              :key="'menu-header-tools-' + item.name + '-' + i"
+              menu
+              :item="item"
+              @sidebar-visibility-changed="$emit('sidebar-visibility-changed', $event)"
+              @event="emit($event)"
+            />
 
           </q-list>
         </q-menu>
@@ -169,19 +35,49 @@
 </template>
 
 <script>
+import HeaderItemHolder from './HeaderItemHolder.vue'
+
 export default {
   props: [
     'brand'
   ],
+  components: {
+    HeaderItemHolder
+  },
   computed: {
     q () {
       return this.$store.state.searchQ
+    },
+    headerTools () {
+      const tools = this.$config.tools
+      let addSeparator = true
+      const r = []
+      this.$config.layout.headerToolbar.forEach((toolName, i) => {
+        if (toolName.startsWith('-')) {
+          r.push({ spacer: true, name: 'spacer-' + i })
+          addSeparator = false // skip next separator
+        } else {
+          if (addSeparator) {
+            r.push({ separator: true, name: 'separator-' + i })
+          } else {
+            // only skip a single one
+            addSeparator = true
+          }
+
+          r.push({ name: toolName, tool: tools[toolName] })
+        }
+      })
+
+      return r
     }
   },
   data () {
     return {}
   },
   methods: {
+    emit (event) {
+      this.$emit(event.name.toString(), event.value)
+    },
     onSearch () {
       this.$emit('sidebar-visibility-changed', true)
       if (this.q) {
