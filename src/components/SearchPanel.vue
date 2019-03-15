@@ -25,7 +25,7 @@
 <script>
 import Vue from 'vue'
 import axios from 'axios'
-import L from 'leaflet'
+import L from '../lib/leaflet'
 import SearchBar from 'components/SearchBar.vue'
 import SearchResult from './SearchResult.vue'
 import SearchResultPopup from './SearchResultPopup'

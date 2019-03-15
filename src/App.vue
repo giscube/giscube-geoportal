@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import L from 'leaflet'
+import L from './lib/leaflet'
 require('../node_modules/leaflet/dist/leaflet.css')
 require('./assets/print.css')
 

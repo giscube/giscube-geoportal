@@ -41,7 +41,7 @@
 
 <script>
 import Vue from 'vue'
-import L from 'leaflet'
+import L from '../lib/leaflet'
 import axios from 'axios'
 
 import BaseResultMixin from './BaseResultMixin.js'

@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import L from 'leaflet'
+import L from '../lib/leaflet'
 
 import BaseResultMixin from './BaseResultMixin.js'
 

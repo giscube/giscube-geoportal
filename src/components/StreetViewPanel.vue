@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import L from 'leaflet'
+import L from '../lib/leaflet'
 import gmapsInit from '../lib/gmaps'
 
 export default {

@@ -47,7 +47,7 @@
 
 <script>
 import { openURL } from 'quasar'
-import L from 'leaflet'
+import L from '../lib/leaflet'
 import AppFooter from 'components/AppFooter'
 import GeoportalMap from 'components/GeoportalMap'
 import PrintHeader from 'components/PrintHeader'
