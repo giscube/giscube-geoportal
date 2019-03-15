@@ -3,6 +3,10 @@ export default {
     meters: 'meters'
   },
   tools: {
+    home: { header_name: 'Home' },
+    search: { header_name: 'Search' },
+    catalog: { header_name: 'Catalog' },
+    contact: { header_name: 'Contact' },
     measure: {
       header_name: 'Measure',
       title: 'Measure',
@@ -10,6 +14,8 @@ export default {
       path: 'Path',
       area: 'Area',
       stop: 'Stop measuring'
-    }
+    },
+    print: { header_name: 'Print' },
+    fullscreen: { header_name: 'Fullscreen' }
   }
 }
