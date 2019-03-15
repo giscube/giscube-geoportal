@@ -2,7 +2,7 @@
   <q-header class="giscube-header">
     <q-toolbar class="giscube-toolbar-buttons">
 
-      <a class="giscube-header-brand header" href="#"><img src="assets/logo_giscube.svg"><span>Giscube Geoportal</span></a>
+      <a class="giscube-header-brand header" href="#"><img src="../assets/logo_giscube.svg"><span>Giscube Geoportal</span></a>
 
       <q-separator vertical class="gt-xs no-print" />
 

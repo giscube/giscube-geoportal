@@ -1,5 +1,5 @@
 <template>
-  <div class="panel">
+  <div class="panel catalog-panel">
     <div class="panel-content">
       <p class="panel-title">Catalog</p>
 
@@ -9,12 +9,13 @@
             v-show="category.parent === null"
             :key="category.id"
             :label="category.name"
+            @show="categoryChange(category)"
+            header-class="category"
           >
             <q-expansion-item v-for="subcategory in category.subcategories"
               :key="subcategory.id"
-              :header-inset-level="0.5"
-              :content-inset-level="1"
               @show="subcategoryChange(subcategory)"
+              header-class="subcategory"
             >
               <template v-slot:header>
                 <q-item-section>
@@ -27,7 +28,9 @@
 
               <div>
                 <p v-if="subcategory.loading || subcategory.results === undefined">&nbsp;</p>
-                <p v-else-if="subcategory.results.length === 0">Empty</p>
+                <div v-else-if="subcategory.results.length === 0" class="catalog-result empty">
+                  <q-icon name="ion-information-circle-outline" size="20px" /> No items found in this subcategory
+                </div>
                 <catalog-result
                   v-else
                   v-for="(result, index) in subcategory.results"
@@ -96,6 +99,11 @@ export default {
         return category.parent === id
       })
     },
+    categoryChange (category) {
+      category.subcategories.forEach(subcategory => {
+        this.subcategoryChange(subcategory)
+      })
+    },
     getSubcategoriesResults (category) {
       let api = this.$store.config.catalog.search
       let apiUrl = api + '?category_id=' + category.id
@@ -118,3 +126,34 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.catalog-panel {
+  .categories {
+    .q-item.category {
+      padding-left: 10px;
+      font-size: 1.2em;
+      font-weight: 500;
+      background-color: #dfdfdf;
+      border-bottom: 1px solid #ebeef5;
+
+      &:hover {
+        background-color: #a1d7f5;
+      }
+    }
+    .q-item.subcategory  {
+      padding-left: 20px;
+      font-size: 1.1em;
+      background-color: #f5f5f5;
+      border-bottom: 1px solid #ebeef5;
+
+      &:hover {
+        background-color: #a1d7f5;
+      }
+    }
+    .catalog-result.empty {
+      padding-top: 15px;
+    }
+  }
+}
+</style>
