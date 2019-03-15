@@ -103,7 +103,9 @@ export default {
       this.resultsPartials = {}
       this.searchEmpty = false
       this.searchError = false
-      this.resultsLayer.clearLayers()
+      if (this.resultsLayer) {
+        this.resultsLayer.clearLayers()
+      }
 
       if (this.q === undefined || this.q === '') {
         return
