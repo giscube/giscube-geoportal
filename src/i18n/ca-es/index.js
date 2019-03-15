@@ -21,6 +21,31 @@ export default {
     },
     print: { header_name: 'Impressió' },
     streetview: { header_name: 'Street View' },
-    fullscreen: { header_name: 'Pantalla complerta' }
-  }
+    fullscreen: { header_name: 'Pantalla complerta' },
+    data: {
+      header_name: 'Dades',
+      title: 'Capa de dades',
+      newElement: 'Nou element',
+      edit: 'Edita',
+      multipleNew: 'Afegir varis elements',
+      dialogNew: 'Mostrar formulari després d\'afegir la geometria',
+      editElements: 'Edita {elements}',
+      deleteElements: 'Elimina {elements}',
+      defaultProperties: 'Propietats per defecte dels nous elements',
+      stopDrawing: 'Deixar de dibuixar elements',
+      colFilter: 'Filtar per "{name}"'
+    }
+  },
+  true: 'Cert',
+  false: 'Fals',
+  yes: 'Sí',
+  no: 'No',
+  'empty value': 'Valor buit',
+  discard: 'Descarta',
+  save: 'Guarda',
+  cancel: 'Cancel·la',
+  ok: 'D\'acord',
+  delete: 'elimina',
+  new: 'nou',
+  element: 'cap element | {count} element | {count} elements'
 }

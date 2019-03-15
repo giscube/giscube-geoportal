@@ -28,14 +28,21 @@ module.exports = function (ctx) {
     framework: {
       components: [
         'QBtn',
+        'QBtnDropdown',
         'QBtnGroup',
+        'QBtnToggle',
+        'QCard',
+        'QCardSection',
+        'QCardActions',
         'QChip',
         'QCheckbox',
+        'QDialog',
         'QDrawer',
         'QExpansionItem',
         'QFooter',
         'QHeader',
         'QIcon',
+        'QInput',
         'QItem',
         'QItemLabel',
         'QItemSection',
@@ -45,14 +52,19 @@ module.exports = function (ctx) {
         'QPageContainer',
         'QPage',
         'QResizeObserver',
+        'QSelect',
         'QSeparator',
         'QSlider',
         'QSpace',
         'QSpinner',
         'QTab',
+        'QTable',
         'QTabs',
+        'QTd',
+        'QTh',
         'QToolbar',
-        'QToolbarTitle'
+        'QToolbarTitle',
+        'QTr'
       ],
 
       directives: [

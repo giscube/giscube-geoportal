@@ -2,11 +2,14 @@
   <q-page class="max-height" :style="containerStyle">
     <!-- :options='getMapOptions()' -->
     <v-map ref='map'
-           :zoom='$store.config.home.zoom'
-           :center="$store.config.home.center"
-           @l-ready='onMapReady'>
+      :zoom='$store.config.home.zoom'
+      :center="$store.config.home.center"
+      :options="mapOptions"
+      @l-ready='onMapReady'
+    >
       <LayersControl ref="layersControl"></LayersControl>
       <query-on-click></query-on-click>
+      <l-geo-json ref='editGeoJsonLayer' v-if="editLayerGeojson && editLayerOptions" :geojson="editLayerGeojson" :options="editLayerOptions"></l-geo-json>
     </v-map>
 
     <q-resize-observer @resize="onResize" />
@@ -14,7 +17,7 @@
 </template>
 
 <script>
-import L from 'leaflet'
+import L from '../lib/leaflet'
 import Vue2Leaflet from 'vue2-leaflet'
 
 import QueryOnClick from 'components/QueryOnClick.vue'
@@ -25,6 +28,7 @@ require('microdisseny-leaflet-measure/dist/leaflet-measure.css')
 export default {
   components: {
     'v-map': Vue2Leaflet.Map,
+    'l-geo-json': Vue2Leaflet.GeoJSON,
     'query-on-click': QueryOnClick,
     LayersControl
   },
@@ -33,10 +37,22 @@ export default {
       map: null,
       containerStyle: {
         width: null
+      },
+      mapOptions: {
+        editable: true
       }
     }
   },
   computed: {
+    editLayerGeojson () {
+      return this.$store.state.dataLayer.geojson
+    },
+    editLayerOptions () {
+      return this.$store.state.dataLayer.layerConfig.options
+    },
+    editing () {
+      return this.$store.state.dataLayer.editStatus.editing
+    },
     resultsLayer () {
       return this.$store.state.resultsLayer
     }
@@ -115,6 +131,7 @@ export default {
       this.addControls()
       this.addBaseMaps()
       this.resultsLayer.addTo(this.map)
+      this.$store.commit('map/mapObject', this.map)
       this.$emit('map-ready', this.map)
     },
     onResize (size) {

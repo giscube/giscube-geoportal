@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import L from 'leaflet'
+import L from '../lib/leaflet'
 import draggable from 'vuedraggable'
 
 import LayerItem from 'components/LayerItem.vue'

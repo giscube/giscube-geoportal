@@ -2,7 +2,9 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import config from '../config'
 
+import dataLayer from './module-data-layer'
 import layout from './module-layout'
+import map from './module-map'
 
 Vue.use(Vuex)
 
@@ -14,11 +16,12 @@ Vue.use(Vuex)
 export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
     modules: {
-      layout
+      dataLayer,
+      layout,
+      map
     },
     state: {
       currentTool: null,
-      map: null,
       searchQ: '',
       searching: false,
       count: 0,
@@ -37,10 +40,6 @@ export default function (/* { ssrContext } */) {
       },
       setCurrentTool: (state, value) => {
         state.currentTool = value
-      },
-      setMap: (state, map) => {
-        state.map = map
-        console.log('MAP now set', state)
       },
       setQuery: (state, query) => {
         state.query = query

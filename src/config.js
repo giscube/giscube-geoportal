@@ -68,8 +68,8 @@ export default new Options({
     }
   },
   catalog: {
-    'categories': 'http://www.giscube.org/apps/giscube-admin/api/v1/giscube/category/',
-    'search': 'http://www.giscube.org/apps/giscube-admin/geoportal/catalog/'
+    'categories': 'https://www.giscube.org/apps/giscube-admin/api/v1/giscube/category/',
+    'search': 'https://www.giscube.org/apps/giscube-admin/geoportal/catalog/'
   },
   home: {
     'zoom': 15,
@@ -82,13 +82,13 @@ export default new Options({
     {
       'name': 'geoportal',
       'title': 'Geoportal search',
-      'url': 'http://www.giscube.org/apps/giscube/geoportal/search/'
+      'url': 'https://www.giscube.org/apps/giscube/geoportal/search/'
     },
     {
       'name': 'place',
       'title': 'General search',
       'is_geojson': true,
-      'url': 'http://www.giscube.org/apps/indexer/search/'
+      'url': 'https://www.giscube.org/apps/indexer/search/'
     }
   ],
   basemaps: [
@@ -118,6 +118,12 @@ export default new Options({
       minZoom: 0,
       maxZoom: 20,
       ext: 'png'
+    }
+  ],
+  editsources: [
+    {
+      name: 'Giscube',
+      url: 'https://www.giscube.org/apps/giscube-admin/layerserver/databaselayers/'
     }
   ]
 })
