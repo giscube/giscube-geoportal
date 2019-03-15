@@ -12,6 +12,8 @@
         @event="emit"
       />
 
+      <!-- FIXME: config -->
+      <edit-menu />
       <q-space class="lt-sm" />
       <q-btn flat icon="menu" class="lt-sm">
         <q-menu>
@@ -35,6 +37,8 @@
 </template>
 
 <script>
+// FIXME: config
+import EditMenu from './data-layer/EditMenu.vue'
 import HeaderItemHolder from './HeaderItemHolder.vue'
 
 export default {
@@ -43,6 +47,8 @@ export default {
     'brandText'
   ],
   components: {
+    // FIXME: config
+    EditMenu,
     HeaderItemHolder
   },
   computed: {

@@ -28,7 +28,7 @@
 
 <script>
 import { debounce } from 'quasar'
-import L from 'leaflet'
+import L from '../lib/leaflet'
 const worldBounds = L.latLngBounds([[-90, -180], [90, 180]])
 
 export default {

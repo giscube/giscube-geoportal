@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import L from 'leaflet'
+import L from '../lib/leaflet'
 import axios from 'axios'
 import convert from 'xml-js'
 
