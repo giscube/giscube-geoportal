@@ -5,7 +5,7 @@
   >
     <!-- Fixed navbar -->
     <!-- AppHeader -->
-    <component :is="$config.layout.appHeader"
+    <component :is="$config.layout.header"
         v-if="!printPreview"
         ref="header"
         @home='navHome'

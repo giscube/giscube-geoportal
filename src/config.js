@@ -2,9 +2,58 @@ import Options from './options.js'
 
 export default new Options({
   layout: {
-    appHeader: () => import('components/AppHeader.vue'),
+    /* components: { */
+    header: () => import('components/AppHeader.vue'),
     geoportalMap: () => import('components/GeoportalMap.vue'),
-    printHeader: () => import('components/PrintHeader.vue')
+    printHeader: () => import('components/PrintHeader.vue'),
+
+    headerToolbar: [
+      'home',
+      'search',
+      'catalog',
+      'contact',
+      'measure',
+      'print',
+      '----------',
+      'fullscreen'
+    ]
+  },
+  tools: {
+    catalog: {
+      icon: 'ion-compass',
+      to: 'catalog'
+    },
+    contact: {
+      icon: 'email',
+      to: 'contact'
+    },
+    fullscreen: {
+      supported () {
+        return this.$q.fullscreen.isCapable
+      },
+      icon () {
+        return this.$q.fullscreen.isActive ? 'fullscreen_exit' : 'fullscreen'
+      },
+      action () {
+        this.$q.fullscreen.toggle()
+      }
+    },
+    home: {
+      icon: 'home',
+      to: 'home'
+    },
+    measure: {
+      icon: 'mdi-ruler',
+      to: 'measure'
+    },
+    print: {
+      icon: 'print',
+      emit: 'print'
+    },
+    search: {
+      icon: 'search',
+      to: 'search'
+    }
   },
   catalog: {
     'categories': 'https://mapes.salt.cat/apps/giscube-admin/api/v1/giscube/category/',
