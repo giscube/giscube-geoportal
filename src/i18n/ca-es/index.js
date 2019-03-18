@@ -10,10 +10,10 @@ export default {
     measure: {
       header_name: 'Mesurar',
       title: 'Mesurar',
-      explanation: 'Si us plau, triï el tipus de mesura, i seguidament cliqui el mapa. Pot fer doble clic per acabar la mesura.',
+      explanation: 'Escolliu tipus de mesura, i seguidament cliqueu el mapa. Podeu fer doble clic per acabar la mesura.',
       path: 'Línia',
       area: 'Àrea',
-      stop: 'Para de mesurar'
+      stop: 'Parar de mesurar'
     },
     print: { header_name: 'Impressió' },
     fullscreen: { header_name: 'Pantalla complerta' }
