@@ -154,8 +154,7 @@ aside.q-drawer--left {
 }
 
 .panel-content {
-    padding: 0 20px 15px 20px;
-    margin-top: 15px;
+    padding: 15px 20px 15px 20px;
 }
 .panel-title {
   font-size: 1.5em;
