@@ -10,7 +10,7 @@
   <q-item
     v-else-if="supported"
     clickable
-    v-close-menu
+    v-close-popup
     :to="to"
     @click="_onClick"
   >

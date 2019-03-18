@@ -56,7 +56,7 @@ module.exports = function (ctx) {
       ],
 
       directives: [
-        'CloseMenu',
+        'ClosePopup',
         'Ripple'
       ],
 
