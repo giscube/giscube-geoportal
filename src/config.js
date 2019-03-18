@@ -11,6 +11,7 @@ export default new Options({
       'home',
       'search',
       'catalog',
+      'streetview',
       'contact',
       'measure',
       'print',
@@ -53,6 +54,11 @@ export default new Options({
     search: {
       icon: 'search',
       to: 'search'
+    },
+    streetview: {
+      icon: 'fas fa-street-view',
+      to: 'streetview',
+      apiKey: 'AIzaSyA-T7DgvIL7-hohqVZosujoiLPfgQWFAPw'
     }
   },
   catalog: {

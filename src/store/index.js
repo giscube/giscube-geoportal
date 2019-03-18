@@ -25,7 +25,8 @@ export default function (/* { ssrContext } */) {
       result: null,
       resultsLayer: null,
       autoselectResult: false,
-      sidebarVisible: null
+      sidebarVisible: null,
+      query: null
     },
     mutations: {
       createResultsLayer: (state, value) => {
