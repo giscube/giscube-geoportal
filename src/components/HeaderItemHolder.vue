@@ -3,6 +3,9 @@
     v-if="item.separator && !menu"
     vertical
   />
+  <div
+    v-else-if="item.separator"
+  ></div>
   <q-space
     v-else-if="item.spacer && !menu"
   />
