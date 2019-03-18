@@ -5,7 +5,10 @@ export default {
   tools: {
     home: { header_name: 'Home' },
     search: { header_name: 'Search' },
-    catalog: { header_name: 'Catalog' },
+    catalog: {
+      header_name: 'Catalog',
+      title: 'Catalog'
+    },
     contact: { header_name: 'Contact' },
     measure: {
       header_name: 'Measure',
