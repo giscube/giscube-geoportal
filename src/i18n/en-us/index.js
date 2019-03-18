@@ -7,7 +7,8 @@ export default {
     search: { header_name: 'Search' },
     catalog: {
       header_name: 'Catalog',
-      title: 'Catalog'
+      title: 'Catalog',
+      add_to_map: 'Add to map'
     },
     contact: { header_name: 'Contact' },
     measure: {
