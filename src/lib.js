@@ -13,6 +13,7 @@ import SearchBar from 'components/SearchBar'
 import SearchPanel from 'components/SearchPanel'
 import QueryOnClick from 'components/QueryOnClick'
 import LayersControl from 'components/LayersControl'
+import StreetViewPanel from 'components/StreetViewPanel'
 import store from './store/index.js'
 import config from './config.js'
 import i18n from './i18n/index.js'
@@ -33,6 +34,7 @@ export {
   SearchPanel,
   QueryOnClick,
   LayersControl,
+  StreetViewPanel,
   store,
   config,
   i18n

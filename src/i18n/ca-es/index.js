@@ -20,6 +20,7 @@ export default {
       stop: 'Parar de mesurar'
     },
     print: { header_name: 'Impressió' },
+    streetview: { header_name: 'Street View' },
     fullscreen: { header_name: 'Pantalla complerta' }
   }
 }
