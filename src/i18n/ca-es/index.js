@@ -7,7 +7,8 @@ export default {
     search: { header_name: 'Cerca' },
     catalog: {
       header_name: 'Catàleg',
-      title: 'Catàleg'
+      title: 'Catàleg',
+      add_to_map: 'Afegir al mapa'
     },
     contact: { header_name: 'Contacte' },
     measure: {
