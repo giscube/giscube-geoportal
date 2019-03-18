@@ -1,7 +1,7 @@
 <template>
   <div class="panel catalog-panel">
     <div class="panel-content">
-      <p class="panel-title">Catalog</p>
+      <p class="panel-title">{{ t('title') }}</p>
 
       <div class="categories">
         <q-list>
@@ -122,6 +122,9 @@ export default {
         Vue.set(category, 'loading', true)
         this.getSubcategoriesResults(category)
       }
+    },
+    t (key) {
+      return this.$t('tools.catalog.' + key)
     }
   }
 }

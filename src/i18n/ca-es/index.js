@@ -5,7 +5,10 @@ export default {
   tools: {
     home: { header_name: 'Inici' },
     search: { header_name: 'Cerca' },
-    catalog: { header_name: 'Catàleg' },
+    catalog: {
+      header_name: 'Catàleg',
+      title: 'Catàleg'
+    },
     contact: { header_name: 'Contacte' },
     measure: {
       header_name: 'Mesurar',
