@@ -168,10 +168,13 @@ export default {
       let position = this.panorama.getPosition()
       let latlng = { lat: position.lat(), lng: position.lng() }
       this.marker.setLatLng(latlng)
-      this.panorama.setPov({
-        heading: this.getHeading(),
+      const povOptions = {
         pitch: 0
-      })
+      }
+      if (this.$store.state.query) {
+        povOptions.heading = this.getHeading()
+      }
+      this.panorama.setPov(povOptions)
     },
     queryChanged () {
       if (this.$store.state.query) {
