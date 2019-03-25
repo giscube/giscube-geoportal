@@ -275,7 +275,7 @@ export default {
       })
 
       if (this.mapFilter) {
-        const bbox = this.$store.getters['map/bbox']
+        const bbox = this.$store.getters['map/bbox']()
         if (bbox) {
           args.extraParams.in_bbox = bbox.join(',')
         }

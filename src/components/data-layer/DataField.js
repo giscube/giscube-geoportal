@@ -95,6 +95,8 @@ const WIDGETS = {
     const values = this.fieldInfo.valuesDict
     widget.props.options = Object.keys(values).map(key => ({ label: values[key], value: key }))
 
+    widget.props['display-value'] = values[widget.props.value]
+
     widget.on.input = value => {
       this.value[this.fieldInfo.name] = value ? value.value : value
       this.$emit('input', this.value)
