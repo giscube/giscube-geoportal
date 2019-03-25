@@ -4,7 +4,7 @@
     :value="value"
     persistent
   >
-    <q-card style="min-width: 70ch">
+    <q-card style="min-width: 70ch; max-height: 100%">
       <q-card-section>
         <data-form
           :fields="fields"
