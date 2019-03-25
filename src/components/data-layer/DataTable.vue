@@ -19,6 +19,7 @@
     >
       <q-th
         :props="props"
+        :class="{ actions: props.col.name === '__actions' }"
       >
         {{ props.col.label }}
         <q-btn
@@ -416,12 +417,20 @@ export default {
   background-color: #fff;
 }
 
-.q-table tbody tr.deleted {
-  background-color: red;
+.q-table th.actions {
+  width: 1px;
 }
-.q-table tbody tr.deleted.selected,
-.q-table tbody tr.deleted:hover {
-  background-color: yellow;
-}
+</style>
 
+<style lang="stylus">
+@import '~quasar-variables'
+
+.q-table tbody tr.deleted
+  background-color $red-5
+
+.q-table tbody tr.deleted.selected
+  background-color $red-4
+
+.q-table tbody tr.deleted:hover
+  background-color $red-3
 </style>

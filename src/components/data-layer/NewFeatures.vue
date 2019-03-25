@@ -118,7 +118,7 @@ export default {
       }
 
       // Cleanup and save the result
-      this.$store.commit('map/stopDrawing')
+      this.$store.dispatch('map/stopDrawing')
       this.popup = false
       this.currentFeature = null
       this.adding = false

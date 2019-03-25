@@ -216,7 +216,7 @@ export default {
         .then(stopSelecting, stopSelecting)
     },
     cancelPolygonSelection () {
-      this.$store.commit('map/stopDrawing')
+      this.$store.dispatch('map/stopDrawing')
     },
     startDrawing () {
       this.$refs.newFeatures.start()

@@ -235,7 +235,7 @@ export function drawGeometry (context) {
 }
 
 export function stopDrawing (context) {
-  context.commit('map/stopDrawing')
+  context.dispatch('map/stopDrawing')
 }
 
 export function addNewFeature (context, feature) {

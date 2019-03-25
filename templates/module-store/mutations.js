@@ -1,3 +1,2 @@
-export function mapObject (state, value) {
-  state.mapObject = value
+export function someMutation (/* state, value */) {
 }
