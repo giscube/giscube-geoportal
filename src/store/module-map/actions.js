@@ -1,5 +1,5 @@
-export function stopDrawing (state) {
-  if (state.mapObject.editTools.drawing()) {
-    state.mapObject.editTools.stopDrawing()
+export function stopDrawing (context) {
+  if (context.state.mapObject.editTools.drawing()) {
+    context.state.mapObject.editTools.stopDrawing()
   }
 }
