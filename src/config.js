@@ -18,6 +18,7 @@ export default new Options({
       'search',
       'catalog',
       'streetview',
+      'data',
       'contact',
       'measure',
       'print',
@@ -33,6 +34,10 @@ export default new Options({
     contact: {
       icon: 'email',
       to: 'contact'
+    },
+    data: {
+      icon: 'edit',
+      to: 'data'
     },
     fullscreen: {
       supported () {

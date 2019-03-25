@@ -3,10 +3,14 @@
 
     <div class="panel-content">
       <div class="row items-center">
-        <p class="panel-title">{{ t('title') }}</p>
+        <layers-list
+          class="q-mr-md q-mb-md"
+          v-model="layersListOpen"
+        />
         <q-space />
         <q-btn
-          v-show="$store.state.dataLayer.geojson && !editing"
+          v-show="layerLoaded && $store.state.dataLayer.geojson && !editing"
+          class="q-mb-md"
           :label="t('edit')"
           @click="$store.dispatch('dataLayer/startEditing')"
         />
@@ -28,7 +32,7 @@
         </q-btn-group>
       </div>
       <div
-        v-show="!editing"
+        v-show="layerLoaded && !editing"
         class="row items-center"
       >
         <span>Filters:</span>
@@ -63,7 +67,7 @@
         </q-btn>
       </div>
       <div
-        v-show="editing"
+        v-show="layerLoaded && editing"
         class="row items-center"
       >
         <q-btn
@@ -119,6 +123,7 @@
 
       <!-- Table with all the data logic -->
       <data-table
+        v-show="layerLoaded"
         ref="dataTable"
         class="q-my-md"
         :filter="filter"
@@ -152,6 +157,7 @@
 import DataTable from './DataTable'
 import DataForm from './DataForm'
 import DataFormDialog from './DataFormDialog'
+import LayersList from './LayersList'
 import NewFeatures from './NewFeatures'
 
 export default {
@@ -159,10 +165,12 @@ export default {
     DataForm,
     DataFormDialog,
     DataTable,
+    LayersList,
     NewFeatures
   },
   data () {
     return {
+      layersListOpen: false,
       filter: '',
       mapFilter: false,
       defaultProperties: {},
@@ -194,8 +202,12 @@ export default {
     next(vm => vm.selectLayer(to.params.sourceName, to.params.layerName))
   },
   beforeRouteUpdate (to, from, next) {
-    this.selectLayer(to.params.sourceName, to.params.layerName)
-    next()
+    if (!this.editing) {
+      this.selectLayer(to.params.sourceName, to.params.layerName)
+      next()
+    } else {
+      next(false)
+    }
   },
   beforeRouteLeave (to, from, next) {
     this.$store.commit('setCurrentTool', null)
@@ -207,7 +219,16 @@ export default {
     },
     selectLayer (sourceName, layerName) {
       this.$store.commit('setCurrentTool', 'data')
-      this.$store.dispatch('dataLayer/selectLayer', { sourceName, layerName })
+      if (sourceName && layerName) {
+        this.$store.dispatch('dataLayer/verifySourcesLoaded')
+          .then(_ => {
+            this.$store.dispatch('dataLayer/selectLayer', { sourceName, layerName })
+          })
+      } else {
+        this.layersListOpen = true
+        this.$store.commit('dataLayer/current', null)
+        this.$store.dispatch('dataLayer/verifySourcesLoaded')
+      }
     },
     selectByPolygon () {
       this.selecting = true
