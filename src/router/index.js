@@ -25,7 +25,7 @@ const routes = [
       { path: 'place/:q*', component: PlacePanel, name: 'place' },
       { path: 'search/:q*', component: SearchPanel, name: 'search' },
       { path: 'geoportal/:q/', component: GeoportalPanel },
-      { path: 'data/:sourceName/:layerName/', component: Panel, name: 'data' },
+      { path: 'data/:sourceName?/:layerName?/', component: Panel, name: 'data' },
       { path: 'streetview/:q?', component: StreetViewPanel, name: 'streetview' }
     ]
   }

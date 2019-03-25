@@ -11,9 +11,14 @@ export function current (state, value) {
     console.error('Trying to change layers while editing')
     return
   }
-  Vue.set(state, 'current', value)
+  state.current = value
+  state.geojson = null
+  state.layerConfig.layerInfo = null
   state.table.selected = []
   state.editStatus.editing = false
+  state.editStatus.adding = false
+  state.editStatus.originals = {}
+  state.editStatus.newPkGenerator = null
 }
 
 export function layerInfoFromRequest (state, value) {
