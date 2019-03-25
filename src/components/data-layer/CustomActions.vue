@@ -68,9 +68,3 @@ export default {
   }
 }
 </script>
-
-<style>
-.custom-actions {
-  text-align: center;
-}
-</style>
