@@ -1,7 +1,7 @@
 <template>
   <q-header class="giscube-header">
     <q-toolbar class="giscube-toolbar-buttons">
-      <a class="giscube-header-brand" href="#"><img src="../assets/logo_giscube.svg"><span>Giscube Geoportal</span></a>
+      <a class="giscube-header-brand" href="#"><img :src="brandLogo"><span>{{ brandText }}</span></a>
 
       <header-item-holder
         v-for="(item, i) in headerTools"
@@ -39,7 +39,8 @@ import HeaderItemHolder from './HeaderItemHolder.vue'
 
 export default {
   props: [
-    'brand'
+    'brandLogo',
+    'brandText'
   ],
   components: {
     HeaderItemHolder

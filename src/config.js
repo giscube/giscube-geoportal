@@ -1,6 +1,12 @@
 import Options from './options.js'
 
 export default new Options({
+  branding: {
+    header: {
+      logo: '../assets/logo_giscube.svg',
+      text: 'Giscube Geoportal'
+    }
+  },
   layout: {
     /* components: { */
     header: () => import('components/AppHeader.vue'),

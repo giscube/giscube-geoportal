@@ -3,11 +3,12 @@
     class="max-height"
     :class="appClasses"
   >
-    <!-- Fixed navbar -->
     <!-- AppHeader -->
     <component :is="$config.layout.header"
         v-if="!printPreview"
         ref="header"
+        :brand-logo="$config.branding.header.logo"
+        :brand-text="$config.branding.header.text"
         @home='navHome'
         @print="print"
         @sidebar-visibility-changed="onVisibilityChanged"
