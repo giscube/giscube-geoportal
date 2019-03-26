@@ -6,7 +6,7 @@
       dense
       size="sm"
       icon="undo"
-      :disabled="!edited"
+      :disabled="!edited || saving"
       @click="revertItem()"
     />
     <q-btn
@@ -14,7 +14,7 @@
       dense
       size="sm"
       icon="edit"
-      :disabled="deleted || !editing"
+      :disabled="deleted || !editing || saving"
       @click="editItem(rowData, rowIndex)"
     />
 
@@ -42,6 +42,9 @@ export default {
     },
     edited () {
       return this.editing && this.rowData.getPk && this.rowData.getPk() in this.originals
+    },
+    saving () {
+      return this.$store.state.dataLayer.editStatus.saving
     }
   },
   methods: {

@@ -9,6 +9,7 @@ export default {
   editStatus: {
     editing: false,
     adding: false,
+    saving: false,
     originals: {},
     newPkGenerator: null
   },
