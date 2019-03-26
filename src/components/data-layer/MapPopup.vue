@@ -9,11 +9,13 @@
       <q-btn flat
         v-show="editing && !feature.status.deleted"
         icon="edit"
+        :disable="saving"
         @click="edit"
       />
       <q-btn flat
         v-show="editing"
         icon="delete"
+        :disable="saving"
         @click="remove"
       />
     </div>
@@ -26,6 +28,9 @@ export default {
   computed: {
     editing () {
       return this.$store.getters['dataLayer/editing']
+    },
+    saving () {
+      return this.$store.state.dataLayer.editStatus.saving
     }
   },
   methods: {

@@ -102,6 +102,10 @@ export function adding (state, value) {
   state.editStatus.adding = value
 }
 
+export function saving (state, value) {
+  state.editStatus.saving = value
+}
+
 export function geojson (state, value) {
   state.geojson = value
 }
