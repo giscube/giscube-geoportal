@@ -7,13 +7,13 @@
         @input="select"
       />
       <q-btn flat
+        v-show="editing && !feature.status.deleted"
         icon="edit"
-        :disabled="!editing || feature.status.deleted"
         @click="edit"
       />
       <q-btn flat
+        v-show="editing"
         icon="delete"
-        :disabled="!editing"
         @click="remove"
       />
     </div>
