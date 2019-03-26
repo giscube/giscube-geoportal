@@ -52,7 +52,10 @@ export default {
         for (let field of this.fields) {
           let current
           for (let e of newData) {
-            const value = e.properties[field.name]
+            let value = e.properties[field.name]
+            if (value === '' || value === undefined) {
+              value = null
+            }
             if (current === undefined) {
               current = value
             } else if (MultiResult.is(current)) {
