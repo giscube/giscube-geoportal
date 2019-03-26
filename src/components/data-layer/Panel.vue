@@ -15,25 +15,22 @@
           @click="$store.dispatch('dataLayer/startEditing')"
         />
         <q-btn-group
-          v-if="editing"
+          v-show="editing"
         >
           <q-btn
-            v-show="!changed"
-            :disable="adding"
+            v-show="!changed && !adding"
             :label="$t('cancel')"
             @click="$store.dispatch('dataLayer/cancelEdits')"
           />
           <q-btn
-            v-show="changed"
-            :disable="adding"
+            v-show="changed && !adding"
             :label="$t('discard')"
             @click="onDiscard"
           />
           <q-btn
-            v-if="changed"
+            v-if="changed && !adding"
             :label="$t('save')"
             icon="save"
-            :disable="adding || !changed"
             @click="onSave"
           />
         </q-btn-group>
