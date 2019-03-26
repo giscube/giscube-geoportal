@@ -18,18 +18,19 @@
           v-show="editing"
         >
           <q-btn
-            v-show="!changed && !adding"
+            v-show="!changed && !adding && !saving"
             :label="$t('cancel')"
             @click="$store.dispatch('dataLayer/cancelEdits')"
           />
           <q-btn
-            v-show="changed && !adding"
+            v-show="changed && !adding && !saving"
             :label="$t('discard')"
             @click="onDiscard"
           />
           <q-btn
             v-if="changed && !adding"
             :label="$t('save')"
+            :loading="saving"
             icon="save"
             @click="onSave"
           />
@@ -77,12 +78,14 @@
         <q-btn
           v-show="adding"
           :label="t('stopDrawing')"
+          :disable="saving"
           @click="stopDrawing"
         />
         <q-btn-dropdown
           v-show="!adding"
           split
           :label="t('newElement')"
+          :disable="saving"
           @click="startDrawing"
         >
           <div class="column q-pa-md">
@@ -109,6 +112,7 @@
           class="q-mx-md"
           split
           :label="t('editElements', {elements: $tc('element', visibleSelected.length, {count: visibleSelected.length})})"
+          :disable="saving"
           @click="editSelected"
         >
         <q-list>
@@ -200,6 +204,14 @@ export default {
     },
     adding () {
       return this.$store.state.dataLayer.editStatus.adding
+    },
+    saving: {
+      get () {
+        return this.$store.state.dataLayer.editStatus.saving
+      },
+      set (value) {
+        this.$store.commit('dataLayer/saving', value)
+      }
     }
   },
   beforeRouteEnter (to, from, next) {
@@ -293,9 +305,13 @@ export default {
       })
     },
     onSave () {
+      this.saving = true
       this.$store.dispatch('dataLayer/saveEdits')
         .then(_ => {
           this.$refs.dataTable.refreshDataNow()
+        })
+        .finally(_ => {
+          this.saving = false
         })
     }
   }
