@@ -18,9 +18,16 @@
           v-if="editing"
         >
           <q-btn
+            v-show="!changed"
             :disable="adding"
-            :label="changed ? $t('discard') : $t('cancel')"
+            :label="$t('cancel')"
             @click="$store.dispatch('dataLayer/cancelEdits')"
+          />
+          <q-btn
+            v-show="changed"
+            :disable="adding"
+            :label="$t('discard')"
+            @click="onDiscard"
           />
           <q-btn
             v-if="changed"
@@ -271,6 +278,22 @@ export default {
     deleteEditedFeature () {
       this.editedFeature.status.deleted = !this.editedFeature.status.deleted
       this.cancelPropertiesEdit()
+    },
+    onDiscard () {
+      this.$q.dialog({
+        message: 'Are you sure you want to discard all the changes?',
+        ok: {
+          flat: true,
+          label: this.$t('yes')
+        },
+        cancel: {
+          flat: true,
+          label: this.$t('no')
+        },
+        persistent: true
+      }).onOk(_ => {
+        this.$store.dispatch('dataLayer/cancelEdits')
+      })
     },
     onSave () {
       this.$store.dispatch('dataLayer/saveEdits')
