@@ -52,7 +52,20 @@ export default {
       this.$emit('edit', this.rowData)
     },
     revertItem () {
-      this.$store.commit('dataLayer/revertFeature', this.rowData)
+      this.$q.dialog({
+        message: 'Are you sure you want to undo the changes in this element?',
+        ok: {
+          flat: true,
+          label: this.$t('yes')
+        },
+        cancel: {
+          flat: true,
+          label: this.$t('no')
+        },
+        persistent: true
+      }).onOk(_ => {
+        this.$store.commit('dataLayer/revertFeature', this.rowData)
+      })
     }
   }
 }
