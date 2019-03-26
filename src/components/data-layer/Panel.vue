@@ -81,32 +81,22 @@
           :disable="saving"
           @click="stopDrawing"
         />
-        <q-btn-dropdown
+        <q-btn-group
           v-show="!adding"
-          split
-          :label="t('newElement')"
-          :disable="saving"
-          @click="startDrawing"
         >
-          <div class="column q-pa-md">
-            <div>{{ t('defaultProperties') }}</div>
-            <data-form
-              :fields="$store.getters['dataLayer/fields']"
-              :data="[{ properties: defaultProperties }]"
-              @change="defaultProperties = $event"
-              style="width: 50ch"
-              class="q-mb-md"
-            />
-            <q-checkbox
-              v-model="editMultiple"
-              :label="t('multipleNew')"
-            />
-            <q-checkbox
-              v-model="dialogForNew"
-              :label="t('dialogNew')"
-            />
-          </div>
-        </q-btn-dropdown>
+          <q-btn
+            :label="t('newElement')"
+            :disable="saving"
+            @click="startDrawing"
+          />
+          <q-btn
+            icon="settings"
+            size="xs"
+            dense
+            class="q-px-sm"
+            @click="defaultsDialog = true"
+          />
+        </q-btn-group>
         <q-btn-dropdown
           v-show="!adding && visibleSelected.length > 0"
           class="q-mx-md"
@@ -150,6 +140,36 @@
       @cancel="cancelPropertiesEdit"
       @delete="deleteEditedFeature"
     />
+    <q-dialog
+      v-model="defaultsDialog"
+    >
+      <q-card>
+        <q-card-section>
+          <div class="text-h6">{{ t('defaultProperties') }}</div>
+        </q-card-section>
+        <q-card-section class="column q-pa-md">
+          <data-form
+            :fields="$store.getters['dataLayer/fields']"
+            :data="[{ properties: defaultProperties }]"
+            @change="defaultProperties = $event"
+            style="width: 50ch"
+            class="q-mb-md"
+          />
+          <q-checkbox
+            v-model="editMultiple"
+            :label="t('multipleNew')"
+          />
+          <q-checkbox
+            v-model="dialogForNew"
+            :label="t('dialogNew')"
+          />
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="OK" color="primary" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
     <new-features
       v-if="layerLoaded"
       ref="newFeatures"
@@ -181,6 +201,7 @@ export default {
       layersListOpen: false,
       filter: '',
       mapFilter: false,
+      defaultsDialog: false,
       defaultProperties: {},
       editMultiple: false,
       dialogForNew: true,
