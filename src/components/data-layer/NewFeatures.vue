@@ -32,6 +32,10 @@ export default {
     dialogForNew: {
       type: Boolean,
       required: true
+    },
+    selectNews: {
+      type: Boolean,
+      required: true
     }
   },
   data () {
@@ -102,6 +106,9 @@ export default {
     },
     _addCurrentFeature () {
       this.$store.dispatch('dataLayer/addNewFeature', this.currentFeature)
+      if (this.selectNews) {
+        this.$store.commit('dataLayer/select', [this.currentFeature])
+      }
       this._finish()
     },
     _finish () {

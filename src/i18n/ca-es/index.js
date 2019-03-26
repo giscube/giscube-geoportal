@@ -29,6 +29,7 @@ export default {
       edit: 'Edita',
       multipleNew: 'Afegir varis elements',
       dialogNew: 'Mostrar formulari després d\'afegir la geometria',
+      selectNews: 'Seleccionar els nous elements creats',
       editElements: 'Edita {elements}',
       deleteElements: 'Elimina {elements}',
       defaultProperties: 'Propietats per defecte dels nous elements',

@@ -140,9 +140,17 @@
       @cancel="cancelPropertiesEdit"
       @delete="deleteEditedFeature"
     />
-    <q-dialog
-      v-model="defaultsDialog"
-    >
+
+    <new-features
+      v-if="layerLoaded"
+      ref="newFeatures"
+      :defaultProperties="defaultProperties"
+      :editMultiple="editMultiple"
+      :dialogForNew="dialogForNew"
+      :selectNews="selectNews"
+    />
+
+    <q-dialog v-model="defaultsDialog">
       <q-card>
         <q-card-section>
           <div class="text-h6">{{ t('defaultProperties') }}</div>
@@ -163,20 +171,16 @@
             v-model="dialogForNew"
             :label="t('dialogNew')"
           />
+          <q-checkbox
+            v-model="selectNews"
+            :label="t('selectNews')"
+          />
         </q-card-section>
-
         <q-card-actions align="right">
           <q-btn flat label="OK" color="primary" v-close-popup />
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <new-features
-      v-if="layerLoaded"
-      ref="newFeatures"
-      :defaultProperties="defaultProperties"
-      :editMultiple="editMultiple"
-      :dialogForNew="dialogForNew"
-    />
   </div>
 </template>
 
@@ -204,6 +208,7 @@ export default {
       defaultsDialog: false,
       defaultProperties: {},
       editMultiple: false,
+      selectNews: false,
       dialogForNew: true,
       selecting: false,
       editedFeature: null,
