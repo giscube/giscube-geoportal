@@ -25,12 +25,22 @@ function input () {
   widget.props.clearable = this.fieldInfo.null
 
   // Multiple values at hint prop
-  if (this.isMuliple) {
-    const v = this.value[this.fieldInfo.name]
-    const cleanValues = []
-    v.values.forEach(value => {
-      cleanValues.push(value || `<${this.$t('empty value')}>`)
-    })
+  const v = this.value[this.fieldInfo.name]
+  if (MultiResult.is(v)) {
+    const cleanValues = [...v.values]
+      .sort((a, b) => {
+        if (a === null) {
+          return 1
+        } else if (b === null) {
+          return -1
+        } else if (typeof a === 'number' && typeof b === 'number') {
+          return a - b
+        } else {
+          return a.toString().localeCompare(b.toString())
+        }
+      })
+      .map(value => (value || `<${this.$t('empty value')}>`))
+
     widget.props.hint = `Multiple values: ${cleanValues.join(', ')}`
   } else {
     widget.props.hint = ''
