@@ -17,14 +17,6 @@
       :disabled="deleted || !editing"
       @click="editItem(rowData, rowIndex)"
     />
-    <q-btn
-      flat
-      dense
-      size="sm"
-      icon="delete"
-      :disabled="!editing"
-      @click="deleteItem(rowData, rowIndex)"
-    />
 
   </div>
 </template>
@@ -53,9 +45,6 @@ export default {
     }
   },
   methods: {
-    deleteItem (data, index) {
-      data.status.deleted = !data.status.deleted
-    },
     formClosed () {
       this.formVisible = false
     },
