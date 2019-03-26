@@ -29,6 +29,7 @@ export default {
       edit: 'Edit',
       multipleNew: 'Add multiple elements',
       dialogNew: 'Show form after adding an element',
+      selectNews: 'Select created elements',
       editElements: 'Edit {elements}',
       deleteElements: 'Delete {elements}',
       defaultProperties: 'Default properties of the new elements',
