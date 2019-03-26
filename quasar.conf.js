@@ -74,8 +74,9 @@ module.exports = function (ctx) {
 
       // Quasar plugins
       plugins: [
-        'Notify',
-        'AppFullscreen'
+        'AppFullscreen',
+        'Dialog',
+        'Notify'
       ]
 
       // iconSet: 'ionicons-v4'
