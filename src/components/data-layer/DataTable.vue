@@ -294,6 +294,7 @@ export default {
           this.pagination = pagination
           this.pagination.rowsNumber = data.count
           this.pagination.page = data.page
+          this.pagination.rowsPerPage = data.page_size
 
           const features = data.features
 
