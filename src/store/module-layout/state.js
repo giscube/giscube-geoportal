@@ -1,3 +1,4 @@
 export default {
-  mapSize: null
+  mapSize: null,
+  leftDrawerSize: 300
 }
