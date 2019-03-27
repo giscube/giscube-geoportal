@@ -27,7 +27,6 @@
 </template>
 
 <script>
-import { debounce } from 'quasar'
 import L from '../lib/leaflet'
 const worldBounds = L.latLngBounds([[-90, -180], [90, 180]])
 
@@ -36,13 +35,20 @@ export default {
   data () {
     return {
       resizeDiff: 0,
-      width: 300,
       widthPercentage: 30
     }
   },
   computed: {
     mapSize () {
       return this.$store.state.layout.mapSize
+    },
+    width: {
+      get: function () {
+        return this.$store.state.layout.leftDrawerSize
+      },
+      set: function (newValue) {
+        this.$store.commit('layout/leftDrawerSize', newValue)
+      }
     },
     sidebarVisible: {
       get: function () {
@@ -63,7 +69,8 @@ export default {
     document.documentElement.addEventListener('mouseleave', this.onToggleWidthMouseup)
 
     document.documentElement.addEventListener('touchmove', this.onToggleWidthMousemove, true)
-    document.documentElement.addEventListener('touchend touchcancel', this.onToggleWidthMouseup, true)
+    document.documentElement.addEventListener('touchend', this.onToggleWidthMouseup, true)
+    document.documentElement.addEventListener('touchcancel', this.onToggleWidthMouseup, true)
 
     this.$nextTick(() => {
       this.onResize()
@@ -76,7 +83,8 @@ export default {
     document.documentElement.removeEventListener('mouseleave', this.onToggleWidthMouseup)
 
     document.documentElement.removeEventListener('touchmove', this.onToggleWidthMousemove, true)
-    document.documentElement.removeEventListener('touchend touchcancel', this.onToggleWidthMouseup, true)
+    document.documentElement.removeEventListener('touchend', this.onToggleWidthMouseup, true)
+    document.documentElement.removeEventListener('touchcancel', this.onToggleWidthMouseup, true)
     document.documentElement.removeEventListener('touchstart', this.onToggleWidthMouseup, true)
   },
   methods: {
@@ -109,25 +117,23 @@ export default {
       return info
     },
     onResize () {
-      debounce(() => {
-        let width
-        let widthPercentage = this.widthPercentage
-        let rightMargin = 150
-        if (this.mapSize) {
-          if (this.mapSize.width < 600) {
-            // sidebar breakpoint set at 600px
-            widthPercentage = 95
-            rightMargin = 25
-          }
-          width = this.mapSize.width * widthPercentage / 100
-          width = Math.min(this.mapSize.width - rightMargin, width)
-          width = Math.max(300, width)
-        } else {
-          width = 300
+      let width
+      let widthPercentage = this.widthPercentage
+      let rightMargin = 150
+      if (this.mapSize) {
+        if (this.mapSize.width < 600) {
+          // sidebar breakpoint set at 600px
+          widthPercentage = 95
+          rightMargin = 25
         }
-        // this.width = Math.max(this.widthPercentage * 10, Math.min((this.widthPercentage + 10) * 100, width))
-        this.width = width
-      }, 300, true)()
+        width = this.mapSize.width * widthPercentage / 100
+        width = Math.min(this.mapSize.width - rightMargin, width)
+        width = Math.max(300, width)
+      } else {
+        width = 300
+      }
+      // this.width = Math.max(this.widthPercentage * 10, Math.min((this.widthPercentage + 10) * 100, width))
+      this.width = width
     },
     onToggleClick () {
       this.$store.commit('setSidebarVisible', !this.sidebarVisible)

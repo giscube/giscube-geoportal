@@ -133,6 +133,9 @@ export default {
     map () {
       return this.$store.state.map.mapObject
     },
+    leftDrawerSize () {
+      return this.$store.state.layout.leftDrawerSize
+    },
     currentLayer () {
       return this.$store.state.dataLayer.current
     },
@@ -216,6 +219,9 @@ export default {
     },
     mapFilter () {
       this.refreshDataNow()
+    },
+    leftDrawerSize () {
+      this.refreshData()
     }
   },
   methods: {
