@@ -13,7 +13,9 @@ function baseWidget () {
         this.$emit('input', this.value)
       }
     },
-    childs: []
+    childs: [],
+    validate: () => true,
+    resetValidation: () => {}
   }
 }
 
@@ -23,6 +25,17 @@ function input () {
   widget.props.readonly = this.readonly
   widget.props.label = this.label
   widget.props.clearable = this.fieldInfo.null
+  widget.props.rules = [
+    val => (val !== null && val !== undefined && val !== '') || this.t('requiredField')
+  ]
+
+  widget.validate = () => {
+    this.vWidget.validate()
+    return this.vWidget.hasError
+  }
+  widget.resetValidation = () => {
+    this.vWidget.resetValidation()
+  }
 
   // Multiple values at hint prop
   const v = this.value[this.fieldInfo.name]
@@ -57,7 +70,9 @@ const WIDGETS = {
   readonly () {
     return {
       el: 'p',
-      childs: [ this.value[this.fieldInfo.name] ]
+      childs: [ this.value[this.fieldInfo.name] ],
+      validate: () => true,
+      resetValidation: () => {}
     }
   },
   number () {
@@ -147,30 +162,47 @@ export default {
       required: true
     }
   },
+  computed: {
+    widget () {
+      let widget
+
+      if (this.fieldInfo.valuesDict) {
+        widget = WIDGETS.choices
+      } else {
+        widget = WIDGETS[this.fieldInfo.widget]
+      }
+      if (!widget) {
+        widget = WIDGETS.default
+      }
+
+      if (this.readonly) {
+        if (widget.readonly) {
+          widget = widget.readonly
+        }
+      } else {
+        if (widget.editable) {
+          widget = widget.editable
+        }
+      }
+
+      return widget.call(this)
+    },
+    vWidget () {
+      return this.$children[0]
+    }
+  },
+  methods: {
+    t (key, ...args) {
+      return this.$t('tools.data.' + key, ...args)
+    },
+    validate () {
+      return this.widget && this.widget.validate()
+    },
+    resetValidation () {
+      return this.widget && this.widget.resetValidation()
+    }
+  },
   render (createElement) {
-    // Getting the right widget
-    let widget
-    if (this.fieldInfo.valuesDict) {
-      widget = WIDGETS.choices
-    } else {
-      widget = WIDGETS[this.fieldInfo.widget]
-    }
-    if (!widget) {
-      widget = WIDGETS.default
-    }
-    if (this.readonly) {
-      if (widget.readonly) {
-        widget = widget.readonly
-      }
-    } else {
-      if (widget.editable) {
-        widget = widget.editable
-      }
-    }
-
-    // Load all the widget options
-    widget = widget.call(this)
-
-    return createElement(widget.el, { props: widget.props, on: widget.on }, widget.childs)
+    return createElement(this.widget.el, { props: this.widget.props, on: this.widget.on }, this.widget.childs)
   }
 }

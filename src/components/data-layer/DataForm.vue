@@ -72,6 +72,16 @@ export default {
       },
       immediate: true
     }
+  },
+  methods: {
+    validate () {
+      return this.$children
+        .map(field => field.validate())
+        .every(a => a)
+    },
+    resetValidation () {
+
+    }
   }
 }
 </script>

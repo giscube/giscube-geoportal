@@ -7,6 +7,7 @@
     <q-card style="min-width: 70ch; max-height: 100%">
       <q-card-section>
         <data-form
+          ref="form"
           :fields="fields"
           :data="data"
           :disable="disable"
@@ -26,9 +27,9 @@
           @click="$emit('cancel')"
         />
         <q-btn
-          v-show="!disable && !readonly"
+          v-show="result && !disable && !readonly"
           :label="$t('ok')"
-          @click="$emit('commit', result)"
+          @click="onOk"
         />
       </q-card-actions>
     </q-card>
@@ -67,6 +68,31 @@ export default {
   data () {
     return {
       result: null
+    }
+  },
+  methods: {
+    t (key, ...args) {
+      return this.$t('tools.data.' + key, ...args)
+    },
+    onOk () {
+      if (this.$refs.form.validate()) {
+        this.$emit('commit', this.result)
+      } else {
+        this.$q.dialog({
+          message: this.t('qInvalidCommit'),
+          ok: {
+            flat: true,
+            label: this.$t('yes')
+          },
+          cancel: {
+            flat: true,
+            label: this.$t('no')
+          },
+          persistent: true
+        }).onOk(_ => {
+          this.$emit('commit', this.result)
+        })
+      }
     }
   }
 }
