@@ -134,8 +134,7 @@
     <data-form-dialog
       v-if="editing && (editedFeature || editingSelected)"
       :value="true"
-      :fields="$store.getters['dataLayer/fields']"
-      :data="editedFeature ? [editedFeature] : visibleSelected"
+      :features="editedFeature ? [editedFeature] : visibleSelected"
       @commit="commitProperties"
       @cancel="cancelPropertiesEdit"
       @delete="deleteEditedFeature"
@@ -157,9 +156,8 @@
         </q-card-section>
         <q-card-section class="column q-pa-md">
           <data-form
-            :fields="$store.getters['dataLayer/fields']"
-            :data="[{ properties: defaultProperties }]"
-            @change="defaultProperties = $event"
+            :properties="defaultProperties"
+            @input="defaultProperties = $event"
             style="width: 50ch"
             class="q-mb-md"
           />

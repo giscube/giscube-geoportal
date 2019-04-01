@@ -34,7 +34,9 @@ export default {
       deleteElements: 'Delete {elements}',
       defaultProperties: 'Default properties of the new elements',
       stopDrawing: 'Stop drawing elements',
-      colFilter: 'Filter for "{label}"'
+      colFilter: 'Filter for "{label}"',
+      requiredField: 'Required Field',
+      qInvalidCommit: 'Some values seem to be invalid. Would you like to save anyways?'
     }
   },
   true: 'True',

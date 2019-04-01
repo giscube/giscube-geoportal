@@ -34,7 +34,9 @@ export default {
       deleteElements: 'Elimina {elements}',
       defaultProperties: 'Propietats per defecte dels nous elements',
       stopDrawing: 'Deixar de dibuixar elements',
-      colFilter: 'Filtar per "{name}"'
+      colFilter: 'Filtar per "{name}"',
+      requiredField: 'Camp obligatori',
+      qInvalidCommit: 'Sembla que algun valor és invalid. Voldrieu guardar igualment?'
     }
   },
   true: 'Cert',

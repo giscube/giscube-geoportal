@@ -1,5 +1,6 @@
 <template>
   <q-table
+    v-if="fields"
     ref="table"
     :data="features"
     :columns="columns"
@@ -63,22 +64,24 @@
         <q-td auto-width>
           <q-checkbox color="primary" v-model="props.selected" />
         </q-td>
-        <q-td
-          v-for="(col, i) in props.cols"
-          :key="'col-' + i + '-row-' + props.row.id "
-        >
+        <data-cell
+          v-for="field in fields"
+          :key="props.row + '-' + field.name"
+          :feature="props.row"
+          :field="field"
+        />
+        <q-td>
           <custom-actions
-            v-if="col.name === '__actions'"
-            :row-data="props.row"
-            :row-index="props.row.id"
-            @edit="$emit('edit', $event)"
+          v-if="editing"
+          :row-data="props.row"
+          :row-index="props.row.id"
+          @edit="$emit('edit', $event)"
           />
-          <div v-else-if="col.name === 'id'">{{ pkValue($refs.table && $refs.table.getCellValue(col, props.row)) }}</div>
-          <div v-else>{{ $refs.table && $refs.table.getCellValue(col, props.row) }}</div>
         </q-td>
       </q-tr>
     </template>
   </q-table>
+  <div v-else></div>
 </template>
 
 <script>
@@ -88,6 +91,7 @@ import Vue from 'vue'
 import L from '../../lib/leaflet'
 import { addFeatureMixin, setupLayer } from '../../lib/feature.js'
 import { notifyHttpError } from '../../lib/notifications.js'
+import DataCell from '../../lib/field/components/DataCell'
 
 import databaseLayersApi from '../../api/databaselayers.js'
 
@@ -106,6 +110,7 @@ export default {
     }
   },
   components: {
+    DataCell,
     CustomActions
   },
   data () {
@@ -142,6 +147,9 @@ export default {
     layerInfo () {
       return this.$store.state.dataLayer.layerConfig.layerInfo || null
     },
+    fields () {
+      return this.$store.getters['dataLayer/tableFields']
+    },
     features () {
       return this.$store.state.dataLayer.table.features
     },
@@ -155,34 +163,12 @@ export default {
       return this.$store.state.dataLayer.editStatus.adding
     },
     columns () {
-      const columns = []
-      this.layerInfo && this.layerInfo.fields.forEach(f => {
-        if (f.name === this.layerInfo.geom_field) {
-          return
-        }
-
-        let getField = row => row.properties[f.name]
-        if (f.name === 'id') {
-          getField = row => row.id
-        }
-
-        const column = {
-          name: f.name,
-          required: true,
-          label: f.label || f.name,
-          field: getField,
-          sortable: true // f.name !== 'id'
-        }
-
-        if (f.valuesDict) {
-          column.field = row => {
-            const value = getField(row)
-            return value in f.valuesDict ? f.valuesDict[value] : value
-          }
-        }
-
-        columns.push(column)
-      })
+      const columns = this.fields.map(field => ({
+        name: field.name,
+        label: field.label,
+        required: true,
+        sortable: true
+      }))
 
       if (this.editing) {
         columns.push({
@@ -194,6 +180,7 @@ export default {
           sortable: false
         })
       }
+
       return columns
     }
   },
@@ -221,7 +208,7 @@ export default {
       this.refreshDataNow()
     },
     leftDrawerSize () {
-      this.refreshData()
+      this.onMapChange()
     }
   },
   methods: {
@@ -351,7 +338,7 @@ export default {
         .then(response => {
           this.$store.commit('dataLayer/layerInfoFromRequest', response.data)
           this.processLayerInfo()
-          this.refreshDataNow()
+          this.$nextTick(() => this.refreshDataNow())
         })
     },
     processLayerInfo () {

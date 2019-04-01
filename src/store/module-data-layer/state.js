@@ -4,7 +4,8 @@ export default {
   geojson: null,
   layerConfig: {
     options: {},
-    layerInfo: null
+    layerInfo: null,
+    fields: null
   },
   editStatus: {
     editing: false,
