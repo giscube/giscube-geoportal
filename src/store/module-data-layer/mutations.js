@@ -26,6 +26,8 @@ export function current (state, value) {
 export function layerInfoFromRequest (state, value) {
   value.geom_type = value.geom_type.toLowerCase()
   const fields = buildFields(value)
+  const fieldsDict = {}
+  fields.forEach(field => { fieldsDict[field.name] = field })
 
   value.fields.forEach(field => {
     field.valuesDict = null
@@ -42,6 +44,16 @@ export function layerInfoFromRequest (state, value) {
       }
     }
   })
+
+  const strlist2fields = strlist => {
+    return strlist
+      .split(',')
+      .filter(fieldName => fieldName in fieldsDict)
+      .map(fieldName => fieldsDict[fieldName])
+  }
+
+  value.design.list_fields = strlist2fields(value.design.list_fields)
+  value.design.form_fields = strlist2fields(value.design.form_fields)
 
   state.layerConfig.layerInfo = value
   state.layerConfig.fields = fields

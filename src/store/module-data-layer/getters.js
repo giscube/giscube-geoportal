@@ -22,14 +22,11 @@ export function layerLoaded (state) {
 }
 
 export function tableFields (state) {
-  const fields = state.layerConfig.fields
-  if (fields) {
-    return fields.filter(field => !field.geom)
-  }
+  return state.layerConfig.layerInfo ? state.layerConfig.layerInfo.design.list_fields : []
 }
 
 export function formFields (state) {
-  return state.layerConfig.fields
+  return state.layerConfig.layerInfo ? state.layerConfig.layerInfo.design.form_fields : []
 }
 
 export function changed (state) {
