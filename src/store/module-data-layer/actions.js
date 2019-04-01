@@ -4,7 +4,7 @@ import Vue from 'vue'
 import databaseLayersApi from '../../api/databaselayers.js'
 
 import { newFeature } from '../../lib/feature.js'
-import { MultiResult } from '../../lib/MultiResult.js'
+import MultiResult from '../../lib/MultiResult.js'
 import { throwUnhandledExceptions } from '../../lib/promiseUtils.js'
 import { notifyError, notifyHttpError } from '../../lib/notifications.js'
 import layersInGeom from '../../lib/layersInGeom.js'

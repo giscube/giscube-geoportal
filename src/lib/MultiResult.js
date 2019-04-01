@@ -1,6 +1,6 @@
 const MULTIVALUE = Symbol('Multiple values')
 
-export class MultiResult {
+export default class MultiResult {
   constructor (values) {
     this.symbol = MULTIVALUE
     this.values = values ? new Set(values) : new Set()

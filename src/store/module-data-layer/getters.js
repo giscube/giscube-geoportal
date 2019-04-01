@@ -21,11 +21,15 @@ export function layerLoaded (state) {
   return state.layerConfig.layerInfo !== null
 }
 
-export function fields (state) {
-  const layerInfo = state.layerConfig.layerInfo
-  if (layerInfo) {
-    return layerInfo.fields.filter(field => field.name !== layerInfo.geom_field)
+export function tableFields (state) {
+  const fields = state.layerConfig.fields
+  if (fields) {
+    return fields.filter(field => !field.geom)
   }
+}
+
+export function formFields (state) {
+  return state.layerConfig.fields
 }
 
 export function changed (state) {

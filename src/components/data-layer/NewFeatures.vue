@@ -2,8 +2,7 @@
   <div>
     <data-form-dialog
       :value="popup"
-      :fields="$store.getters['dataLayer/fields']"
-      :data="popupData"
+      :features="popupData"
       @commit="_changeProperties"
       @cancel="_addCurrentFeature"
       @delete="_finish"
