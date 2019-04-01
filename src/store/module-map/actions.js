@@ -3,3 +3,11 @@ export function stopDrawing (context) {
     context.state.mapObject.editTools.stopDrawing()
   }
 }
+
+export function disableDoubleClickZoom (context) {
+  context.state.mapObject.doubleClickZoom.disable()
+}
+
+export function enableDoubleClickZoom (context) {
+  context.state.mapObject.doubleClickZoom.enable()
+}

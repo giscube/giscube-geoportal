@@ -239,11 +239,29 @@ export default {
     }
   },
   beforeRouteEnter (to, from, next) {
-    next(vm => vm.selectLayer(to.params.sourceName, to.params.layerName))
+    next(vm => {
+      vm.$store.commit('setCurrentTool', 'data')
+      const current = vm.$store.state.dataLayer.current
+      if (current) {
+        vm.$router.push({
+          name: 'data',
+          params: {
+            sourceName: current.source.name,
+            layerName: current.layer.name
+          }
+        })
+      } else if (to.params.sourceName && to.params.layerName) {
+        vm.selectLayer(to.params.sourceName, to.params.layerName)
+      }
+    })
   },
   beforeRouteUpdate (to, from, next) {
     if (!this.editing) {
-      this.selectLayer(to.params.sourceName, to.params.layerName)
+      const current = this.$store.state.dataLayer.current
+      const alreadyCurrent = current && current.source.name === to.params.sourceName && current.layer.name === to.params.layerName
+      if (!alreadyCurrent) {
+        this.selectLayer(to.params.sourceName, to.params.layerName)
+      }
       next()
     } else {
       next(false)
@@ -258,7 +276,6 @@ export default {
       return this.$t('tools.data.' + key, ...args)
     },
     selectLayer (sourceName, layerName) {
-      this.$store.commit('setCurrentTool', 'data')
       if (sourceName && layerName) {
         this.$store.dispatch('dataLayer/verifySourcesLoaded')
           .then(_ => {
@@ -271,8 +288,12 @@ export default {
       }
     },
     selectByPolygon () {
+      this.$store.commit('map/disableDoubleClickZoom')
       this.selecting = true
-      const stopSelecting = () => { this.selecting = false }
+      const stopSelecting = () => {
+        this.selecting = false
+        this.$store.commit('map/enableDoubleClickZoom')
+      }
       this.$store.dispatch('dataLayer/selectByPolygon')
         .then(stopSelecting, stopSelecting)
     },
@@ -342,10 +363,11 @@ export default {
 }
 </script>
 
-<style>
-.q-btn.pushed {
-  background-color: var(--q-color-primary) !important;
-  border-color: var(--q-color-primary) !important;
-  color: white !important;
-}
+<style lang="stylus">
+@import '~quasar-variables'
+
+.q-btn.pushed
+  background-color $primary !important
+  border-color $primary !important
+  color white !important
 </style>

@@ -128,7 +128,7 @@ export default new Options({
   editsources: [
     {
       name: 'Giscube',
-      url: 'https://www.giscube.org/apps/giscube-admin/layerserver/databaselayers/'
+      url: 'https://www.giscube.org/apps/giscube-admin/'
     }
   ]
 })
