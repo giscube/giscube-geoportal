@@ -21,7 +21,14 @@ export function notifyHttpError (error, details = true) {
   if (error.response) {
     let message = `Error ${error.response.status} (${error.response.statusText})`
     if (details) {
-      message += `: ${error.response.data}`
+      let m = error.response.data
+      if (typeof m === 'object') {
+        m = m.detail
+      }
+
+      if (m) {
+        message += `: ${m}`
+      }
     }
     notifyError(message)
   } else {

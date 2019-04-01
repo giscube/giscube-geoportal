@@ -9,7 +9,7 @@
     >
       <LayersControl ref="layersControl"></LayersControl>
       <query-on-click></query-on-click>
-      <l-geo-json ref='editGeoJsonLayer' v-if="editLayerGeojson && editLayerOptions" :geojson="editLayerGeojson" :options="editLayerOptions"></l-geo-json>
+      <l-geo-json ref='editGeoJsonLayer' v-if="currentTool === 'data' && editLayerGeojson && editLayerOptions" :geojson="editLayerGeojson" :options="editLayerOptions"></l-geo-json>
     </v-map>
 
     <q-resize-observer @resize="onResize" />
@@ -44,6 +44,9 @@ export default {
     }
   },
   computed: {
+    currentTool () {
+      return this.$store.state.currentTool
+    },
     editLayerGeojson () {
       return this.$store.state.dataLayer.geojson
     },
