@@ -7,11 +7,11 @@
     <q-card style="min-width: 70ch; max-height: 100%">
       <q-card-section>
         <data-form
-          :fields="fields"
-          :data="data"
+          ref="form"
+          :features="features"
           :disable="disable"
           :readonly="readonly"
-          @change="result = $event"
+          @input="onInput"
         />
       </q-card-section>
 
@@ -26,9 +26,9 @@
           @click="$emit('cancel')"
         />
         <q-btn
-          v-show="!disable && !readonly"
+          v-show="!disable && !readonly && result"
           :label="$t('ok')"
-          @click="$emit('commit', result)"
+          @click="onCommit"
         />
       </q-card-actions>
     </q-card>
@@ -40,11 +40,7 @@ import DataForm from './DataForm'
 
 export default {
   props: {
-    fields: {
-      type: Array,
-      required: true
-    },
-    data: {
+    features: {
       type: Array,
       required: true
     },
@@ -67,6 +63,34 @@ export default {
   data () {
     return {
       result: null
+    }
+  },
+  methods: {
+    t (key, ...args) {
+      return this.$t('tools.data.' + key, ...args)
+    },
+    onInput (value) {
+      this.result = value
+    },
+    onCommit () {
+      if (this.$refs.form.validate()) {
+        this.$emit('commit', this.result)
+      } else {
+        this.$q.dialog({
+          message: this.t('qInvalidCommit'),
+          ok: {
+            flat: true,
+            label: this.$t('yes')
+          },
+          cancel: {
+            flat: true,
+            label: this.$t('no')
+          },
+          persistent: true
+        }).onOk(_ => {
+          this.$emit('commit', this.result)
+        })
+      }
     }
   }
 }

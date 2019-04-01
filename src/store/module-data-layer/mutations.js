@@ -1,6 +1,7 @@
 import Vue from 'vue'
 
 import { pkGenerator } from '../../lib/feature.js'
+import { buildFields } from '../../lib/field/index.js'
 
 export function sources (state, value) {
   Vue.set(state, 'sources', value)
@@ -14,6 +15,7 @@ export function current (state, value) {
   state.current = value
   state.geojson = null
   state.layerConfig.layerInfo = null
+  state.layerConfig.fields = null
   state.table.selected = []
   state.editStatus.editing = false
   state.editStatus.adding = false
@@ -23,6 +25,7 @@ export function current (state, value) {
 
 export function layerInfoFromRequest (state, value) {
   value.geom_type = value.geom_type.toLowerCase()
+  const fields = buildFields(value)
 
   value.fields.forEach(field => {
     field.valuesDict = null
@@ -41,6 +44,7 @@ export function layerInfoFromRequest (state, value) {
   })
 
   state.layerConfig.layerInfo = value
+  state.layerConfig.fields = fields
 }
 
 export function layerOptions (state, value) {
@@ -204,11 +208,9 @@ export function removeFeaturesByIndex (state, featureIndex) {
 }
 
 export function unselectFeatures (state, pks) {
-  console.log({ pks })
   const selected = state.table.selected
   for (let i = selected.length - 1; i >= 0; --i) {
     const pk = selected[i].id
-    console.log('pk', pk)
     if (pks.includes(pk)) {
       selected.splice(i, 1)
     }
