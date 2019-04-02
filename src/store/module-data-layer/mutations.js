@@ -45,6 +45,43 @@ export function layerInfoFromRequest (state, value) {
     }
   })
 
+  // make the popup a function that changes properties into HTML
+  const popup = value.design.popup
+  if (popup) {
+    const refFields = new Set()
+
+    // get valid fields to replace
+    const expr = /{(\w+)}/g
+    let match
+    while ((match = expr.exec(popup)) != null) {
+      const fieldName = match[1]
+      if (fieldName in fieldsDict) {
+        refFields.add(fieldName)
+      }
+    }
+
+    // replace a single field with the values extracted from properties and the result scaped
+    const replaceField = (popup, feature, fieldName) => {
+      // reconstruct the field reference in the popup
+      const fieldRef = '{' + fieldName + '}'
+
+      // Value to be replaced
+      const value = fieldsDict[fieldName].popupValue(feature)
+
+      // replace all ocurrences by using regex "global" flag
+      return popup.replace(new RegExp(fieldRef, 'g'), value)
+    }
+
+    // Replace every single (valid) reference with a value
+    value.design.popup = feature => Array.from(refFields)
+      .reduce(
+        (popup, fieldName) => replaceField(popup, feature, fieldName),
+        popup
+      )
+  } else {
+    value.design.popup = null
+  }
+
   const strlist2fields = strlist => {
     return strlist
       .split(',')

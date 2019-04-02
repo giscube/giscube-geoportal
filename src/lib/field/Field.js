@@ -1,4 +1,5 @@
 import DefaultWidget from './widgets/form/Default'
+import { escapeHtml } from '../../lib/utils.js'
 
 export default class Field {
   constructor (info) {
@@ -25,6 +26,11 @@ export default class Field {
 
   tableValue (feature) {
     return this.str(feature)
+  }
+
+  popupValue (feature) {
+    // SECURITY: BE AWARE OF XSS
+    return escapeHtml(this.str(feature))
   }
 
   formWidget () {
