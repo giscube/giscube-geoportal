@@ -1,6 +1,6 @@
 <template>
   <div class='popup'>
-    <p>{{feature.properties.n_comu}} al {{feature.properties.nom_car}} ({{feature.properties.codi}})</p>
+    <div v-html="popupDesign(feature)"></div>
     <div class="tools">
       <q-checkbox
         :value="feature.status.selected"
@@ -31,6 +31,10 @@ export default {
     },
     saving () {
       return this.$store.state.dataLayer.editStatus.saving
+    },
+    popupDesign () {
+      const layerInfo = this.$store.state.dataLayer.layerConfig.layerInfo
+      return (layerInfo && layerInfo.design && layerInfo.design.popup) || (() => '')
     }
   },
   methods: {
