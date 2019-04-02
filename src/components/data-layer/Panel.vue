@@ -250,7 +250,7 @@ export default {
             layerName: current.layer.name
           }
         })
-      } else if (to.params.sourceName && to.params.layerName) {
+      } else {
         vm.selectLayer(to.params.sourceName, to.params.layerName)
       }
     })
