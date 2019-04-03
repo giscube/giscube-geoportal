@@ -64,7 +64,7 @@ export default {
       }
 
       // Entire process setup
-      this.$store.commit('map/disableDoubleClickZoom')
+      this.$store.dispatch('map/disableDoubleClickZoom')
       this.adding = true
 
       // Actual start
@@ -129,7 +129,7 @@ export default {
       this.popup = false
       this.currentFeature = null
       this.adding = false
-      this.$store.commit('map/enableDoubleClickZoom')
+      this.$store.dispatch('map/enableDoubleClickZoom')
     }
   }
 }

@@ -288,11 +288,11 @@ export default {
       }
     },
     selectByPolygon () {
-      this.$store.commit('map/disableDoubleClickZoom')
+      this.$store.dispatch('map/disableDoubleClickZoom')
       this.selecting = true
       const stopSelecting = () => {
         this.selecting = false
-        this.$store.commit('map/enableDoubleClickZoom')
+        this.$store.dispatch('map/enableDoubleClickZoom')
       }
       this.$store.dispatch('dataLayer/selectByPolygon')
         .then(stopSelecting, stopSelecting)
