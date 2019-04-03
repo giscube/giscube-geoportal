@@ -20,7 +20,7 @@ export default class Field {
   }
 
   repr (feature) {
-    return this.str(feature)
+    return this.getValue(feature)
   }
 
   tableValue (feature) {

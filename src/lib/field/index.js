@@ -4,6 +4,7 @@ import BooleanField from './BooleanField'
 import ChoicesField from './ChoicesField'
 import NumberField from './NumberField'
 import PkField from './PkField'
+import SqlChoicesField from './SqlChoicesField'
 
 export const fields = {
   default: Field,
@@ -11,7 +12,8 @@ export const fields = {
   boolean: BooleanField,
   choices: ChoicesField,
   number: NumberField,
-  pk: PkField
+  pk: PkField,
+  sqlchoices: SqlChoicesField
 }
 
 function getFieldClass (name) {
@@ -25,33 +27,18 @@ export function buildFields (layerInfo) {
       null: fieldInfo.null,
       name: fieldInfo.name,
       label: fieldInfo.label || fieldInfo.name,
-      readonly: fieldInfo.readonly,
-      size: fieldInfo.size,
-      decimals: fieldInfo.decimals
+      readonly: fieldInfo.readonly
     }
 
-    if (fieldInfo.name === layerInfo.pk_field) {
-      field.pk = true
-    }
-    if (fieldInfo.name === layerInfo.geom_field) {
-      field.geom = true
-    }
-    if (fieldInfo.values_list) {
-      const valuesList = fieldInfo.values_list
-      if (Array.isArray(valuesList) && valuesList.length > 0) {
-        field.valuesList = []
-        field.valuesDict = {}
-        for (let value of valuesList) {
-          if (Array.isArray(value)) {
-            field.valuesDict[value[0]] = value[1]
-            field.valuesList.push({ value: value[0], label: value[1] })
-          } else {
-            field.valuesDict[value] = value
-            field.valuesList.push({ value, label: value })
-          }
-        }
+    const conditionalCopyList = ['size', 'decimals', 'values_list', 'values_list_headers']
+    conditionalCopyList.forEach(name => {
+      if (name in fieldInfo) {
+        field[name] = fieldInfo[name]
       }
-    }
+    })
+
+    field.pk = (fieldInfo.name === layerInfo.pk_field)
+    field.geom = (fieldInfo.name === layerInfo.geom_field)
 
     // generate a field from the field
     const F = field.pk ? fields['pk'] : getFieldClass(fieldInfo.widget)
