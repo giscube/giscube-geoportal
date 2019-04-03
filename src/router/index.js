@@ -8,7 +8,7 @@ import GeoportalPanel from 'components/GeoportalPanel'
 import PlacePanel from 'components/PlacePanel'
 import SearchPanel from 'components/SearchPanel'
 import StreetViewPanel from 'components/StreetViewPanel'
-import Panel from 'components/data-layer/Panel'
+import DataPanel from 'components/data-layer/Panel'
 
 Vue.use(Router)
 
@@ -25,7 +25,7 @@ const routes = [
       { path: 'place/:q*', component: PlacePanel, name: 'place' },
       { path: 'search/:q*', component: SearchPanel, name: 'search' },
       { path: 'geoportal/:q/', component: GeoportalPanel },
-      { path: 'data/:sourceName?/:layerName?/', component: Panel, name: 'data' },
+      { path: 'data/:sourceName?/:layerName?/', component: DataPanel, name: 'data' },
       { path: 'streetview/:q?', component: StreetViewPanel, name: 'streetview' }
     ]
   }
