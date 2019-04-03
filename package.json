@@ -12,7 +12,6 @@
   },
   "main": "dist/lib/giscube-geoportal.min.js",
   "dependencies": {
-    "@quasar/cli": "^1.0.0-beta.4",
     "@quasar/extras": "^1.1.1",
     "axios": "^0.18.0",
     "leaflet": "^1.3.1",
@@ -22,7 +21,7 @@
     "microdisseny-leaflet-measure": "git+https://github.com/Microdisseny/microdisseny-leaflet-measure.git",
     "node-sass": "^4.7.2",
     "point-in-polygon": "^1.0.1",
-    "quasar": "^1.0.0-beta.14",
+    "quasar": "^1.0.0-beta.15",
     "sass-loader": "^6.0.6",
     "vue-i18n": "^7.3.3",
     "vue2-leaflet": "0.0.58",
