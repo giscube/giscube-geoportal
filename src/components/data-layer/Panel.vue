@@ -2,15 +2,13 @@
   <div class="panel">
 
     <div class="panel-content">
-      <div class="row items-center">
+      <div class="row items-center justify-end q-mb-md">
         <layers-list
-          class="q-mr-md q-mb-md"
           v-model="layersListOpen"
         />
         <q-space />
         <q-btn
           v-show="layerLoaded && $store.state.dataLayer.geojson && !editing"
-          class="q-mb-md"
           :label="t('edit')"
           @click="$store.dispatch('dataLayer/startEditing')"
         />
@@ -37,86 +35,98 @@
         </q-btn-group>
       </div>
       <div
-        v-show="layerLoaded && !editing"
-        class="row items-center"
+        v-show="layerLoaded"
+        class="row items-center justify-end data-panel-controls"
       >
-        <span>Filters:</span>
-        <q-input
-          v-model="filter"
-          outlined
-          dense
-          placeholder="Table info"
-          debounce="500"
-        />
-        <q-separator vertical class="q-ma-xs" />
-        <q-btn
-          outline
-          no-caps
-          color="primary"
-          :class="{pushed: mapFilter, toggle: true}"
-          @click="mapFilter = !mapFilter"
+        <!-- Filters -->
+        <div
+          v-show="!editing"
+          class="row items-center"
         >
-          Map
-        </q-btn>
-        <q-btn
-          v-if="!selecting"
-          @click="selectByPolygon"
-        >
-          polygon
-        </q-btn>
-        <q-btn
-          v-else
-          @click="cancelPolygonSelection"
-        >
-          stop drawing
-        </q-btn>
-      </div>
-      <div
-        v-show="layerLoaded && editing"
-        class="row items-center"
-      >
-        <q-btn
-          v-show="adding"
-          :label="t('stopDrawing')"
-          :disable="saving"
-          @click="stopDrawing"
-        />
-        <q-btn-group
-          v-show="!adding"
-        >
-          <q-btn
-            :label="t('newElement')"
-            :disable="saving"
-            @click="startDrawing"
-          />
-          <q-btn
-            icon="settings"
-            size="xs"
+          <span>{{ t('filters') }}</span>
+          <q-input
+            v-model="filter"
+            outlined
             dense
-            class="q-px-sm"
-            @click="defaultsDialog = true"
+            :placeholder="t('findInTable')"
+            debounce="500"
           />
-        </q-btn-group>
-        <q-btn-dropdown
-          v-show="!adding && visibleSelected.length > 0"
-          class="q-mx-md"
-          split
-          :label="t('editElements', {elements: $tc('element', visibleSelected.length, {count: visibleSelected.length})})"
-          :disable="saving"
-          @click="editSelected"
+          <q-btn
+            outline
+            no-caps
+            color="primary"
+            class="toggle"
+            :class="{pushed: mapFilter}"
+            :label="t('filterByView')"
+            @click="mapFilter = !mapFilter"
+          />
+        </div>
+
+        <!-- Edition controls -->
+        <div
+          v-show="editing"
+          class="row items-center"
         >
-        <q-list>
-          <q-item
-            clickable
-            v-close-popup
-            @click="deleteSelected"
+          <q-btn
+            v-show="adding"
+            :label="t('stopDrawing')"
+            :disable="saving"
+            @click="stopDrawing"
+          />
+          <q-btn-group
+            v-show="!adding && !selecting"
           >
-            <q-item-section>
-              <q-item-label>{{ t('deleteElements', {elements: $tc('element', visibleSelected.length, {count: visibleSelected.length})}) }}</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-list>
-        </q-btn-dropdown>
+            <q-btn
+              :label="t('newElement')"
+              :disable="saving"
+              @click="startDrawing"
+            />
+            <q-btn
+              icon="settings"
+              size="xs"
+              dense
+              class="q-px-sm"
+              @click="defaultsDialog = true"
+            />
+          </q-btn-group>
+          <q-btn-dropdown
+            v-show="!adding && visibleSelected.length > 0"
+            split
+            :label="t('editElements', {elements: $tc('element', visibleSelected.length, {count: visibleSelected.length})})"
+            :disable="saving"
+            @click="editSelected"
+          >
+            <q-list>
+              <q-item
+                clickable
+                v-close-popup
+                @click="deleteSelected"
+              >
+                <q-item-section>
+                  <q-item-label>{{ t('deleteElements', {elements: $tc('element', visibleSelected.length, {count: visibleSelected.length})}) }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
+        </div>
+
+        <!-- Selection -->
+        <q-space />
+        <div
+          class="row items-center"
+        >
+          <span>{{ t('selection') }}</span>
+          <q-btn
+            v-if="!selecting"
+            :label="t('selectByPolygon')"
+            @click="selectByPolygon"
+          />
+          <q-btn
+            v-else
+            :label="t('stopDrawing')"
+            @click="cancelPolygonSelection"
+          />
+        </div>
       </div>
 
       <!-- Table with all the data logic -->
@@ -370,4 +380,11 @@ export default {
   background-color $primary !important
   border-color $primary !important
   color white !important
+
+.data-panel-controls > div
+  margin-bottom: $spaces.sm.y
+  &:not(:last-child)
+    margin-right: $spaces.sm.x
+  & > *:not(:last-child)
+    margin-right: $spaces.sm.x
 </style>
