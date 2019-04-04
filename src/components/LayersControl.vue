@@ -1,5 +1,6 @@
 <template>
-  <div @click.prevent.stop=""
+  <div v-show="!$store.getters['dataLayer/editing']"
+       @click.prevent.stop=""
        @dblclick.prevent.stop=""
        class="giscube-layers-control leaflet-control"
        :class="{'showActions': showActions}">
