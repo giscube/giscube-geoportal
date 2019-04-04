@@ -2,6 +2,7 @@ import Field from './Field'
 
 import BooleanField from './BooleanField'
 import ChoicesField from './ChoicesField'
+import ImageField from './ImageField'
 import NumberField from './NumberField'
 import LinkedField from './LinkedField'
 import PkField from './PkField'
@@ -12,6 +13,7 @@ export const fields = {
 
   boolean: BooleanField,
   choices: ChoicesField,
+  image: ImageField,
   number: NumberField,
   linkedfield: LinkedField,
   pk: PkField,
