@@ -24,8 +24,12 @@ export default class Field {
     }
   }
 
-  str (data) {
-    return Field.toString(this.getValue(data))
+  val2str (value) {
+    return Field.toString(value)
+  }
+
+  str (feature) {
+    return this.val2str(this.getValue(feature))
   }
 
   repr (data) {

@@ -2,6 +2,7 @@ import _ from 'lodash'
 import Vue from 'vue'
 
 import databaseLayersApi from '../../api/databaselayers.js'
+import giscubeApi from '../../api/giscube.js'
 
 import { isCleanEqual } from '../../lib/utils.js'
 import { newFeature } from '../../lib/feature.js'
@@ -275,4 +276,8 @@ export function addNewFeature (context, feature) {
   }
   context.state.table.features.push(feature)
   Vue.set(context.state.editStatus.originals, feature.getPk(), null)
+}
+
+export function uploadPhoto (context, photo) {
+  return giscubeApi.uploadPhoto(context.state.current.source, photo)
 }
