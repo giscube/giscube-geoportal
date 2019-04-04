@@ -1,4 +1,4 @@
-'use strict'
+import _ from 'lodash'
 
 export function cloneClean (obj, allowEmptyString = true) {
   if (!allowEmptyString && obj === '') {
@@ -16,6 +16,14 @@ export function cloneClean (obj, allowEmptyString = true) {
   }
 
   return result
+}
+
+function ignoreKey (key) {
+  return typeof key === 'string' && (key.startsWith('__') || key.startsWith('$'))
+}
+
+export function isCleanEqual (a, b) {
+  return _.isEqualWith(a, b, (aValue, bValue, key) => ignoreKey(key) ? true : undefined)
 }
 
 export function escapeHtml (unsafe) {
