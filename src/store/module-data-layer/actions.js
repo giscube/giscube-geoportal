@@ -3,6 +3,7 @@ import Vue from 'vue'
 
 import databaseLayersApi from '../../api/databaselayers.js'
 
+import { isCleanEqual } from '../../lib/utils.js'
 import { newFeature } from '../../lib/feature.js'
 import MultiResult from '../../lib/MultiResult.js'
 import { throwUnhandledExceptions } from '../../lib/promiseUtils.js'
@@ -188,15 +189,45 @@ export function saveEdits (context) {
         unselect.push(feature.id)
       }
     } else if (pk in originals) {
+      const fields = context.state.layerConfig.fields
       if (feature.status.new) {
-        added.push(feature.cleanClone(null))
+        const result = {}
+
+        result.geometry = feature.geometry
+
+        result.properties = {}
+        fields.forEach(field => {
+          result.properties[field.name] = field.repr(feature)
+        })
+
+        added.push(result)
       } else {
-        updated.push(feature.cleanClone())
+        const original = originals[pk]
+        const result = {}
+
+        result.id = pk
+
+        if (!isCleanEqual(original.geometry, feature.geometry)) {
+          result.geometry = feature.geometry
+        }
+
+        result.properties = {}
+        fields.forEach(field => {
+          if (!isCleanEqual(original.properties[field.name], feature.properties[field.name])) {
+            result.properties[field.name] = field.repr(feature)
+          }
+        })
+
+        updated.push(result)
       }
     }
   })
 
   context.commit('removeFeaturesByIndex', localDeleted)
+
+  if (added.length === 0 && updated.length === 0 && deleted.length === 0) {
+    return Promise.resolve()
+  }
 
   const result = new Promise((resolve, reject) => {
     databaseLayersApi.edit(context.state.current, {
