@@ -3,8 +3,9 @@
     type="propt"
     :value="value"
     persistent
+    content-class="data-form"
   >
-    <q-card style="min-width: 70ch; max-height: 100%">
+    <q-card class="data-form">
       <q-card-section>
         <data-form
           ref="form"
@@ -95,3 +96,21 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.q-dialog.data-form {
+  .q-card.data-form {
+    min-width: 70ch;
+    max-height: 100%;
+  }
+  @media (max-width: 767px) {
+    .q-dialog__inner--minimized {
+      padding: 10px;
+      align-items: start;
+    }
+    .q-card.data-form {
+      min-width: 100%;
+    }
+  }
+}
+</style>
