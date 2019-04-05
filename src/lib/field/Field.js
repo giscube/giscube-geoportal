@@ -12,37 +12,49 @@ export default class Field {
     })
   }
 
-  getValue (feature) {
-    return feature.properties[this.name]
+  getValue ({ feature, properties }) {
+    const props = properties || (feature && feature.properties)
+    return props && props[this.name]
   }
 
-  str (feature) {
-    return Field.toString(this.getValue(feature))
+  setValue ({ feature, properties, value }) {
+    const props = properties || (feature && feature.properties)
+    if (props) {
+      props[this.name] = value
+    }
   }
 
-  repr (feature) {
-    return this.getValue(feature)
+  str (data) {
+    return Field.toString(this.getValue(data))
   }
 
-  tableValue (feature) {
-    return this.str(feature)
+  repr (data) {
+    return this.getValue(data)
   }
 
-  popupValue (feature) {
+  tableValue (data) {
+    return this.str(data)
+  }
+
+  popupValue (data) {
     // SECURITY: BE AWARE OF XSS
-    return escapeHtml(this.str(feature))
+    return escapeHtml(this.str(data))
   }
 
   formWidget () {
     return DefaultWidget
   }
 
+  onUpdate (updatedField, value, properties, callback) {
+    // Do nothing
+  }
+
   rules (t) {
     return [ value => this.null || value !== null || value !== undefined || t('tools.data.requiredField') ]
   }
 
-  isValid (feature, t) {
-    const value = this.getValue()
+  isValid (data, t) {
+    const value = this.getValue(data)
     for (let rule in this.rules(t)) {
       const validation = rule(value)
       if (validation !== true) {

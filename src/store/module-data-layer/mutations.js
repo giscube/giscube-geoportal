@@ -66,7 +66,7 @@ export function layerInfoFromRequest (state, value) {
       const fieldRef = '{' + fieldName + '}'
 
       // Value to be replaced
-      const value = fieldsDict[fieldName].popupValue(feature)
+      const value = fieldsDict[fieldName].popupValue({ feature })
 
       // replace all ocurrences by using regex "global" flag
       return popup.replace(new RegExp(fieldRef, 'g'), value)
