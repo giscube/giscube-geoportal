@@ -30,6 +30,7 @@ export default {
       filters: 'Filters',
       findInTable: 'Find in table',
       filterByView: 'Map',
+      filterByPolygon: 'Polygon',
       selection: 'Selection',
       selectByPolygon: 'Polygon',
       multipleNew: 'Add multiple elements',
