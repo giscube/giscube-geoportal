@@ -14,3 +14,11 @@ export function bbox (state, getters, rootState) {
     return result
   }
 }
+
+export function drawing (state) {
+  return state.drawOptions !== null
+}
+
+export function drawingMultiple (state) {
+  return state._drawingControls !== undefined
+}

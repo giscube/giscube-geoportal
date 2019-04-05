@@ -80,9 +80,9 @@
         >
           <q-btn
             v-show="adding"
-            :label="t('stopDrawing')"
+            :label="t('cancelDrawing')"
             :disable="saving"
-            @click="stopDrawing"
+            @click="cancelDrawing"
           />
           <q-btn-group
             v-show="!adding && !drawing"
@@ -135,7 +135,7 @@
           <q-btn
             v-else
             :label="t('stopDrawing')"
-            @click="$store.dispatch('map/stopDrawing')"
+            @click="cancelPolygonSelection"
           />
         </div>
       </div>
@@ -347,10 +347,13 @@ export default {
       this.$store.dispatch('dataLayer/selectByPolygon')
         .then(stopDrawing, stopDrawing)
     },
+    cancelPolygonSelection () {
+      this.$store.dispatch('map/cancelDrawing')
+    },
     startDrawing () {
       this.$refs.newFeatures.start()
     },
-    stopDrawing () {
+    cancelDrawing () {
       this.$refs.newFeatures.end()
     },
     editSelected () {

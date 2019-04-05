@@ -1,3 +1,4 @@
 export default {
-  mapObject: null
+  mapObject: null,
+  drawOptions: null
 }

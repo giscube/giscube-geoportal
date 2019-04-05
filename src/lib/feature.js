@@ -32,24 +32,25 @@ const multi = 'multi'
 
 /// Dictionary of the supported creation functions
 const geomCreators = {
-  point (map) {
+  point (map, options) {
     map.editTools.startMarker(null, {
+      ...options,
       markerClass: L.CircleMarker
     })
   },
-  marker (map) {
-    this.point(map)
+  marker (map, options) {
+    this.point(map, options)
   },
-  linestring (map) {
-    map.editTools.startPolyline()
+  linestring (map, options) {
+    map.editTools.startPolyline(null, options)
   },
-  polygon (map) {
-    map.editTools.startPolygon()
+  polygon (map, options) {
+    map.editTools.startPolygon(null, options)
   }
 }
 
 /// Starts the creation (the user can draw it) of the geometry of the correct type on the map
-export function createGeom (type, map) {
+export function createGeom (type, map, options) {
   // remove multi
   if (type.startsWith(multi)) {
     type = type.slice(multi.length)
@@ -58,7 +59,7 @@ export function createGeom (type, map) {
   // Get creator and invoke it (if exists)
   const create = geomCreators[type]
   if (create) {
-    create.call(geomCreators, map) // sets this to geomCreators so the function can call each other
+    create.call(geomCreators, map, options) // sets this to geomCreators so the function can call each other
   } else {
     throw new Error('Unsupported geometry type ' + type)
   }

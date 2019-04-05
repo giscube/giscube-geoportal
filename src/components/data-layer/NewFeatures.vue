@@ -125,7 +125,7 @@ export default {
       }
 
       // Cleanup and save the result
-      this.$store.dispatch('map/stopDrawing')
+      this.$store.dispatch('map/cancelDrawing')
       this.popup = false
       this.currentFeature = null
       this.adding = false

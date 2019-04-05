@@ -302,8 +302,8 @@ export function drawGeometry (context) {
   return throwUnhandledExceptions(result)
 }
 
-export function stopDrawing (context) {
-  context.dispatch('map/stopDrawing')
+export function cancelDrawing (context) {
+  context.dispatch('map/cancelDrawing')
 }
 
 export function addNewFeature (context, feature) {
