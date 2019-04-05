@@ -17,6 +17,7 @@
     "leaflet": "^1.3.1",
     "leaflet-editable": "git+https://github.com/copying/Leaflet.Editable.git",
     "leaflet-sidebar": "^0.2.0",
+    "leaflet.locatecontrol": "^0.66.2",
     "leaflet.path.drag": "0.0.6",
     "microdisseny-leaflet-measure": "git+https://github.com/Microdisseny/microdisseny-leaflet-measure.git",
     "node-sass": "^4.7.2",

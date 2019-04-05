@@ -95,6 +95,7 @@ export default {
     addControls () {
       this.addScaleControl()
       this.addZoomControl()
+      this.addGeolocationControl()
       this.addLayersControl()
       this.addMeasureControl()
     },
@@ -123,6 +124,9 @@ export default {
       }
       this.zoomControl = L.control.zoom({ 'position': 'bottomright' })
       this.map.addControl(this.zoomControl)
+    },
+    addGeolocationControl () {
+      L.control.locate({ 'position': 'bottomright' }).addTo(this.map)
     },
     getMapOptions () {
       return {
