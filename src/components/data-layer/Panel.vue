@@ -61,6 +61,16 @@
             :label="t('filterByView')"
             @click="mapFilter = !mapFilter"
           />
+          <q-btn
+            v-show="!adding && !drawing"
+            outline
+            no-caps
+            color="primary"
+            class="toggle"
+            :class="{pushed: polygonFilter}"
+            :label="t('filterByPolygon')"
+            @click="onPolygonFilter"
+          />
         </div>
 
         <!-- Edition controls -->
@@ -75,7 +85,7 @@
             @click="stopDrawing"
           />
           <q-btn-group
-            v-show="!adding && !selecting"
+            v-show="!adding && !drawing"
           >
             <q-btn
               :label="t('newElement')"
@@ -118,14 +128,14 @@
         >
           <span>{{ t('selection') }}</span>
           <q-btn
-            v-if="!selecting"
+            v-if="!drawing"
             :label="t('selectByPolygon')"
             @click="selectByPolygon"
           />
           <q-btn
             v-else
             :label="t('stopDrawing')"
-            @click="cancelPolygonSelection"
+            @click="$store.dispatch('map/stopDrawing')"
           />
         </div>
       </div>
@@ -137,6 +147,7 @@
         class="q-my-md"
         :filter="filter"
         :mapFilter="mapFilter"
+        :polygonFilter="polygonFilter"
         @edit="startFeatureEdit"
       />
     </div>
@@ -214,12 +225,13 @@ export default {
       layersListOpen: false,
       filter: '',
       mapFilter: false,
+      polygonFilter: null,
       defaultsDialog: false,
       defaultProperties: {},
       editMultiple: false,
       selectNews: false,
       dialogForNew: true,
-      selecting: false,
+      drawing: false,
       editedFeature: null,
       editingSelected: false
     }
@@ -298,18 +310,42 @@ export default {
         this.$store.dispatch('dataLayer/verifySourcesLoaded')
       }
     },
+    onPolygonFilter () {
+      if (!this.polygonFilter) {
+        this.filterByPolygon()
+      } else {
+        this.removeGeomFilter()
+      }
+    },
+    filterByPolygon () {
+      this.$store.dispatch('map/disableDoubleClickZoom')
+      this.drawing = true
+
+      const stopDrawing = () => {
+        this.drawing = false
+        this.$store.dispatch('map/enableDoubleClickZoom')
+      }
+      this.$store.dispatch('dataLayer/filterByPolygon')
+        .then(polygon => {
+          this.polygonFilter = polygon
+          stopDrawing()
+        })
+        .catch(stopDrawing)
+    },
+    removeGeomFilter () {
+      if (this.polygonFilter) {
+        this.polygonFilter = null
+      }
+    },
     selectByPolygon () {
       this.$store.dispatch('map/disableDoubleClickZoom')
-      this.selecting = true
-      const stopSelecting = () => {
-        this.selecting = false
+      this.drawing = true
+      const stopDrawing = () => {
+        this.drawing = false
         this.$store.dispatch('map/enableDoubleClickZoom')
       }
       this.$store.dispatch('dataLayer/selectByPolygon')
-        .then(stopSelecting, stopSelecting)
-    },
-    cancelPolygonSelection () {
-      this.$store.dispatch('map/stopDrawing')
+        .then(stopDrawing, stopDrawing)
     },
     startDrawing () {
       this.$refs.newFeatures.start()

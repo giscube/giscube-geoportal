@@ -107,7 +107,8 @@ export default {
     mapFilter: {
       type: Boolean,
       default: false
-    }
+    },
+    polygonFilter: String
   },
   components: {
     DataCell,
@@ -207,6 +208,9 @@ export default {
     mapFilter () {
       this.refreshDataNow()
     },
+    polygonFilter () {
+      this.refreshDataNow()
+    },
     leftDrawerSize () {
       this.onMapChange()
     }
@@ -272,6 +276,10 @@ export default {
         if (bbox) {
           args.extraParams.in_bbox = bbox.join(',')
         }
+      }
+
+      if (this.polygonFilter) {
+        args.extraParams.intersects = this.polygonFilter
       }
 
       databaseLayersApi.getData(args)

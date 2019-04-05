@@ -86,6 +86,41 @@ export function refreshGeojson (context) {
   })
 }
 
+export function filterByPolygon (context) {
+  const result = new Promise((resolve, reject) => {
+    const map = context.rootState.map.mapObject
+
+    const commit = event => {
+      removeEvents()
+      const coord2str = c => `${c.lng} ${c.lat}`
+      const coords = event.layer.getLatLngs()[0]
+      const strCoords = coords.map(coord2str).join(', ') + ', ' + coord2str(coords[0])
+      const result = `POLYGON((${strCoords}))`
+
+      event.layer.remove()
+      removeEvents()
+      resolve(result)
+    }
+    const cancel = event => {
+      if (event.layer) {
+        event.layer.remove()
+      }
+      removeEvents()
+      reject()
+    }
+
+    const removeEvents = () => {
+      map.off('editable:drawing:commit', commit)
+      map.off('editable:drawing:end', cancel)
+    }
+    map.on('editable:drawing:commit', commit)
+    map.on('editable:drawing:end', cancel)
+
+    map.editTools.startPolygon()
+  })
+  return throwUnhandledExceptions(result)
+}
+
 export function selectByPolygon (context) {
   const result = new Promise((resolve, reject) => {
     const map = context.rootState.map.mapObject
@@ -95,6 +130,7 @@ export function selectByPolygon (context) {
       const toSelect = layersInGeom(context.state.geojson, event.layer)
       context.commit('select', toSelect)
       event.layer.remove()
+      removeEvents()
       resolve(toSelect)
     }
     const cancel = event => {

@@ -30,6 +30,7 @@ export default {
       filters: 'Filtres',
       findInTable: 'Cerca a la taula',
       filterByView: 'Mapa',
+      filterByPolygon: 'Polígon',
       selection: 'Selecció',
       selectByPolygon: 'Polígon',
       multipleNew: 'Afegir varis elements',
