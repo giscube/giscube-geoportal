@@ -8,12 +8,13 @@ function agregate (fields, features) {
   for (let field of fields) {
     let current
     for (let feature of features) {
-      let value = feature.properties[field.name]
+      let value = field.getValue({ feature })
       if (value === '' || value === undefined) {
         value = null
       } else {
         value = cloneClean(value)
       }
+
       if (current === undefined) {
         current = value
       } else if (MultiResult.is(current)) {
@@ -77,15 +78,33 @@ export default {
       return
     }
 
+    const callbacks = []
+    const resolveCallbacks = () => {
+      while (callbacks.length > 0) {
+        const { field, value } = callbacks.shift()
+        field.setValue({ properties: this.agregatedProperties, value })
+        fields.forEach(f => {
+          f.onUpdate(
+            field,
+            value,
+            this.agregatedProperties,
+            value => callbacks.push({ field: f, value })
+          )
+        })
+      }
+    }
+
     const onInput = (field, value) => {
-      this.agregatedProperties[field.name] = value
+      callbacks.push({ field, value })
+      resolveCallbacks()
       this.$emit('input', this.agregatedProperties)
     }
 
     return createElement('div', {}, fields.map(field => {
       const config = {
         props: {
-          value: this.agregatedProperties[field.name],
+          properties: this.agregatedProperties,
+          value: field.getValue({ properties: this.agregatedProperties }),
           field: field,
           readonly: this.readonly,
           disable: this.disable

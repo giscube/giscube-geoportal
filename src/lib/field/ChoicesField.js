@@ -22,8 +22,8 @@ export default class ChoicesField extends Field {
     }
   }
 
-  tableValue (feature) {
-    const value = this.getValue(feature)
+  tableValue (data) {
+    const value = this.getValue(data)
     return this.valuesDict[value]
   }
 
