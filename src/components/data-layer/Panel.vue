@@ -5,6 +5,7 @@
       <div class="row items-center justify-end q-mb-md">
         <layers-list
           v-model="layersListOpen"
+          :disable="editing"
         />
         <q-space />
         <q-btn
