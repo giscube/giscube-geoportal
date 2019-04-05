@@ -1,7 +1,9 @@
 <template>
   <q-list>
     <q-expansion-item
+      ref="parent"
       :value="value"
+      :disable="disable"
       @input="$emit('input', $event)"
     >
       <template v-slot:header>
@@ -64,6 +66,10 @@ export default {
     value: {
       type: Boolean,
       default: false
+    },
+    disable: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -73,6 +79,13 @@ export default {
     mainLabel () {
       const current = this.$store.state.dataLayer.current
       return current ? `${current.source.name} > ${current.layer.name}` : this.t('title')
+    }
+  },
+  watch: {
+    disable (newValue) {
+      if (newValue) {
+        this.$refs.parent.hide()
+      }
     }
   },
   methods: {
