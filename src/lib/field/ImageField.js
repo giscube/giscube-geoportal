@@ -28,7 +28,7 @@ export default class ImageField extends Field {
 
   repr (data) {
     const value = this.getValue(data)
-    return value.value || value.src
+    return value ? value.value || value.src : null
   }
 
   str (data) {
