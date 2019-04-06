@@ -10,7 +10,7 @@ export default class PkField extends Field {
       const n = Vue.prototype.$t('new')
       return `(${n})`
     } else {
-      return value.toString()
+      return value ? value.toString() : null
     }
   }
 }
