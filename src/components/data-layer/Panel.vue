@@ -402,7 +402,8 @@ export default {
         .then(_ => {
           this.$refs.dataTable.refreshDataNow()
         })
-        .finally(_ => {
+        .catch(_ => {})
+        .then(_ => {
           this.saving = false
         })
     }
