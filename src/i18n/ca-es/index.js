@@ -3,6 +3,17 @@ export default {
     meters: 'metres'
   },
   tools: {
+    auth: {
+      header_name: 'Iniciar sessió',
+      title: 'Autenticació d\'usuari',
+      authenticatedAs: 'Autenticat com a usuari',
+      loginCodeOk: 'Inici de sessió correcte, podeu tancar la finestra.',
+      loginCodeError: 'L\'inici de sessió ha fallat',
+      closeWindow: 'Tancar finestra',
+      logIn: 'Iniciar sessió',
+      logOut: 'Tancar sessió',
+      pleaseLogin: 'Si us plau cliqueu el següent botó per autenticar-vos.'
+    },
     home: { header_name: 'Inici' },
     search: { header_name: 'Cerca' },
     catalog: {

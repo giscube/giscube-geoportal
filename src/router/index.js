@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import CatalogPanel from 'components/CatalogPanel'
 import ContactPanel from 'components/ContactPanel'
 import HomePanel from 'components/HomePanel'
+import AuthPanel from 'components/AuthPanel'
 import MeasurePanel from 'components/MeasurePanel'
 import GeoportalPanel from 'components/GeoportalPanel'
 import PlacePanel from 'components/PlacePanel'
@@ -17,7 +18,7 @@ const routes = [
     path: '/',
     component: () => import('layouts/GiscubeLayout.vue'),
     children: [
-      { path: '', redirect: { name: 'home' } },
+      { path: 'auth/', name: 'auth', component: AuthPanel },
       { path: 'home/', component: HomePanel, name: 'home' },
       { path: 'catalog/:q?', component: CatalogPanel, name: 'catalog' },
       { path: 'contact/', component: ContactPanel, name: 'contact' },
@@ -26,7 +27,9 @@ const routes = [
       { path: 'search/:q*', component: SearchPanel, name: 'search' },
       { path: 'geoportal/:q/', component: GeoportalPanel },
       { path: 'data/:sourceName?/:layerName?/', component: DataPanel, name: 'data' },
-      { path: 'streetview/:q?', component: StreetViewPanel, name: 'streetview' }
+      { path: 'streetview/:q?', component: StreetViewPanel, name: 'streetview' },
+      { path: ':q?', name: 'auth_params', component: AuthPanel },
+      { path: '', redirect: { name: 'home' } }
     ]
   }
 ]
