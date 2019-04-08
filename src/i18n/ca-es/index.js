@@ -53,7 +53,8 @@ export default {
       stopDrawing: 'Deixar de dibuixar elements',
       colFilter: 'Filtar per "{name}"',
       requiredField: 'Camp obligatori',
-      qInvalidCommit: 'Sembla que algun valor és invalid. Voldrieu guardar igualment?'
+      qInvalidCommit: 'Sembla que algun valor és invalid. Voldrieu guardar igualment?',
+      undoConfirm: 'Segur que voleu desfer els canvis d\'aquest element?'
     }
   },
   true: 'Cert',

@@ -56,7 +56,7 @@ export default {
     },
     revertItem () {
       this.$q.dialog({
-        message: 'Are you sure you want to undo the changes in this element?',
+        message: this.$t('tools.data.undoConfirm'),
         ok: {
           flat: true,
           label: this.$t('yes')

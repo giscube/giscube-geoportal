@@ -53,7 +53,8 @@ export default {
       stopDrawing: 'Stop drawing elements',
       colFilter: 'Filter for "{label}"',
       requiredField: 'Required Field',
-      qInvalidCommit: 'Some values seem to be invalid. Would you like to save anyways?'
+      qInvalidCommit: 'Some values seem to be invalid. Would you like to save anyways?',
+      undoConfirm: 'Are you sure you want to undo the changes in this element?'
     }
   },
   true: 'True',
