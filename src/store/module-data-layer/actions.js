@@ -266,7 +266,7 @@ export function saveEdits (context) {
     return Promise.resolve()
   }
 
-  const result = new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     databaseLayersApi.edit(context.state.current, {
       ADD: added,
       UPDATE: updated,
@@ -282,7 +282,6 @@ export function saveEdits (context) {
         reject(error)
       })
   })
-  return throwUnhandledExceptions(result)
 }
 
 export function drawGeometry (context) {
