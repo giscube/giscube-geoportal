@@ -122,7 +122,8 @@ export default {
         page: 1,
         rowsNumber: 0
       },
-      colFilters: {}
+      colFilters: {},
+      bbox: null
     }
   },
   created () {
@@ -130,10 +131,7 @@ export default {
     this.refreshData = _.debounce(this.refreshDataNow, 500)
   },
   beforeDestroy () {
-    if (this.map) {
-      this.map.off('zoom', this.onMapChange)
-      this.map.off('move', this.onMapChange)
-    }
+    this.removeMapEvents(this.map)
   },
   computed: {
     map () {
@@ -141,6 +139,9 @@ export default {
     },
     leftDrawerSize () {
       return this.$store.state.layout.leftDrawerSize
+    },
+    sidebarVisible () {
+      return this.$store.state.sidebarVisible
     },
     currentLayer () {
       return this.$store.state.dataLayer.current
@@ -188,14 +189,8 @@ export default {
   watch: {
     map: {
       handler (newValue, oldValue) {
-        if (oldValue) {
-          this.map.off('move', this.onMapChange)
-          this.map.off('zoom', this.onMapChange)
-        }
-        if (newValue) {
-          this.map.on('zoom', this.onMapChange)
-          this.map.on('move', this.onMapChange)
-        }
+        this.addMapEvents(newValue)
+        this.removeMapEvents(oldValue)
         if (this.mapFilter) {
           this.refreshDataNow()
         }
@@ -212,12 +207,27 @@ export default {
       this.refreshDataNow()
     },
     leftDrawerSize () {
-      this.onMapChange()
+      this.checkBbox()
+    },
+    sidebarVisible () {
+      this.checkBbox()
     }
   },
   methods: {
     t (key, args) {
       return this.$t('tools.data.' + key, args)
+    },
+    addMapEvents (map) {
+      if (map) {
+        map.on('move', this.checkBbox)
+        map.on('zoom', this.checkBbox)
+      }
+    },
+    removeMapEvents (map) {
+      if (map) {
+        map.off('move', this.checkBbox)
+        map.off('zoom', this.checkBbox)
+      }
     },
     refreshDataNow () {
       if (!this.$refs.table) {
@@ -229,9 +239,14 @@ export default {
         this.$refs.table.requestServerInteraction()
       }
     },
-    onMapChange () {
+    checkBbox () {
+      console.log('called')
       if (this.mapFilter && !this.editing) {
-        this.refreshData()
+        const newBbox = this.$store.getters['map/bbox']()
+        if (!_.isEqual(newBbox, this.bbox)) {
+          this.bbox = newBbox
+          this.refreshData()
+        }
       }
     },
     onRequest ({ pagination, filter, getCellValue }) {
@@ -271,11 +286,8 @@ export default {
         }
       })
 
-      if (this.mapFilter) {
-        const bbox = this.$store.getters['map/bbox']()
-        if (bbox) {
-          args.extraParams.in_bbox = bbox.join(',')
-        }
+      if (this.mapFilter && this.bbox) {
+        args.extraParams.in_bbox = this.bbox.join(',')
       }
 
       if (this.polygonFilter) {

@@ -1,7 +1,9 @@
 <template>
   <q-layout view="hHh lpR fFf"
+    ref="layout"
     class="max-height"
     :class="appClasses"
+    @resize="$store.commit('layout/size', $event)"
   >
     <!-- AppHeader -->
     <component :is="$config.layout.header"
@@ -73,6 +75,12 @@ export default {
       left: true,
       width: 300
     }
+  },
+  mounted () {
+    this.$nextTick(() => {
+      const { width, height } = this.$refs.layout
+      this.$store.commit('layout/size', { width, height })
+    })
   },
   methods: {
     openURL,

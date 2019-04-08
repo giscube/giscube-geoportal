@@ -5,3 +5,7 @@ export function setMapSize (state, value) {
 export function leftDrawerSize (state, value) {
   state.leftDrawerSize = value
 }
+
+export function size (state, value) {
+  state.size = value
+}

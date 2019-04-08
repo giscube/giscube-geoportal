@@ -65,7 +65,6 @@ export default {
       return null
     },
     src () {
-      console.log(this.value)
       return this.tempSrc || (this.value && this.value.src)
     },
     filename () {

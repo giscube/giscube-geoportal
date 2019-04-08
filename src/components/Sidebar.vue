@@ -1,7 +1,16 @@
 <template>
-  <q-drawer v-model="sidebarVisible" side="left" overlay elevated persistent
-    :width="width" :breakpoint="600" content-class="left-drawer"
-    >
+  <q-drawer
+    ref="drawer"
+    v-model="sidebarVisible"
+    side="left"
+    content-class="left-drawer"
+    elevated
+    persistent
+    :width="width"
+    :breakpoint="$store.state.layout.drawerBreakpoint"
+    :overlay="$store.state.layout.drawersOverlay"
+    :behavior="$store.state.layout.drawerBehavior"
+  >
     <router-view :map='map' @needs-wide='setWide'
       :geoportalMap="geoportalMap"
     />
@@ -75,6 +84,7 @@ export default {
     this.$nextTick(() => {
       this.onResize()
       this.$store.commit('setSidebarVisible', true)
+      this.drawer = this.$refs.drawer
     })
   },
   beforeDestroy () {
