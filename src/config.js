@@ -23,7 +23,8 @@ export default new Options({
       'measure',
       'print',
       '----------',
-      'fullscreen'
+      'fullscreen',
+      'auth'
     ]
   },
   tools: {
@@ -54,6 +55,10 @@ export default new Options({
       icon: 'home',
       to: 'home'
     },
+    auth: {
+      icon: 'ion-person',
+      to: 'auth'
+    },
     measure: {
       icon: 'mdi-ruler',
       to: 'measure'
@@ -82,6 +87,8 @@ export default new Options({
       'lat': 41.973,
       'lng': 2.780
     }
+  },
+  oauth: {
   },
   searches: [
     {

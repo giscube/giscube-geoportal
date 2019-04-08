@@ -3,6 +3,17 @@ export default {
     meters: 'meters'
   },
   tools: {
+    auth: {
+      header_name: 'Log in',
+      title: 'User authentication',
+      authenticatedAs: 'Authenticated as user',
+      loginCodeOk: 'Login succeeded, you can close this window',
+      loginCodeError: 'Login failed',
+      closeWindow: 'Close window',
+      logIn: 'Log in',
+      logOut: 'Log out',
+      pleaseLogin: 'Please use the button below to authenticate.'
+    },
     home: { header_name: 'Home' },
     search: { header_name: 'Search' },
     catalog: {

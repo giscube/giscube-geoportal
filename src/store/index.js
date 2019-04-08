@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import config from '../config'
 
+import auth from './module-auth'
 import dataLayer from './module-data-layer'
 import layout from './module-layout'
 import map from './module-map'
@@ -16,6 +17,7 @@ Vue.use(Vuex)
 export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
     modules: {
+      auth,
       dataLayer,
       layout,
       map
@@ -60,6 +62,7 @@ export default function (/* { ssrContext } */) {
   })
 
   Store.config = config
+  Store.dispatch('auth/loadState')
 
   return Store
 }
