@@ -1,16 +1,16 @@
 <template>
   <q-page class="max-height" :style="containerStyle">
     <!-- :options='getMapOptions()' -->
-    <v-map ref='map'
+    <l-map ref='map'
       :zoom='$store.config.home.zoom'
       :center="$store.config.home.center"
       :options="mapOptions"
-      @l-ready='onMapReady'
+      @leaflet:load='onMapReady'
     >
-      <LayersControl ref="layersControl"></LayersControl>
+      <layers-control ref="layersControl"></layers-control>
       <query-on-click></query-on-click>
       <l-geo-json ref='editGeoJsonLayer' v-if="currentTool === 'data' && editLayerGeojson && editLayerOptions" :geojson="editLayerGeojson" :options="editLayerOptions"></l-geo-json>
-    </v-map>
+    </l-map>
 
     <q-resize-observer @resize="onResize" />
   </q-page>
@@ -18,7 +18,7 @@
 
 <script>
 import L from '../lib/leaflet'
-import Vue2Leaflet from 'vue2-leaflet'
+import { LMap, LGeoJson } from 'vue2-leaflet'
 
 import QueryOnClick from 'components/QueryOnClick.vue'
 import LayersControl from 'components/LayersControl.vue'
@@ -27,10 +27,10 @@ require('microdisseny-leaflet-measure/dist/leaflet-measure.css')
 
 export default {
   components: {
-    'v-map': Vue2Leaflet.Map,
-    'l-geo-json': Vue2Leaflet.GeoJSON,
-    'query-on-click': QueryOnClick,
-    LayersControl
+    LayersControl,
+    LGeoJson,
+    LMap,
+    QueryOnClick
   },
   data () {
     return {
@@ -134,12 +134,14 @@ export default {
       }
     },
     onMapReady () {
-      this.map = this.$refs.map.mapObject
-      this.addControls()
-      this.addBaseMaps()
-      this.resultsLayer.addTo(this.map)
-      this.$store.commit('map/mapObject', this.map)
-      this.$emit('map-ready', this.map)
+      this.$nextTick(() => {
+        this.map = this.$refs.map.mapObject
+        this.addControls()
+        this.addBaseMaps()
+        this.resultsLayer.addTo(this.map)
+        this.$store.commit('map/mapObject', this.map)
+        this.$emit('map-ready', this.map)
+      })
     },
     onResize (size) {
       this.$store.commit('layout/setMapSize', size)
