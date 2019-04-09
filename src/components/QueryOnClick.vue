@@ -1,7 +1,7 @@
 <template>
-  <v-marker v-if="query" :visible="query.visible" :lat-lng="query.latlng"
-            @l-add="$event.target.openPopup()">
-    <v-popup ref="popup">
+  <l-marker v-if="query" :visible="query.visible" :lat-lng="query.latlng"
+            @add="onAdd">
+    <l-popup ref="popup">
       <q-spinner v-if="!query.component" />
       <component v-bind:is="query.component" :results='query.results' :latlng='query.latlng'>
         test
@@ -15,8 +15,8 @@
           @click="_removeQuery"
         />
       </div>
-    </v-popup>
-  </v-marker>
+    </l-popup>
+  </l-marker>
 </template>
 
 <script>
@@ -24,7 +24,7 @@ import L from '../lib/leaflet'
 import axios from 'axios'
 import convert from 'xml-js'
 
-import Vue2Leaflet from 'vue2-leaflet'
+import { LMarker, LPopup, findRealParent } from 'vue2-leaflet'
 
 import LatLngPopup from 'components/LatLngPopup.vue'
 import FeatureInfoPopup from 'components/FeatureInfoPopup.vue'
@@ -32,8 +32,8 @@ import FeatureInfoPopup from 'components/FeatureInfoPopup.vue'
 export default {
   name: 'query-on-click',
   components: {
-    'v-marker': Vue2Leaflet.Marker,
-    'v-popup': Vue2Leaflet.Popup
+    LMarker,
+    LPopup
   },
   data () {
     return {
@@ -50,16 +50,15 @@ export default {
     }
   },
   mounted () {
-    if (this.$parent._isMounted) {
-      this.deferredMountedTo(this.$parent.mapObject)
-    }
+    this.parentContainer = findRealParent(this.$parent)
+    this.map = this.parentContainer.mapObject
+    this._enableMapClickEvent()
   },
   methods: {
-    deferredMountedTo (parent) {
-      this.parent = parent
-      this.map = parent
-      this.mapObject = parent
-      this._enableMapClickEvent()
+    onAdd (event) {
+      this.$nextTick(() => {
+        event.target.openPopup()
+      })
     },
     onMapClick: function (event) {
       if (this.query) {
