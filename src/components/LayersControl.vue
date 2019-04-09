@@ -56,6 +56,7 @@
 
 <script>
 import L from '../lib/leaflet'
+import { findRealParent } from 'vue2-leaflet'
 import draggable from 'vuedraggable'
 
 import LayerItem from 'components/LayerItem.vue'
@@ -81,6 +82,9 @@ export default {
   mounted () {
     this.mapObject = new L.Control()
     this.mapObject.onAdd = this.onAdd
+    this.parentContainer = findRealParent(this.$parent)
+    this.map = this.parentContainer.mapObject
+    this.mapObject.addTo(this.map)
   },
   methods: {
     addBaseLayer (baselayer, name, options) {
@@ -122,31 +126,6 @@ export default {
       this.map.addLayer(options.layer)
       this.baseLayerSelected = options
       this.baseLayerSelect = false
-    },
-    deferredMountedTo (parent) {
-      var vm = this
-      for (var i = 0; i < this.$children.length; i++) {
-        if (typeof this.$children[i].deferredMountedTo === 'function') {
-          this.$children[i].$on('l-add', function (e) {
-            var id = e.target._leaflet_id
-            if (vm.layers[id]) {
-              return
-            }
-            var title = e.target.getAttribution()
-            if (this.$attrs.title) {
-              title = this.$attrs.title
-            }
-
-            vm.mapObject.addBaseLayer(e.target, title)
-            vm.layers[id] = true
-          })
-
-          this.$children[i].deferredMountedTo(parent)
-        }
-      }
-      this.parent = parent
-      this.map = parent
-      this.mapObject.addTo(parent)
     },
     layersChanged (event) {
       let zIndex = this.lastZIndex
