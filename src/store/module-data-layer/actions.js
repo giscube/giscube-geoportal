@@ -2,9 +2,8 @@ import _ from 'lodash'
 import Vue from 'vue'
 
 import databaseLayersApi from '../../api/databaselayers.js'
-import giscubeApi from '../../api/giscube.js'
 
-import { isCleanEqual } from '../../lib/utils.js'
+import { cloneClean, isCleanEqual } from '../../lib/utils.js'
 import { newFeature } from '../../lib/feature.js'
 import MultiResult from '../../lib/MultiResult.js'
 import { throwUnhandledExceptions } from '../../lib/promiseUtils.js'
@@ -168,15 +167,18 @@ export function editProperties (context, { feature, properties }) {
 }
 
 export function editMultiple (context, { features, properties }) {
+  const fields = context.state.layerConfig.fields
+
   features.forEach(feature => {
     const p = {}
     let edited = false
-    context.state.layerConfig.layerInfo.fields.forEach(f => {
+    fields.forEach(f => {
       const fieldName = f.name
       if (MultiResult.is(properties[fieldName])) {
-        p[fieldName] = feature.properties[fieldName]
+        // keep same value
+        p[fieldName] = f.getValue({ feature })
       } else {
-        p[fieldName] = properties[fieldName]
+        p[fieldName] = f.cloneValue({ properties })
         edited = true
       }
     })
@@ -185,6 +187,9 @@ export function editMultiple (context, { features, properties }) {
       context.dispatch('editProperties', { feature, properties: p })
     }
   })
+
+  // cleanup the values for the AsyncValue to have the correct reference counter
+  fields.forEach(f => f.setValue({ properties, value: null }))
 }
 
 export function editGeometry (context, feature) {
@@ -202,6 +207,10 @@ export function cancelEdits (context) {
 }
 
 export function saveEdits (context) {
+  if (context.state.uploadQueue.running) {
+    throw new Error('Trying to save while uploading')
+  }
+
   const geojson = context.state.geojson
   const originals = context.state.editStatus.originals
 
@@ -245,12 +254,12 @@ export function saveEdits (context) {
         result.id = pk
 
         if (!isCleanEqual(original.geometry, feature.geometry)) {
-          result.geometry = feature.geometry
+          result.geometry = cloneClean(feature.geometry)
         }
 
         result.properties = {}
         fields.forEach(field => {
-          if (!isCleanEqual(original.properties[field.name], feature.properties[field.name])) {
+          if (!field.equals({ feature: original }, { feature })) {
             result.properties[field.name] = field.repr(feature)
           }
         })
@@ -313,6 +322,6 @@ export function addNewFeature (context, feature) {
   Vue.set(context.state.editStatus.originals, feature.getPk(), null)
 }
 
-export function uploadPhoto (context, photo) {
-  return giscubeApi.uploadPhoto(context.state.current.source, photo)
+export function uploadPhoto (context, asyncPhoto) {
+  context.state.uploadQueue.add(asyncPhoto).run()
 }

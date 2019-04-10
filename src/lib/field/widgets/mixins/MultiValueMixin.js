@@ -19,11 +19,14 @@ export default {
     valueObj () {
       return this.value
     },
+    isMulti () {
+      return MultiResult.is(this.valueObj)
+    },
     v () {
-      return MultiResult.is(this.valueObj) ? null : this.valueObj
+      return this.isMulti ? null : this.valueObj
     },
     hint () {
-      if (!MultiResult.is(this.valueObj)) {
+      if (!this.isMulti) {
         return null
       }
 

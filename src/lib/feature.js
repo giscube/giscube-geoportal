@@ -1,7 +1,5 @@
 'use strict'
 
-import { cloneClean } from '../lib/utils.js'
-
 import Vue from 'vue'
 import L from '../lib/leaflet'
 
@@ -158,23 +156,6 @@ function getEditResult (forceMulti) {
   return geom
 }
 
-/// Makes a GeoJSON feature with the values given
-function cleanClone (pk) {
-  const result = {
-    type: 'Feature',
-    geometry: cloneClean(this.geometry),
-    properties: cloneClean(this.properties, false)
-  }
-
-  if (pk === undefined) {
-    pk = cloneClean(this.getPk())
-  }
-
-  result.id = pk
-
-  return result
-}
-
 /// Adds all the functionality to the feature
 export function addFeatureMixin (feature, selected, trackBy, onEdit) {
   Vue.set(feature, 'status', {})
@@ -190,7 +171,6 @@ export function addFeatureMixin (feature, selected, trackBy, onEdit) {
   feature.eachGeom = eachGeom
   feature.setEditing = setEditing
   feature.getEditResult = getEditResult
-  feature.cleanClone = cleanClone
 }
 
 /// Sets the correct state to layer and adds it to the feature

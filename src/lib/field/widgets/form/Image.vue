@@ -21,7 +21,7 @@
       </template>
       <template
         v-slot:append
-        v-if="!readonly && !saving"
+        v-if="!readonly"
       >
         <q-icon
           class="control-icon q-px-md cursor-pointer all-pointer-events desktop-hide"
@@ -36,7 +36,8 @@
       </template>
     </q-field>
     <q-img
-      v-if="src"
+      v-for="src in srcs"
+      :key="src"
       :src="src"
       contain
       style="max-height: 10em; width: 100%"
@@ -45,38 +46,37 @@
 </template>
 
 <script>
-import { notifyHttpError } from '../../../notifications.js'
-
+import { notifyHttpError } from '../../../notifications'
 import MultiValueMixin from '../mixins/MultiValueMixin'
 import ValidateMixin from '../mixins/ValidateMixin'
+
+import { AsyncPhoto } from '../../ImageField.js'
 
 export default {
   props: ['value', 'field', 'readonly', 'disable'],
   mixins: [MultiValueMixin, ValidateMixin],
-  data () {
-    return {
-      saving: false,
-      tempFile: null,
-      tempSrc: null
-    }
-  },
   computed: {
-    hint () {
-      return null
-    },
-    src () {
-      return this.tempSrc || (this.value && this.value.src)
+    srcs () {
+      if (this.isMulti) {
+        return Array.from(this.value.values).filter(v => v).map(v => this.getUrl(v))
+      } else {
+        return [ this.getUrl(this.value) ]
+      }
     },
     filename () {
-      if (this.tempFile) {
-        return this.tempFile.name
-      }
-
-      const url = this.value && this.value.src
-      return this.field.constructor.urlFilename(url)
+      return this.isMulti ? null : this.getName(this.value)
+    },
+    hint () {
+      return this.isMulti ? Array.from(this.value.values).map(value => this.getName(value)).join(', ') : null
     }
   },
   methods: {
+    getUrl (value) {
+      return this.field.constructor.getUrl(value)
+    },
+    getName (value) {
+      return this.field.constructor.getFilename(value)
+    },
     onClear (v = null) {
       if (v === null) {
         this.$emit('input', { src: null })
@@ -94,26 +94,10 @@ export default {
     upload () {
       const files = this.$refs.files.files
       if (files.length > 0) {
-        this.saving = true
-        this.tempFile = files[0]
-        this.tempSrc = URL.createObjectURL(this.tempFile)
-
-        this.$store.dispatch('dataLayer/uploadPhoto', this.tempFile)
-          .then(result => {
-            URL.revokeObjectURL(this.tempSrc)
-            this.tempFile = null
-            this.tempSrc = null
-            this.saving = false
-            this.$emit('input', result)
-          })
-          .catch(error => {
-            this.saving = false
-            this.tempFile = null
-            this.tempSrc = null
-            URL.revokeObjectURL(this.tempSrc)
-            notifyHttpError(error)
-            console.error(error)
-          })
+        const newValue = new AsyncPhoto(files[0], this.$store.state.dataLayer.current.source, 0)
+        newValue.getValue().catch(notifyHttpError)
+        this.$store.dispatch('dataLayer/uploadPhoto', newValue)
+        this.$emit('input', newValue)
       }
     }
   }
