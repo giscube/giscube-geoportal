@@ -164,7 +164,9 @@ export function geojson (state, value) {
 }
 
 export function featureProperties (state, { feature, properties }) {
-  Vue.set(feature, 'properties', properties)
+  state.layerConfig.fields.filter(field => !field.geom).forEach(field => {
+    field.cloneSetValue({ properties }, { feature })
+  })
 }
 
 export function revertFeature (state, feature) {
@@ -177,8 +179,9 @@ export function revertFeature (state, feature) {
   } else if (originals[pk]) {
     // Restore value if it existed
     feature.geometry = originals[pk].geometry
-    feature.properties = originals[pk].properties
-
+    state.layerConfig.fields.filter(field => !field.geom).forEach(field => {
+      field.moveValue({ properties: originals[pk].properties }, { feature })
+    })
     Vue.delete(originals, pk)
   } else {
     // Remove feature from the table if it was a new feature
@@ -199,7 +202,10 @@ export function revertAllFeatures (state) {
     const pk = feature.id
     if (pk in originals && originals[pk]) { // Exists and is not new
       feature.geometry = originals[pk].geometry
-      feature.properties = originals[pk].properties
+
+      state.layerConfig.fields.filter(field => !field.geom).forEach(field => {
+        field.moveValue({ properties: originals[pk].properties }, { feature })
+      })
     }
     feature.status.deleted = false
   })
@@ -218,34 +224,16 @@ export function featureHistory (state, feature) {
   const pk = feature.getPk()
 
   if (!(pk in state.editStatus.originals)) {
+    const properties = {}
+    state.layerConfig.fields.filter(field => !field.geom).forEach(field => {
+      field.cloneSetValue({ feature }, { properties })
+    })
+
     Vue.set(state.editStatus.originals, pk, {
       geometry: feature.geometry,
-      properties: feature.properties
+      properties
     })
   }
-}
-
-export function resetFeatures (state) {
-  const geojson = state.geojson
-  const originals = state.editStatus.originals
-
-  geojson.forEach(feature => {
-    const pk = feature.id
-    if (pk in originals && originals[pk]) { // Exists and is not new
-      feature.geometry = originals[pk].geometry
-      feature.properties = originals[pk].properties
-    }
-    feature.status.deleted = false
-  })
-
-  let index = geojson.length - 1
-  while (index >= 0 && geojson[index].status.new) {
-    --index
-  }
-  // index = last old
-  ++index
-  // index = first new
-  geojson.splice(index) // remove new features
 }
 
 export function removeFeaturesByIndex (state, featureIndex) {

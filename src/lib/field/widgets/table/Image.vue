@@ -12,7 +12,7 @@ export default {
   props: ['value', 'field', 'feature'],
   computed: {
     src () {
-      return this.value && (this.value.thumbnail || this.value.src)
+      return this.field.constructor.getUrl(this.value)
     }
   }
 }

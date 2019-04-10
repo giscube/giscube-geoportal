@@ -242,7 +242,6 @@ export default {
       }
     },
     checkBbox () {
-      console.log('called')
       if (this.mapFilter && !this.editing) {
         const newBbox = this.$store.getters['map/bbox']()
         if (!_.isEqual(newBbox, this.bbox)) {

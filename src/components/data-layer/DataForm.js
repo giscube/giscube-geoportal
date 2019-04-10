@@ -1,19 +1,13 @@
 import MultiResult from '../../lib/MultiResult.js'
-import { cloneClean } from '../../lib/utils.js'
 import FormWidget from '../../lib/field/components/FormWidget.js'
 
-function agregate (fields, features) {
-  const agregatedProperties = {}
+function aggregate (fields, features) {
+  const aggregatedProperties = {}
 
   for (let field of fields) {
     let current
     for (let feature of features) {
-      let value = field.getValue({ feature })
-      if (value === '' || value === undefined) {
-        value = null
-      } else {
-        value = cloneClean(value)
-      }
+      const value = field.cloneValue({ feature, cleanup: true })
 
       if (current === undefined) {
         current = value
@@ -24,40 +18,49 @@ function agregate (fields, features) {
       }
     }
 
-    agregatedProperties[field.name] = current
+    aggregatedProperties[field.name] = current
   }
 
-  return agregatedProperties
+  return aggregatedProperties
 }
 
 export default {
   props: ['properties', 'features', 'readonly', 'disable'],
   data () {
     return {
-      agregatedProperties: this.agregateProperties()
+      aggregatedProperties: this.aggregateProperties(),
+      callbacks: []
+    }
+  },
+  computed: {
+    fields () {
+      return this.$store.getters['dataLayer/formFields']
     }
   },
   watch: {
     features () {
-      this.applyAgregateProperties()
+      this.applyAggregateProperties()
     },
     properties () {
-      this.applyAgregateProperties()
+      this.applyAggregateProperties()
     }
   },
   methods: {
-    agregateProperties () {
-      const fields = this.$store.getters['dataLayer/formFields']
+    aggregateProperties () {
+      let fields = this.$store.getters['dataLayer/formFields']
+      if (!this.features) {
+        fields = this.fields.filter(f => !f.requiresFeatures)
+      }
       let properties = this.properties
       if (!properties) {
-        properties = agregate(fields, this.features)
+        properties = aggregate(fields, this.features)
       } else if (Array.isArray(properties)) {
-        properties = agregate(fields, [{ properties }])
+        properties = aggregate(fields, [{ properties }])
       }
       return properties
     },
-    applyAgregateProperties () {
-      this.agregatedProperties = this.agregateProperties()
+    applyAggregateProperties () {
+      this.aggregatedProperties = this.aggregateProperties()
     },
     validate () {
       return this.$children.reduce(
@@ -70,47 +73,43 @@ export default {
     },
     resetValidation () {
       this.$children.forEach(child => child.resetValidation())
-    }
-  },
-  render (createElement) {
-    const fields = this.$store.getters['dataLayer/formFields']
-    if (!fields) {
-      return
-    }
-
-    const callbacks = []
-    const resolveCallbacks = () => {
-      while (callbacks.length > 0) {
-        const { field, value } = callbacks.shift()
-        field.setValue({ properties: this.agregatedProperties, value })
-        fields.forEach(f => {
+    },
+    resolveCallbacks () {
+      while (this.callbacks.length > 0) {
+        const { field, value } = this.callbacks.shift()
+        field.setValue({ properties: this.aggregatedProperties, value })
+        this.fields.forEach(f => {
           f.onUpdate(
             field,
             value,
-            this.agregatedProperties,
-            value => callbacks.push({ field: f, value })
+            this.aggregatedProperties,
+            value => this.callbacks.push({ field: f, value })
           )
         })
       }
+    },
+    onInput (field, value) {
+      this.callbacks.push({ field, value })
+      this.resolveCallbacks()
+      this.$emit('input', this.aggregatedProperties)
+    }
+  },
+  render (createElement) {
+    if (!this.fields) {
+      return
     }
 
-    const onInput = (field, value) => {
-      callbacks.push({ field, value })
-      resolveCallbacks()
-      this.$emit('input', this.agregatedProperties)
-    }
-
-    return createElement('div', {}, fields.map(field => {
+    return createElement('div', {}, this.fields.map(field => {
       const config = {
         props: {
-          properties: this.agregatedProperties,
-          value: field.getValue({ properties: this.agregatedProperties }),
+          properties: this.aggregatedProperties,
+          value: field.getValue({ properties: this.aggregatedProperties }),
           field: field,
           readonly: this.readonly,
           disable: this.disable
         },
         on: {
-          input: value => onInput(field, value)
+          input: value => this.onInput(field, value)
         }
       }
       return createElement(FormWidget, config, [])

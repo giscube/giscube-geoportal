@@ -1,3 +1,5 @@
+import AsyncQueue from '../../lib/async/Queue'
+
 export default {
   sources: null,
   current: null,
@@ -17,5 +19,6 @@ export default {
   table: {
     features: [],
     selected: []
-  }
+  },
+  uploadQueue: new AsyncQueue()
 }

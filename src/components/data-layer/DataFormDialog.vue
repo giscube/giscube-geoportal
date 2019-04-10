@@ -19,12 +19,12 @@
       <q-card-actions>
         <q-btn
           :label="$t('delete')"
-          @click="$emit('delete')"
+          @click="onDelete"
         />
         <q-space />
         <q-btn
           :label="$t('cancel')"
-          @click="$emit('cancel')"
+          @click="onCancel"
         />
         <q-btn
           v-show="!disable && !readonly && result"
@@ -63,7 +63,7 @@ export default {
   },
   data () {
     return {
-      result: null
+      result: {}
     }
   },
   methods: {
@@ -72,6 +72,21 @@ export default {
     },
     onInput (value) {
       this.result = value
+    },
+    _clearData () {
+      this.$store.state.dataLayer.layerConfig.fields.forEach(field => {
+        if (field.name in this.result) {
+          field.setValue({ properties: this.result, value: null })
+        }
+      })
+    },
+    onDelete () {
+      this._clearData()
+      this.$emit('delete')
+    },
+    onCancel () {
+      this._clearData()
+      this.$emit('cancel')
     },
     onCommit () {
       if (this.$refs.form.validate()) {

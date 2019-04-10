@@ -29,7 +29,7 @@
           <q-btn
             v-if="changed && !adding"
             :label="$t('save')"
-            :loading="saving"
+            :loading="saving || uploading"
             icon="save"
             @click="onSave"
           />
@@ -179,7 +179,7 @@
         <q-card-section class="column q-pa-md">
           <data-form
             :properties="defaultProperties"
-            @input="defaultProperties = $event"
+            @input="onDefaultPropertiesChange"
             style="width: 50ch"
             class="q-mb-md"
           />
@@ -240,6 +240,9 @@ export default {
     layerLoaded () {
       return this.$store.getters['dataLayer/layerLoaded']
     },
+    fields () {
+      return this.$store.state.dataLayer.layerConfig.fields
+    },
     editing () {
       return this.$store.getters['dataLayer/editing']
     },
@@ -251,6 +254,9 @@ export default {
     },
     adding () {
       return this.$store.state.dataLayer.editStatus.adding
+    },
+    uploading () {
+      return this.$store.state.dataLayer.uploadQueue.running
     },
     saving: {
       get () {
@@ -359,6 +365,11 @@ export default {
     deleteSelected () {
       const undelete = this.visibleSelected.every(feature => feature.status.deleted)
       this.visibleSelected.forEach(feature => { feature.status.deleted = !undelete })
+    },
+    onDefaultPropertiesChange (properties) {
+      this.fields.forEach(f => {
+        f.cloneSetValue({ properties }, { properties: this.defaultProperties })
+      })
     },
     startFeatureEdit (feature) {
       this.editedFeature = feature
