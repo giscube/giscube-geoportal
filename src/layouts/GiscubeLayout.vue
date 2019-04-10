@@ -21,6 +21,8 @@
     <component :is="$config.layout.printHeader"
         v-if="printPreview"
         ref="printheader"
+        :brand-logo="$config.branding.header.logo"
+        :brand-text="$config.branding.header.text"
         :map="$refs.map"
         @done="printDone"
     />

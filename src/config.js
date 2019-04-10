@@ -19,9 +19,9 @@ export default new Options({
       'catalog',
       'streetview',
       'data',
-      'contact',
       'measure',
       'print',
+      'contact',
       '----------',
       'fullscreen',
       'auth'

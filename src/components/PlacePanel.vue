@@ -3,8 +3,8 @@
     <div class="panel-content">
       <p class="panel-title">{{ result.title }}</p>
 
-      <div v-if="result" class="row-info">
-        <q-icon name="home" size="20px" /> {{ properties.adreca }}
+      <div v-if="result && properties.address" class="row-info">
+        <q-icon name="home" size="20px" /> {{ properties.address }}
       </div>
 
       <div v-if="coordinates" class="row-info">
@@ -12,12 +12,11 @@
       </div>
 
       <div class="row reverse">
-        <q-btn flat stretch no-caps
+        <q-btn outline no-caps
           icon="zoom_in"
           label="Zoom"
           @click="zoomResult"
         />
-
       </div>
 
     </div>

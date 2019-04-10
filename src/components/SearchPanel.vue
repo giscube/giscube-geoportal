@@ -1,5 +1,5 @@
 <template>
-  <div class="panel">
+  <div class="panel search-panel">
 
     <search-bar @search-start="qChanged" />
 
@@ -13,11 +13,10 @@
 
       <p v-if="showSearchError" class="list-group-item">Error retrieving results</p>
       <p v-if="q && showSearchEmpty && !showSearchError" class="list-group-item">No matches found</p>
-
-      <div v-if="results">
-        <SearchResult v-for="(result, index) in results" :result='result'
-          :key="index" :map='map' :resultsLayer='resultsLayer' />
-      </div>
+    </div>
+    <div v-if="results">
+      <SearchResult v-for="(result, index) in results" :result='result'
+        :key="index" :map='map' :resultsLayer='resultsLayer' />
     </div>
   </div>
 </template>
@@ -182,8 +181,13 @@ export default {
 }
 </script>
 
-<style scoped>
-.list-group-item {
-  min-height: 65px;
+<style lang="scss">
+.search-panel {
+  .list-group-item {
+    min-height: 85px;
+    padding: 10px 7px 5px 20px;
+    border-bottom: 1px solid rgba(0,0,0,.125);
+    background-color: white;
+  }
 }
 </style>

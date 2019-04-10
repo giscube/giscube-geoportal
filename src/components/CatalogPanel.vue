@@ -135,7 +135,7 @@ export default {
   .categories {
     .q-item.category {
       padding-left: 10px;
-      font-size: 1.2em;
+      font-size: 1.13em;
       font-weight: 500;
       background-color: #dfdfdf;
       border-bottom: 1px solid #ebeef5;
@@ -146,13 +146,18 @@ export default {
     }
     .q-item.subcategory  {
       padding-left: 20px;
-      font-size: 1.1em;
+      font-size: 1.05em;
+      font-weight: 500;
       background-color: #f5f5f5;
       border-bottom: 1px solid #ebeef5;
 
       &:hover {
         background-color: #a1d7f5;
       }
+    }
+    .catalog-result {
+      font-size: 0.93em;
+      line-height: 1.7em;
     }
     .catalog-result.empty {
       padding-top: 15px;

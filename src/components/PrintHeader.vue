@@ -2,7 +2,7 @@
   <q-header class="giscube-header">
     <q-toolbar class="giscube-toolbar-buttons">
 
-      <a class="giscube-header-brand header" href="#"><img src="../assets/logo_giscube.svg"><span>Giscube Geoportal</span></a>
+      <a class="giscube-header-brand header" href="#"><img :src="brandLogo"><span>{{ brandText }}</span></a>
 
       <q-separator vertical class="gt-xs no-print" />
 
@@ -28,7 +28,11 @@
 
 <script>
 export default {
-  props: ['map'],
+  props: [
+    'brandLogo',
+    'brandText',
+    'map'
+  ],
   data () {
     return {}
   },
