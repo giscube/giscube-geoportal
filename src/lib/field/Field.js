@@ -54,7 +54,9 @@ export default class Field {
   }
 
   rules (t) {
-    return [ value => this.null || value !== null || value !== undefined || t('tools.data.requiredField') ]
+    return [
+      value => this.null || (value !== null && value !== undefined) || t('tools.data.requiredField')
+    ]
   }
 
   isValid (data, t) {
