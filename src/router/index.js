@@ -19,15 +19,16 @@ const routes = [
     component: () => import('layouts/GiscubeLayout.vue'),
     children: [
       { path: 'auth/', name: 'auth', component: AuthPanel },
-      { path: 'home/', component: HomePanel, name: 'home' },
       { path: 'catalog/:q?', component: CatalogPanel, name: 'catalog' },
       { path: 'contact/', component: ContactPanel, name: 'contact' },
+      { path: 'data/:sourceName?/:layerName?/', component: DataPanel, name: 'data' },
+      { path: 'geoportal/:q/', component: GeoportalPanel },
+      { path: 'home/', component: HomePanel, name: 'home' },
       { path: 'measure/', component: MeasurePanel, name: 'measure' },
       { path: 'place/:q*', component: PlacePanel, name: 'place' },
       { path: 'search/:q*', component: SearchPanel, name: 'search' },
-      { path: 'geoportal/:q/', component: GeoportalPanel },
-      { path: 'data/:sourceName?/:layerName?/', component: DataPanel, name: 'data' },
       { path: 'streetview/:q?', component: StreetViewPanel, name: 'streetview' },
+
       { path: ':q?', name: 'auth_params', component: AuthPanel },
       { path: '', redirect: { name: 'home' } }
     ]

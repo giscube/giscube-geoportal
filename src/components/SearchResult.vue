@@ -1,10 +1,15 @@
 <template>
-  <div>
+  <div class="search-result">
     <div :class="{'list-group-item': true, group: result.group }"
          :style="{'cursor': this.resultCursor}"
          @click="viewResultMain()"
-      ><div>{{ result.title }}</div>
-      <div v-if="properties.adreca" style="font-style: italic"><q-icon name="location_on" /> {{ properties.adreca }}</div>
+      ><div class="title">{{ result.title }}</div>
+      <div v-if="properties.address" class="address">
+        <q-icon name="home" /> {{ properties.address }}
+      </div>
+      <div v-if="coordinates" class="coordinates">
+        <q-icon name="place" /> GPS: {{ coordinates }}
+      </div>
       <div v-for="(child, index) in result.children" :key="index"
            style="padding: 10px 0 5px 0">
         <span style="padding: 5px 8px; background: #ccddee; border-radius: 4px; font-size: 0.8em"
@@ -21,6 +26,13 @@ export default {
     return {}
   },
   computed: {
+    coordinates () {
+      if (this.result.latlng) {
+        return this.result.latlng.coordinates[0].toFixed(6) + ', ' + this.result.latlng.coordinates[1].toFixed(6)
+      } else {
+        return null
+      }
+    },
     properties () {
       if (this.result.geojson) {
         return this.result.geojson.properties
@@ -58,5 +70,16 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+.search-result {
+  cursor: pointer;
+
+  .title {
+    font-weight: 500;
+  }
+  .address, .coordinates {
+    font-style: italic;
+    color: #444;
+  }
+}
 </style>

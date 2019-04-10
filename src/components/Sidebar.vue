@@ -287,10 +287,10 @@ aside.q-drawer--left {
   margin-bottom: 10px;
 }
 .panel-subtitle {
-  font-size: 1.4em;
+  font-size: 1.3em;
   font-family: 'Lato', sans-serif;
   font-weight: 400;
-  margin-top: 20px;
+  margin-top: 10px;
   margin-bottom: 10px;
 }
 </style>

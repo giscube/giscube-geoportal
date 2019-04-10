@@ -4,9 +4,10 @@
       {{ properties.title }}
     </div>
     <div class="tools" v-if="properties">
-      <!-- FIXME: use q-btn -->
-      <div class="tool-remove-result"
-          @click="_removeResult"><q-icon name="delete" /></div>
+      <q-btn flat dense
+        icon="delete"
+        @click="_removeResult"
+      />
     </div>
   </div>
 </template>
