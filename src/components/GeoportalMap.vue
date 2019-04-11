@@ -8,7 +8,8 @@
       @leaflet:load='onMapReady'
     >
       <layers-control ref="layersControl"></layers-control>
-      <query-on-click></query-on-click>
+      <!-- Query On Click -->
+      <component :is="$config.geoportalMap.queryOnClick" />
       <l-geo-json ref='editGeoJsonLayer' v-if="currentTool === 'data' && editLayerGeojson && editLayerOptions" :geojson="editLayerGeojson" :options="editLayerOptions"></l-geo-json>
     </l-map>
 
@@ -20,7 +21,6 @@
 import L from '../lib/leaflet'
 import { LMap, LGeoJson } from 'vue2-leaflet'
 
-import QueryOnClick from 'components/QueryOnClick.vue'
 import LayersControl from 'components/LayersControl.vue'
 require('microdisseny-leaflet-measure')
 require('microdisseny-leaflet-measure/dist/leaflet-measure.css')
@@ -29,8 +29,7 @@ export default {
   components: {
     LayersControl,
     LGeoJson,
-    LMap,
-    QueryOnClick
+    LMap
   },
   data () {
     return {

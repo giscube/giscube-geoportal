@@ -7,6 +7,9 @@ export default new Options({
       text: 'Giscube Geoportal'
     }
   },
+  geoportalMap: {
+    queryOnClick: () => import('components/QueryOnClick.vue')
+  },
   layout: {
     /* components: { */
     header: () => import('components/AppHeader.vue'),
