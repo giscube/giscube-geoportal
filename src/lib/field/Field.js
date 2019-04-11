@@ -1,6 +1,8 @@
-import DefaultWidget from './widgets/form/Default'
-import { cloneClean, isCleanEqual, escapeHtml } from '../utils.js'
 import AsyncValue from '../async/Value'
+import MultiResult from '../MultiResult'
+import { cloneClean, isCleanEqual, escapeHtml } from '../utils.js'
+
+import DefaultWidget from './widgets/form/Default'
 
 export default class Field {
   constructor (info) {
@@ -116,6 +118,10 @@ export default class Field {
 
   isValid (data, t) {
     const value = this.getValue(data)
+    if (MultiResult.is(value)) {
+      return true
+    }
+
     for (let rule in this.rules(t)) {
       const validation = rule(value)
       if (validation !== true) {
