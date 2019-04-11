@@ -7,6 +7,7 @@
         v-for="(item, i) in headerTools"
         :key="'header-tools-' + item.name + '-' + i"
         class="gt-xs"
+        :class="'header-tools-' + item.name"
         :item="item"
         @sidebar-visibility-changed="$emit('sidebar-visibility-changed', $event)"
         @event="emit"

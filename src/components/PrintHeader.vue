@@ -60,8 +60,5 @@ export default {
 }
 </script>
 
-<style scoped>
-.navbar-light .navbar-nav .nav-link {
-  color: #7c7c7d;
-}
+<style>
 </style>

@@ -7,9 +7,8 @@
         test
       </component>
       <div class="tools" v-if="query.component">
-        <q-btn
+        <q-btn flat dense
           size="sm"
-          flat
           style="margin-top: 1em"
           icon="delete"
           @click="_removeQuery"
