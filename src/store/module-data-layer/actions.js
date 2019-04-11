@@ -295,15 +295,11 @@ export function saveEdits (context) {
 
 export function drawGeometry (context) {
   const layerInfo = context.state.layerConfig.layerInfo
-  const fields = layerInfo.fields.filter(field => field.name !== layerInfo.geom_field)
 
   const featureBase = {
     type: 'Feature',
     id: context.state.editStatus.newPkGenerator.next().value,
     properties: {}
-  }
-  for (let field of fields) {
-    featureBase.properties[field.name] = null
   }
 
   const result = newFeature(context.rootState.map.mapObject, featureBase, 'id', layerInfo.geom_type)

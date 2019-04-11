@@ -48,6 +48,9 @@ export default {
       const feature = this.currentFeature || EMPTY_FEATURE
       return [feature]
     },
+    formFields () {
+      return this.$store.getters['dataLayer/formFields']
+    },
     adding: {
       get () {
         return this.$store.state.dataLayer.editStatus.adding
@@ -89,7 +92,9 @@ export default {
         })
     },
     _newFeature (feature) {
-      feature.properties = this.defaultProperties
+      this.formFields.forEach(field => {
+        field.cloneSetValue({ properties: this.defaultProperties }, { feature })
+      })
       this.currentFeature = feature
 
       if (this.dialogForNew) {
@@ -100,7 +105,9 @@ export default {
     },
     _changeProperties (properties) {
       if (properties !== null) {
-        this.currentFeature.properties = properties
+        this.formFields.forEach(field => {
+          field.cloneSetValue({ properties }, { feature: this.currentFeature })
+        })
       }
       this._addCurrentFeature()
     },

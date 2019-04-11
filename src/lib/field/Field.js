@@ -1,3 +1,5 @@
+import Vue from 'vue'
+
 import AsyncValue from '../async/Value'
 import MultiResult from '../MultiResult'
 import { cloneClean, isCleanEqual, escapeHtml } from '../utils.js'
@@ -33,7 +35,7 @@ export default class Field {
       if (AsyncValue.is(props[this.name])) {
         props[this.name].decrementReference()
       }
-      props[this.name] = value
+      Vue.set(props, this.name, value)
     }
   }
 
@@ -77,7 +79,7 @@ export default class Field {
     if (AsyncValue.is(to[this.name])) {
       to[this.name].decrementReference()
     }
-    to[this.name] = from[this.name]
+    Vue.set(to, this.name, from[this.name])
     from[this.name] = null
   }
 
