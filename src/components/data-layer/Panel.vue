@@ -205,7 +205,6 @@
 </template>
 
 <script>
-
 import DataTable from './DataTable'
 import DataForm from './DataForm'
 import DataFormDialog from './DataFormDialog'
@@ -367,9 +366,7 @@ export default {
       this.visibleSelected.forEach(feature => { feature.status.deleted = !undelete })
     },
     onDefaultPropertiesChange (properties) {
-      this.fields.forEach(f => {
-        f.cloneSetValue({ properties }, { properties: this.defaultProperties })
-      })
+      this.defaultProperties = properties
     },
     startFeatureEdit (feature) {
       this.editedFeature = feature

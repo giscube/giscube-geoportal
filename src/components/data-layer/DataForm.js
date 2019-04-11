@@ -40,16 +40,13 @@ export default {
   watch: {
     features () {
       this.applyAggregateProperties()
-    },
-    properties () {
-      this.applyAggregateProperties()
     }
   },
   methods: {
     aggregateProperties () {
       let fields = this.$store.getters['dataLayer/formFields']
       if (!this.features) {
-        fields = this.fields.filter(f => !f.requiresFeatures)
+        fields = fields.filter(f => !f.requiresFeatures)
       }
       let properties = this.properties
       if (!properties) {
