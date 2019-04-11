@@ -3,7 +3,7 @@
     v-if="src"
     :src="src"
     contain
-    style="max-height: 2em; max-width: 100%"
+    spinner-size="20px"
   />
 </template>
 

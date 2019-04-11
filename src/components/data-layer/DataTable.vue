@@ -14,6 +14,7 @@
     :hide-bottom="editing"
     @update:selected="onSelected"
     @request="onRequest"
+    table-class="data-table"
   >
     <template
       v-slot:header-cell="props"
@@ -59,6 +60,7 @@
     >
       <q-tr
         :props="props"
+        class="data-table-row"
         :class="{ deleted: props.row.status.deleted }"
       >
         <q-td auto-width>
@@ -426,9 +428,13 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 .data-table {
   background-color: #fff;
+
+  .data-table-row .q-img {
+    max-height: 40px;
+  }
 }
 
 .q-table th.actions {
