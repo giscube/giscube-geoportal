@@ -68,15 +68,23 @@
 </template>
 
 <script>
+import MultiResult from '../../../MultiResult.js'
 
 export default {
   props: ['value', 'field', 'readonly', 'disable'],
   computed: {
     v () {
-      return this.value && this.field.valuesDict[this.value][1]
+      if (MultiResult.is(this.value)) {
+        return null
+      }
+      const result = this.value && this.field.valuesDict[this.value]
+      return result ? result[1] : this.value
     },
     hint () {
-      return ''
+      return MultiResult.is(this.value) && Array.from(this.value.values).map(value => {
+        const h = this.field.valuesDict[value]
+        return h && h[1]
+      }).join(', ')
     }
   },
   methods: {
