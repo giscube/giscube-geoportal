@@ -5,9 +5,19 @@ export function notify (message, config = {}) {
     message = message.message
   }
 
-  Vue.prototype.$q.notify({
+  const dismiss = Vue.prototype.$q.notify({
     position: 'top',
-    timeout: 2500,
+    timeout: 0,
+    actions: [
+      {
+        icon: 'clear',
+        handler () {
+          dismiss()
+        },
+        color: 'white',
+        dense: true
+      }
+    ],
     message,
     ...config
   })

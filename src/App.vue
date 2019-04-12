@@ -5,24 +5,15 @@
 </template>
 
 <script>
-import L from './lib/leaflet'
-require('../node_modules/leaflet/dist/leaflet.css')
+import { notifyError } from './lib/notifications'
 require('./assets/print.css')
 
-// FIX leaflet's default icon path problems with webpack
-delete L.Icon.Default.prototype._getIconUrl
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-  iconUrl: require('leaflet/dist/images/marker-icon.png'),
-  shadowUrl: require('leaflet/dist/images/marker-shadow.png')
+window.addEventListener('error', function (event) {
+  notifyError(event.error)
 })
 
 export default {
-  name: 'App',
-  data () {
-    return {
-    }
-  }
+  name: 'App'
 }
 </script>
 
