@@ -40,12 +40,9 @@
 </template>
 
 <script>
-import Vue from 'vue'
 import L from '../lib/leaflet'
-import axios from 'axios'
 
 import BaseResultMixin from './BaseResultMixin.js'
-import FeaturePopup from './FeaturePopup'
 
 export default {
   mixins: [BaseResultMixin],
@@ -79,67 +76,9 @@ export default {
         return
       }
 
-      let map = this.map
-      let element = this.result.children[0]
-
-      if (element.type === 'GeoJSON') {
-        const dataUrl = element.url
-        const self = this
-        axios.get(
-          dataUrl
-        )
-          .then(function (response) {
-            const options = {}
-            const style = response.data.metadata.style
-            if (style.shapetype === 'Circle') {
-              var geojsonMarkerOptions = {
-                radius: style.shape_radius,
-                fillColor: style.fill_color,
-                color: style.stroke_color,
-                weight: style.stroke_width,
-                opacity: 1,
-                fillOpacity: style.fill_opacity
-              }
-
-              options['pointToLayer'] = function (feature, latlng) {
-                return L.circleMarker(latlng, geojsonMarkerOptions)
-              }
-            }
-            options['onEachFeature'] = function (feature, layer) {
-              // FIXME: use on 'click' instead of building all popups upfront
-              let PopupContent = Vue.extend(FeaturePopup)
-              let popup = new PopupContent({
-                propsData: {
-                  feature: feature,
-                  title: self.result.title
-                }
-              })
-              layer.bindPopup(popup.$mount().$el)
-            }
-
-            const geojson = L.geoJson(response.data, options).addTo(map)
-            map.layerswitcher.addOverlay(geojson, self.result.title)
-          })
-          .catch(function (error) {
-            console.log(error)
-          })
-      } else if (element.type === 'WMS') {
-        var wms = L.tileLayer.wms(element.url, {
-          layers: element.layers,
-          format: 'image/png',
-          transparent: true,
-          maxZoom: 22
-        }).addTo(map)
-        map.layerswitcher.addOverlay(wms, this.result.title, {
-          layerType: 'WMS'
-        })
-      } else if (element.type === 'TMS') {
-        var tms = L.tileLayer(element.url, {
-          transparent: true,
-          maxZoom: 22
-        }).addTo(map)
-        map.layerswitcher.addOverlay(tms, this.result.title)
-      }
+      const layerDescriptor = this.result.children[0]
+      const title = this.result.title
+      this.$store.dispatch('map/addLayer', { layerDescriptor, title })
     },
     zoomResult () {
       // FIXME: check visible, fly
