@@ -35,13 +35,18 @@
         />
       </template>
     </q-field>
-    <q-img
-      v-for="src in srcs"
-      :key="src"
-      :src="src"
-      contain
-      style="max-height: 10em; width: 100%"
-    />
+    <div class="row justify-around">
+      <q-img
+        v-for="(v, i) in values"
+        :key="'form-img-' + i"
+        :src="getUrl(v)"
+        alt="getName(v)"
+        contain
+        basic
+        class="q-ma-sm"
+        style="height: 140px; max-width: 150px"
+      />
+    </div>
   </div>
 </template>
 
@@ -56,18 +61,18 @@ export default {
   props: ['value', 'field', 'readonly', 'disable'],
   mixins: [MultiValueMixin, ValidateMixin],
   computed: {
-    srcs () {
+    values () {
       if (this.isMulti) {
-        return Array.from(this.value.values).filter(v => v).map(v => this.getUrl(v))
+        return Array.from(this.value.values).filter(v => v)
       } else {
-        return [ this.getUrl(this.value) ]
+        return this.value ? [ this.value ] : []
       }
     },
     filename () {
       return this.isMulti ? null : this.getName(this.value)
     },
     hint () {
-      return this.isMulti ? Array.from(this.value.values).map(value => this.getName(value)).join(', ') : null
+      return null
     }
   },
   methods: {
