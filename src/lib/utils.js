@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import isEqualWith from 'lodash/isEqualWith.js'
 
 export function cloneClean (obj, allowEmptyString = true) {
   if (!allowEmptyString && obj === '') {
@@ -23,7 +23,7 @@ function ignoreKey (key) {
 }
 
 export function isCleanEqual (a, b) {
-  return _.isEqualWith(a, b, (aValue, bValue, key) => ignoreKey(key) ? true : undefined)
+  return isEqualWith(a, b, (aValue, bValue, key) => ignoreKey(key) ? true : undefined)
 }
 
 export function escapeHtml (unsafe) {

@@ -87,7 +87,8 @@
 </template>
 
 <script>
-import _ from 'lodash'
+import debounce from 'lodash/debounce.js'
+import isEqual from 'lodash/isEqual.js'
 import Vue from 'vue'
 
 import L from '../../lib/leaflet'
@@ -129,8 +130,8 @@ export default {
     }
   },
   created () {
-    this.recalculateSelected = _.debounce(this._recalculateSelected)
-    this.refreshData = _.debounce(this.refreshDataNow, 500)
+    this.recalculateSelected = debounce(this._recalculateSelected)
+    this.refreshData = debounce(this.refreshDataNow, 500)
   },
   beforeDestroy () {
     this.removeMapEvents(this.map)
@@ -244,7 +245,7 @@ export default {
     checkBbox () {
       if (this.mapFilter && !this.editing) {
         const newBbox = this.$store.getters['map/bbox']()
-        if (!_.isEqual(newBbox, this.bbox)) {
+        if (!isEqual(newBbox, this.bbox)) {
           this.bbox = newBbox
           this.refreshData()
         }

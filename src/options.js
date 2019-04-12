@@ -1,4 +1,5 @@
-import _ from 'lodash'
+import isArray from 'lodash/isArray.js'
+import mergeWith from 'lodash/mergeWith.js'
 
 export default class Options {
   constructor (config) {
@@ -6,8 +7,8 @@ export default class Options {
   }
 
   merge (config) {
-    return _.mergeWith(this, config, (objValue, srcValue, key) => {
-      if (_.isArray(objValue)) {
+    return mergeWith(this, config, (objValue, srcValue, key) => {
+      if (isArray(objValue)) {
         if (key.endsWith('__append')) {
           return objValue.concat(srcValue)
         } else {
