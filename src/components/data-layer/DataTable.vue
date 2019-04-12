@@ -15,6 +15,7 @@
     @update:selected="onSelected"
     @request="onRequest"
     table-class="data-table"
+    :rows-per-page-options="rowsPerPageOptions"
   >
     <template
       v-slot:header-cell="props"
@@ -101,6 +102,16 @@ import databaseLayersApi from '../../api/databaselayers.js'
 import CustomActions from './CustomActions'
 import MapPopup from './MapPopup'
 
+const rowsPerPageBase = [
+  20,
+  50,
+  100,
+  500,
+  1000,
+  5000,
+  10000
+]
+
 export default {
   props: {
     filter: {
@@ -166,6 +177,19 @@ export default {
     },
     adding () {
       return this.$store.state.dataLayer.editStatus.adding
+    },
+    paginationInfo () {
+      const layerInfo = this.$store.state.dataLayer.layerConfig.layerInfo
+      return layerInfo && layerInfo.pagination
+    },
+    rowsPerPageOptions () {
+      let max = this.paginationInfo && this.paginationInfo.max_page_size
+      if (typeof max !== 'number') {
+        max = 1000
+      }
+      const result = rowsPerPageBase.filter(i => i < max)
+      result.push(max, 0)
+      return result
     },
     columns () {
       const columns = this.fields.map(field => ({
@@ -363,7 +387,21 @@ export default {
           this.$nextTick(() => this.refreshDataNow())
         })
     },
+    getRowsPerPage () {
+      const layerInfo = this.$store.state.dataLayer.layerConfig.layerInfo
+      const paginationInfo = layerInfo && layerInfo.pagination
+      const rowsPerPage = paginationInfo && paginationInfo.page_size
+      if (typeof rowsPerPage !== 'number') {
+        return null
+      }
+      return rowsPerPage
+    },
     processLayerInfo () {
+      const rowsPerPage = this.getRowsPerPage()
+      if (rowsPerPage !== null) {
+        this.pagination.rowsPerPage = rowsPerPage
+      }
+
       // TODO: shapetype, stroke_dash_array, stroke_opacity
       const options = {
         style: feature => {
