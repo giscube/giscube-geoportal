@@ -12,8 +12,6 @@
 </template>
 
 <script>
-import L from '../lib/leaflet'
-
 export default {
   props: ['result', 'map'],
   data () {
@@ -32,35 +30,16 @@ export default {
       return this.$t('tools.catalog.' + key)
     },
     viewResult () {
-      // TODO: refactor
       if (!this.isResultClickable) {
         console.log('Result is not clickable')
         return
       }
 
-      let map = this.map
-      let element = this.result.children[0]
-
-      if (element.type === 'WMS') {
-        var wms = L.tileLayer.wms(element.url, {
-          layers: element.layers,
-          format: 'image/png',
-          transparent: true,
-          maxZoom: 22
-        }).addTo(map)
-        map.layerswitcher.addOverlay(wms, this.result.title, {
-          layerType: 'WMS'
-        })
-      } else if (element.type === 'TMS') {
-        var tms = L.tileLayer(element.url, {
-          transparent: true,
-          maxZoom: 22
-        }).addTo(map)
-        map.layerswitcher.addOverlay(tms, this.result.title)
-      }
+      const layerDescriptor = this.result.children[0]
+      const title = this.result.title
+      this.$store.dispatch('map/addLayer', { layerDescriptor, title })
     },
     viewResultMain () {
-      // TODO: refactor
       if (this.isResultClickable) {
         let element = this.result
         // save selected place in store
