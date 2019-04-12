@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import clone from 'lodash/clone.js'
 import Vue from 'vue'
 
 import databaseLayersApi from '../../api/databaselayers.js'
@@ -17,7 +17,7 @@ export function refreshSources (context) {
   editsources.forEach((source, index) => {
     const request = databaseLayersApi.getLayers(source)
       .then(response => {
-        const s = _.clone(source)
+        const s = clone(source)
         s.layers = response.data
         s.index = index
         return s

@@ -1,11 +1,11 @@
-import { Notify } from 'quasar'
+import Vue from 'vue'
 
-export function notify (message, config) {
+export function notify (message, config = {}) {
   if (message instanceof Error) {
     message = message.message
   }
 
-  Notify.create({
+  Vue.prototype.$q.notify({
     position: 'top',
     timeout: 2500,
     message,
@@ -13,7 +13,7 @@ export function notify (message, config) {
   })
 }
 
-export function notifyError (message, config) {
+export function notifyError (message, config = {}) {
   notify(message, { color: 'negative', ...config })
 }
 

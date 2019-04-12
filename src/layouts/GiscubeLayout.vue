@@ -50,7 +50,6 @@
 </template>
 
 <script>
-import { openURL } from 'quasar'
 import L from '../lib/leaflet'
 import AppFooter from 'components/AppFooter'
 import GeoportalMap from 'components/GeoportalMap'
@@ -85,7 +84,6 @@ export default {
     })
   },
   methods: {
-    openURL,
     navHome () {
       let home = this.$store.config.home
       this.map.flyTo(new L.LatLng(home.center.lat, home.center.lng), home.zoom)
