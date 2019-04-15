@@ -1,15 +1,60 @@
 import axios from 'axios'
 import config from '../../config'
+import { notifyHttpError } from '../../lib/notifications'
+
+export function credentialsLogin (context, { username, password }) {
+  const apiUrl = config.oauth.token
+  const data = new FormData()
+  data.set('grant_type', 'password')
+  data.set('client_id', config.oauth.client_id)
+  data.set('username', username)
+  data.set('password', password)
+
+  const requestConfig = {
+    timeout: 10000
+  }
+  return new Promise((resolve, reject) => {
+    axios.post(apiUrl, data, requestConfig)
+      .then(response => {
+        context.commit('setAccessToken', response.data.access_token)
+        context.commit('setUsername', username)
+        context.dispatch('saveState')
+        resolve()
+      })
+      .catch(error => {
+        if (error.request && error.request.status === 401) {
+          context.commit('setAccessToken', null)
+        } else {
+          notifyHttpError(error)
+        }
+        reject(error)
+      })
+  })
+}
 
 export function loadState (context) {
   let accessToken = localStorage.getItem('access_token')
+  let username = localStorage.getItem('username')
   context.commit('setAccessToken', accessToken)
-  context.dispatch('updateUserInfo')
+  context.commit('setUsername', username)
+
+  if (!username) {
+    context.dispatch('updateUserInfo')
+  }
+}
+
+function localStorageSave (key, value) {
+  if (value === null) {
+    localStorage.removeItem(key)
+  } else {
+    localStorage.setItem(key, value)
+  }
 }
 
 export function logout (context) {
   context.commit('setAccessToken', null)
   context.commit('setUsername', null)
+  context.dispatch('saveState')
 }
 
 export function observeAuth (context, { seconds }) {
@@ -24,6 +69,16 @@ export function observeAuth (context, { seconds }) {
       console.log('Gave up waiting for access token')
     }
   }, 1000)
+}
+
+export function saveState (context) {
+  localStorageSave('access_token', context.state.accessToken)
+
+  if (config.oauth.type === 'password') {
+    localStorageSave('username', context.state.username)
+  } else {
+    localStorage.removeItem('username')
+  }
 }
 
 export function updateUserInfo (context) {

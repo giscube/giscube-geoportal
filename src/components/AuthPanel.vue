@@ -20,8 +20,8 @@
       </div>
 
       <div v-else>
-        <div v-if="oauthType === 'code'">
-          <div v-if="!$store.state.auth.username" class="no-login">
+        <div v-if="!$store.state.auth.username" class="no-login">
+          <div v-if="oauthType === 'code'">
             <p>{{ t('pleaseLogin')}}</p>
 
             <div class="buttons q-mt-md">
@@ -36,9 +36,45 @@
               </a>
             </div>
           </div>
+          <div v-else-if="oauthType === 'password'">
+            <q-form
+              @submit="credentialsLogin"
+              method="post"
+            >
+              <q-input
+                class="q-mb-sm"
+                name="username"
+                v-model="credentials.username"
+                :label="t('username')"
+                :rules="[ value => !!value ]"
+                :readonly="loading"
+                clearable
+                no-error-icon
+              />
+              <q-input
+                class="q-mb-sm"
+                name="password"
+                v-model="credentials.password"
+                type="password"
+                :label="t('password')"
+                :rules="[ value => !!value ]"
+                :readonly="loading"
+                clearable
+                no-error-icon
+              />
+              <div class="buttons">
+                <q-btn outline no-caps
+                  type="submit"
+                  icon="person"
+                  :label="t('logIn')"
+                  :loading="loading"
+                />
+              </div>
+            </q-form>
+          </div>
         </div>
 
-        <div v-if="$store.state.auth.username" class="valid-login">
+        <div v-else class="valid-login">
           {{ t('authenticatedAs') }} <span class="username">{{ $store.state.auth.username }}</span>
 
           <div class="buttons q-mt-md">
@@ -63,6 +99,11 @@ export default {
   name: 'AuthPanel',
   data () {
     return {
+      credentials: {
+        username: this.$store.state.auth.username,
+        password: ''
+      },
+      loading: false,
       canCloseWindow: false,
       loginCodeOk: false,
       loginCodeError: false
@@ -145,6 +186,17 @@ export default {
     },
     observeAuth () {
       this.$store.dispatch('auth/observeAuth', { seconds: 120 })
+    },
+    credentialsLogin () {
+      this.loading = true
+      this.$store.dispatch('auth/credentialsLogin', this.credentials)
+        .then(() => {
+          this.credentials.password = ''
+          this.loading = false
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
     t (key) {
       return this.$t('tools.auth.' + key)
