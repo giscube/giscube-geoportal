@@ -12,7 +12,9 @@ export default {
       closeWindow: 'Tancar finestra',
       logIn: 'Iniciar sessió',
       logOut: 'Tancar sessió',
-      pleaseLogin: 'Si us plau cliqueu el següent botó per autenticar-vos.'
+      pleaseLogin: 'Si us plau cliqueu el següent botó per autenticar-vos.',
+      username: 'Usuari',
+      password: 'Contrasenya'
     },
     home: { header_name: 'Inici' },
     search: { header_name: 'Cerca' },
