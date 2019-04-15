@@ -12,7 +12,9 @@ export default {
       closeWindow: 'Close window',
       logIn: 'Log in',
       logOut: 'Log out',
-      pleaseLogin: 'Please use the button below to authenticate.'
+      pleaseLogin: 'Please use the button below to authenticate.',
+      username: 'Username',
+      password: 'Password'
     },
     home: { header_name: 'Home' },
     search: { header_name: 'Search' },
