@@ -115,16 +115,14 @@ export default {
 <style lang="scss">
 .q-dialog.data-form {
   .q-card.data-form {
-    min-width: 70ch;
+    width: 70ch;
+    max-width: 100%;
     max-height: 100%;
   }
   @media (max-width: 767px) {
     .q-dialog__inner--minimized {
       padding: 10px;
       align-items: start;
-    }
-    .q-card.data-form {
-      min-width: 100%;
     }
   }
 }

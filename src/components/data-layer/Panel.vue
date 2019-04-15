@@ -180,7 +180,7 @@
           <data-form
             :properties="defaultProperties"
             @input="onDefaultPropertiesChange"
-            style="width: 50ch"
+            style="width: 50ch; max-width: 100%"
             class="q-mb-md"
           />
           <q-checkbox
