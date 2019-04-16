@@ -102,6 +102,8 @@ import databaseLayersApi from '../../api/databaselayers.js'
 import CustomActions from './CustomActions'
 import MapPopup from './MapPopup'
 
+import IconsGenerator from '../icons/IconsGenerator'
+
 const rowsPerPageBase = [
   20,
   50,
@@ -401,17 +403,21 @@ export default {
       if (rowsPerPage !== null) {
         this.pagination.rowsPerPage = rowsPerPage
       }
+      const styleInfo = this.layerInfo.style
 
-      // TODO: shapetype, stroke_dash_array, stroke_opacity
-      const options = {
-        style: feature => {
+      const size = 25
+
+      let style
+      if (styleInfo.shapetype !== 'marker') {
+        // TODO: shapetype, stroke_dash_array, stroke_opacity
+        style = feature => {
           const base = {
-            weight: this.layerInfo.style.stroke_width,
-            color: this.layerInfo.style.stroke_color,
+            weight: styleInfo.stroke_width,
+            color: styleInfo.stroke_color,
             opacity: 1,
-            fillColor: this.layerInfo.style.fill_color,
-            fillOpacity: this.layerInfo.style.fill_opacity,
-            radius: this.layerInfo.style.shape_radius
+            fillColor: styleInfo.fill_color,
+            fillOpacity: styleInfo.fill_opacity,
+            radius: styleInfo.shape_radius
           }
 
           if (feature.status.deleted) {
@@ -422,13 +428,21 @@ export default {
             base['fillColor'] = '#bbb'
           }
           return base
-        },
-        onEachFeature: (feature, layer) => {
-          layer.on('click', l => {
-            if (this.adding) {
-              return
-            }
+        }
+      }
 
+      let popupOffser
+      if (styleInfo.shapetype === 'marker') {
+        popupOffser = [
+          0,
+          -(size * 1.2615068493150685 - 5) // size * (anchorRatio - (1-iconRatio)/2) - 5
+        ]
+      }
+
+      const options = {
+        style,
+        onEachFeature: (feature, layer) => {
+          const popup = (_ => {
             const PopupContent = Vue.extend(MapPopup)
             const popup = new PopupContent({
               parent: this,
@@ -441,13 +455,49 @@ export default {
             popup.$on('edit', value => this.$emit('edit', value))
             popup.$on('delete', this.popupDelete)
 
-            layer.bindPopup(popup.$el).openPopup()
+            const popupOptions = {
+              closeOnClick: true,
+              closeOnEscapeKey: true
+            }
+            if (popupOffser) {
+              popupOptions.offset = popupOffser
+            }
+
+            const result = L.popup(popupOptions, layer)
+            result.setContent(popup.$el)
+            popup.$on('updateSize', _ => result.update())
+            return result
+          })()
+
+          layer.on('click', _ => {
+            if (this.adding) {
+              return
+            }
+
+            popup.update()
+            const latlng = layer.getCenter ? layer.getCenter() : layer.getLatLng()
+            this.map.openPopup(popup, latlng)
+          })
+
+          layer.on('remove', _ => {
+            this.map.closePopup(popup)
           })
 
           setupLayer(feature, layer, this.editing)
         },
         pointToLayer: function (geojsonView, latlng) {
-          return L.circleMarker(latlng)
+          if (styleInfo.shapetype === 'marker') {
+            const icon = IconsGenerator.icon({
+              type: styleInfo.icon_type === 'img' ? 'img' : 'preset',
+              fill: styleInfo.marker_color,
+              icon: styleInfo.icon,
+              color: styleInfo.icon_color,
+              size
+            })
+            return L.marker(latlng, { icon })
+          } else {
+            return L.circleMarker(latlng)
+          }
         }
       }
       this.$store.commit('dataLayer/layerOptions', options)
