@@ -13,6 +13,8 @@
       <l-geo-json ref='editGeoJsonLayer' v-if="currentTool === 'data' && editLayerGeojson && editLayerOptions" :geojson="editLayerGeojson" :options="editLayerOptions"></l-geo-json>
     </l-map>
 
+    <icons-generator />
+
     <q-resize-observer @resize="onResize" />
   </q-page>
 </template>
@@ -25,8 +27,11 @@ import LayersControl from 'components/LayersControl.vue'
 require('microdisseny-leaflet-measure')
 require('microdisseny-leaflet-measure/dist/leaflet-measure.css')
 
+import IconsGenerator from './icons/IconsGenerator'
+
 export default {
   components: {
+    IconsGenerator,
     LayersControl,
     LGeoJson,
     LMap

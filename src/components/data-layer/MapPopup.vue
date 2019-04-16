@@ -37,6 +37,9 @@ export default {
       return (layerInfo && layerInfo.design && layerInfo.design.popup) || (() => '')
     }
   },
+  updated () {
+    this.$nextTick(_ => this.$emit('updateSize'))
+  },
   methods: {
     select (value) {
       this.feature.status.selected = value
