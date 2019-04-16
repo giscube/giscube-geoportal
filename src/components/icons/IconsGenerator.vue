@@ -1,0 +1,81 @@
+<template functional>
+  <svg style="display: none">
+    <symbol id="marker">
+      <path style="stroke-width: 20" d="M182.9,551.7c0,0.1,0.2,0.3,0.2,0.3S358.3,283,358.3,194.6c0-130.1-88.8-186.7-175.4-186.9 C96.3,7.9,7.5,64.5,7.5,194.6c0,88.4,175.3,357.4,175.3,357.4S182.9,551.7,182.9,551.7z" />
+    </symbol>
+  </svg>
+</template>
+
+<script>
+import Vue from 'vue'
+import L from '../../lib/leaflet'
+import MarkerClass from './Marker'
+
+const Marker = Vue.extend(MarkerClass)
+const MarkerIcon = L.Icon.extend({
+  options: {
+    props: {
+      fill: null,
+      strokeColor: null,
+      icon: null,
+      color: null,
+      width: null,
+      height: null,
+      anchor: null
+    }
+  },
+  initialize (options) {
+    options = L.Util.setOptions(this, options)
+  },
+  createIcon () {
+    const marker = new Marker({
+      propsData: this.options.props
+    }).$mount()
+    return marker.$el
+  }
+})
+
+function ensure (value, callback) {
+  return value !== undefined && value !== null ? callback(value) : undefined
+}
+
+function colorLuminance (hex, lum) {
+  // validate hex string
+  hex = String(hex).replace(/[^0-9a-f]/gi, '')
+  if (hex.length < 6) {
+    hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2]
+  }
+  lum = lum || 0
+
+  // convert to decimal and change luminosity
+  let rgb = '#', c, i
+  for (i = 0; i < 3; i++) {
+    c = parseInt(hex.substr(i * 2, 2), 16)
+    c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16)
+    rgb += ('00' + c).substr(c.length)
+  }
+
+  return rgb
+}
+
+const HEIGHT_RATIO = 560 / 365
+const ANCHOR_RATIO = 551.7 / 365
+// const ICON_RATIO = 0.5
+
+export default {
+  icon ({ type = 'preset', fill = '#f00', icon = 'fas fa-camera', color = 'black', size = 20 } = {}) {
+    return new MarkerIcon({
+      props: {
+        type,
+        fill,
+        strokeColor: ensure(fill, _ => colorLuminance(fill, -0.20)),
+        icon,
+        color,
+        width: size,
+        height: ensure(size, _ => (size * HEIGHT_RATIO)),
+        anchor: ensure(size, _ => (size * ANCHOR_RATIO))
+      }
+    })
+  }
+}
+</script>
