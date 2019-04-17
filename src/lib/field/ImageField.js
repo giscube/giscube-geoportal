@@ -8,14 +8,17 @@ import ImageFormWidget from './widgets/form/Image'
 import ImageTableWidget from './widgets/table/Image'
 
 export class AsyncPhoto extends AsyncValue {
-  constructor (photo, source) {
+  constructor (photo, source, authHeaders) {
     const tokenSource = axios.CancelToken.source()
     const job = {
       func: giscubeApi.uploadPhoto,
       args: [
         source,
         photo,
-        { cancelToken: tokenSource.token }
+        {
+          cancelToken: tokenSource.token,
+          headers: authHeaders
+        }
       ],
       cancel (job) {
         tokenSource.cancel()

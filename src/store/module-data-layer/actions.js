@@ -15,7 +15,7 @@ export function refreshSources (context) {
 
   const requests = []
   editsources.forEach((source, index) => {
-    const request = databaseLayersApi.getLayers(source)
+    const request = databaseLayersApi.getLayers(source, context.rootGetters['auth/config'])
       .then(response => {
         const s = clone(source)
         s.layers = response.data
@@ -276,11 +276,15 @@ export function saveEdits (context) {
   }
 
   return new Promise((resolve, reject) => {
-    databaseLayersApi.edit(context.state.current, {
-      ADD: added,
-      UPDATE: updated,
-      DELETE: deleted
-    })
+    databaseLayersApi.edit(
+      context.state.current,
+      {
+        ADD: added,
+        UPDATE: updated,
+        DELETE: deleted
+      },
+      context.rootGetters['auth/config']
+    )
       .then(result => {
         context.commit('unselectFeatures', unselect)
         context.commit('editing', false)
