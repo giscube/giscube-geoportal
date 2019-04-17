@@ -469,13 +469,13 @@ export default {
             return result
           })()
 
-          layer.on('click', _ => {
+          layer.on('click', ({ sourceTarget }) => {
             if (this.adding) {
               return
             }
 
             popup.update()
-            const latlng = layer.getCenter ? layer.getCenter() : layer.getLatLng()
+            const latlng = sourceTarget.getCenter ? sourceTarget.getCenter() : sourceTarget.getLatLng()
             this.map.openPopup(popup, latlng)
           })
 
