@@ -2,25 +2,17 @@ import axios from 'axios'
 import { throwUnhandledExceptions } from '../lib/promiseUtils.js'
 
 export default {
-  uploadPhoto (source, photo, customConfig) {
+  uploadPhoto (source, photo, config) {
     const url = source.url + 'api/v1/giscube/user-assets/'
-    const config = {
-      // defaults
+    const conf = {
       timeout: 600000, // 10 * 60 * 1000, // => 10 minutes
-
-      // custom
-      ...customConfig,
-
-      // mandatory
-      headers: {
-        'Authorization': 'Bearer KoXXdGqE3MopmVQCHV2d1HFJ77bilq'
-      }
+      ...config
     }
     const data = new FormData()
     data.append('file', photo)
 
     const promise = new Promise((resolve, reject) => {
-      axios.post(url, data, config)
+      axios.post(url, data, conf)
         .then(response => {
           const result = {
             src: response.data.url,
