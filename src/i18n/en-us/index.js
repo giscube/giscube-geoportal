@@ -55,6 +55,9 @@ export default {
       stopDrawing: 'Stop drawing elements',
       colFilter: 'Filter for "{label}"',
       requiredField: 'Required Field',
+      thisDeleted: 'This element has been marked as deleted.',
+      someDeleted: 'Some of the selected elements have been marked as deleted.',
+      allDeleted: 'All the selected elements have been marked as deleted.',
       qInvalidCommit: 'Some values seem to be invalid. Would you like to save anyways?',
       undoConfirm: 'Are you sure you want to undo the changes in this element?'
     }
@@ -64,6 +67,7 @@ export default {
   yes: 'Yes',
   no: 'No',
   'empty value': 'empty value',
+  apply: 'apply',
   discard: 'discard',
   save: 'save',
   cancel: 'cancel',

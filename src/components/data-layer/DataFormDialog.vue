@@ -16,19 +16,24 @@
         />
       </q-card-section>
 
+      <q-card-section v-if="deleted" class="text-negative">
+        <q-icon name="warning" class="q-mx-sm" size="1.5em" />
+        <span>{{ allDeleted ? (deleted === 1 ? t('thisDeleted') : t('allDeleted')) : t('someDeleted') }}</span>
+      </q-card-section>
       <q-card-actions>
         <q-btn
+          v-show="!disable && !readonly"
           :label="$t('delete')"
           @click="onDelete"
         />
         <q-space />
         <q-btn
-          :label="$t('cancel')"
+          :label="!disable && !readonly && hasResult ? $t('cancel') : $t('ok')"
           @click="onCancel"
         />
         <q-btn
-          v-show="!disable && !readonly && result"
-          :label="$t('ok')"
+          v-show="!disable && !readonly && hasResult && !allDeleted"
+          :label="$t('apply')"
           @click="onCommit"
         />
       </q-card-actions>
@@ -66,6 +71,19 @@ export default {
       result: {}
     }
   },
+  computed: {
+    hasResult () {
+      return Object.keys(this.result).length > 0
+    },
+    deleted () {
+      return this.features.reduce((accumulated, feature) => {
+        return accumulated + (feature.status && feature.status.deleted ? 1 : 0)
+      }, 0)
+    },
+    allDeleted () {
+      return this.deleted === this.features.length
+    }
+  },
   methods: {
     t (key, ...args) {
       return this.$t('tools.data.' + key, ...args)
@@ -81,8 +99,12 @@ export default {
       })
     },
     onDelete () {
-      this._clearData()
-      this.$emit('delete')
+      const deleted = !this.allDeleted
+      this.features.forEach(feature => {
+        if (feature.status) {
+          feature.status.deleted = deleted
+        }
+      })
     },
     onCancel () {
       this._clearData()

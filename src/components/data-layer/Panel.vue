@@ -159,7 +159,6 @@
       :features="editedFeature ? [editedFeature] : visibleSelected"
       @commit="commitProperties"
       @cancel="cancelPropertiesEdit"
-      @delete="deleteEditedFeature"
     />
 
     <new-features
@@ -383,10 +382,6 @@ export default {
       }
       this.editedFeature = null
       this.editingSelected = false
-    },
-    deleteEditedFeature () {
-      this.editedFeature.status.deleted = !this.editedFeature.status.deleted
-      this.cancelPropertiesEdit()
     },
     onDiscard () {
       this.$q.dialog({
