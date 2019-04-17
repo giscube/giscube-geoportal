@@ -6,7 +6,7 @@
       <p class="panel-title">{{ result.title }}</p>
 
       <div v-if="result">
-        {{ properties.adreca }}
+        {{ properties.address }}
       </div>
 
       <div v-if="result" class="description">
