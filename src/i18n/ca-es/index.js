@@ -55,6 +55,9 @@ export default {
       stopDrawing: 'Deixar de dibuixar elements',
       colFilter: 'Filtar per "{name}"',
       requiredField: 'Camp obligatori',
+      thisDeleted: 'Aquest element està marcat per ser eliminat.',
+      someDeleted: 'Tots els elements seleccionats estan marcats per ser eliminats.',
+      allDeleted: 'Alguns dels elements seleccionats estan marcats per ser eliminats.',
       qInvalidCommit: 'Sembla que algun valor és invalid. Voldrieu guardar igualment?',
       undoConfirm: 'Segur que voleu desfer els canvis d\'aquest element?'
     }
@@ -64,6 +67,7 @@ export default {
   yes: 'Sí',
   no: 'No',
   'empty value': 'Valor buit',
+  apply: 'aplica',
   discard: 'Descarta',
   save: 'Guarda',
   cancel: 'Cancel·la',

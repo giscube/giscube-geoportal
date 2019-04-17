@@ -7,7 +7,7 @@
         @input="select"
       />
       <q-btn flat
-        v-show="editing && !feature.status.deleted"
+        v-show="editing"
         icon="edit"
         :disable="saving"
         @click="edit"
