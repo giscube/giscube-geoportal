@@ -322,7 +322,7 @@ export default {
         args.extraParams.intersects = this.polygonFilter
       }
 
-      databaseLayersApi.getData(args)
+      databaseLayersApi.getData(args, this.$store.getters['auth/config'])
         .then(response => {
           const data = response.data
 
@@ -382,7 +382,7 @@ export default {
 
       const source = this.$store.state.dataLayer.current.source
       const layer = this.$store.state.dataLayer.current.layer
-      databaseLayersApi.getLayerInfo(source, layer)
+      databaseLayersApi.getLayerInfo(source, layer, this.$store.getters['auth/config'])
         .then(response => {
           this.$store.commit('dataLayer/layerInfoFromRequest', response.data)
           this.processLayerInfo()
