@@ -3,18 +3,18 @@ import Options from './options.js'
 export default new Options({
   branding: {
     header: {
-      logo: '../assets/logo_giscube.svg',
+      logo: require('assets/logo_giscube.svg'),
       text: 'Giscube Geoportal'
     }
   },
   geoportalMap: {
-    queryOnClick: () => import('components/QueryOnClick.vue')
+    queryOnClick: require('components/QueryOnClick.vue').default
   },
   layout: {
     /* components: { */
-    header: () => import('components/AppHeader.vue'),
-    geoportalMap: () => import('components/GeoportalMap.vue'),
-    printHeader: () => import('components/PrintHeader.vue'),
+    header: require('components/AppHeader.vue').default,
+    geoportalMap: require('components/GeoportalMap.vue').default,
+    printHeader: require('components/PrintHeader.vue').default,
 
     headerToolbar: [
       'home',

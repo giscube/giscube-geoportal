@@ -16,7 +16,7 @@ Vue.use(Router)
 const routes = [
   {
     path: '/',
-    component: () => import('layouts/GiscubeLayout.vue'),
+    component: require('layouts/GiscubeLayout.vue').default,
     children: [
       { path: 'auth/', name: 'auth', component: AuthPanel },
       { path: 'catalog/:q?', component: CatalogPanel, name: 'catalog' },
