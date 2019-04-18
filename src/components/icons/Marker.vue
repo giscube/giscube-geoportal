@@ -3,7 +3,7 @@
     class="marker"
     :style="{
       width: width + 'px',
-      height: height + 'px',
+      height: anchor + 'px',
       margin: `-${anchor}px 0 0 -${width/2}px`,
       fill,
       color,

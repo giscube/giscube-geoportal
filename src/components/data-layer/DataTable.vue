@@ -431,9 +431,9 @@ export default {
         }
       }
 
-      let popupOffser
+      let popupOffset
       if (styleInfo.shapetype === 'marker') {
-        popupOffser = [
+        popupOffset = [
           0,
           -(size * 1.2615068493150685 - 5) // size * (anchorRatio - (1-iconRatio)/2) - 5
         ]
@@ -459,8 +459,8 @@ export default {
               closeOnClick: true,
               closeOnEscapeKey: true
             }
-            if (popupOffser) {
-              popupOptions.offset = popupOffser
+            if (popupOffset) {
+              popupOptions.offset = popupOffset
             }
 
             const result = L.popup(popupOptions, layer)
