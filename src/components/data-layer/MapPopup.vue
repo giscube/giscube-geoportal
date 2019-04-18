@@ -1,6 +1,6 @@
 <template>
   <div class='popup'>
-    <div v-html="popupDesign(feature)"></div>
+    <div v-html="popupDesign(feature.properties)"></div>
     <div class="tools">
       <q-checkbox
         :value="feature.status.selected"
@@ -34,7 +34,7 @@ export default {
     },
     popupDesign () {
       const layerInfo = this.$store.state.dataLayer.layerConfig.layerInfo
-      return (layerInfo && layerInfo.design && layerInfo.design.popup) || (() => '')
+      return layerInfo.design.popup
     }
   },
   updated () {
