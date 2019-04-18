@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import HeaderItemHolder from './HeaderItemHolder.vue'
+import HeaderItemHolder from './HeaderItemHolder'
 
 export default {
   props: [
