@@ -56,7 +56,8 @@ export default new Options({
     },
     home: {
       icon: 'home',
-      to: 'home'
+      to: 'home',
+      emit: 'home'
     },
     auth: {
       icon: 'ion-person',
