@@ -27,21 +27,21 @@
         @done="printDone"
     />
 
-    <q-drawer v-model="right" side="right" elevated>
-    </q-drawer>
-
-    <Sidebar ref="sidebar" :map='map' :visible="$store.state.sidebarVisible"
-             :geoportalMap="$refs.map"
-             @visibility-changed="onVisibilityChanged"
-             @search-start="onSearchStart"
-             class="sidebar-left"
-    />
-
     <q-page-container class="max-height">
       <!-- GeoportalMap -->
       <component :is="$config.layout.geoportalMap"
         ref="map" @map-ready="onMapReady"
       />
+
+      <Sidebar ref="sidebar"
+        :map='map'
+        :visible="$store.state.sidebarVisible"
+        :geoportalMap="$refs.map"
+        @visibility-changed="onVisibilityChanged"
+        @search-start="onSearchStart"
+        class="sidebar-left"
+      />
+
     </q-page-container>
 
    <AppFooter v-if="false" ref="footer" />
