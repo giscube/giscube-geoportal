@@ -14,7 +14,7 @@
       dense
       size="sm"
       icon="edit"
-      :disabled="deleted || !editing || saving"
+      :disabled="!editing || saving"
       @click="editItem(rowData, rowIndex)"
     />
 
