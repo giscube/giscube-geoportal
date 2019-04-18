@@ -81,10 +81,13 @@ export default {
       return result ? result[1] : this.value
     },
     hint () {
-      return MultiResult.is(this.value) && Array.from(this.value.values).map(value => {
-        const h = this.field.valuesDict[value]
-        return h && h[1]
-      }).join(', ')
+      if (MultiResult.is(this.value)) {
+        return Array.from(this.value.values).map(value => {
+          const h = this.field.valuesDict[value]
+          return h && h[1]
+        }).join(', ')
+      }
+      return undefined
     }
   },
   methods: {
