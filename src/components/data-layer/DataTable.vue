@@ -190,7 +190,7 @@ export default {
         max = 1000
       }
       const result = rowsPerPageBase.filter(i => i < max)
-      result.push(max, 0)
+      result.push(max)
       return result
     },
     columns () {
