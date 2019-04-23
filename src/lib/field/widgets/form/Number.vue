@@ -1,5 +1,5 @@
 <template>
-  <q-input
+  <validated-input
     type="number"
     :readonly="readonly"
     :disable="disable"
@@ -15,12 +15,16 @@
 </template>
 
 <script>
+import ValidatedInput from 'components/ValidatedInput'
 import MultiValueMixin from '../mixins/MultiValueMixin'
 import ValidateMixin from '../mixins/ValidateMixin'
 
 export default {
   props: ['value', 'field', 'readonly', 'disable'],
   mixins: [MultiValueMixin, ValidateMixin],
+  components: {
+    ValidatedInput
+  },
   computed: {
     max () {
       if (this.field.size === undefined || this.field.size === null) {

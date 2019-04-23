@@ -1,5 +1,5 @@
 <template>
-  <q-input
+  <validated-input
     :readonly="readonly"
     :disable="disable"
     :label="field.label"
@@ -13,11 +13,15 @@
 </template>
 
 <script>
+import ValidatedInput from 'components/ValidatedInput'
 import MultiValueMixin from '../mixins/MultiValueMixin'
 import ValidateMixin from '../mixins/ValidateMixin'
 
 export default {
   props: ['value', 'field', 'readonly', 'disable'],
-  mixins: [MultiValueMixin, ValidateMixin]
+  mixins: [MultiValueMixin, ValidateMixin],
+  components: {
+    ValidatedInput
+  }
 }
 </script>
