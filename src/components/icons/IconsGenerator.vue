@@ -19,6 +19,7 @@ const MarkerIcon = L.Icon.extend({
       strokeColor: null,
       icon: null,
       color: null,
+      size: null,
       width: null,
       height: null,
       anchor: null
@@ -71,6 +72,7 @@ export default {
         strokeColor: ensure(fill, _ => colorLuminance(fill, -0.20)),
         icon,
         color,
+        size,
         width: size,
         height: ensure(size, _ => (size * HEIGHT_RATIO)),
         anchor: ensure(size, _ => (size * ANCHOR_RATIO))

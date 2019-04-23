@@ -74,5 +74,6 @@ export default {
   ok: 'OK',
   delete: 'delete',
   new: 'new',
-  element: 'no elements | {count} element | {count} elements'
+  element: 'no elements | {count} element | {count} elements',
+  badPopupConfig: 'This popup is improperly configured'
 }

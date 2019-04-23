@@ -90,9 +90,8 @@
 <script>
 import debounce from 'lodash/debounce.js'
 import isEqual from 'lodash/isEqual.js'
-import Vue from 'vue'
 
-import L from '../../lib/leaflet'
+import makeGeoJsonOptions from '../../lib/makeGeoJsonOptions'
 import { addFeatureMixin, setupLayer } from '../../lib/feature.js'
 import { notifyHttpError } from '../../lib/notifications.js'
 import DataCell from '../../lib/field/components/DataCell'
@@ -101,8 +100,6 @@ import databaseLayersApi from '../../api/databaselayers.js'
 
 import CustomActions from './CustomActions'
 import MapPopup from './MapPopup'
-
-import IconsGenerator from '../icons/IconsGenerator'
 
 const rowsPerPageBase = [
   20,
@@ -403,103 +400,35 @@ export default {
       if (rowsPerPage !== null) {
         this.pagination.rowsPerPage = rowsPerPage
       }
-      const styleInfo = this.layerInfo.style
 
-      const size = 25
-
-      let style
-      if (styleInfo.shapetype !== 'marker') {
-        // TODO: shapetype, stroke_dash_array, stroke_opacity
-        style = feature => {
-          const base = {
-            weight: styleInfo.stroke_width,
-            color: styleInfo.stroke_color,
-            opacity: 1,
-            fillColor: styleInfo.fill_color,
-            fillOpacity: styleInfo.fill_opacity,
-            radius: styleInfo.shape_radius
-          }
+      const options = makeGeoJsonOptions(this.layerInfo, {
+        parent: this,
+        map: this.map,
+        popup: {
+          component: MapPopup,
+          onEachPopup: ({ container, content }) => {
+            content.$on('select', this.popupToggleSelect)
+            content.$on('edit', value => this.$emit('edit', value))
+            content.$on('delete', this.popupDelete)
+          },
+          openCondition: () => !this.adding
+        },
+        modStyle: (style, feature) => {
+          const result = { ...style }
 
           if (feature.status.deleted) {
-            base['fillColor'] = '#ff9898'
+            result['fillColor'] = '#ff9898'
           } else if (feature.status.selected) {
-            base['fillColor'] = '#a0cfff'
+            result['fillColor'] = '#a0cfff'
           } else if (feature.status.new) {
-            base['fillColor'] = '#bbb'
+            result['fillColor'] = '#bbb'
           }
-          return base
-        }
-      }
 
-      let popupOffset
-      if (styleInfo.shapetype === 'marker') {
-        popupOffset = [
-          0,
-          -(size * 1.2615068493150685 - 5) // size * (anchorRatio - (1-iconRatio)/2) - 5
-        ]
-      }
-
-      const options = {
-        style,
-        onEachFeature: (feature, layer) => {
-          const popup = (_ => {
-            const PopupContent = Vue.extend(MapPopup)
-            const popup = new PopupContent({
-              parent: this,
-              propsData: {
-                feature: feature
-              }
-            }).$mount()
-
-            popup.$on('select', this.popupToggleSelect)
-            popup.$on('edit', value => this.$emit('edit', value))
-            popup.$on('delete', this.popupDelete)
-
-            const popupOptions = {
-              closeOnClick: true,
-              closeOnEscapeKey: true
-            }
-            if (popupOffset) {
-              popupOptions.offset = popupOffset
-            }
-
-            const result = L.popup(popupOptions, layer)
-            result.setContent(popup.$el)
-            popup.$on('updateSize', _ => result.update())
-            return result
-          })()
-
-          layer.on('click', ({ sourceTarget }) => {
-            if (this.adding) {
-              return
-            }
-
-            popup.update()
-            const latlng = sourceTarget.getCenter ? sourceTarget.getCenter() : sourceTarget.getLatLng()
-            this.map.openPopup(popup, latlng)
-          })
-
-          layer.on('remove', _ => {
-            this.map.closePopup(popup)
-          })
-
-          setupLayer(feature, layer, this.editing)
+          return result
         },
-        pointToLayer: function (geojsonView, latlng) {
-          if (styleInfo.shapetype === 'marker') {
-            const icon = IconsGenerator.icon({
-              type: styleInfo.icon_type === 'img' ? 'img' : 'preset',
-              fill: styleInfo.marker_color,
-              icon: styleInfo.icon,
-              color: styleInfo.icon_color,
-              size
-            })
-            return L.marker(latlng, { icon })
-          } else {
-            return L.circleMarker(latlng)
-          }
-        }
-      }
+        afterEachSelect: ({ feature, layer }) => setupLayer(feature, layer, this.editing)
+      })
+
       this.$store.commit('dataLayer/layerOptions', options)
     },
     pkValue (value) {

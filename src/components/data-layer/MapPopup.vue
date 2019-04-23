@@ -1,6 +1,9 @@
 <template>
   <div class='popup'>
-    <div v-html="popupDesign(feature.properties)"></div>
+    <popup-data
+      :feature="feature"
+      :render-contents="renderContents"
+    ></popup-data>
     <div class="tools">
       <q-checkbox
         :value="feature.status.selected"
@@ -23,22 +26,23 @@
 </template>
 
 <script>
+import PopupData from '../PopupData'
+
 export default {
-  props: ['feature'],
+  props: ['feature', 'renderContents'],
+  components: {
+    PopupData
+  },
   computed: {
     editing () {
       return this.$store.getters['dataLayer/editing']
     },
     saving () {
       return this.$store.state.dataLayer.editStatus.saving
-    },
-    popupDesign () {
-      const layerInfo = this.$store.state.dataLayer.layerConfig.layerInfo
-      return layerInfo.design.popup
     }
   },
   updated () {
-    this.$nextTick(_ => this.$emit('updateSize'))
+    this.$nextTick(_ => this.$emit('updatePopupSize'))
   },
   methods: {
     select (value) {

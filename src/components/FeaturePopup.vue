@@ -1,24 +1,20 @@
 <template>
   <div class='popup'>
-    <div class='title'>{{ title }}</div>
-    <table class="table table-striped table-hover">
-      <tbody>
-        <tr v-for='(value, name) in feature.properties' class='attr' :key="name">
-          <th>{{ name }}</th>
-          <td>{{ value }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div v-if="!renderContents" class='title'>{{ title }}</div>
+    <popup-data
+      :feature="feature"
+      :render-contents="renderContents"
+    ></popup-data>
   </div>
 </template>
 
 <script>
+import PopupData from './PopupData'
 
 export default {
-  props: ['feature', 'title'],
-  data () {
-    return {
-    }
+  props: ['feature', 'title', 'renderContents'],
+  components: {
+    PopupData
   }
 }
 </script>
@@ -52,11 +48,6 @@ export default {
 
 .layer .feature:last-child {
   border-bottom: 0px;
-  margin-bottom: 0px;
-}
-
-.table > tbody > tr > th, .table > tbody > tr > td {
-  padding: 3px;
   margin-bottom: 0px;
 }
 
