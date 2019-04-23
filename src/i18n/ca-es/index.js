@@ -74,5 +74,6 @@ export default {
   ok: 'D\'acord',
   delete: 'elimina',
   new: 'nou',
-  element: 'cap element | {count} element | {count} elements'
+  element: 'cap element | {count} element | {count} elements',
+  badPopupConfig: 'Aquest popup està mal configurat'
 }

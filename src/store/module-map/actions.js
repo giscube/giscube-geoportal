@@ -1,6 +1,6 @@
 import axios from 'axios'
 import L from '../../lib/leaflet'
-import Vue from 'vue'
+import makeGeoJsonOptions from '../../lib/makeGeoJsonOptions'
 
 import FeaturePopup from '../../components/FeaturePopup'
 
@@ -63,36 +63,18 @@ export function addLayerGeoJSON (context, { layerDescriptor, title }) {
   const dataUrl = layerDescriptor.url
   axios.get(dataUrl)
     .then(response => {
-      const options = {}
-      const style = response.data.metadata.style
+      response.data.metadata.styleRules = response.data.metadata.style_rules
+      delete response.data.metadata.style_rules
 
-      if (style.shapetype.toLowerCase() === 'circle') {
-        var geojsonMarkerOptions = {
-          radius: style.shape_radius,
-          fillColor: style.fill_color,
-          color: style.stroke_color,
-          weight: style.stroke_width,
-          opacity: 1,
-          fillOpacity: style.fill_opacity
+      const options = makeGeoJsonOptions(response.data.metadata, {
+        map,
+        propsData: {
+          title
+        },
+        popup: {
+          component: FeaturePopup
         }
-
-        options['pointToLayer'] = (feature, latlng) => {
-          return L.circleMarker(latlng, geojsonMarkerOptions)
-        }
-      }
-
-      options['onEachFeature'] = (feature, layer) => {
-        const handler = () => {
-          layer.off('click', handler)
-
-          const PopupContent = Vue.extend(FeaturePopup)
-          const popup = new PopupContent({
-            propsData: { feature, title }
-          })
-          layer.bindPopup(popup.$mount().$el).openPopup()
-        }
-        layer.on('click', handler)
-      }
+      })
 
       const geojson = L.geoJson(response.data, options).addTo(map)
       map.layerswitcher.addOverlay(geojson, title)

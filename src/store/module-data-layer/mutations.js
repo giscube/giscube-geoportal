@@ -2,7 +2,7 @@ import Vue from 'vue'
 
 import { pkGenerator } from '../../lib/feature.js'
 import { buildFields } from '../../lib/field/index.js'
-import template from 'lodash/template.js'
+import { makeTemplate } from '../../lib/makeGeoJsonOptions.js'
 
 export function sources (state, value) {
   Vue.set(state, 'sources', value)
@@ -46,11 +46,10 @@ export function layerInfoFromRequest (state, value) {
     }
   })
 
-  value.design.popup = template(value.design.popup, {
-    escape: /{([\s\S]+?)}/g,
-    interpolate: null,
-    evaluate: null
-  })
+  value.styleRules = value.style_rules
+  delete value.style_rules
+
+  value.design.popup = makeTemplate(value.design.popup)
 
   const strlist2fields = strlist => {
     return strlist
