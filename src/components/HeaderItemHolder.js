@@ -1,4 +1,3 @@
-// import Vue from 'vue'
 import HeaderItem from './HeaderItem.vue'
 
 export default {
@@ -13,19 +12,21 @@ export default {
       default: false
     }
   },
-  render (createElement, { props, listeners }) {
+  render (createElement, { data, props, listeners }) {
     if (props.item.separator) {
       if (props.menu) {
         return null
       } else {
-        const p = { vertical: true }
-        return createElement('q-separator', { props: p })
+        return createElement('q-separator', {
+          ...data,
+          props: { vertical: true }
+        })
       }
     } else if (props.item.spacer) {
       if (props.menu) {
-        return createElement('q-separator')
+        return createElement('q-separator', data)
       } else {
-        return createElement('q-space')
+        return createElement('q-space', data)
       }
     } else {
       const p = {
@@ -42,6 +43,7 @@ export default {
 
       const component = props.item.tool.headerComponent || HeaderItem
       return createElement(component, {
+        ...data,
         props: p,
         on
       })
