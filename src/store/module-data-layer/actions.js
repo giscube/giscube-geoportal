@@ -1,4 +1,5 @@
 import clone from 'lodash/clone.js'
+import defaults from 'lodash/defaults.js'
 import Vue from 'vue'
 
 import databaseLayersApi from '../../api/databaselayers.js'
@@ -163,7 +164,7 @@ export function startEditing (context) {
 
 export function editProperties (context, { feature, properties }) {
   context.commit('featureHistory', feature)
-  context.commit('featureProperties', { feature, properties })
+  context.commit('featureProperties', { feature, properties: defaults(properties, feature) })
 }
 
 export function editMultiple (context, { features, properties }) {
@@ -184,7 +185,7 @@ export function editMultiple (context, { features, properties }) {
     })
 
     if (edited) {
-      context.dispatch('editProperties', { feature, properties: p })
+      context.dispatch('editProperties', { feature, properties: defaults(p, feature) })
     }
   })
 
