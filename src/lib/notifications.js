@@ -1,6 +1,6 @@
 import Vue from 'vue'
 
-export function notify (message, config = {}) {
+function _notify (message, config) {
   if (message instanceof Error) {
     message = message.message
   }
@@ -21,6 +21,10 @@ export function notify (message, config = {}) {
     message,
     ...config
   })
+}
+
+export function notify (message, config = {}) {
+  Vue.nextTick(() => _notify(message, config))
 }
 
 export function notifyError (message, config = {}) {

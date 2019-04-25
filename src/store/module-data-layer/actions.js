@@ -4,11 +4,11 @@ import Vue from 'vue'
 
 import databaseLayersApi from '../../api/databaselayers.js'
 
+import except from '../../lib/except.js'
 import { cloneClean, isCleanEqual } from '../../lib/utils.js'
 import { newFeature } from '../../lib/feature.js'
 import MultiResult from '../../lib/MultiResult.js'
 import { throwUnhandledExceptions } from '../../lib/promiseUtils.js'
-import { notifyError, notifyHttpError } from '../../lib/notifications.js'
 import layersInGeom from '../../lib/layersInGeom.js'
 
 export function refreshSources (context) {
@@ -24,8 +24,7 @@ export function refreshSources (context) {
         return s
       })
       .catch(error => {
-        notifyHttpError(error)
-        throw error
+        except.http(error)
       })
     requests.push(request)
   })
@@ -61,12 +60,12 @@ export function selectLayer (context, { sourceName, layerName }) {
           context.commit('current', { source, layer })
           resolve({ source, layer })
         } else {
-          notifyError('Layer does not exist or source not configured')
+          except('Layer does not exist or source not configured')
           reject(new Error('Selected layer or source does not exist'))
         }
       })
       .catch(error => {
-        notifyHttpError(error)
+        except.http(error)
         reject(error)
       })
   })
@@ -292,7 +291,7 @@ export function saveEdits (context) {
         resolve(result)
       })
       .catch(error => {
-        notifyHttpError(error, false)
+        except.http(error, false)
         reject(error)
       })
   })

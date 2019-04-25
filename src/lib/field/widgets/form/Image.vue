@@ -51,7 +51,6 @@
 </template>
 
 <script>
-import { notifyHttpError } from '../../../notifications'
 import MultiValueMixin from '../mixins/MultiValueMixin'
 import ValidateMixin from '../mixins/ValidateMixin'
 
@@ -100,7 +99,7 @@ export default {
       const files = this.$refs.files.files
       if (files.length > 0) {
         const newValue = new AsyncPhoto(files[0], this.$store.state.dataLayer.current.source, this.$store.getters['auth/headers'])
-        newValue.getValue().catch(notifyHttpError)
+        newValue.getValue().catch(this.$except.http)
         this.$store.dispatch('dataLayer/uploadPhoto', newValue)
         this.$emit('input', newValue)
       }
