@@ -141,5 +141,8 @@ export default new Options({
       name: 'Giscube',
       url: 'https://www.giscube.org/apps/giscube-admin/'
     }
-  ]
+  ],
+  sentry: {
+    dsn: null
+  }
 })

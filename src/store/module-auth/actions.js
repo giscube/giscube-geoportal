@@ -1,6 +1,6 @@
 import axios from 'axios'
 import config from '../../config'
-import { notifyHttpError } from '../../lib/notifications'
+import except from '../../lib/except'
 
 export function credentialsLogin (context, { username, password }) {
   const apiUrl = config.oauth.token
@@ -25,7 +25,7 @@ export function credentialsLogin (context, { username, password }) {
         if (error.request && error.request.status === 401) {
           context.commit('setAccessToken', null)
         } else {
-          notifyHttpError(error)
+          except.http(error)
         }
         reject(error)
       })

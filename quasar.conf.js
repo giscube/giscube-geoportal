@@ -8,6 +8,7 @@ module.exports = function (ctx) {
     // --> boot files are part of "main.js"
     boot: [
       'config',
+      'except',
       'i18n',
       'axios'
     ],

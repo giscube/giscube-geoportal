@@ -93,7 +93,6 @@ import isEqual from 'lodash/isEqual.js'
 
 import makeGeoJsonOptions from '../../lib/makeGeoJsonOptions'
 import { addFeatureMixin, setupLayer } from '../../lib/feature.js'
-import { notifyHttpError } from '../../lib/notifications.js'
 import DataCell from '../../lib/field/components/DataCell'
 
 import databaseLayersApi from '../../api/databaselayers.js'
@@ -343,8 +342,7 @@ export default {
         })
         .catch(error => {
           this.loading = false
-          notifyHttpError(error)
-          console.error(error)
+          this.$except.http(error)
         })
     },
     onColFilterInput (col, value) {
