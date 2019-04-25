@@ -4,7 +4,7 @@
       :readonly="readonly"
       :disable="disable"
       :label="field.label"
-      :stack-label="!!v"
+      :stack-label="valid(v)"
       :clearable="field.null"
       :hint="hint"
       @input="onClear"
@@ -77,7 +77,7 @@ export default {
       if (MultiResult.is(this.value)) {
         return null
       }
-      const result = this.value && this.field.valuesDict[this.value]
+      const result = this.valid(this.value) && this.field.valuesDict[this.value]
       return result ? result[1] : this.value
     },
     hint () {
@@ -100,6 +100,9 @@ export default {
       if (v === null) {
         this.$emit('input', null)
       }
+    },
+    valid (value) {
+      return value !== null && value !== undefined
     }
   }
 }
