@@ -27,12 +27,17 @@
 </template>
 
 <script>
+import { QHeader } from 'quasar'
+
 export default {
   props: [
     'brandLogo',
     'brandText',
     'map'
   ],
+  components: {
+    QHeader
+  },
   data () {
     return {}
   },

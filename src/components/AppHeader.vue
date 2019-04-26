@@ -36,6 +36,7 @@
 </template>
 
 <script>
+import { QHeader } from 'quasar'
 import HeaderItemHolder from './HeaderItemHolder'
 
 export default {
@@ -44,7 +45,8 @@ export default {
     'brandText'
   ],
   components: {
-    HeaderItemHolder
+    HeaderItemHolder,
+    QHeader
   },
   computed: {
     q () {
