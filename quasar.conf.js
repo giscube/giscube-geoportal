@@ -26,7 +26,7 @@ module.exports = function (ctx) {
     ],
 
     // framework: 'all', // --- includes everything; for dev only!
-    framework: {
+    framework: process.env.LIB ? 'all' : {
       components: [
         'QBtn',
         'QBtnDropdown',
@@ -133,6 +133,7 @@ module.exports = function (ctx) {
 
           cfg.externals = [
             'leaflet',
+            'quasar',
             'vue',
             'vuex',
             'vue2-leaflet',
