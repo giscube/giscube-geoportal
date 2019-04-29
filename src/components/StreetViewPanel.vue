@@ -15,6 +15,8 @@
 </template>
 
 <script>
+import debounce from 'lodash/debounce.js'
+
 import L from '../lib/leaflet'
 import gmapsInit from '../lib/gmaps'
 
@@ -29,10 +31,20 @@ export default {
       positionChangedEnabled: true
     }
   },
+  created () {
+    this.resizeStreetView = debounce(() => {
+      if (window.google && window.google.maps) {
+        window.google.maps.event.trigger(this.panorama, 'resize')
+      }
+    }, 500)
+  },
   watch: {
     'map': 'mapChanged',
     'q': 'qChanged',
-    '$store.state.query': 'queryChanged'
+    '$store.state.query': 'queryChanged',
+    '$store.state.layout.leftDrawerSize' () {
+      this.resizeStreetView()
+    }
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
@@ -169,7 +181,8 @@ export default {
       let latlng = { lat: position.lat(), lng: position.lng() }
       this.marker.setLatLng(latlng)
       const povOptions = {
-        pitch: 0
+        pitch: 0,
+        heading: 0
       }
       if (this.$store.state.query) {
         povOptions.heading = this.getHeading()
