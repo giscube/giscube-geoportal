@@ -126,11 +126,13 @@ a.giscube-header-brand span {
   line-height: 1em;
   margin-top: 9px;
 }
+.giscube-toolbar-buttons {
+  text-transform: uppercase;
+}
 .giscube-toolbar-buttons .q-btn {
   font-weight: 300;
   padding: 6px 16px;
   font-size: .9em;
-  text-transform: uppercase;
 }
 .giscube-toolbar-buttons .q-btn i {
   font-size: 20px;
