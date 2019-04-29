@@ -78,7 +78,8 @@ export default {
 
       const layerDescriptor = this.result.children[0]
       const title = this.result.title
-      this.$store.dispatch('map/addLayer', { layerDescriptor, title })
+      const options = this.result.options || {}
+      this.$store.dispatch('map/addLayer', { layerDescriptor, title, options })
     },
     zoomResult () {
       // FIXME: check visible, fly
