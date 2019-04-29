@@ -116,14 +116,13 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
       size: style.size || 25
     }
     rules = makeRules(styleRules, base, style => {
-      const options = {
+      return {
         type: style.icon_type,
         fill: style.marker_color,
         icon: style.icon,
         color: style.icon_color,
         size: style.size
       }
-      return IconsGenerator.icon(options)
     })
   } else {
     rules = makeRules(styleRules, style, style => {
@@ -142,71 +141,112 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
   const PopupContent = popup.component && (typeof popup.component === 'object' ? Vue.extend(popup.component) : popup.component)
   const renderContents = typeof design.popup === 'function' ? design.popup : makeTemplate(design.popup)
 
-  function createPopup (feature, layer, popupOffset) {
-    const content = new PopupContent({
-      parent,
-      propsData: {
-        ...(popup.propsData || {}),
-        feature,
-        renderContents
+  // Setup feature to have a single popup and, if using markes, a single icon which are reused
+  function prepareFeature (feature) {
+    if (feature._settedUp) {
+      return
+    }
+
+    Object.defineProperties(feature, {
+      _settedUp: {
+        configurable: true,
+        enumerable: false,
+        writable: false,
+        value: true
+      },
+
+      _icon: {
+        configurable: true,
+        enumerable: false,
+        writable: false,
+        value: isMarker && IconsGenerator.icon({
+          ...rules.getResult(feature),
+          status: feature.status
+        })
+      },
+
+      _content: {
+        configurable: true,
+        enumerable: false,
+        writable: true
+      },
+      _container: {
+        configurable: true,
+        enumerable: false,
+        writable: true
+      },
+      _setUpPopup: {
+        configurable: true,
+        enumerable: false,
+        get () {
+          return () => {
+            if (this._content) {
+              return
+            }
+
+            this._content = new PopupContent({
+              parent,
+              propsData: {
+                ...(popup.propsData || {}),
+                feature: this,
+                renderContents
+              }
+            }).$mount()
+
+            let popupOffset = !this._icon ? undefined : [
+              0,
+              -(this._icon.options.props.size * 1.2615068493150685 - 5) // size * (anchorRatio - (1-iconRatio)/2) - 5
+            ]
+
+            this._container = L.popup({
+              closeOnClick: true,
+              closeOnEscapeKey: true,
+              offset: popupOffset
+            })
+            this._container.setContent(this._content.$el)
+            this._content.$on('updatePopupSize', _ => this._container.update())
+
+            transform(popup.onEachPopup, { content: this._content, container: this._container })
+          }
+        }
+      },
+
+      assignLayer: {
+        configurable: true,
+        enumerable: false,
+        get () {
+          return layer => {
+            if (isMarker) {
+              layer.setIcon(this._icon)
+            }
+
+            layer.on('click', ({ sourceTarget }) => {
+              if (popup.openCondition && !popup.openCondition()) {
+                return
+              }
+
+              this._setUpPopup()
+
+              const latlng = sourceTarget.getCenter ? sourceTarget.getCenter() : sourceTarget.getLatLng()
+              map.openPopup(this._container, latlng)
+            })
+
+            layer.on('remove', _ => {
+              map.closePopup(this._container)
+            })
+
+            transform(afterEachSelect, { feature, layer })
+          }
+        }
       }
-    }).$mount()
-
-    const container = L.popup({
-      closeOnClick: true,
-      closeOnEscapeKey: true,
-      offset: popupOffset
-    }, layer)
-    container.setContent(content.$el)
-    content.$on('updatePopupSize', _ => container.update())
-    transform(popup.onEachPopup, { container, content })
-
-    return ({ container, content })
+    })
   }
 
   // result
   const result = {
     onEachFeature (feature, layer) {
-      let popupOffset
-      if (isMarker) {
-        const icon = rules.getResult(feature)
-        layer.setIcon(icon)
-        popupOffset = [
-          0,
-          -(icon.options.props.size * 1.2615068493150685 - 5) // size * (anchorRatio - (1-iconRatio)/2) - 5
-        ]
-      }
-
-      let container
-      let content
-
-      // Manually handle popup visibility
-      layer.on('click', ({ sourceTarget }) => {
-        if (popup.openCondition && !popup.openCondition()) {
-          return
-        }
-
-        if (!container) {
-          ({ container, content } = createPopup(feature, layer, popupOffset))
-        }
-
-        container.update()
-        const latlng = sourceTarget.getCenter ? sourceTarget.getCenter() : sourceTarget.getLatLng()
-        map.openPopup(container, latlng)
-      })
-
-      layer.on('remove', _ => {
-        if (container) {
-          map.closePopup(container)
-          container = null
-        }
-        if (content) {
-          content.$destroy()
-          content = null
-        }
-      })
-
-      transform(afterEachSelect, { feature, layer })
+      prepareFeature(feature)
+      feature.assignLayer(layer)
     }
   }
 
