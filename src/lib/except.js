@@ -12,15 +12,17 @@ function except (error) {
 }
 Object.assign(except, {
   http (error, details = true) {
-    this._sentry(error)
-    this._log(error)
-    this._notifyHttp(error, details)
+    const self = except
+    self._sentry(error)
+    self._log(error)
+    self._notifyHttp(error, details)
   },
   vue (error, vm, info) {
-    this._sentry(error)
-    this._vue(error, vm, info)
-    this._log(error)
-    this._notify(error)
+    const self = except
+    self._sentry(error)
+    self._vue(error, vm, info)
+    self._log(error)
+    self._notify(error)
   },
 
   setSentry (Sentry) {
