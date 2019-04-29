@@ -1,7 +1,7 @@
 <template functional>
   <svg style="display: none">
-    <symbol id="marker">
-      <path style="stroke-width: 20" d="M182.9,551.7c0,0.1,0.2,0.3,0.2,0.3S358.3,283,358.3,194.6c0-130.1-88.8-186.7-175.4-186.9 C96.3,7.9,7.5,64.5,7.5,194.6c0,88.4,175.3,357.4,175.3,357.4S182.9,551.7,182.9,551.7z" />
+    <symbol id="markerIcon" viewBox="-10 -10 120 195.39214">
+      <path d="M4.147 69.93745 A50 50 0 1 1 95.853 69.93745 L50 175.39214 Z" />
     </symbol>
   </svg>
 </template>
@@ -22,17 +22,23 @@ const MarkerIcon = L.Icon.extend({
       size: null,
       width: null,
       height: null,
-      anchor: null
+      anchor: null,
+      status: null
     }
   },
   initialize (options) {
     options = L.Util.setOptions(this, options)
   },
-  createIcon () {
-    const marker = new Marker({
-      propsData: this.options.props
-    }).$mount()
-    return marker.$el
+  createIcon (oldElement) {
+    if (!this._marker) {
+      this._marker = new Marker({
+        propsData: this.options.props
+      }).$mount()
+    }
+    return this._marker.$el
+  },
+  createShadow () {
+    return null
   }
 })
 
@@ -59,12 +65,12 @@ function colorLuminance (hex, lum) {
   return rgb
 }
 
-const HEIGHT_RATIO = 560 / 365
-const ANCHOR_RATIO = 551.7 / 365
+const HEIGHT_RATIO = 195.39214 / 120
+const ANCHOR_RATIO = 185.39214 / 120
 // const ICON_RATIO = 0.5
 
 export default {
-  icon ({ type = 'preset', fill = '#f00', icon = 'fas fa-camera', color = 'black', size = 20 } = {}) {
+  icon ({ type = 'preset', fill = '#f00', icon = 'fas fa-camera', color = 'black', size = 20, status = {} } = {}) {
     return new MarkerIcon({
       props: {
         type,
@@ -75,7 +81,9 @@ export default {
         size,
         width: size,
         height: ensure(size, _ => (size * HEIGHT_RATIO)),
-        anchor: ensure(size, _ => (size * ANCHOR_RATIO))
+        anchor: ensure(size, _ => (size * ANCHOR_RATIO)),
+
+        status
       }
     })
   }
