@@ -23,12 +23,12 @@ const addLayerActions = {
   tms: 'addLayerTMS',
   geojson: 'addLayerGeoJSON'
 }
-export function addLayer (context, { layerDescriptor, title }) {
+export function addLayer (context, { layerDescriptor, title, options }) {
   const type = layerDescriptor.type
   if (type && typeof type === 'string') {
     const action = addLayerActions[type.toLowerCase()]
     if (action) {
-      context.dispatch(action, { layerDescriptor, title })
+      context.dispatch(action, { layerDescriptor, title, options })
       return
     }
   }
@@ -36,29 +36,48 @@ export function addLayer (context, { layerDescriptor, title }) {
   console.warn(`Trying to add layer of unknown type "${type}"`)
 }
 
-export function addLayerWMS (context, { layerDescriptor, title }) {
+function applyExtraOptions (defaultOptions, extraOptions, allowedOptions) {
+  const options = {}
+  if (typeof extraOptions !== 'undefined') {
+    for (const k in extraOptions) {
+      if (allowedOptions.indexOf(k) !== -1) {
+        options[k] = extraOptions[k]
+      }
+    }
+  }
+  return Object.assign(defaultOptions, options)
+}
+
+export function addLayerWMS (context, { layerDescriptor, title, options }) {
   const map = context.state.mapObject
-  const wms = L.tileLayer.wms(layerDescriptor.url, {
+  const defaultOptions = {
     layers: layerDescriptor.layers,
     format: 'image/png',
     transparent: true,
     maxZoom: 22
-  }).addTo(map)
+  }
+  const allowedOptions = ['minZoom', 'maxZoom', 'layers', 'styles', 'format', 'transparent', 'format', 'version',
+    'csr', 'upercase', 'attribution']
+  const layerOptions = applyExtraOptions(defaultOptions, options, allowedOptions)
+  const wms = L.tileLayer.wms(layerDescriptor.url, layerOptions).addTo(map)
   map.layerswitcher.addOverlay(wms, layerDescriptor.title, {
     layerType: 'WMS'
   })
 }
 
-export function addLayerTMS (context, { layerDescriptor, title }) {
+export function addLayerTMS (context, { layerDescriptor, title, options }) {
   const map = context.state.mapObject
-  const tms = L.tileLayer(layerDescriptor.url, {
+  const defaultOptions = {
     transparent: true,
     maxZoom: 22
-  }).addTo(map)
+  }
+  const allowedOptions = ['minZoom', 'maxZoom', 'tms', 'attribution']
+  const layerOptions = applyExtraOptions(defaultOptions, options, allowedOptions)
+  const tms = L.tileLayer(layerDescriptor.url, layerOptions).addTo(map)
   map.layerswitcher.addOverlay(tms, title)
 }
 
-export function addLayerGeoJSON (context, { layerDescriptor, title }) {
+export function addLayerGeoJSON (context, { layerDescriptor, title, options }) {
   const map = context.state.mapObject
   const dataUrl = layerDescriptor.url
   axios.get(dataUrl)
