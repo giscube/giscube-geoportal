@@ -6,12 +6,14 @@
     :to="to"
     @click="_onClick"
     class="gt-xs"
+    :style="style"
   />
   <q-item
     v-else-if="supported"
     clickable
     v-close-popup
     :to="to"
+    :style="style"
     @click="_onClick"
   >
     <q-item-section side>
@@ -55,6 +57,9 @@ export default {
       } else {
         return value
       }
+    },
+    style () {
+      return {}
     }
   },
   methods: {

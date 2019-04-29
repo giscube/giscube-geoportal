@@ -61,7 +61,8 @@ export default new Options({
     },
     auth: {
       icon: 'ion-person',
-      to: 'auth'
+      to: 'auth',
+      headerComponent: require('components/AuthHeaderItem.js').default
     },
     measure: {
       icon: 'mdi-ruler',
