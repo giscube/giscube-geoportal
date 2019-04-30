@@ -2,7 +2,7 @@ export default {
   size: null,
   mapSize: null,
   drawerBreakpoint: 600,
-  drawerOverlay: false,
+  drawerOverlay: true,
   drawerBehavior: 'default',
   leftDrawerSize: 300
 }

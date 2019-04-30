@@ -30,7 +30,7 @@ export default function (/* { ssrContext } */) {
       result: null,
       resultsLayer: null,
       autoselectResult: false,
-      sidebarVisible: null,
+      sidebarVisible: false,
       query: null
     },
     mutations: {
