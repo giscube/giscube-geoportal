@@ -2,7 +2,7 @@ import Vue from 'vue'
 
 import AsyncValue from '../async/Value'
 import MultiResult from '../MultiResult'
-import { cloneClean, isCleanEqual, escapeHtml } from '../utils.js'
+import { cloneClean, isCleanEqual } from '../utils.js'
 
 import DefaultWidget from './widgets/form/Default'
 
@@ -101,7 +101,7 @@ export default class Field {
 
   popupValue (data) {
     // SECURITY: BE AWARE OF XSS
-    return escapeHtml(this.str(data))
+    return this.str(data)
   }
 
   formWidget () {
