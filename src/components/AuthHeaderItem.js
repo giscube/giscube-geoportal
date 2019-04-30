@@ -7,7 +7,7 @@ export default {
       return this.$store.state.auth.username
     },
     label () {
-      return this.username || this.$t('tools.' + this.name + '.header_name')
+      return this.username || this.$t('tools.' + this.name + '.headerName')
     },
     style () {
       return {

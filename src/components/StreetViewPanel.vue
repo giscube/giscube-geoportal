@@ -1,7 +1,7 @@
 <template>
   <div class="panel streetview-panel">
     <div class="panel-content column">
-      <div class="panel-title">Google Street View </div>
+      <div class="panel-title">{{ t('title') }}</div>
 
       <div>{{ q }}</div>
 
@@ -9,7 +9,7 @@
         id="street-view-panel-street-view"
         ref="streetview"
         class="street-view-container"
-      ><q-spinner /> Street view</div>
+      ><q-spinner class="q-mr-sm" />{{ t('headerName') }}</div>
       </div>
   </div>
 </template>
@@ -66,6 +66,9 @@ export default {
     this.map.off('click', this.clickHandler)
   },
   methods: {
+    t (key, ...args) {
+      return this.$t('tools.streetview.' + key, ...args)
+    },
     clickHandler (event) {
       let latlng = event.latlng
       this.panorama.setPosition({ lat: latlng.lat, lng: latlng.lng })

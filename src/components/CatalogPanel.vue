@@ -29,7 +29,7 @@
               <div>
                 <p v-if="subcategory.loading || subcategory.results === undefined">&nbsp;</p>
                 <div v-else-if="subcategory.results.length === 0" class="catalog-result empty">
-                  <q-icon name="ion-information-circle-outline" size="20px" /> No items found in this subcategory
+                  <q-icon name="ion-information-circle-outline" size="20px" /> {{ $t('tools.catalog.noItems') }}
                 </div>
                 <catalog-result
                   v-else

@@ -7,7 +7,7 @@
     <div class="flex-nowrap-start layers-title" @click="collapsed = !collapsed">
       <a class="flex-icon link"
          ><q-icon name="layers" size="18px"/></a>
-      <a class="flex-label link">Layers</a>
+      <a class="flex-label link">{{ $t('names.layers') }}</a>
     </div>
 
     <div v-show="!collapsed">

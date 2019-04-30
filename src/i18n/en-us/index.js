@@ -1,79 +1,118 @@
 export default {
-  units: {
-    meters: 'meters'
+  actions: {
+    accept: 'OK',
+    addToMap: 'add to map',
+    apply: 'apply',
+    cancel: 'cancel',
+    delete: 'delete',
+    discard: 'discard',
+    print: 'print',
+    save: 'save',
+    zoom: 'zoom',
+    zoomToData: 'zoom to data'
+  },
+  capitalize (value) {
+    value = value.toString()
+    return value.charAt(0).toUpperCase() + value.slice(1)
+  },
+  messages: {
+    badPopupConfig: 'This popup is improperly configured'
+  },
+  names: {
+    element: 'no elements | {count} element | {count} elements',
+    layers: 'layers',
+    lat: 'latitude',
+    lng: 'longitude',
+    opacity: 'opacity'
+  },
+  states: {
+    empty: 'empty',
+    loading: 'loading',
+    new: 'new'
   },
   tools: {
     auth: {
-      header_name: 'Log in',
+      headerName: 'Log in',
       title: 'User authentication',
+
       authenticatedAs: 'Authenticated as user',
-      loginCodeOk: 'Login succeeded, you can close this window',
-      loginCodeError: 'Login failed',
       closeWindow: 'Close window',
       logIn: 'Log in',
+      loginCodeError: 'Login failed',
+      loginCodeOk: 'Login succeeded, you can close this window',
       logOut: 'Log out',
+      password: 'Password',
       pleaseLogin: 'Please use the button below to authenticate.',
-      username: 'Username',
-      password: 'Password'
+      username: 'Username'
     },
-    home: { header_name: 'Home' },
-    search: { header_name: 'Search' },
     catalog: {
-      header_name: 'Catalog',
+      headerName: 'Catalog',
       title: 'Catalog',
-      add_to_map: 'Add to map'
+
+      noItems: 'No items found in this subcategory'
     },
-    contact: { header_name: 'Contact' },
-    measure: {
-      header_name: 'Measure',
-      title: 'Measure',
-      explanation: 'Please select measure type, then click on the map. Double-click to finish a measure.',
-      path: 'Path',
-      area: 'Area',
-      stop: 'Stop measuring'
-    },
-    print: { header_name: 'Print' },
-    streetview: { header_name: 'Street View' },
-    fullscreen: { header_name: 'Fullscreen' },
+    contact: { headerName: 'Contact' },
     data: {
-      header_name: 'Data',
+      headerName: 'Data',
       title: 'Data layer',
-      newElement: 'New element',
+
+      allDeleted: 'All the selected elements have been marked as deleted.',
+      colFilter: 'Filter for "{label}"',
+      defaultProperties: 'Default properties of the new elements',
+      deleteElements: 'Delete {elements}',
+      dialogNew: 'Show form after adding an element',
       edit: 'Edit',
+      editElements: 'Edit {elements}',
+      filterByPolygon: 'Polygon',
+      filterByView: 'Map',
       filters: 'Filters',
       findInTable: 'Find in table',
-      filterByView: 'Map',
-      filterByPolygon: 'Polygon',
-      selection: 'Selection',
-      selectByPolygon: 'Polygon',
       multipleNew: 'Add multiple elements',
-      dialogNew: 'Show form after adding an element',
-      selectNews: 'Select created elements',
-      editElements: 'Edit {elements}',
-      deleteElements: 'Delete {elements}',
-      defaultProperties: 'Default properties of the new elements',
-      stopDrawing: 'Stop drawing elements',
-      colFilter: 'Filter for "{label}"',
-      requiredField: 'Required Field',
-      thisDeleted: 'This element has been marked as deleted.',
-      someDeleted: 'Some of the selected elements have been marked as deleted.',
-      allDeleted: 'All the selected elements have been marked as deleted.',
+      newElement: 'New element',
       qInvalidCommit: 'Some values seem to be invalid. Would you like to save anyways?',
+      requiredField: 'Required Field',
+      stopDrawing: 'Stop drawing elements',
+      selectByPolygon: 'Polygon',
+      selectNews: 'Select created elements',
+      selection: 'Selection',
+      someDeleted: 'Some of the selected elements have been marked as deleted.',
+      thisDeleted: 'This element has been marked as deleted.',
       undoConfirm: 'Are you sure you want to undo the changes in this element?'
+    },
+    fullscreen: { headerName: 'Fullscreen' },
+    home: { headerName: 'Home' },
+    measure: {
+      headerName: 'Measure',
+      title: 'Measure',
+
+      area: 'Area',
+      explanation: 'Please select measure type, then click on the map. Double-click to finish a measure.',
+      path: 'Path',
+      stop: 'Stop measuring'
+    },
+    print: { headerName: 'Print' },
+    search: {
+      headerName: 'Search',
+
+      help: 'Please type something to search',
+      noResults: 'No matches found',
+      results: 'Results for {q}',
+      resultsError: 'Error retrieving results',
+      search: 'search'
+    },
+    streetview: {
+      headerName: 'Street View',
+      title: 'Google Street View'
     }
   },
-  true: 'True',
-  false: 'False',
-  yes: 'Yes',
-  no: 'No',
-  'empty value': 'empty value',
-  apply: 'apply',
-  discard: 'discard',
-  save: 'save',
-  cancel: 'cancel',
-  ok: 'OK',
-  delete: 'delete',
-  new: 'new',
-  element: 'no elements | {count} element | {count} elements',
-  badPopupConfig: 'This popup is improperly configured'
+  units: {
+    meters: 'meters'
+  },
+  values: {
+    empty: 'empty value',
+    false: 'false',
+    true: 'true'
+  },
+  yes: 'yes',
+  no: 'no'
 }

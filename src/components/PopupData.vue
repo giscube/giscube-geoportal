@@ -18,7 +18,7 @@
         </tbody>
       </table>
     </div>
-    <div v-else class="text-negative text-h6">{{ $t('badPopupConfig') }}</div>
+    <div v-else class="text-negative text-h6">{{ $t('messages.badPopupConfig') }}</div>
   </div>
 </template>
 
