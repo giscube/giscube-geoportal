@@ -13,9 +13,14 @@ export default class SqlChoicesField extends Field {
     this.valuesList.forEach(value => { this.valuesDict[value[0]] = value })
   }
 
-  val2str (val) {
-    const value = val && this.valuesDict[val]
-    return Field.toString(value && value[1])
+  str (data) {
+    const key = this.getValue(data)
+    const v = data && this.valuesDict[key]
+    if (v === void 0) {
+      return Field.toString(key)
+    }
+    const value = v && v[1]
+    return Field.toString(value === void 0 ? v : value)
   }
 
   repr (data) {

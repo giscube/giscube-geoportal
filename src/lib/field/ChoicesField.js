@@ -22,9 +22,10 @@ export default class ChoicesField extends Field {
     }
   }
 
-  tableValue (data) {
-    const value = this.getValue(data)
-    return this.valuesDict[value]
+  str (data) {
+    const key = this.getValue(data)
+    const value = this.valuesDict[key]
+    return Field.toString(value === void 0 ? key : value)
   }
 
   formWidget () {
