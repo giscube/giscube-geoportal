@@ -1,6 +1,6 @@
 <template>
   <q-header class="giscube-header">
-    <q-toolbar class="giscube-toolbar-buttons">
+    <q-toolbar class="giscube-toolbar">
       <a class="giscube-header-brand" href="#"><img :src="brandLogo"><span>{{ brandText }}</span></a>
 
       <header-item-holder
@@ -126,15 +126,15 @@ a.giscube-header-brand span {
   line-height: 1em;
   margin-top: 9px;
 }
-.giscube-toolbar-buttons {
+.giscube-toolbar > :not(.giscube-header-brand) {
   text-transform: uppercase;
 }
-.giscube-toolbar-buttons .q-btn {
+.giscube-toolbar .q-btn {
   font-weight: 300;
   padding: 6px 16px;
   font-size: .9em;
 }
-.giscube-toolbar-buttons .q-btn i {
+.giscube-toolbar .q-btn i {
   font-size: 20px;
 }
 @media (max-width: 991px) {
@@ -144,7 +144,7 @@ a.giscube-header-brand span {
   a.giscube-header-brand span {
     font-size: 16px;
   }
-  .giscube-toolbar-buttons .q-btn {
+  .giscube-toolbar .q-btn {
     padding: 4px 14px;
     font-size: .8em;
   }
@@ -157,7 +157,7 @@ a.giscube-header-brand span {
   a.giscube-header-brand span {
     font-size: 14px;
   }
-  .giscube-toolbar-buttons .q-btn {
+  .giscube-toolbar .q-btn {
     padding: 2px 10px;
     font-size: .7em;
   }
