@@ -68,6 +68,10 @@ export default class ImageField extends Field {
     return ImageField.urlFilename(value) || ''
   }
 
+  popupValue (data) {
+    return this.getValue(data)
+  }
+
   static getUrl (value) {
     if (!value) {
       return value
