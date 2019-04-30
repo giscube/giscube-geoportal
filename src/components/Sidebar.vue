@@ -84,7 +84,6 @@ export default {
     this.$nextTick(() => {
       this.onResize()
       this.$store.commit('setSidebarVisible', true)
-      this.drawer = this.$refs.drawer
     })
   },
   beforeDestroy () {
