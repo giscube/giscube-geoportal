@@ -63,6 +63,17 @@ function conformsRule (obj, op, value) {
   }
 }
 
+function applyFeatureStyle (feature, style) {
+  const customStyle = Object.assign({}, style)
+  const rxp = /{([^}]+)}/g
+  for (const [keyStyle, valueStyle] of Object.entries(customStyle)) {
+    if (typeof valueStyle === 'string') {
+      customStyle[keyStyle] = customStyle[keyStyle].replace(rxp, m => feature.properties[m.slice(1, -1)])
+    }
+  }
+  return customStyle
+}
+
 function makeRules (r, base, generate) {
   const rules = r.map(rule => {
     // const fieldName =
@@ -77,10 +88,10 @@ function makeRules (r, base, generate) {
   rules.getResult = feature => {
     for (let rule of rules) {
       if (rule.check(feature)) {
-        return rule.result
+        return applyFeatureStyle(feature, rule.result)
       }
     }
-    return rules.default
+    return applyFeatureStyle(feature, rules.default)
   }
 
   return rules
