@@ -193,16 +193,17 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
               }
             }).$mount()
 
-            let popupOffset = !this._icon ? undefined : [
-              0,
-              -(this._icon.options.props.size * 1.2615068493150685 - 5) // size * (anchorRatio - (1-iconRatio)/2) - 5
-            ]
-
-            this._container = L.popup({
+            const popupConfig = {
               closeOnClick: true,
-              closeOnEscapeKey: true,
-              offset: popupOffset
-            })
+              closeOnEscapeKey: true
+            }
+            if (this._icon) {
+              popupConfig.offset = [
+                0,
+                -(this._icon.options.props.size * 1.2615068493150685 - 5) // size * (anchorRatio - (1-iconRatio)/2) - 5
+              ]
+            }
+            this._container = L.popup(popupConfig)
             this._container.setContent(this._content.$el)
             this._content.$on('updatePopupSize', _ => this._container.update())
 
