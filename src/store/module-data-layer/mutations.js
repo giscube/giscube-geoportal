@@ -60,6 +60,8 @@ export function layerInfoFromRequest (state, value) {
 
   value.design.list_fields = strlist2fields(value.design.list_fields)
   value.design.form_fields = strlist2fields(value.design.form_fields)
+  const logicOnlyFields = fields.filter(field => field.onUpdate && !value.design.form_fields.includes(field))
+  value.design.logicFormFields = value.design.form_fields.concat(logicOnlyFields)
 
   state.layerConfig.layerInfo = value
   state.layerConfig.fields = fields

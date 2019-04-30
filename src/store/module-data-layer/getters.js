@@ -26,6 +26,10 @@ export function tableFields (state) {
 }
 
 export function formFields (state) {
+  return state.layerConfig.layerInfo ? state.layerConfig.layerInfo.design.logicFormFields : []
+}
+
+export function renderableFormFields (state) {
   return state.layerConfig.layerInfo ? state.layerConfig.layerInfo.design.form_fields : []
 }
 
