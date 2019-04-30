@@ -2,6 +2,7 @@
   <div class='popup'>
     <popup-data
       :feature="feature"
+      :fields="fields"
       :render-contents="renderContents"
     ></popup-data>
     <div class="tools">
@@ -34,6 +35,9 @@ export default {
     PopupData
   },
   computed: {
+    fields () {
+      return this.$store.state.dataLayer.layerConfig.fields
+    },
     editing () {
       return this.$store.getters['dataLayer/editing']
     },
