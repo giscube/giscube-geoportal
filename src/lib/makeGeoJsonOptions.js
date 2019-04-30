@@ -63,7 +63,18 @@ function conformsRule (obj, op, value) {
   }
 }
 
-function makeRules (r, base, generate) {
+function applyFeatureStyle (feature, style) {
+  const customStyle = Object.assign({}, style)
+  const rxp = /{([^}]+)}/g
+  for (const [keyStyle, valueStyle] of Object.entries(customStyle)) {
+    if (typeof valueStyle === 'string') {
+      customStyle[keyStyle] = customStyle[keyStyle].replace(rxp, m => feature.properties[m.slice(1, -1)])
+    }
+  }
+  return customStyle
+}
+
+function makeRules (r, base, generate = (v => v)) {
   const rules = r.map(rule => {
     // const fieldName =
     const clearKeys = ['field', 'op', 'value']
@@ -77,10 +88,10 @@ function makeRules (r, base, generate) {
   rules.getResult = feature => {
     for (let rule of rules) {
       if (rule.check(feature)) {
-        return rule.result
+        return applyFeatureStyle(feature, rule.result)
       }
     }
-    return rules.default
+    return applyFeatureStyle(feature, rules.default)
   }
 
   return rules
@@ -114,7 +125,7 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
 
   let rules
   if (isImage) {
-    rules = makeRules(styleRules, style, style => images.getOrCreate(style.icon))
+    rules = makeRules(styleRules, style)
   } else if (isMarker) {
     const base = {
       icon_type: style.icon_type === 'img' ? 'img' : 'preset',
@@ -169,7 +180,9 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
         writable: false,
         value: (_ => {
           if (isImage) {
-            return rules.getResult(feature)
+            return images.getOrCreate(
+              rules.getResult(feature).icon
+            )
           } else if (isMarker) {
             return IconsGenerator.icon({
               ...rules.getResult(feature),
