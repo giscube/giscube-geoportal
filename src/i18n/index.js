@@ -1,8 +1,8 @@
 import Options from '../options.js'
-import caES from './ca-es'
+import ca from './ca'
 import enUS from './en-us'
 
 export default new Options({
-  'ca-es': caES,
+  'ca': ca,
   'en-us': enUS
 })

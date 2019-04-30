@@ -1,6 +1,6 @@
 <template>
   <div class='popup'>
-    <div class='title'>Latitude, Longitude</div>
+    <div class='title'>{{ $t('names.lat') | capitalize }}, {{ $t('names.lng') | capitalize }}</div>
     <a @click='onClick'>{{ latlng.lat.toFixed(6) }}, {{ latlng.lng.toFixed(6) }}</a>
   </div>
 </template>

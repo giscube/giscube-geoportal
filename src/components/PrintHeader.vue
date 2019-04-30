@@ -8,7 +8,7 @@
 
       <q-btn stack flat stretch
         icon="arrow_back"
-        label="Cancel"
+        :label="$t('actions.cancel')"
         @click.prevent="cancelPrint"
         class="no-print"
       />
@@ -17,7 +17,7 @@
 
       <q-btn stack flat stretch
         icon="print"
-        label="Print"
+        :label="$t('actions.print')"
         @click.prevent="print"
         class="no-print"
       />

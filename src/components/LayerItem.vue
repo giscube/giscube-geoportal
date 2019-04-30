@@ -31,7 +31,7 @@
       </div>
 
       <div v-show="panelOpen" class="layerinfo">
-        <span>Opacitat:</span>
+        <span>{{ $t('names.opacity') | capitalize }}</span>
         <q-slider
           :min="0"
           :max="1"

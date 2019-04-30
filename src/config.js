@@ -1,6 +1,10 @@
 import Options from './options.js'
 
 export default new Options({
+  locale: {
+    main: 'en-us'
+    // fallback: 'en-us' // optional
+  },
   branding: {
     header: {
       logo: require('assets/logo_giscube.svg'),

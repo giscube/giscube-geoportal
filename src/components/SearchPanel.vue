@@ -5,14 +5,14 @@
 
     <div class="panel-content">
 
-      <p v-if="!q">Please type something to search</p>
+      <p v-if="!q">{{ t('help') }}</p>
 
-      <p v-if="q" class="panel-title">Results for {{ q }}
+      <p v-if="q" class="panel-title">{{ t('results', { q }) }}
         <q-spinner v-if="searching" />
       </p>
 
-      <p v-if="showSearchError" class="list-group-item">Error retrieving results</p>
-      <p v-if="q && showSearchEmpty && !showSearchError" class="list-group-item">No matches found</p>
+      <p v-if="showSearchError" class="list-group-item">{{ t('resultsError') }}</p>
+      <p v-if="q && showSearchEmpty && !showSearchError" class="list-group-item">{{ t('noResults')}}</p>
     </div>
     <div v-if="results">
       <SearchResult v-for="(result, index) in results" :result='result'
@@ -97,6 +97,9 @@ export default {
     this.resultsLayer.clearLayers()
   },
   methods: {
+    t (key, ...args) {
+      return this.$t('tools.search.' + key, ...args)
+    },
     qChanged () {
       // reset
       this.resultsPartials = {}

@@ -32,7 +32,7 @@ export default {
 
       const cleanValues = Array.from(this.valueObj.values)
         .sort(compare)
-        .map(value => (value || `<${this.$t('empty value')}>`))
+        .map(value => (value || `<${this.$t('values.empty')}>`))
 
       return `Multiple values: ${cleanValues.join(', ')}`
     }

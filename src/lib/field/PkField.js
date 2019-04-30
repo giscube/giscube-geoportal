@@ -7,7 +7,7 @@ export default class PkField extends Field {
     const value = this.getValue(data)
 
     if (typeof value === 'string' && value.startsWith('__new')) {
-      const n = Vue.prototype.$t('new')
+      const n = Vue.prototype.$t('states.new')
       return `(${n})`
     } else {
       return value ? value.toString() : null

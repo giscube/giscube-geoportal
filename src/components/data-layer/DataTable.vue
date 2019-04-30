@@ -431,7 +431,7 @@ export default {
     },
     pkValue (value) {
       if (typeof value === 'string' && value.startsWith('__new')) {
-        return `(${this.$t('new')})`
+        return `(${this.$t('states.new')})`
       } else {
         return value
       }

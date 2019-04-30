@@ -18,17 +18,17 @@
         >
           <q-btn
             v-show="!changed && !adding && !saving"
-            :label="$t('cancel')"
+            :label="$t('actions.cancel')"
             @click="$store.dispatch('dataLayer/cancelEdits')"
           />
           <q-btn
             v-show="changed && !adding && !saving"
-            :label="$t('discard')"
+            :label="$t('actions.discard')"
             @click="onDiscard"
           />
           <q-btn
             v-if="changed && !adding"
-            :label="$t('save')"
+            :label="$t('actions.save')"
             :loading="saving || uploading"
             icon="save"
             @click="onSave"
@@ -103,7 +103,7 @@
           <q-btn-dropdown
             v-show="!adding && visibleSelected.length > 0"
             split
-            :label="t('editElements', {elements: $tc('element', visibleSelected.length, {count: visibleSelected.length})})"
+            :label="t('editElements', {elements: $tc('names.element', visibleSelected.length, {count: visibleSelected.length})})"
             :disable="saving"
             @click="editSelected"
           >
@@ -114,7 +114,7 @@
                 @click="deleteSelected"
               >
                 <q-item-section>
-                  <q-item-label>{{ t('deleteElements', {elements: $tc('element', visibleSelected.length, {count: visibleSelected.length})}) }}</q-item-label>
+                  <q-item-label>{{ t('deleteElements', {elements: $tc('names.element', visibleSelected.length, {count: visibleSelected.length})}) }}</q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -196,7 +196,7 @@
           />
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn flat label="OK" color="primary" v-close-popup />
+          <q-btn flat :label="$t('actions.accept')" color="primary" v-close-popup />
         </q-card-actions>
       </q-card>
     </q-dialog>

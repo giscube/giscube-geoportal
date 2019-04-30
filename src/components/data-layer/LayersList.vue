@@ -30,12 +30,12 @@
       <q-item
         v-if="$store.state.dataLayer.sources === null"
       >
-        <q-item-section class="text-caption">Loading...</q-item-section>
+        <q-item-section class="text-caption">{{ $t('states.loading') | capitalize }}</q-item-section>
       </q-item>
       <q-item
         v-else-if="sources.length < 1"
       >
-        <q-item-section class="text-caption">Empty</q-item-section>
+        <q-item-section class="text-caption">{{ $t('states.empty') | capitalize }}</q-item-section>
       </q-item>
       <q-expansion-item
         v-else

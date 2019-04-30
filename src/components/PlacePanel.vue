@@ -14,7 +14,7 @@
       <div class="row reverse">
         <q-btn outline no-caps
           icon="zoom_in"
-          label="Zoom"
+          :label="$t('actions.zoom') | capitalize"
           @click="zoomResult"
         />
       </div>

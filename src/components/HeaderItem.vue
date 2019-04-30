@@ -48,7 +48,7 @@ export default {
       return this._getOrCall(this.tool.icon)
     },
     label () {
-      return this.$t('tools.' + this.name + '.header_name')
+      return this.$t('tools.' + this.name + '.headerName')
     },
     to () {
       const value = this._getOrCall(this.tool.to)

@@ -37,7 +37,7 @@ export default {
       const cleanValues = this.options.filter(option => this.valueObj.values.has(option.value))
 
       if (this.valueObj.values.has(null)) {
-        cleanValues.push(`<${this.$t('empty value')}>`)
+        cleanValues.push(`<${this.$t('values.empty')}>`)
       }
 
       return `Multiple values: ${cleanValues.join(', ')}`

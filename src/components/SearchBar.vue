@@ -2,7 +2,7 @@
   <div class="search-bar">
     <div class="row search-row">
 
-      <input ref="search_input" type="text" class="search-input" placeholder="Search"
+      <input ref="search_input" type="text" class="search-input" :placeholder="t('search')"
         @keyup="onSearchType" :value="q">
       <q-btn flat
         icon="search"
@@ -24,6 +24,9 @@ export default {
     }
   },
   methods: {
+    t (key, ...args) {
+      return this.$t('tools.search.' + key, ...args)
+    },
     onSearch () {
       let q = this.$refs.search_input.value
       this.$store.commit('setAutoselectResult', true)

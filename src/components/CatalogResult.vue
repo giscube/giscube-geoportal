@@ -4,7 +4,7 @@
          @click="viewResultMain">
       <span class="catalog-result-add-to-map"
             @click.stop="viewResult"
-            ><q-icon name="layers"></q-icon> {{ t('add_to_map') }}</span>
+            ><q-icon name="layers"></q-icon> {{ $t('actions.addToMap') | capitalize }}</span>
       <span class="catalog-result-title">{{ result.title }}</span>
       <span class="catalog-result-description">{{ result.description }}</span>
     </div>
@@ -23,12 +23,6 @@ export default {
     }
   },
   methods: {
-    addToMap () {
-      console.log('Add To Map!!!')
-    },
-    t (key) {
-      return this.$t('tools.catalog.' + key)
-    },
     viewResult () {
       if (!this.isResultClickable) {
         console.log('Result is not clickable')

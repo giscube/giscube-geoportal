@@ -16,13 +16,13 @@
       <div class="row reverse">
         <q-btn flat stretch no-caps
           icon="zoom_in"
-          label="Zoom to data"
+          :label="$t('actions.zoomToData')"
           @click="zoomResult"
         />
 
         <q-btn flat stretch no-caps
           icon="layers"
-          label="Add to map"
+          :label="$t('actions.addToMap') | capitalize"
           @click="viewResult"
         />
       </div>

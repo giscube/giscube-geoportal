@@ -23,17 +23,17 @@
       <q-card-actions>
         <q-btn
           v-show="!disable && !readonly"
-          :label="$t('delete')"
+          :label="$t('actions.delete')"
           @click="onDelete"
         />
         <q-space />
         <q-btn
-          :label="!disable && !readonly && hasResult ? $t('cancel') : $t('ok')"
+          :label="!disable && !readonly && hasResult ? $t('actions.cancel') : $t('actions.accept')"
           @click="onCancel"
         />
         <q-btn
           v-show="!disable && !readonly && hasResult && !allDeleted"
-          :label="$t('apply')"
+          :label="$t('actions.apply')"
           @click="onCommit"
         />
       </q-card-actions>
