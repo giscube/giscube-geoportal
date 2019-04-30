@@ -35,6 +35,9 @@ export default {
   computed: {
     fields () {
       return this.$store.getters['dataLayer/formFields']
+    },
+    renderableFields () {
+      return this.$store.getters['dataLayer/renderableFormFields']
     }
   },
   watch: {
@@ -76,7 +79,7 @@ export default {
         const { field, value } = this.callbacks.shift()
         field.setValue({ properties: this.aggregatedProperties, value })
         this.fields.forEach(f => {
-          f.onUpdate(
+          f.onUpdate && f.onUpdate(
             field,
             value,
             this.aggregatedProperties,
@@ -96,7 +99,7 @@ export default {
       return
     }
 
-    return createElement('div', {}, this.fields.map(field => {
+    return createElement('div', {}, this.renderableFields.map(field => {
       const config = {
         props: {
           properties: this.aggregatedProperties,

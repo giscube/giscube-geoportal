@@ -108,9 +108,10 @@ export default class Field {
     return DefaultWidget
   }
 
-  onUpdate (updatedField, value, properties, callback) {
-    // Do nothing
-  }
+  // Defining onUpdate make the field logic on edits.
+  // Don't do it if you don't need it.
+
+  // onUpdate (field, value, properties, callback) {}
 
   rules (t) {
     return [
