@@ -7,7 +7,7 @@ export default {
       timeout: 10000,
       ...config
     }
-    const url = editSource.url + `layerserver/databaselayers/${layer.slug}/`
+    const url = editSource.url + `layerserver/databaselayers/${layer.name}/`
     const request = axios.get(url, conf)
     return throwUnhandledExceptions(request)
   },
@@ -21,7 +21,7 @@ export default {
     return throwUnhandledExceptions(request)
   },
   getData ({ source, layer, pagination, filter, colFilters, extraParams }, config) {
-    const url = source.url + `layerserver/databaselayers/${layer.slug}/data/`
+    const url = source.url + `layerserver/databaselayers/${layer.name}/data/`
     const params = {
       page: pagination.page,
       page_size: pagination.rowsPerPage,
@@ -54,7 +54,7 @@ export default {
     if (nChanges === 0) {
       return
     }
-    const url = target.source.url + `layerserver/databaselayers/${target.layer.slug}/bulk/`
+    const url = target.source.url + `layerserver/databaselayers/${target.layer.name}/bulk/`
     const conf = {
       timeout: 10000,
       ...config
