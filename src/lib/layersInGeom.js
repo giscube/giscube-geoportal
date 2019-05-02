@@ -19,10 +19,12 @@ function eachPoint (layer, callback) {
     layer.getLatLngs()[0].forEach(cb)
   } else if (layer instanceof L.Polyline) {
     layer.getLatLngs().forEach(cb)
-  } else if (layer instanceof L.CircleMarker) {
+  } else if (layer instanceof L.Marker || layer instanceof L.CircleMarker) {
     cb(layer.getLatLng())
   } else if (layer instanceof L.LatLng) {
     cb(layer)
+  } else {
+    console.warn('[lib/layersInGeom] Unsupported geom type')
   }
 }
 
