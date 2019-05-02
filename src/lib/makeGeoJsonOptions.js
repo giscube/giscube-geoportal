@@ -104,10 +104,18 @@ export function makeTemplate (t) {
 export default function makeGeoJsonOptions ({ style, styleRules, design }, { parent, map, popup = {}, afterEachSelect, modStyle } = {}) {
   /* popup = { componenet, propsData, onEachPopup, openCondition } */
 
-  const isMarker = (style.shapetype === 'marker')
+  const isMarker = (style.shapetype.toLowerCase() === 'marker')
+  const isImage = (style.shapetype.toLowerCase() === 'image')
+
+  const images = {}
+  images.getOrCreate = src => {
+    return images[src] || (images[src] = IconsGenerator.imgIcon(src))
+  }
 
   let rules
-  if (isMarker) {
+  if (isImage) {
+    rules = makeRules(styleRules, style, style => images.getOrCreate(style.icon))
+  } else if (isMarker) {
     const base = {
       icon_type: style.icon_type === 'img' ? 'img' : 'preset',
       marker_color: style.marker_color || 'blue',
@@ -159,10 +167,16 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
         configurable: true,
         enumerable: false,
         writable: false,
-        value: isMarker && IconsGenerator.icon({
-          ...rules.getResult(feature),
-          status: feature.status
-        })
+        value: (_ => {
+          if (isImage) {
+            return rules.getResult(feature)
+          } else if (isMarker) {
+            return IconsGenerator.icon({
+              ...rules.getResult(feature),
+              status: feature.status
+            })
+          }
+        })()
       },
 
       _content: {
@@ -197,7 +211,7 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
               closeOnClick: true,
               closeOnEscapeKey: true
             }
-            if (this._icon) {
+            if (isMarker) {
               popupConfig.offset = [
                 0,
                 -(this._icon.options.props.size * 1.2615068493150685 - 5) // size * (anchorRatio - (1-iconRatio)/2) - 5
@@ -217,7 +231,7 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
         enumerable: false,
         get () {
           return layer => {
-            if (isMarker) {
+            if (isImage || isMarker) {
               layer.setIcon(this._icon)
             }
 
@@ -251,7 +265,7 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
     }
   }
 
-  if (isMarker) {
+  if (isImage || isMarker) {
     // Set result properties
     result.pointToLayer = (_, latlng) => L.marker(latlng)
   } else {
