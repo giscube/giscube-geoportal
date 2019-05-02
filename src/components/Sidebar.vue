@@ -48,8 +48,8 @@ export default {
     }
   },
   computed: {
-    mapSize () {
-      return this.$store.state.layout.mapSize
+    layoutSize () {
+      return this.$store.state.layout.size
     },
     width: {
       get: function () {
@@ -61,15 +61,15 @@ export default {
     },
     sidebarVisible: {
       get: function () {
-        return this.$store.state.sidebarVisible
+        return this.$store.state.layout.sidebarVisible
       },
       set: function (newValue) {
-        this.$store.commit('setSidebarVisible', newValue)
+        this.$store.commit('layout/setSidebarVisible', newValue)
       }
     }
   },
   watch: {
-    'mapSize': 'onResize',
+    'layoutSize': 'onResize',
     'map': 'mapChanged'
   },
   mounted () {
@@ -80,11 +80,6 @@ export default {
     document.documentElement.addEventListener('touchmove', this.onToggleWidthMousemove, true)
     document.documentElement.addEventListener('touchend', this.onToggleWidthMouseup, true)
     document.documentElement.addEventListener('touchcancel', this.onToggleWidthMouseup, true)
-
-    this.$nextTick(() => {
-      this.onResize()
-      this.$store.commit('setSidebarVisible', true)
-    })
   },
   beforeDestroy () {
     document.documentElement.removeEventListener('mousemove', this.onToggleWidthMousemove)
@@ -129,14 +124,14 @@ export default {
       let width
       let widthPercentage = this.widthPercentage
       let rightMargin = 150
-      if (this.mapSize) {
-        if (this.mapSize.width < 600) {
+      if (this.layoutSize) {
+        if (this.layoutSize.width < 600) {
           // sidebar breakpoint set at 600px
           widthPercentage = 95
           rightMargin = 25
         }
-        width = this.mapSize.width * widthPercentage / 100
-        width = Math.min(this.mapSize.width - rightMargin, width)
+        width = this.layoutSize.width * widthPercentage / 100
+        width = Math.min(this.layoutSize.width - rightMargin, width)
         width = Math.max(300, width)
       } else {
         width = 300
@@ -145,7 +140,7 @@ export default {
       this.width = width
     },
     onToggleClick () {
-      this.$store.commit('setSidebarVisible', !this.sidebarVisible)
+      this.$store.commit('layout/setSidebarVisible', !this.sidebarVisible)
     },
     onToggleWidthClick () {
       if (this.resized) {
@@ -182,7 +177,7 @@ export default {
       } else {
         this.resized = true
       }
-      const widthPercentage = (mouseX - this.resizeDiff) / this.mapSize.width * 100
+      const widthPercentage = (mouseX - this.resizeDiff) / this.layoutSize.width * 100
       this.widthPercentage = Math.min(90, Math.max(30, widthPercentage))
       this.onResize()
     },

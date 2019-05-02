@@ -27,21 +27,20 @@
         @done="printDone"
     />
 
+    <Sidebar ref="sidebar"
+      :map='map'
+      :visible="$store.state.layout.sidebarVisible"
+      :geoportalMap="$refs.map"
+      @visibility-changed="onVisibilityChanged"
+      @search-start="onSearchStart"
+      class="sidebar-left"
+    />
+
     <q-page-container class="max-height">
       <!-- GeoportalMap -->
       <component :is="$config.layout.geoportalMap"
         ref="map" @map-ready="onMapReady"
       />
-
-      <Sidebar ref="sidebar"
-        :map='map'
-        :visible="$store.state.sidebarVisible"
-        :geoportalMap="$refs.map"
-        @visibility-changed="onVisibilityChanged"
-        @search-start="onSearchStart"
-        class="sidebar-left"
-      />
-
     </q-page-container>
 
    <AppFooter v-if="false" ref="footer" />
@@ -81,6 +80,7 @@ export default {
     this.$nextTick(() => {
       const { width, height } = this.$refs.layout
       this.$store.commit('layout/size', { width, height })
+      this.$store.commit('layout/setSidebarVisible', true)
     })
   },
   methods: {
@@ -93,11 +93,11 @@ export default {
       this.map = map
     },
     onSearchStart (q) {
-      this.$store.commit('setSidebarVisible', true)
+      this.$store.commit('layout/setSidebarVisible', true)
       this.$router.push('/search/' + q + '/')
     },
     onVisibilityChanged (visible) {
-      this.$store.commit('setSidebarVisible', visible)
+      this.$store.commit('layout/setSidebarVisible', visible)
     },
     print () {
       this.printPreview = true

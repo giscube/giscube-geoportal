@@ -15,7 +15,6 @@
 
     <icons-generator />
 
-    <q-resize-observer @resize="onResize" />
   </q-page>
 </template>
 
@@ -146,9 +145,6 @@ export default {
         this.$store.commit('map/mapObject', this.map)
         this.$emit('map-ready', this.map)
       })
-    },
-    onResize (size) {
-      this.$store.commit('layout/setMapSize', size)
     },
     setMapWidth (width) {
       this.containerStyle.width = width
