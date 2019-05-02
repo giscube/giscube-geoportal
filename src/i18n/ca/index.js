@@ -1,7 +1,7 @@
 export default {
   actions: {
     accept: 'entesos',
-    addToMap: 'afageix al mapa',
+    addToMap: 'afegeix al mapa',
     apply: 'aplica',
     cancel: 'cancel·la',
     delete: 'elimina',
