@@ -7,7 +7,7 @@ export function bbox (state, getters, rootState, rootGetters) {
 
   return () => {
     const sidebarOverlaying = rootGetters['layout/drawersOverlaying']
-    const sidebarVisible = rootState.sidebarVisible
+    const sidebarVisible = rootState.layout.sidebarVisible
     const visibility = sidebarOverlaying || !sidebarVisible ? {} : {
       left: rootState.layout.leftDrawerSize,
       width: rootState.layout.size.width

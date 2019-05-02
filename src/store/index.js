@@ -30,7 +30,6 @@ export default function (/* { ssrContext } */) {
       result: null,
       resultsLayer: null,
       autoselectResult: false,
-      sidebarVisible: false,
       query: null
     },
     mutations: {
@@ -45,9 +44,6 @@ export default function (/* { ssrContext } */) {
       },
       setQuery: (state, query) => {
         state.query = query
-      },
-      setSidebarVisible: (state, value) => {
-        state.sidebarVisible = value
       },
       selectResult: (state, result) => {
         state.result = result

@@ -1,8 +1,8 @@
 export default {
   size: null,
-  mapSize: null,
   drawerBreakpoint: 600,
   drawerOverlay: true,
   drawerBehavior: 'default',
-  leftDrawerSize: 300
+  leftDrawerSize: 0,
+  sidebarVisible: false
 }

@@ -153,7 +153,7 @@ export default {
       return this.$store.state.layout.leftDrawerSize
     },
     sidebarVisible () {
-      return this.$store.state.sidebarVisible
+      return this.$store.state.layout.sidebarVisible
     },
     currentLayer () {
       return this.$store.state.dataLayer.current
