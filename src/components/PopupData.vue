@@ -37,7 +37,7 @@ export default {
           })
           return this.renderContents(values)
         } else {
-          return this.renderContents(this.feature.properties)
+          return this.renderContents({ ...this.feature.properties, obj: this.feature })
         }
       } catch (e) {
         console.error('Bad popup template\'s configuration')
