@@ -256,7 +256,7 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
     result.pointToLayer = (_, latlng) => L.marker(latlng)
   } else {
     // Set result properties
-    result.pointToLayer = (_, latlng) => L.circleMarker(latlng)
+    result.pointToLayer = (_, latlng) => L.circleMarker(latlng, { bubblingMouseEvents: false })
     result.style = feature => transform(modStyle, rules.getResult(feature), feature)
   }
 
