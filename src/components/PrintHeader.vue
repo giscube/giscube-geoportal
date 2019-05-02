@@ -1,6 +1,6 @@
 <template>
   <q-header class="giscube-header">
-    <q-toolbar class="giscube-toolbar-buttons">
+    <q-toolbar class="giscube-toolbar">
 
       <a class="giscube-header-brand header" href="#"><img :src="brandLogo"><span>{{ brandText }}</span></a>
 

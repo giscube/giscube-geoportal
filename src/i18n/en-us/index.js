@@ -3,10 +3,13 @@ export default {
     accept: 'OK',
     addToMap: 'add to map',
     apply: 'apply',
+    close: 'close',
     cancel: 'cancel',
     delete: 'delete',
     discard: 'discard',
+    previous: 'previous',
     print: 'print',
+    next: 'next',
     save: 'save',
     zoom: 'zoom',
     zoomToData: 'zoom to data'
@@ -80,7 +83,15 @@ export default {
       undoConfirm: 'Are you sure you want to undo the changes in this element?'
     },
     fullscreen: { headerName: 'Fullscreen' },
-    home: { headerName: 'Home' },
+    help: {
+      headerName: 'Help',
+      title: 'Help',
+
+      start: 'Start tour'
+    },
+    home: {
+      headerName: 'Home'
+    },
     measure: {
       headerName: 'Measure',
       title: 'Measure',
@@ -94,7 +105,7 @@ export default {
     search: {
       headerName: 'Search',
 
-      help: 'Please type something to search',
+      instructions: 'Please type something to search',
       noResults: 'No matches found',
       results: 'Results for {q}',
       resultsError: 'Error retrieving results',

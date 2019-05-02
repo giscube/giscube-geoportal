@@ -5,7 +5,7 @@
 
     <div class="panel-content">
 
-      <p v-if="!q">{{ t('help') }}</p>
+      <p v-if="!q">{{ t('instructions') }}</p>
 
       <p v-if="q" class="panel-title">{{ t('results', { q }) }}
         <q-spinner v-if="searching" />
