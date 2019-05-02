@@ -15,6 +15,7 @@ import SearchBar from 'components/SearchBar'
 import SearchPanel from 'components/SearchPanel'
 import QueryOnClick from 'components/QueryOnClick'
 import LayersControl from 'components/LayersControl'
+import HelpPanel from 'components/HelpPanel'
 import StreetViewPanel from 'components/StreetViewPanel'
 import store from './store/index.js'
 import config from './config.js'
@@ -39,6 +40,7 @@ export {
   SearchPanel,
   QueryOnClick,
   LayersControl,
+  HelpPanel,
   StreetViewPanel,
   store,
   config,

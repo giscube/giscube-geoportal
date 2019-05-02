@@ -4,9 +4,12 @@ export default {
     addToMap: 'afegeix al mapa',
     apply: 'aplica',
     cancel: 'cancel·la',
+    close: 'tanca',
     delete: 'elimina',
     discard: 'descarta',
+    previous: 'anterior',
     print: 'imprimeix',
+    next: 'següent',
     save: 'guarda',
     zoom: 'fes zoom',
     zoomToData: 'fes zoom a les dades'
@@ -48,10 +51,14 @@ export default {
     catalog: {
       headerName: 'Catàleg',
       title: 'Catàleg',
+      help: 'Veure els conjunts de dades organitzats per categories.',
 
       noItems: 'No s\'han trobat element en aquesta categoria'
     },
-    contact: { headerName: 'Contacte' },
+    contact: {
+      headerName: 'Contacte',
+      help: 'Dades de contacte per si trobeu algun error o problema.'
+    },
     data: {
       headerName: 'Dades',
       title: 'Capa de dades',
@@ -80,21 +87,35 @@ export default {
       undoConfirm: 'Segur que voleu desfer els canvis d\'aquest element?'
     },
     fullscreen: { headerName: 'Pantalla complerta' },
-    home: { headerName: 'Inici' },
+    help: {
+      headerName: 'Ajuda',
+      title: 'Ajuda',
+
+      start: 'Començar l\'itinerari d\'ajuda'
+    },
+    home: {
+      headerName: 'Inici',
+      help: 'Recupera la vista inicial.'
+    },
     measure: {
       headerName: 'Mesurar',
       title: 'Mesurar',
+      help: 'Mesurar distàncies i àrees',
 
       area: 'Àrea',
       explanation: 'Escolliu tipus de mesura, i seguidament cliqueu el mapa. Podeu fer doble clic per acabar la mesura.',
       path: 'Línia',
       stop: 'Parar de mesurar'
     },
-    print: { headerName: 'Impressió' },
+    print: {
+      headerName: 'Impressió',
+      help: 'Impressió del mapa'
+    },
     search: {
       headerName: 'Cerca',
+      help: 'Feu servir la barra de cerca per trobar ràpidament el que busqueu.',
 
-      help: 'Si us plau, escriviu quelcom per cercar',
+      instructions: 'Si us plau, escriviu quelcom per cercar',
       noResults: 'No s\'ha trobat cap resultat',
       results: 'Resultats per a {q}',
       resultsError: 'Error al cercar',
@@ -102,7 +123,8 @@ export default {
     },
     streetview: {
       headerName: 'Street View',
-      title: 'Google Street View'
+      title: 'Google Street View',
+      help: 'Accedir a la vista de carrer de Google'
     }
   },
   units: {

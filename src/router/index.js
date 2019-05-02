@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import CatalogPanel from 'components/CatalogPanel'
 import ContactPanel from 'components/ContactPanel'
+import HelpPanel from 'components/HelpPanel'
 import HomePanel from 'components/HomePanel'
 import AuthPanel from 'components/AuthPanel'
 import MeasurePanel from 'components/MeasurePanel'
@@ -23,6 +24,7 @@ const routes = [
       { path: 'contact/', component: ContactPanel, name: 'contact' },
       { path: 'data/:sourceName?/:layerName?/', component: DataPanel, name: 'data' },
       { path: 'geoportal/:q/', component: GeoportalPanel },
+      { path: 'help/', component: HelpPanel, name: 'help' },
       { path: 'home/', component: HomePanel, name: 'home' },
       { path: 'measure/', component: MeasurePanel, name: 'measure' },
       { path: 'place/:q*', component: PlacePanel, name: 'place' },
