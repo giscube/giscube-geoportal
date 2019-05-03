@@ -271,6 +271,12 @@ aside.q-drawer--left {
   }
 }
 
+.panel {
+  a {
+    text-decoration: none;
+    color: #0078a8;
+  }
+}
 .panel-content {
     padding: 15px 20px 15px 20px;
 }
