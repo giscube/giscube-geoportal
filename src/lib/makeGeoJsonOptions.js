@@ -160,6 +160,7 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
   } else {
     rules = makeRules(styleRules, style, style => {
       return {
+        bubblingMouseEvents: false,
         weight: style.stroke_width,
         color: style.stroke_color,
         opacity: 1,
