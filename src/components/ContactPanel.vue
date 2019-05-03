@@ -1,5 +1,5 @@
 <template>
-  <div class="panel">
+  <div class="panel contact-panel">
 
     <div class="panel-content">
 
@@ -27,22 +27,10 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h1, h2 {
-  font-weight: normal;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-.contact-title {
-  font-weight: bold;
+<style lang="scss">
+.contact-panel {
+  .contact-title {
+    font-weight: bold;
+  }
 }
 </style>
