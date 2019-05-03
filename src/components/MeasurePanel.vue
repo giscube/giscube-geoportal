@@ -7,23 +7,23 @@
       <p>{{ t('explanation') }}</p>
 
       <q-btn
-        flat
+        outline
+        icon="timeline"
         v-show="!measuring"
-        color="primary"
         @click="startMeasuring(false)"
         :label="t('path')"
       />
       <q-btn
-        flat
+        outline
+        icon="fas fa-draw-polygon"
         v-show="!measuring"
-        color="primary"
         @click="startMeasuring(true)"
         :label="t('area')"
+        class="q-ml-md"
       />
       <q-btn
+        outline
         v-show="measuring"
-        flat
-        color="primary"
         @click="stopMapMeasuring"
       >{{ t('stop') }}</q-btn>
 
