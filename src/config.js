@@ -18,7 +18,6 @@ export default new Options({
     /* components: { */
     header: require('components/AppHeader.vue').default,
     geoportalMap: require('components/GeoportalMap.vue').default,
-    printHeader: require('components/PrintHeader.vue').default,
 
     headerToolbar: [
       'home',
@@ -32,9 +31,21 @@ export default new Options({
       '----------',
       'fullscreen',
       'auth'
+    ],
+    printHeaderToolbar: [
+      'cancelPrint',
+      'printPage',
+      '-----------',
+      'printDate'
     ]
   },
   tools: {
+    cancelPrint: {
+      icon: 'cancel',
+      action () {
+        this.$store.dispatch('layout/setPrinting', false)
+      }
+    },
     catalog: {
       icon: 'ion-compass',
       to: 'catalog'
@@ -74,7 +85,22 @@ export default new Options({
     },
     print: {
       icon: 'print',
-      emit: 'print'
+      action () {
+        this.$store.dispatch('layout/setPrinting', true)
+      }
+    },
+    printDate: {
+      headerComponent: require('components/PrintDate.vue').default,
+      print: true
+    },
+    printPage: {
+      icon: 'print',
+      action () {
+        this.$nextTick(() => {
+          window.print()
+          this.$store.dispatch('layout/setPrinting', false)
+        })
+      }
     },
     search: {
       icon: 'search',

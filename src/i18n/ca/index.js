@@ -48,6 +48,7 @@ export default {
       pleaseLogin: 'Si us plau cliqueu el següent botó per autenticar-vos.',
       username: 'Usuari'
     },
+    cancelPrint: { headerName: 'Cancel·la' },
     catalog: {
       headerName: 'Catàleg',
       title: 'Catàleg',
@@ -111,6 +112,7 @@ export default {
       headerName: 'Impressió',
       help: 'Impressió del mapa'
     },
+    printPage: { headerName: 'Imprimeix' },
     search: {
       headerName: 'Cerca',
       help: 'Feu servir la barra de cerca per trobar ràpidament el que busqueu.',

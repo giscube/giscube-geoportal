@@ -9,3 +9,7 @@ export function setSidebarVisible (state, value) {
 export function size (state, value) {
   state.size = value
 }
+
+export function printing (state, value) {
+  state.printing = value
+}

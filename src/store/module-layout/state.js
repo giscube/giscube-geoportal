@@ -4,5 +4,6 @@ export default {
   drawerOverlay: true,
   drawerBehavior: 'default',
   leftDrawerSize: 0,
-  sidebarVisible: false
+  sidebarVisible: false,
+  printing: false
 }
