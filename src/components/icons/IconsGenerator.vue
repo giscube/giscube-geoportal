@@ -9,7 +9,6 @@
 <script>
 import Vue from 'vue'
 import L from '../../lib/leaflet'
-import { escapeHtml } from '../../lib/utils'
 import MarkerClass from './Marker'
 
 const Marker = Vue.extend(MarkerClass)
@@ -88,31 +87,12 @@ export default {
       }
     })
   },
-  imgIcon (src) {
-    return L.divIcon({
-      html: `<img src="${escapeHtml(src)}" />`,
-      className: 'imgMarkerContainer'
+  imgIcon (style) {
+    return L.icon({
+      iconUrl: style.icon,
+      iconSize: style.sizes,
+      iconAnchor: style.sizes.map(x => x / 2)
     })
   }
 }
 </script>
-
-<style>
-.imgMarkerContainer {
-  display: hidden;
-  position: relative;
-  width: 0 !important;
-  height: 0 !important;
-  margin: 0 !important;
-  overflow: visible;
-}
-
-.imgMarkerContainer > * {
-  position: absolute;
-  top: -1000vh;
-  bottom: -1000vh;
-  left: -1000vw;
-  right: -1000vw;
-  margin: auto;
-}
-</style>

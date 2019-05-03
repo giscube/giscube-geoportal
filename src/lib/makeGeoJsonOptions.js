@@ -112,20 +112,34 @@ export function makeTemplate (t) {
   }
 }
 
+function toNumber (value, d) {
+  try {
+    value = parseFloat(value)
+    if (!isNaN(value)) {
+      return value
+    }
+  } catch (e) {}
+
+  return d
+}
+
 export default function makeGeoJsonOptions ({ style, styleRules, design }, { parent, map, popup = {}, afterEachSelect, modStyle } = {}) {
   /* popup = { componenet, propsData, onEachPopup, openCondition } */
 
   const isMarker = (style.shapetype.toLowerCase() === 'marker')
   const isImage = (style.shapetype.toLowerCase() === 'image')
 
-  const images = {}
-  images.getOrCreate = src => {
-    return images[src] || (images[src] = IconsGenerator.imgIcon(src))
-  }
-
   let rules
   if (isImage) {
-    rules = makeRules(styleRules, style)
+    let { size, width, height } = style
+    size = toNumber(size, 32)
+    width = toNumber(width, size)
+    height = toNumber(height, size)
+
+    rules = makeRules(styleRules, {
+      icon: style.icon,
+      sizes: [width, height]
+    })
   } else if (isMarker) {
     const base = {
       icon_type: style.icon_type === 'img' ? 'img' : 'preset',
@@ -180,9 +194,7 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
         writable: false,
         value: (_ => {
           if (isImage) {
-            return images.getOrCreate(
-              rules.getResult(feature).icon
-            )
+            return IconsGenerator.imgIcon(rules.getResult(feature))
           } else if (isMarker) {
             return IconsGenerator.icon({
               ...rules.getResult(feature),
