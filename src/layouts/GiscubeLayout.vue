@@ -2,30 +2,17 @@
   <q-layout view="hHh lpR fFf"
     ref="layout"
     class="max-height"
-    :class="appClasses"
     @resize="$store.commit('layout/size', $event)"
   >
     <!-- AppHeader -->
     <component :is="$config.layout.header"
-        v-if="!printPreview"
         ref="header"
         :brand-logo="$config.branding.header.logo"
         :brand-text="$config.branding.header.text"
         @home='navHome'
-        @print="print"
         @sidebar-visibility-changed="onVisibilityChanged"
         @right="right = !right"
         />
-
-    <!-- PrintHeader -->
-    <component :is="$config.layout.printHeader"
-        v-if="printPreview"
-        ref="printheader"
-        :brand-logo="$config.branding.header.logo"
-        :brand-text="$config.branding.header.text"
-        :map="$refs.map"
-        @done="printDone"
-    />
 
     <Sidebar ref="sidebar"
       :map='map'
@@ -52,7 +39,6 @@
 import L from '../lib/leaflet'
 import AppFooter from 'components/AppFooter'
 import GeoportalMap from 'components/GeoportalMap'
-import PrintHeader from 'components/PrintHeader'
 import Sidebar from 'components/Sidebar'
 
 export default {
@@ -60,17 +46,12 @@ export default {
   components: {
     AppFooter,
     GeoportalMap,
-    PrintHeader,
     Sidebar
   },
   data () {
     return {
-      appClasses: {
-        printpreview: false
-      },
       leftDrawerOpen: this.$q.platform.is.desktop,
       map: null,
-      printPreview: false,
       right: false,
       left: true,
       width: 300
@@ -98,21 +79,7 @@ export default {
     },
     onVisibilityChanged (visible) {
       this.$store.commit('layout/setSidebarVisible', visible)
-    },
-    print () {
-      this.printPreview = true
-      this.appClasses.printpreview = true
-    },
-    printDone () {
-      this.printPreview = false
-      this.appClasses.printpreview = false
     }
   }
 }
 </script>
-
-<style lang="scss">
-.print {
-  display: none;
-}
-</style>

@@ -5,7 +5,7 @@
 </template>
 
 <script>
-require('./assets/print.css')
+require('./css/print.styl')
 
 export default {
   name: 'App'

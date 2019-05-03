@@ -13,8 +13,8 @@
         @event="emit"
       />
 
-      <q-space class="lt-sm" />
-      <q-btn flat icon="menu" class="lt-sm">
+      <q-space class="lt-sm" v-if="!printing" />
+      <q-btn flat icon="menu" class="lt-sm" v-if="!printing">
         <q-menu>
           <q-list>
             <header-item-holder
@@ -29,6 +29,19 @@
           </q-list>
         </q-menu>
       </q-btn>
+
+      <!-- Print tools -->
+      <header-item-holder
+        v-for="(item, i) in printHeaderTools"
+        :key="'header-tools-' + item.name + '-' + i"
+        class="gt-xs"
+        :class="{
+            ['header-tools-' + item.name]: true,
+            print: item.tool && item.tool.print
+        }"
+        :item="item"
+        @event="emit"
+      />
 
     </q-toolbar>
 
@@ -48,35 +61,22 @@ export default {
     HeaderItemHolder,
     QHeader
   },
+  data () {
+    return {}
+  },
   computed: {
+    printing () {
+      return this.$store.state.layout.printing
+    },
     q () {
       return this.$store.state.searchQ
     },
     headerTools () {
-      const tools = this.$config.tools
-      let addSeparator = true
-      const r = []
-      this.$config.layout.headerToolbar.forEach((toolName, i) => {
-        if (toolName.startsWith('-')) {
-          r.push({ spacer: true, name: 'spacer-' + i })
-          addSeparator = false // skip next separator
-        } else {
-          if (addSeparator) {
-            r.push({ separator: true, name: 'separator-' + i })
-          } else {
-            // only skip a single one
-            addSeparator = true
-          }
-
-          r.push({ name: toolName, tool: tools[toolName] })
-        }
-      })
-
-      return r
+      return !this.printing ? this.generateToolsFromList(this.$config.layout.headerToolbar) : []
+    },
+    printHeaderTools () {
+      return this.printing ? this.generateToolsFromList(this.$config.layout.printHeaderToolbar, { separators: false }) : []
     }
-  },
-  data () {
-    return {}
   },
   methods: {
     emit (event) {
@@ -89,6 +89,28 @@ export default {
       } else {
         this.$router.push({ name: 'search' })
       }
+    },
+    generateToolsFromList (list, { separators = true } = {}) {
+      const tools = this.$config.tools
+      let addSeparator = separators
+      const r = []
+      list.forEach((toolName, i) => {
+        if (toolName.startsWith('-')) {
+          r.push({ spacer: true, name: 'spacer-' + i })
+          addSeparator = false // skip next separator
+        } else {
+          if (addSeparator) {
+            r.push({ separator: true, name: 'separator-' + i })
+          } else {
+            // only skip a single one
+            addSeparator = separators
+          }
+
+          r.push({ name: toolName, tool: tools[toolName] })
+        }
+      })
+
+      return r
     }
   }
 }

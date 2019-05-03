@@ -48,6 +48,7 @@ export default {
       pleaseLogin: 'Please use the button below to authenticate.',
       username: 'Username'
     },
+    cancelPrint: { headerName: 'Cancel' },
     catalog: {
       headerName: 'Catalog',
       title: 'Catalog',
@@ -102,6 +103,7 @@ export default {
       stop: 'Stop measuring'
     },
     print: { headerName: 'Print' },
+    printPage: { headerName: 'Print' },
     search: {
       headerName: 'Search',
 

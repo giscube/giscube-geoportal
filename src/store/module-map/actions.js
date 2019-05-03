@@ -4,6 +4,10 @@ import makeGeoJsonOptions from '../../lib/makeGeoJsonOptions'
 
 import FeaturePopup from '../../components/FeaturePopup'
 
+export function invalidateSize (context) {
+  context.state.mapObject.invalidateSize()
+}
+
 export function stopDrawing (context) {
   if (context.state.mapObject.editTools.drawing()) {
     context.state.mapObject.editTools.stopDrawing()

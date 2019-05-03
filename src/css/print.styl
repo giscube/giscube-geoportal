@@ -1,0 +1,146 @@
+// Helper sizes
+$A3 = {
+  s: 297mm
+  l: 420mm
+}
+$A4 = {
+  s: 210mm
+  l: 297mm
+}
+
+// Page configuration
+$page = {
+  w: $A4.l
+  h: $A4.s
+  s: ($A4.l $A4.s)
+}
+$margins = {
+  top: 5mm
+  right: s = 10mm
+  bottom: s
+  left: s
+}
+$header = {
+  h: 20mm
+}
+$font-size = 2.5mm
+$border-size = 1mm
+$border-color = #BBB
+
+// To remove
+noprint = '.no-print'
+tools = '.print-tool' '.leaflet-control:not(.leaflet-control-attribution):not(.leaflet-control-scale)' '.search-bar' '.sidebar-close'
+
+
+// Internal
+$body = {
+  w: (($page.w - $margins.right) - $margins.left)
+  h: (($page.h - $margins.top) - $margins.bottom)
+}
+
+printing()
+  @page
+    size: $page.s
+    margin: 0
+
+  for s in noprint
+    {selector(s)}
+      display: none !important
+
+  body *
+    max-width: $body.w
+    max-height: $body.h
+
+  html
+    min-width: unset !important
+    min-height: unset !important
+    width: 100vw !important
+    height: 100vh !important
+    margin: 0
+
+  body
+    min-width: unset !important
+    min-height: unset !important
+    width: $page.w !important
+    height: $page.h !important
+    margin: auto
+    overflow: hidden !important
+    font-size: $font-size
+    padding: ($margins.top 0 0 $margins.left)
+    box-shadow: 0px 0px 0px 10000vmax #3f3f3f
+
+  #q-app
+    margin: 0
+    width: $body.w !important
+    min-width: unset !important
+    height: $body.h !important
+    min-height: unset !important
+    overflow: hidden !important
+
+
+  .q-header
+  .q-drawer-container > aside
+    position: absolute
+
+  .q-header
+    min-height: $header.h !important
+    height: $header.h !important
+    max-height: $header.h !important
+
+    &> .q-toolbar
+      background-color: white
+      min-height: $header.h !important
+      height: $header.h !important
+      max-height: $header.h !important
+
+  .q-drawer-container > aside
+  .q-page-container > main
+    h = ($body.h - $header.h)
+    min-height: h !important
+    height: h !important
+    max-height: h !important
+
+  .q-page-container > main
+    border: solid $border-size $border-color
+
+  .q-drawer-container
+    &> aside
+      border: solid $border-size transparent
+      border-right: none
+    .q-drawer__content
+      background-color: white
+
+  @-moz-document url-prefix()
+    .q-drawer-container
+      &> aside
+        border-right: solid ($border-size / 2) $border-color !important
+      .q-layout__shadow::after
+        content: none
+
+
+actualPrinting()
+  for s in tools
+    {selector(s)}
+      display: none !important
+
+  html, body
+    width: 100vw !important
+    height: 100vh !important
+    max-width: 100vw !important
+    max-height: 100vh !important
+
+  body
+    box-shadow: none !important
+
+  .q-header > .q-toolbar > :not(.giscube-header-brand):not(.q-space):not(.print)
+        display: none
+
+@media print
+    printing()
+    actualPrinting()
+
+:root[data-print]
+  printing()
+
+  &[data-debug-print="true"]
+    actualPrinting()
