@@ -23,6 +23,11 @@ export default {
       return this.$store.state.searchQ
     }
   },
+  mounted () {
+    this.$nextTick(() => {
+      this.$refs.search_input.focus()
+    })
+  },
   methods: {
     t (key, ...args) {
       return this.$t('tools.search.' + key, ...args)
