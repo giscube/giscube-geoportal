@@ -77,6 +77,7 @@ export default {
       findInTable: 'Cerca a la taula',
       multipleNew: 'Afegir varis elements',
       newElement: 'Nou element',
+      qDiscardChanges: 'Esteu segur de descartar tots els canvis?',
       qInvalidCommit: 'Sembla que algun valor és invalid. Voldrieu guardar igualment?',
       requiredField: 'Camp obligatori',
       stopDrawing: 'Deixar de dibuixar elements',
