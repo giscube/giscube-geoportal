@@ -8,12 +8,16 @@
 </template>
 
 <script>
+import { QBtn } from 'quasar'
 import Shepherd from 'shepherd.js'
 
 require('shepherd.js/dist/css/shepherd-theme-square-dark.css')
 
 export default {
   name: 'HelpPanel',
+  components: {
+    QBtn
+  },
   data () {
     return {
       tour: null

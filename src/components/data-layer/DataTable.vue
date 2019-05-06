@@ -88,6 +88,8 @@
 </template>
 
 <script>
+import { QBtn, QCard, QCardSection, QCheckbox, QIcon, QInput, QMenu, QTable, QTd, QTh, QTr } from 'quasar'
+
 import debounce from 'lodash/debounce.js'
 import isEqual from 'lodash/isEqual.js'
 
@@ -123,8 +125,19 @@ export default {
     polygonFilter: String
   },
   components: {
+    CustomActions,
     DataCell,
-    CustomActions
+    QBtn,
+    QCard,
+    QCardSection,
+    QCheckbox,
+    QIcon,
+    QInput,
+    QMenu,
+    QTable,
+    QTd,
+    QTh,
+    QTr
   },
   data () {
     return {

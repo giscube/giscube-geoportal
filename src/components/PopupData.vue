@@ -23,8 +23,13 @@
 </template>
 
 <script>
+import { QResizeObserver } from 'quasar'
+
 export default {
   props: ['feature', 'fields', 'renderContents'],
+  components: {
+    QResizeObserver
+  },
   computed: {
     result () {
       try {

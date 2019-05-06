@@ -36,11 +36,16 @@
 </template>
 
 <script>
+import { QDrawer, QIcon } from 'quasar'
 import L from '../lib/leaflet'
 const worldBounds = L.latLngBounds([[-90, -180], [90, 180]])
 
 export default {
   props: ['map', 'visible', 'geoportalMap'],
+  components: {
+    QDrawer,
+    QIcon
+  },
   data () {
     return {
       resizeDiff: 0,

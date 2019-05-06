@@ -51,6 +51,8 @@
 </template>
 
 <script>
+import { QField, QIcon, QImg } from 'quasar'
+
 import MultiValueMixin from '../mixins/MultiValueMixin'
 import ValidateMixin from '../mixins/ValidateMixin'
 
@@ -59,6 +61,11 @@ import { AsyncPhoto } from '../../ImageField.js'
 export default {
   props: ['value', 'field', 'readonly', 'disable'],
   mixins: [MultiValueMixin, ValidateMixin],
+  components: {
+    QField,
+    QIcon,
+    QImg
+  },
   computed: {
     values () {
       if (this.isMulti) {

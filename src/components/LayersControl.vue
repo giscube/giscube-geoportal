@@ -55,6 +55,7 @@
 </template>
 
 <script>
+import { QIcon } from 'quasar'
 import L from '../lib/leaflet'
 import { findRealParent } from 'vue2-leaflet'
 import draggable from 'vuedraggable'
@@ -64,7 +65,8 @@ import LayerItem from 'components/LayerItem.vue'
 export default {
   components: {
     draggable,
-    LayerItem
+    LayerItem,
+    QIcon
   },
   data () {
     return {

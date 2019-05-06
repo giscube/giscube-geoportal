@@ -6,7 +6,12 @@
 </template>
 
 <script>
+import { QFooter } from 'quasar'
+
 export default {
+  components: {
+    QFooter
+  },
   data () {
     return {}
   }

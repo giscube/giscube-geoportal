@@ -40,6 +40,7 @@
 </template>
 
 <script>
+import { QBtn, QChip } from 'quasar'
 import L from '../lib/leaflet'
 
 import BaseResultMixin from './BaseResultMixin.js'
@@ -47,6 +48,10 @@ import BaseResultMixin from './BaseResultMixin.js'
 export default {
   mixins: [BaseResultMixin],
   props: ['map'],
+  components: {
+    QBtn,
+    QChip
+  },
   data () {
     return {}
   },

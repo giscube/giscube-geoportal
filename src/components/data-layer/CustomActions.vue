@@ -22,6 +22,8 @@
 </template>
 
 <script>
+import { QBtn } from 'quasar'
+
 export default {
   props: {
     rowData: {
@@ -29,6 +31,9 @@ export default {
       required: true
     },
     rowIndex: null
+  },
+  components: {
+    QBtn
   },
   computed: {
     originals () {

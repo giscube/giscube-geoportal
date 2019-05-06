@@ -13,9 +13,14 @@
 </template>
 
 <script>
+import { QIcon } from 'quasar'
+
 export default {
   name: 'MeasureResultPopup',
   props: ['measure'],
+  components: {
+    QIcon
+  },
   methods: {
     _removeResult () {
       if (this.measure.layer) {

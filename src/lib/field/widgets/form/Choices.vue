@@ -15,6 +15,8 @@
 </template>
 
 <script>
+import { QSelect } from 'quasar'
+
 import MultiResult from '../../../MultiResult.js'
 import MultiValueMixin from '../mixins/MultiValueMixin'
 import ValidateMixin from '../mixins/ValidateMixin'
@@ -22,6 +24,9 @@ import ValidateMixin from '../mixins/ValidateMixin'
 export default {
   props: ['value', 'field', 'readonly', 'disable'],
   mixins: [MultiValueMixin, ValidateMixin],
+  components: {
+    QSelect
+  },
   computed: {
     options () {
       return this.field.valuesList

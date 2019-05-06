@@ -28,54 +28,9 @@ module.exports = function (ctx) {
 
     // framework: 'all', // --- includes everything; for dev only!
     framework: process.env.LIB ? 'all' : {
-      components: [
-        'QBtn',
-        'QBtnDropdown',
-        'QBtnGroup',
-        'QBtnToggle',
-        'QCard',
-        'QCardActions',
-        'QCardSection',
-        'QChip',
-        'QCheckbox',
-        'QDialog',
-        'QDrawer',
-        'QExpansionItem',
-        'QField',
-        'QFooter',
-        'QForm',
-        'QIcon',
-        'QImg',
-        'QInput',
-        'QItem',
-        'QItemLabel',
-        'QItemSection',
-        'QLayout',
-        'QList',
-        'QMarkupTable',
-        'QMenu',
-        'QPageContainer',
-        'QPage',
-        'QResizeObserver',
-        'QSelect',
-        'QSeparator',
-        'QSlider',
-        'QSpace',
-        'QSpinner',
-        'QTab',
-        'QTable',
-        'QTabs',
-        'QTd',
-        'QTh',
-        'QToolbar',
-        'QToolbarTitle',
-        'QTr'
-      ],
+      components: [/* Manually imported in each component */],
 
-      directives: [
-        'ClosePopup',
-        'Ripple'
-      ],
+      directives: [/* Manually imported in each component */],
 
       // Quasar plugins
       plugins: [

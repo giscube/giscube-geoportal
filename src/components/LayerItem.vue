@@ -45,8 +45,16 @@
 </template>
 
 <script>
+import { QBtn, QCheckbox, QIcon, QSlider } from 'quasar'
+
 export default {
   props: ['layer', 'map', 'showActions'],
+  components: {
+    QBtn,
+    QCheckbox,
+    QIcon,
+    QSlider
+  },
   data () {
     return {
       panelOpen: false,

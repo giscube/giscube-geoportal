@@ -44,11 +44,16 @@
 </template>
 
 <script>
+import { QBtn, QChip } from 'quasar'
 import Vue from 'vue'
 import MeasureResultPopup from 'components/MeasureResultPopup.vue'
 
 export default {
   props: ['map'],
+  components: {
+    QBtn,
+    QChip
+  },
   data () {
     return {
       q: '',

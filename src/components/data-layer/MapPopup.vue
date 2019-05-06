@@ -27,12 +27,16 @@
 </template>
 
 <script>
+import { QBtn, QCheckbox } from 'quasar'
+
 import PopupData from '../PopupData'
 
 export default {
   props: ['feature', 'renderContents'],
   components: {
-    PopupData
+    PopupData,
+    QBtn,
+    QCheckbox
   },
   computed: {
     fields () {

@@ -58,8 +58,14 @@
 </template>
 
 <script>
+import { QIcon, QImg } from 'quasar'
+
 export default {
   props: ['type', 'icon', 'fill', 'color', 'width', 'height', 'anchor', 'strokeColor', 'status'],
+  components: {
+    QIcon,
+    QImg
+  },
   computed: {
     statusColor () {
       if (this.status.deleted) {

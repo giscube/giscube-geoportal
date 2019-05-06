@@ -68,10 +68,21 @@
 </template>
 
 <script>
+import { QBtn, QCard, QCardSection, QDialog, QField, QMarkupTable, QSpace } from 'quasar'
+
 import MultiResult from '../../../MultiResult.js'
 
 export default {
   props: ['value', 'field', 'readonly', 'disable'],
+  components: {
+    QBtn,
+    QCard,
+    QCardSection,
+    QDialog,
+    QField,
+    QMarkupTable,
+    QSpace
+  },
   computed: {
     v () {
       if (MultiResult.is(this.value)) {
