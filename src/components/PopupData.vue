@@ -40,8 +40,8 @@ export default {
           return this.renderContents({ ...this.feature.properties, obj: this.feature })
         }
       } catch (e) {
-        console.error('Bad popup template\'s configuration')
-        console.error(e)
+        this.$except('Bad popup template\'s configuration')
+        this.$except(e)
         return e
       }
     },

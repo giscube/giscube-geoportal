@@ -90,7 +90,7 @@ export default {
           })
         })
         .catch(error => {
-          console.log(error)
+          this.$except.http(error)
           this.searchError = true
         })
     },
@@ -114,7 +114,7 @@ export default {
         })
         .catch(error => {
           Vue.delete(category, 'loading')
-          console.log(error)
+          this.$except.http(error)
         })
     },
     subcategoryChange (category) {

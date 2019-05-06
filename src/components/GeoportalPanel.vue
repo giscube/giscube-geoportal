@@ -72,7 +72,6 @@ export default {
   methods: {
     viewResult () {
       if (!this.isResultClickable) {
-        console.log('Result is not clickable')
         return
       }
 
@@ -83,7 +82,6 @@ export default {
     },
     zoomResult () {
       // FIXME: check visible, fly
-      console.log('wms bounds missing')
       this.map.flyTo(new L.LatLng(41.973, 2.775), 14)
     }
   }

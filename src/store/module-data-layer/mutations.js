@@ -10,7 +10,7 @@ export function sources (state, value) {
 
 export function current (state, value) {
   if (state.editStatus.editing) {
-    console.error('Trying to change layers while editing')
+    console.warn('Trying to change layers while editing')
     return
   }
   state.current = value

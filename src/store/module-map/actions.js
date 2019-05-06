@@ -1,4 +1,5 @@
 import axios from 'axios'
+import except from '../../lib/except'
 import L from '../../lib/leaflet'
 import makeGeoJsonOptions from '../../lib/makeGeoJsonOptions'
 
@@ -102,5 +103,5 @@ export function addLayerGeoJSON (context, { layerDescriptor, title, options }) {
       const geojson = L.geoJson(response.data, options).addTo(map)
       map.layerswitcher.addOverlay(geojson, title)
     })
-    .catch(console.error)
+    .catch(except.http)
 }

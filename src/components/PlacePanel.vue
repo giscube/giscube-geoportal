@@ -62,17 +62,17 @@ export default {
   methods: {
     isValidResult () {
       if (!this.isResultClickable) {
-        console.log('Result is not clickable')
+        // Result is not clickable
         return false
       }
 
       let element = this.result
       if (!element.geojson) {
-        console.log('Result is not Geojson')
+        // Result is not Geojson
         return false
       }
       if (!('type' in element.geojson && element.geojson['type'] === 'Feature')) {
-        console.log('Result is not Feature')
+        // Result is not Feature
         return false
       }
 
@@ -117,10 +117,10 @@ export default {
         try {
           this.map.flyTo(latLng, this.map.getZoom() > maxZoom ? maxZoom : { maxZoom: 19 })
         } catch (e) {
-          console.error(e)
+          this.$except(e)
           mapInfo = this.map.giscube.getMapInfo()
           if (!mapInfo.isViewValid) {
-            console.log('view is not valid, try to recover view')
+            // view is not valid, try to recover view
             this.map.setView(latLng, 19)
           }
         }

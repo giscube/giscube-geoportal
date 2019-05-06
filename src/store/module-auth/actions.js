@@ -66,7 +66,7 @@ export function observeAuth (context, { seconds }) {
     } else if (seconds > 0) {
       context.dispatch('observeAuth', { seconds: seconds - 1 })
     } else {
-      console.log('Gave up waiting for access token')
+      console.warn('Gave up waiting for access token')
     }
   }, 1000)
 }
@@ -97,7 +97,6 @@ export function updateUserInfo (context) {
     }
   }
 
-  console.info('Get user details from ', apiUrl)
   axios.get(apiUrl, requestConfig)
     .then(response => {
       context.commit('setUsername', response.data.username)
@@ -106,7 +105,7 @@ export function updateUserInfo (context) {
       if (error.request && error.request.status === 401) {
         context.commit('setAccessToken', null)
       } else {
-        console.log(error)
+        except.http(error)
       }
     })
 }

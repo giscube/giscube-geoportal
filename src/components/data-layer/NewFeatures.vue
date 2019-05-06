@@ -84,7 +84,7 @@ export default {
         .catch(error => {
           // `error` will be undefined if it was cancelled and thus not an actual error
           if (error) {
-            console.error(error)
+            this.$except(error)
           }
 
           // If there is an error or the person stoped editing, end the creation of new features

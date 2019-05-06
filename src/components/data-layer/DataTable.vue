@@ -383,6 +383,7 @@ export default {
           this.processLayerInfo()
           this.$nextTick(() => this.refreshDataNow())
         })
+        .catch(this.$except.http)
     },
     getRowsPerPage () {
       const layerInfo = this.$store.state.dataLayer.layerConfig.layerInfo
