@@ -49,16 +49,22 @@
 </template>
 
 <script>
-import Vue from 'vue'
 import axios from 'axios'
+import { QExpansionItem, QIcon, QItemSection, QList, QSpinner } from 'quasar'
+import Vue from 'vue'
 
 import CatalogResult from './CatalogResult.vue'
 
 export default {
-  components: {
-    CatalogResult
-  },
   props: ['map'],
+  components: {
+    CatalogResult,
+    QExpansionItem,
+    QIcon,
+    QItemSection,
+    QList,
+    QSpinner
+  },
   data () {
     return {
       q: '',

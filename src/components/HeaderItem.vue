@@ -24,6 +24,8 @@
 </template>
 
 <script>
+import { ClosePopup, QBtn, QIcon, QItem, QItemSection } from 'quasar'
+
 export default {
   props: {
     name: {
@@ -38,6 +40,15 @@ export default {
       type: Boolean,
       default: false
     }
+  },
+  components: {
+    QBtn,
+    QIcon,
+    QItem,
+    QItemSection
+  },
+  directives: {
+    ClosePopup
   },
   computed: {
     supported () {

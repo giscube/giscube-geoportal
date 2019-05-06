@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import { QPage } from 'quasar'
 import L from '../lib/leaflet'
 import { LMap, LGeoJson } from 'vue2-leaflet'
 
@@ -33,7 +34,8 @@ export default {
     IconsGenerator,
     LayersControl,
     LGeoJson,
-    LMap
+    LMap,
+    QPage
   },
   data () {
     return {

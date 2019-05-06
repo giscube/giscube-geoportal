@@ -31,9 +31,14 @@
 </template>
 
 <script>
+import { QTab, QTabs } from 'quasar'
 
 export default {
   props: ['results'],
+  components: {
+    QTab,
+    QTabs
+  },
   data () {
     return {
       current: 0

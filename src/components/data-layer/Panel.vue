@@ -204,6 +204,8 @@
 </template>
 
 <script>
+import { ClosePopup, QBtn, QBtnDropdown, QBtnGroup, QCard, QCardActions, QCardSection, QCheckbox, QDialog, QInput, QItem, QItemLabel, QItemSection, QList, QSpace } from 'quasar'
+
 import DataTable from './DataTable'
 import DataForm from './DataForm'
 import DataFormDialog from './DataFormDialog'
@@ -215,8 +217,25 @@ export default {
     DataForm,
     DataFormDialog,
     DataTable,
+    QBtn,
+    QBtnDropdown,
+    QBtnGroup,
+    QCard,
+    QCardActions,
+    QCardSection,
+    QCheckbox,
+    QDialog,
+    QInput,
+    QItem,
+    QItemLabel,
+    QItemSection,
+    QList,
+    QSpace,
     LayersList,
     NewFeatures
+  },
+  directives: {
+    ClosePopup
   },
   data () {
     return {

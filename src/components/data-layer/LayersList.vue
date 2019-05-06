@@ -61,6 +61,8 @@
 </template>
 
 <script>
+import { Ripple, QBtn, QExpansionItem, QItem, QItemLabel, QItemSection, QList, QSpinner } from 'quasar'
+
 export default {
   props: {
     value: {
@@ -71,6 +73,18 @@ export default {
       type: Boolean,
       default: false
     }
+  },
+  components: {
+    QBtn,
+    QExpansionItem,
+    QItem,
+    QItemLabel,
+    QItemSection,
+    QList,
+    QSpinner
+  },
+  directives: {
+    Ripple
   },
   computed: {
     sources () {

@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import { QBtn, QSpinner } from 'quasar'
 import L from '../lib/leaflet'
 import axios from 'axios'
 import convert from 'xml-js'
@@ -32,7 +33,9 @@ export default {
   name: 'query-on-click',
   components: {
     LMarker,
-    LPopup
+    LPopup,
+    QBtn,
+    QSpinner
   },
   data () {
     return {

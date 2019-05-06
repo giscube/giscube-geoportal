@@ -20,8 +20,13 @@
 </template>
 
 <script>
+import { QIcon } from 'quasar'
+
 export default {
   props: ['result', 'map', 'resultsLayer'],
+  components: {
+    QIcon
+  },
   data () {
     return {}
   },

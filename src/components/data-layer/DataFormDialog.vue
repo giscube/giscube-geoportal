@@ -42,6 +42,7 @@
 </template>
 
 <script>
+import { QBtn, QCard, QCardActions, QCardSection, QDialog, QIcon, QSpace } from 'quasar'
 import DataForm from './DataForm'
 
 export default {
@@ -64,7 +65,14 @@ export default {
     }
   },
   components: {
-    DataForm
+    DataForm,
+    QBtn,
+    QCard,
+    QCardActions,
+    QCardSection,
+    QDialog,
+    QIcon,
+    QSpace
   },
   data () {
     return {

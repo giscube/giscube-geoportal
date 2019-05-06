@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { QHeader } from 'quasar'
+import { QBtn, QHeader, QList, QMenu, QSpace, QToolbar } from 'quasar'
 import HeaderItemHolder from './HeaderItemHolder'
 
 export default {
@@ -59,7 +59,12 @@ export default {
   ],
   components: {
     HeaderItemHolder,
-    QHeader
+    QBtn,
+    QHeader,
+    QList,
+    QMenu,
+    QSpace,
+    QToolbar
   },
   data () {
     return {}

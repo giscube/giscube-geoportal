@@ -1,3 +1,5 @@
+import { QSeparator, QSpace } from 'quasar'
+
 import HeaderItem from './HeaderItem.vue'
 
 export default {
@@ -17,16 +19,16 @@ export default {
       if (props.menu) {
         return null
       } else {
-        return createElement('q-separator', {
+        return createElement(QSeparator, {
           ...data,
           props: { vertical: true }
         })
       }
     } else if (props.item.spacer) {
       if (props.menu) {
-        return createElement('q-separator', data)
+        return createElement(QSeparator, data)
       } else {
-        return createElement('q-space', data)
+        return createElement(QSpace, data)
       }
     } else {
       const p = {

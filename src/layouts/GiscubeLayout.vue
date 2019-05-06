@@ -36,6 +36,7 @@
 </template>
 
 <script>
+import { QLayout, QPageContainer } from 'quasar'
 import L from '../lib/leaflet'
 import AppFooter from 'components/AppFooter'
 import GeoportalMap from 'components/GeoportalMap'
@@ -46,6 +47,8 @@ export default {
   components: {
     AppFooter,
     GeoportalMap,
+    QLayout,
+    QPageContainer,
     Sidebar
   },
   data () {

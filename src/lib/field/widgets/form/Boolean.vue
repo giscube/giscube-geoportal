@@ -17,12 +17,17 @@
 </template>
 
 <script>
+import { QSelect } from 'quasar'
+
 import MultiValueMixin from '../mixins/MultiValueMixin'
 import ValidateMixin from '../mixins/ValidateMixin'
 
 export default {
   props: ['value', 'field', 'readonly', 'disable'],
   mixins: [MultiValueMixin, ValidateMixin],
+  components: {
+    QSelect
+  },
   computed: {
     v () {
       if (this.valueObj === true) {

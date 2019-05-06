@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import { QBtn, QIcon } from 'quasar'
 import L from '../lib/leaflet'
 
 import BaseResultMixin from './BaseResultMixin.js'
@@ -31,6 +32,10 @@ import BaseResultMixin from './BaseResultMixin.js'
 export default {
   mixins: [BaseResultMixin],
   props: ['map'],
+  components: {
+    QBtn,
+    QIcon
+  },
   computed: {
     coordinates () {
       if (this.result.latlng) {

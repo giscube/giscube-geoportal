@@ -8,8 +8,13 @@
 </template>
 
 <script>
+import { QImg } from 'quasar'
+
 export default {
   props: ['value', 'field', 'feature'],
+  components: {
+    QImg
+  },
   computed: {
     src () {
       return this.field.constructor.getUrl(this.value)

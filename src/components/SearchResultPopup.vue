@@ -13,9 +13,14 @@
 </template>
 
 <script>
+import { QBtn } from 'quasar'
+
 export default {
   name: 'SearchResultPopup',
   props: ['feature'],
+  components: {
+    QBtn
+  },
   computed: {
     properties () {
       if (this.feature) {

@@ -15,6 +15,7 @@
 </template>
 
 <script>
+import { QSpinner } from 'quasar'
 import debounce from 'lodash/debounce.js'
 
 import L from '../lib/leaflet'
@@ -23,6 +24,9 @@ import gmapsInit from '../lib/gmaps'
 export default {
   name: 'StreetViewPanel',
   props: ['map'],
+  components: {
+    QSpinner
+  },
   data () {
     return {
       q: '',

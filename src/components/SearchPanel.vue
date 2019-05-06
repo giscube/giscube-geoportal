@@ -22,6 +22,7 @@
 </template>
 
 <script>
+import { QSpinner } from 'quasar'
 import Vue from 'vue'
 import axios from 'axios'
 import L from '../lib/leaflet'
@@ -30,11 +31,12 @@ import SearchResult from './SearchResult.vue'
 import SearchResultPopup from './SearchResultPopup'
 
 export default {
+  props: ['map'],
   components: {
+    QSpinner,
     SearchBar,
     SearchResult
   },
-  props: ['map'],
   data () {
     return {
       searchsRunning: 0,

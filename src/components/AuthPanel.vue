@@ -93,10 +93,16 @@
 
 <script>
 import axios from 'axios'
+import { QBtn, QForm, QInput } from 'quasar'
 import qs from 'qs'
 
 export default {
   name: 'AuthPanel',
+  components: {
+    QBtn,
+    QForm,
+    QInput
+  },
   data () {
     return {
       credentials: {
