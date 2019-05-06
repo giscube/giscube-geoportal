@@ -2,7 +2,7 @@ export function editLayerModified (state) {
   const geojson = state.geojson
   const originals = state.editStatus.originals
 
-  return originals && (Object.keys(originals).length > 0 || geojson.some((feature, index) => feature.status.deleted))
+  return geojson && originals && (Object.keys(originals).length > 0 || geojson.some((feature, index) => feature.status.deleted))
 }
 
 export function sources (state) {
