@@ -385,7 +385,7 @@ export default {
     },
     onDiscard () {
       this.$q.dialog({
-        message: 'Are you sure you want to discard all the changes?',
+        message: this.t('qDiscardChanges'),
         ok: {
           flat: true,
           label: this.$t('yes')

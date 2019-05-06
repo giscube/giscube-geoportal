@@ -73,6 +73,7 @@ export default {
       findInTable: 'Find in table',
       multipleNew: 'Add multiple elements',
       newElement: 'New element',
+      qDiscardChanges: 'Are you sure you want to discard all the changes?',
       qInvalidCommit: 'Some values seem to be invalid. Would you like to save anyways?',
       requiredField: 'Required Field',
       stopDrawing: 'Stop drawing elements',
