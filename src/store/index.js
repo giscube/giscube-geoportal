@@ -47,7 +47,6 @@ export default function (/* { ssrContext } */) {
       },
       selectResult: (state, result) => {
         state.result = result
-        console.log('RESULT now set', result)
       },
       search: (state, q) => {
         state.searchQ = q

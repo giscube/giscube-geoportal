@@ -24,7 +24,6 @@
 </template>
 
 <script>
-
 export default {
   props: {
     name: {
@@ -69,7 +68,7 @@ export default {
       } else if (typeof event === 'object' && event.name.toString()) {
         this.$emit('event', event)
       } else {
-        console.error('[HeaderItemHolder.vue] Trying to emit an incorrectlly configured event. Check your config.', { event })
+        this.$except('[HeaderItemHolder.vue] Trying to emit an incorrectly configured event. Check your config.')
       }
     },
     _onClick () {

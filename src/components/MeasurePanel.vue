@@ -110,11 +110,11 @@ export default {
     },
     startMeasuring (measureArea) {
       if (!this.map) {
-        console.error('Measure control is missing the map property')
+        this.$except('Measure control is missing the map property')
         return
       }
       if (!this.map.measureControl) {
-        console.error('Measure control is missing the map measureControl')
+        this.$except('Measure control is missing the map measureControl')
         return
       }
       this.measuring = true

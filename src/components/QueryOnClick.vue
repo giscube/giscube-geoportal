@@ -73,18 +73,14 @@ export default {
         }, this.mapClickDelay)
       } else {
         clearTimeout(this.mapClickTimer)
-        this.onMapDoubleClick(event.type)
         this.mapClicks = 0
       }
     },
     async onMapSingleClick (event) {
       if (this.currentTool) {
-        console.log('A tool is active, skip querying map')
+        // A tool is active, skip querying map
         return
       }
-
-      let latlng = event.latlng
-      console.log('map clicked on ' + new Date() + ' at ' + latlng)
 
       // remove query and return control to Vue
       this.query = null
@@ -145,9 +141,6 @@ export default {
         })
       }
     },
-    onMapDoubleClick (event) {
-      console.log('Double click')
-    },
     async queryAfterOverlays (event, marker) {
       // override this function to query for results after querying overlays
       // return null for no results
@@ -204,9 +197,7 @@ export default {
               queryResults = results
             }
           })
-          .catch(error => {
-            console.log('error', error)
-          })
+          .catch(this.$except.http)
       }
 
       // return null for no results
@@ -216,7 +207,6 @@ export default {
       if (this.query) {
         this.query = null
         this.$store.commit('setQuery', this.query)
-        console.log('query deleted')
       }
     },
     _disableMapClickEvent () {

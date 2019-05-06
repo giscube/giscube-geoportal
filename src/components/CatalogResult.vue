@@ -25,7 +25,6 @@ export default {
   methods: {
     viewResult () {
       if (!this.isResultClickable) {
-        console.log('Result is not clickable')
         return
       }
 

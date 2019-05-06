@@ -40,7 +40,6 @@ export default {
   },
   watch: {
     'map': 'mapChanged',
-    'q': 'qChanged',
     '$store.state.query': 'queryChanged',
     '$store.state.layout.leftDrawerSize' () {
       this.resizeStreetView()
@@ -48,13 +47,11 @@ export default {
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
-      console.log('Street view check:', to.params.q)
       vm.q = to.params.q
       vm.mapChanged()
     })
   },
   beforeRouteUpdate (to, from, next) {
-    console.log('Street view check:', to.params.q)
     this.q = to.params.q
     next()
   },
@@ -93,8 +90,8 @@ export default {
       await gmapsInit(this.$config.tools.streetview.apiKey)
 
       if (!(window.google && window.google.maps)) {
+        // Google maps api not ready yet
         // try later
-        console.log('Google maps api not ready yet')
         let self = this
         setTimeout(function () {
           self.mapChanged()
@@ -171,9 +168,6 @@ export default {
         this.map.panTo(latlng)
       }
     },
-    qChanged () {
-      console.log('street view q changed')
-    },
     positionChanged () {
       // Panorama generated a position_changed event
       if (!this.positionChangedEnabled) {
@@ -210,7 +204,7 @@ export default {
           pitch: 0
         })
       } else {
-        console.log('Street View data not found for this location.')
+        this.$except('Street View data not found for this location.')
       }
     }
   }

@@ -23,9 +23,7 @@ export function refreshSources (context) {
         s.index = index
         return s
       })
-      .catch(error => {
-        except.http(error)
-      })
+      .catch(except.http)
     requests.push(request)
   })
   const result = new Promise((resolve, reject) => {

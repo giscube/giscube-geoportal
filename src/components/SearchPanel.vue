@@ -83,7 +83,6 @@ export default {
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
-      console.log('Ajax search for term:', to.params.q)
       vm.$store.commit('search', to.params.q)
       vm.qChanged()
     })
@@ -128,7 +127,7 @@ export default {
             self.searchsRunning -= 1
           })
           .catch(function (error) {
-            console.log(error)
+            this.$except.http(error)
             self.searchsRunning -= 1
             self.searchError = true
           })
@@ -146,7 +145,6 @@ export default {
       }
 
       if (search.is_geojson) {
-        console.log('add layers to map', search.name)
         data.results.forEach(element => {
           var layer = L.GeoJSON.geometryToLayer(element.geojson)
           let PopupContent = Vue.extend(SearchResultPopup)
