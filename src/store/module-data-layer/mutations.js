@@ -189,6 +189,8 @@ export function revertAllFeatures (state) {
   ++index
   // index = first new
   geojson.splice(index)
+
+  state.editStatus.originals = {}
 }
 
 export function featureHistory (state, feature) {

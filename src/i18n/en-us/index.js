@@ -61,6 +61,8 @@ export default {
       title: 'Data layer',
 
       allDeleted: 'All the selected elements have been marked as deleted.',
+      changedLeaveTitle: 'Changing tool with changes',
+      changedLeaveMsg: 'You can come back later to save it or continue editing it',
       colFilter: 'Filter for "{label}"',
       defaultProperties: 'Default properties of the new elements',
       deleteElements: 'Delete {elements}',
@@ -82,7 +84,10 @@ export default {
       selection: 'Selection',
       someDeleted: 'Some of the selected elements have been marked as deleted.',
       thisDeleted: 'This element has been marked as deleted.',
-      undoConfirm: 'Are you sure you want to undo the changes in this element?'
+      undoConfirm: 'Are you sure you want to undo the changes in this element?',
+
+      quitWhileSaving: 'Saving, please wait...',
+      quitWithChanges: 'You have unsaved changes'
     },
     fullscreen: { headerName: 'Fullscreen' },
     help: {
