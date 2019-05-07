@@ -40,6 +40,8 @@ export default {
 
       authenticatedAs: 'Autenticat com a usuari',
       closeWindow: 'Tancar finestra',
+      changedLeaveTitle: 'Marxant sense guardar',
+      changedLeaveMsg: 'Podeu tornar més tard per guardar-ho o continuar editant',
       logIn: 'Iniciar sessió',
       loginCodeError: 'L\'inici de sessió ha fallat',
       loginCodeOk: 'Inici de sessió correcte, podeu tancar la finestra.',

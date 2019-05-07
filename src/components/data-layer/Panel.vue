@@ -239,6 +239,7 @@ export default {
   },
   data () {
     return {
+      forceLeave: false,
       layersListOpen: false,
       filter: '',
       mapFilter: false,
@@ -314,8 +315,22 @@ export default {
     }
   },
   beforeRouteLeave (to, from, next) {
-    this.$store.commit('setCurrentTool', null)
-    next()
+    if (!this.forceLeave && this.changed) {
+      this.$q.dialog({
+        title: this.t('changedLeaveTitle'),
+        message: this.t('changedLeaveMsg'),
+        ok: {
+          flat: true
+        },
+        persistent: true
+      }).onDismiss(() => {
+        this.$router.push(to)
+      })
+      next(false)
+    } else {
+      this.$store.commit('setCurrentTool', null)
+      next()
+    }
   },
   methods: {
     t (key, ...args) {
@@ -419,15 +434,21 @@ export default {
       })
     },
     onSave () {
-      this.saving = true
-      this.$store.dispatch('dataLayer/saveEdits')
+      this.saveEdits()
         .then(_ => {
           this.$refs.dataTable.refreshDataNow()
         })
         .catch(this.$except)
-        .then(_ => {
-          this.saving = false
-        })
+    },
+    saveEdits () {
+      return new Promise((resolve, reject) => {
+        this.saving = true
+        this.$store.dispatch('dataLayer/saveEdits')
+          .then(resolve, reject)
+          .then(_ => {
+            this.saving = false
+          })
+      })
     }
   }
 }

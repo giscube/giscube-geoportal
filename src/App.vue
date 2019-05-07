@@ -7,8 +7,22 @@
 <script>
 require('./css/print.styl')
 
+function preventExit (e, str) {
+  e.preventDefault()
+  e.returnValue = str || ''
+}
+
 export default {
-  name: 'App'
+  name: 'App',
+  beforeMount () {
+    window.addEventListener('beforeunload', e => {
+      if (this.$store.state.dataLayer.editStatus.saving) {
+        preventExit(e, this.$t('tools.data.quitWhileSaving'))
+      } else if (this.$store.getters['dataLayer/editLayerModified']) {
+        preventExit(e, this.$t('tools.data.quitWithChanges'))
+      }
+    })
+  }
 }
 </script>
 
