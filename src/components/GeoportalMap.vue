@@ -1,6 +1,5 @@
 <template>
   <q-page class="max-height" :style="containerStyle">
-    <!-- :options='getMapOptions()' -->
     <l-map ref='map'
       :zoom='$store.config.home.zoom'
       :center="$store.config.home.center"
@@ -44,6 +43,8 @@ export default {
         width: null
       },
       mapOptions: {
+        attributionControl: false,
+        zoomControl: false,
         editable: true
       }
     }
@@ -98,11 +99,19 @@ export default {
       })
     },
     addControls () {
+      this.addAttribution()
       this.addScaleControl()
       this.addZoomControl()
       this.addGeolocationControl()
       this.addLayersControl()
       this.addMeasureControl()
+    },
+    addAttribution () {
+      L.control.attribution({
+        prefix: '<a href="http://leafletjs.com" title="A JS library for interactive maps" target="_blank">Leaflet</a> | <a href="http://www.giscube.com/" target="_blank">Giscube</a>',
+        position: 'bottomright'
+      })
+        .addTo(this.map)
     },
     addLayersControl () {
       // leaflet's Layers Control
@@ -112,31 +121,23 @@ export default {
       this.map.layerswitcher = this.layerswitcher
     },
     addMeasureControl () {
-      this.measureControl = new L.Control.Measure({
+      this.map.measureControl = L.control.measure({
         measureUnit: 'meters',
         createButton: false
       })
-      this.map.measureControl = this.measureControl
-      this.map.addControl(this.measureControl)
+        .addTo(this.map)
     },
     addScaleControl () {
-      this.scaleControl = L.control.scale({ metric: true, imperial: false, 'position': 'bottomright' })
-      this.map.addControl(this.scaleControl)
+      L.control.scale({ metric: true, imperial: false, 'position': 'bottomright' })
+        .addTo(this.map)
     },
     addZoomControl () {
-      if (this.map.zoomControl) {
-        this.map.zoomControl.remove()
-      }
-      this.zoomControl = L.control.zoom({ 'position': 'bottomright' })
-      this.map.addControl(this.zoomControl)
+      L.control.zoom({ 'position': 'bottomright' })
+        .addTo(this.map)
     },
     addGeolocationControl () {
-      L.control.locate({ 'position': 'bottomright' }).addTo(this.map)
-    },
-    getMapOptions () {
-      return {
-        zoomControl: false
-      }
+      L.control.locate({ 'position': 'bottomright' })
+        .addTo(this.map)
     },
     onMapReady () {
       this.$nextTick(() => {
