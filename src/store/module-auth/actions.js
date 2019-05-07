@@ -94,7 +94,8 @@ export function updateUserInfo (context) {
     timeout: 10000,
     headers: {
       'Authorization': 'Bearer '.concat(context.state.accessToken)
-    }
+    },
+    maxRedirections: 0
   }
 
   axios.get(apiUrl, requestConfig)
@@ -102,7 +103,7 @@ export function updateUserInfo (context) {
       context.commit('setUsername', response.data.username)
     })
     .catch(error => {
-      if (error.request && error.request.status === 401) {
+      if (error.request && error.request.status >= 300 && (error.request.status < 400 || error.request.status === 401 || error.request.status === 403)) {
         context.commit('setAccessToken', null)
       } else {
         except.http(error)
