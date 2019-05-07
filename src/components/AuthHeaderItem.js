@@ -11,7 +11,7 @@ export default {
     },
     style () {
       return {
-        'text-transform': this.username ? 'none' : 'inherit'
+        'text-transform': this.username ? 'none' : undefined
       }
     }
   }
