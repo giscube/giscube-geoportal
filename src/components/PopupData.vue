@@ -1,7 +1,13 @@
 <template>
-  <div>
+  <div
+    @click="onClick"
+  >
     <q-resize-observer @resize="onResize" :debounce="0" />
-    <div v-if="result && !resultIsError" v-html="result" style="min-width: 100%"></div>
+    <div
+      v-if="result && !resultIsError"
+      v-html="result"
+      style="min-width: 100%"
+    ></div>
     <div v-else-if="!result">
       <table class="table table-striped table-hover">
         <tbody v-if="fields">
@@ -24,6 +30,9 @@
 
 <script>
 import { QResizeObserver } from 'quasar'
+import ImageDialog from 'components/ImageDialog'
+
+const DIALOG_IMG_ATTR = 'data-dialog-img'
 
 export default {
   props: ['feature', 'fields', 'renderContents'],
@@ -60,6 +69,15 @@ export default {
   methods: {
     onResize () {
       this.$parent.$emit('updatePopupSize')
+    },
+    onClick (event) {
+      const { target } = event
+      if (target.hasAttribute(DIALOG_IMG_ATTR)) {
+        this.$q.dialog({
+          component: ImageDialog,
+          src: target.getAttribute(DIALOG_IMG_ATTR)
+        })
+      }
     }
   }
 }
