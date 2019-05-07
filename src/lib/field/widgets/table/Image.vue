@@ -1,7 +1,8 @@
 <template>
   <q-img
-    v-if="src"
-    :src="src"
+    v-if="thumbnail"
+    :src="thumbnail"
+    @click="showImage(src)"
     contain
     spinner-size="20px"
   />
@@ -9,6 +10,8 @@
 
 <script>
 import { QImg } from 'quasar'
+
+import ImageDialog from 'components/ImageDialog'
 
 export default {
   props: ['value', 'field', 'feature'],
@@ -18,6 +21,17 @@ export default {
   computed: {
     src () {
       return this.field.constructor.getUrl(this.value)
+    },
+    thumbnail () {
+      return this.field.constructor.getThumbnail(this.value)
+    }
+  },
+  methods: {
+    showImage (src) {
+      this.$q.dialog({
+        component: ImageDialog,
+        src
+      })
     }
   }
 }

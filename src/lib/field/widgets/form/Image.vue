@@ -39,7 +39,8 @@
       <q-img
         v-for="(v, i) in values"
         :key="'form-img-' + i"
-        :src="getUrl(v)"
+        :src="getThumbnail(v)"
+        @click="showImage(getUrl(v))"
         alt="getName(v)"
         contain
         basic
@@ -57,6 +58,8 @@ import MultiValueMixin from '../mixins/MultiValueMixin'
 import ValidateMixin from '../mixins/ValidateMixin'
 
 import { AsyncPhoto } from '../../ImageField.js'
+
+import ImageDialog from 'components/ImageDialog'
 
 export default {
   props: ['value', 'field', 'readonly', 'disable'],
@@ -85,6 +88,9 @@ export default {
     getUrl (value) {
       return this.field.constructor.getUrl(value)
     },
+    getThumbnail (value) {
+      return this.field.constructor.getThumbnail(value)
+    },
     getName (value) {
       return this.field.constructor.getFilename(value)
     },
@@ -110,6 +116,12 @@ export default {
         this.$store.dispatch('dataLayer/uploadPhoto', newValue)
         this.$emit('input', newValue)
       }
+    },
+    showImage (src) {
+      this.$q.dialog({
+        component: ImageDialog,
+        src
+      })
     }
   }
 }

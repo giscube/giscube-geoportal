@@ -84,6 +84,22 @@ export default class ImageField extends Field {
         return value.tempUrl
       }
     } else {
+      return value && value.src
+    }
+  }
+
+  static getThumbnail (value) {
+    if (!value) {
+      return value
+    }
+
+    if (value instanceof AsyncValue) {
+      if (value.done) {
+        return ImageField.getThumbnail(value.result)
+      } else {
+        return value.tempUrl
+      }
+    } else {
       return value && (value.thumbnail || value.src)
     }
   }
