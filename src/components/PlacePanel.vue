@@ -110,25 +110,7 @@ export default {
       let visible = mapInfo.visibleBounds.contains(bounds)
 
       if (!visible || !mapInfo.isVisible) {
-        let latLng = bounds.getCenter()
-        // use zoom/pan options in flyTo instead?
-        if (mapInfo.isVisible) {
-          latLng.lng = latLng.lng - mapInfo.coveredLng / 2
-        }
-
-        // do we need a smaller zoom?
-        let maxZoom = this.map.getBoundsZoom(bounds)
-
-        try {
-          this.map.flyTo(latLng, this.map.getZoom() > maxZoom ? maxZoom : { maxZoom: 19 })
-        } catch (e) {
-          this.$except(e)
-          mapInfo = this.map.giscube.getMapInfo()
-          if (!mapInfo.isViewValid) {
-            // view is not valid, try to recover view
-            this.map.setView(latLng, 19)
-          }
-        }
+        this.zoomResult()
       }
       element.layer.openPopup()
     },
@@ -143,7 +125,8 @@ export default {
       let bounds = geojson.getBounds().pad(0.1)
 
       this.map.flyToBounds(bounds, {
-        paddingTopLeft: [mapInfo.sidebarWidthPx, 0]
+        paddingTopLeft: [mapInfo.sidebarWidthPx, 0],
+        maxZoom: 19
       })
     }
   }
