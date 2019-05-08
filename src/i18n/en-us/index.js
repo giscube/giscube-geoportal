@@ -11,6 +11,7 @@ export default {
     print: 'print',
     next: 'next',
     save: 'save',
+    search: 'search',
     zoom: 'zoom',
     zoomToData: 'zoom to data'
   },

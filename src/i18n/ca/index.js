@@ -11,6 +11,7 @@ export default {
     print: 'imprimeix',
     next: 'següent',
     save: 'guarda',
+    search: 'cerca',
     zoom: 'fes zoom',
     zoomToData: 'fes zoom a les dades'
   },
