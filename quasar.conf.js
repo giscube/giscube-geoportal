@@ -1,4 +1,5 @@
 // Configuration for your app
+const webpack = require('webpack')
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
@@ -55,6 +56,16 @@ module.exports = function (ctx) {
       // using this while source maps are correctly picked up in apps using this lib:
       devtool: 'eval',
       extendWebpack (cfg) {
+        // cfg.plugins.push(new BundleAnalyzerPlugin())
+
+        cfg.plugins.push(
+            new webpack.DefinePlugin({
+            'process.env.CONFIG_PATH': JSON.stringify(
+              'src/config/' + cfg.mode + (process.env.CONFIG ? '-' + process.env.CONFIG : '')
+            )
+          })
+        )
+
         if (process.env.LIB && cfg.mode === 'production') {
           console.log('process.env.LIB', process.env.LIB)
           console.log('CFG.entry', cfg.entry)
@@ -79,8 +90,6 @@ module.exports = function (ctx) {
             options:
               { filename: 'giscube-geoportal.min.css' }
           }))
-
-          // cfg.plugins.push(new BundleAnalyzerPlugin())
 
           // cfg.plugins.push(new ExtractTextPlugin({
           //   filename: 'giscube-geoportal.min.css'

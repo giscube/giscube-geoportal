@@ -1,4 +1,4 @@
-import config from '../config.js'
+import config from '../config'
 import except from '../lib/except.js'
 
 export default async ({ Vue }) => {
