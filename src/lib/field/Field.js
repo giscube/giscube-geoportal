@@ -21,7 +21,10 @@ export default class Field {
     this.requiresFeatures = false
   }
 
-  getValue ({ feature, properties }) {
+  getValue ({ feature, properties, value }) {
+    if (value !== void 0) {
+      return value
+    }
     const props = properties || (feature && feature.properties)
     return props && props[this.name]
   }

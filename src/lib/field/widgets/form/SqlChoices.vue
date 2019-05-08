@@ -111,26 +111,30 @@ export default {
       return this.valid(this.value) && this.field.valuesDict[this.value]
     },
     v () {
-      return this.current ? this.current[1] : this.value
+      if (MultiResult.is(this.value)) {
+        return null
+      }
+      return this.field.str({ value: this.value })
     },
     hint () {
       if (MultiResult.is(this.value)) {
-        return Array.from(this.value.values).map(value => {
-          const h = this.field.valuesDict[value]
-          return h && h[1]
-        }).join(', ')
+        return Array.from(this.value.values)
+          .map(value => this.field.str({ value }))
+          .join(', ')
       }
       return undefined
     },
 
     columns () {
-      return this.field.headers.map((header, i) => ({
-        name: header,
-        label: header,
-        field: row => row[i],
-        sortable: true,
-        sort: this.compare
-      }))
+      return this.field.tableHeaders
+        .filter(({ i }) => i >= 0)
+        .map(({ name, i, label }) => ({
+          name,
+          label,
+          field: row => row[i],
+          sortable: true,
+          sort: this.compare
+        }))
     },
     data () {
       return this.field.valuesList
