@@ -1,4 +1,4 @@
-import Options from '../options.js'
+import Options from '../lib/options.js'
 import ca from './ca'
 import enUS from './en-us'
 

@@ -14,7 +14,8 @@ yarn-error.log*
 /test/unit/coverage/
 /test/e2e/reports/
 selenium-debug.log
-
+/src/config/development-*
+/src/config/production-*
 # Editor directories and files
 .idea
 .vscode

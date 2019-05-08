@@ -18,7 +18,7 @@ import LayersControl from 'components/LayersControl'
 import HelpPanel from 'components/HelpPanel'
 import StreetViewPanel from 'components/StreetViewPanel'
 import store from './store/index.js'
-import config from './config.js'
+import config from './config/lib.js'
 import { except as exceptLib } from './lib/except.js'
 import i18n from './i18n/index.js'
 

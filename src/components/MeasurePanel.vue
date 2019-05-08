@@ -143,7 +143,7 @@ export default {
       this.measuring = false
       this.map.off('measure:measurestop', this.stopMeasuring)
       this.map.off('measure:finishedpath', this.stopMeasuring)
-      // FIXME: hardcoded 300ms value from QueryOnClick, get from config.js
+      // FIXME: hardcoded 300ms value from QueryOnClick, get from config
       setTimeout(() => {
         this.$store.commit('setCurrentTool', null)
       }, 300)
