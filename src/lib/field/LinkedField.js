@@ -8,6 +8,13 @@ export default class LinkedField extends Field {
 
   constructor (info) {
     info['readonly'] = true
+    const options = info.widget_options
+    info.source = options['source']
+    info.column = options['column']
+
+    const property = options['property']
+    info.property = property ? property.split('.') : []
+
     super(info)
   }
 
@@ -21,7 +28,7 @@ export default class LinkedField extends Field {
     if (this.validValue(value) && this.sourceField.valuesDict) {
       value = field.valuesDict[value]
       if (this.validValue(value) && this.column) {
-        const i = field.values_list_headers.indexOf(this.column)
+        const i = field.headers.indexOf(this.column)
         if (i >= 0) {
           value = value[i]
         } else {

@@ -34,7 +34,7 @@ export function buildFields (layerInfo) {
       readonly: fieldInfo.readonly
     }
 
-    const conditionalCopyList = ['size', 'decimals', 'values_list', 'values_list_headers']
+    const conditionalCopyList = ['size', 'decimals', 'values_list', 'values_list_headers', 'widget_options']
     conditionalCopyList.forEach(name => {
       if (name in fieldInfo) {
         field[name] = fieldInfo[name]
@@ -43,15 +43,6 @@ export function buildFields (layerInfo) {
 
     field.pk = (fieldInfo.name === layerInfo.pk_field)
     field.geom = (fieldInfo.name === layerInfo.geom_field)
-
-    if (fieldInfo.widget === 'linkedfield') {
-      const options = JSON.parse(fieldInfo.widget_options)
-      field.source = options['source']
-      field.column = options['column']
-
-      const property = options['property']
-      field.property = property ? property.split('.') : []
-    }
 
     // generate a field from the field info
     const F = getFieldClass(field, fieldInfo)

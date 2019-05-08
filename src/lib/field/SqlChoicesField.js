@@ -1,3 +1,4 @@
+import template from 'lodash/template.js'
 
 import Field from './Field'
 import SqlChoicesWidget from './widgets/form/SqlChoices'
@@ -6,8 +7,27 @@ export default class SqlChoicesField extends Field {
   constructor (info) {
     super(info)
 
-    this.headers = info.values_list_headers
-    this.valuesList = info.values_list
+    const options = info.widget_options
+
+    if (options.label) {
+      this.strTemplate = template(options.label, {
+        escape: null,
+        interpolate: /{([\s\S]+?)}/g,
+        evaluate: null
+      })
+    }
+
+    this.headers = options.values_list_headers
+    this.valuesList = options.values_list
+
+    this.tableHeaders = options.table_headers.map(col => {
+      const name = Object.keys(col)[0]
+      return {
+        name,
+        i: this.headers.indexOf(name),
+        label: col[name]
+      }
+    })
 
     this.valuesDict = {}
     this.valuesList.forEach(value => { this.valuesDict[value[0]] = value })
@@ -15,12 +35,21 @@ export default class SqlChoicesField extends Field {
 
   str (data) {
     const key = this.getValue(data)
-    const v = data && this.valuesDict[key]
+    let v = data && this.valuesDict[key]
+
     if (v === void 0) {
       return Field.toString(key)
+    } else if (this.strTemplate) {
+      v = v || {}
+      const values = {}
+      this.headers.forEach((col, i) => {
+        values[col] = v[i] || ''
+      })
+      return this.strTemplate(values)
+    } else {
+      const value = v && v[1]
+      return Field.toString(value === void 0 ? v : value)
     }
-    const value = v && v[1]
-    return Field.toString(value === void 0 ? v : value)
   }
 
   repr (data) {
