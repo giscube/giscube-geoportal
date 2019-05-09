@@ -23,6 +23,7 @@ export default {
     badPopupConfig: 'This popup is improperly configured'
   },
   names: {
+    coords: 'coordinates',
     element: 'no elements | {count} element | {count} elements',
     layers: 'layers',
     lat: 'latitude',

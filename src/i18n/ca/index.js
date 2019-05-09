@@ -23,6 +23,7 @@ export default {
     badPopupConfig: 'Error al llegir la configuració'
   },
   names: {
+    coords: 'coordenades',
     element: 'cap element | {count} element | {count} elements',
     layers: 'capes',
     lat: 'latitud',
