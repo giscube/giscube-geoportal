@@ -1,11 +1,13 @@
 {
-  "name": "giscube-geoportal",
-  "version": "1.0.0-beta.0",
+  "name": "@giscube/geoportal",
+  "version": "1.0.0-beta.2",
   "description": "Generic Geoportal based on Giscube",
+  "license": "BSD 3-Clause 'New' or 'Revised' License",
+  "repository": "https://github.com/giscube/giscube-geoportal",
   "productName": "Giscube Geoportal",
   "cordovaId": "org.giscube.geoportal.app",
   "author": "Microdisseny <tech@microdisseny.com>",
-  "private": true,
+  "private": false,
   "scripts": {
     "lint": "eslint --ext .js,.vue src",
     "test": "echo \"No test specified\" && exit 0"
