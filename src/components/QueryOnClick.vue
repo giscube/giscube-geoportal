@@ -62,6 +62,10 @@ export default {
         event.target.openPopup()
       })
     },
+    onMapDbClick () {
+      clearTimeout(this.mapClickTimer)
+      this.mapClicks = 0
+    },
     onMapClick: function (event) {
       if (this.query) {
         this.query.visible = false
@@ -213,10 +217,12 @@ export default {
       }
     },
     _disableMapClickEvent () {
+      this.map.off('dblclick', this.onMapDbClick, this)
       this.map.off('click', this.onMapClick, this)
     },
     _enableMapClickEvent () {
       this.map.on('click', this.onMapClick, this)
+      this.map.on('dblclick', this.onMapDbClick, this)
     },
     _getMapOverlays () {
       var layers = this.map.layerswitcher._layers
