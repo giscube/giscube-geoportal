@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import CatalogPanel from 'components/CatalogPanel'
 import ContactPanel from 'components/ContactPanel'
+import CoordsPanel from 'components/CoordsPanel'
 import HelpPanel from 'components/HelpPanel'
 import HomePanel from 'components/HomePanel'
 import AuthPanel from 'components/AuthPanel'
@@ -27,6 +28,7 @@ const routes = [
       { path: 'help/', component: HelpPanel, name: 'help' },
       { path: 'home/', component: HomePanel, name: 'home' },
       { path: 'measure/', component: MeasurePanel, name: 'measure' },
+      { path: 'coords/:espg/:coords', component: CoordsPanel, name: 'coords' },
       { path: 'place/:q*', component: PlacePanel, name: 'place' },
       { path: 'search/:q*', component: SearchPanel, name: 'search' },
       { path: 'streetview/:q?', component: StreetViewPanel, name: 'streetview' },

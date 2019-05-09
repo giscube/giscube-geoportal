@@ -15,7 +15,7 @@
       <p v-if="q && showSearchEmpty && !showSearchError" class="list-group-item">{{ t('noResults')}}</p>
     </div>
     <div v-if="results">
-      <SearchResult v-for="(result, index) in results" :result='result'
+      <search-result v-for="(result, index) in results" :result='result'
         :key="index" :map='map' :resultsLayer='resultsLayer' />
     </div>
   </div>
@@ -29,6 +29,7 @@ import L from '../lib/leaflet'
 import SearchBar from 'components/SearchBar.vue'
 import SearchResult from './SearchResult.vue'
 import SearchResultPopup from './SearchResultPopup'
+import { coordsRegex } from './CoordsPanel'
 
 export default {
   props: ['map'],
@@ -42,6 +43,7 @@ export default {
       searchsRunning: 0,
       searchError: false,
       searchEmpty: false,
+      coordsResult: null,
       resultsPartials: {}
     }
   },
@@ -71,6 +73,9 @@ export default {
     },
     results () {
       var all = []
+      if (this.coordsResult) {
+        all.push(this.coordsResult)
+      }
       this.$store.config.searches.forEach(search => {
         if (this.resultsPartials[search.name]) {
           all.push.apply(all, this.resultsPartials[search.name])
@@ -104,6 +109,7 @@ export default {
     qChanged () {
       // reset
       this.resultsPartials = {}
+      this.coordsResult = null
       this.searchEmpty = false
       this.searchError = false
       if (this.resultsLayer) {
@@ -112,6 +118,10 @@ export default {
 
       if (this.q === undefined || this.q === '') {
         return
+      }
+
+      if (coordsRegex().test(this.q)) {
+        this.coordsResult = { coords: this.q }
       }
 
       let self = this
@@ -171,7 +181,9 @@ export default {
           this.$store.commit('selectResult', element)
           // then produces the route change
           // FIXME: base this on search used
-          if (element.geojson) {
+          if (element.coords) {
+            this.$router.push('/coords/4326/' + element.coords + '/')
+          } else if (element.geojson) {
             this.$router.push('/place/' + element.title + '/')
           } else {
             this.$router.push('/geoportal/' + element.title + '/')

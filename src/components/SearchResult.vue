@@ -3,7 +3,7 @@
     <div :class="{'list-group-item': true, group: result.group }"
          :style="{'cursor': this.resultCursor}"
          @click="viewResultMain()"
-      ><div class="title">{{ result.title }}</div>
+      ><div class="title">{{ title }}</div>
       <div v-if="properties.address" class="address">
         <q-icon name="home" /> {{ properties.address }}
       </div>
@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import { QIcon } from 'quasar'
 
 export default {
@@ -31,8 +32,16 @@ export default {
     return {}
   },
   computed: {
+    title () {
+      if (this.result.coords) {
+        return Vue.filter('capitalize')(this.$t('names.coords'))
+      }
+      return this.result.title
+    },
     coordinates () {
-      if (this.result.latlng) {
+      if (this.result.coords) {
+        return this.result.coords
+      } else if (this.result.latlng) {
         return this.result.latlng.coordinates[0].toFixed(6) + ', ' + this.result.latlng.coordinates[1].toFixed(6)
       } else {
         return null
@@ -46,7 +55,7 @@ export default {
       }
     },
     isResultClickable () {
-      return this.result.geojson || this.result.children.length > 0
+      return this.result.coords || this.result.geojson || this.result.children.length > 0
     },
     resultCursor () {
       if (this.isResultClickable) {
@@ -64,7 +73,9 @@ export default {
         this.$store.commit('selectResult', element)
         // then produces the route change
         // FIXME: base this on search used
-        if (this.result.geojson) {
+        if (this.result.coords) {
+          this.$router.push('/coords/4326/' + this.result.coords + '/')
+        } else if (this.result.geojson) {
           this.$router.push('/place/' + element.title + '/')
         } else {
           this.$router.push('/geoportal/' + element.title + '/')
