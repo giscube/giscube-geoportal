@@ -7,6 +7,7 @@
       :stack-label="valid(v)"
       :clearable="field.null"
       :hint="hint"
+      bottom-slots
       @input="onClear"
       @focus.native="$refs.dialog.show()"
       @click.native="$refs.dialog.show()"
