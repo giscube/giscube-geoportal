@@ -8,7 +8,7 @@ export default class ChoicesField extends Field {
     this.valuesList = []
     this.valuesDict = {}
 
-    const valuesList = info.values_list
+    const valuesList = info.widget_options.values_list
     if (Array.isArray(valuesList)) {
       for (let value of valuesList) {
         if (Array.isArray(value)) {
