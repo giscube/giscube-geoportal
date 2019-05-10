@@ -15,3 +15,13 @@ quasar dev
 quasar build
 
 ```
+
+## Publish library
+
+Prerelease:
+
+npm version prerelease --preid=beta
+
+LIB=True quasar build
+
+npm publish
