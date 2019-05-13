@@ -24,7 +24,7 @@ import Vue from 'vue'
 import { QIcon } from 'quasar'
 
 export default {
-  props: ['result', 'map', 'resultsLayer'],
+  props: ['result'],
   components: {
     QIcon
   },
@@ -68,18 +68,7 @@ export default {
   methods: {
     viewResultMain () {
       if (this.isResultClickable) {
-        let element = this.result
-        // save selected place in store
-        this.$store.commit('selectResult', element)
-        // then produces the route change
-        // FIXME: base this on search used
-        if (this.result.coords) {
-          this.$router.push('/coords/4326/' + this.result.coords + '/')
-        } else if (this.result.geojson) {
-          this.$router.push('/place/' + element.title + '/')
-        } else {
-          this.$router.push('/geoportal/' + element.title + '/')
-        }
+        this.$store.dispatch('search/select', { result: this.result })
       }
     }
   }

@@ -73,9 +73,6 @@ export default {
     printing () {
       return this.$store.state.layout.printing
     },
-    q () {
-      return this.$store.state.searchQ
-    },
     headerTools () {
       return !this.printing ? this.generateToolsFromList(this.$config.layout.headerToolbar) : []
     },
@@ -86,14 +83,6 @@ export default {
   methods: {
     emit (event) {
       this.$emit(event.name.toString(), event.value)
-    },
-    onSearch () {
-      this.$emit('sidebar-visibility-changed', true)
-      if (this.q) {
-        this.$router.push({ name: 'search', params: { q: this.q } })
-      } else {
-        this.$router.push({ name: 'search' })
-      }
     },
     generateToolsFromList (list, { separators = true } = {}) {
       const tools = this.$config.tools

@@ -2,8 +2,8 @@
   <div class="search-bar">
     <div class="row search-row">
 
-      <input ref="search_input" type="text" class="search-input" :placeholder="t('search')"
-        @keyup="onSearchType" :value="q">
+      <input ref="search_input" type="text" class="search-input" :placeholder="t('search') | capitalize"
+        @keyup="onSearchType" :value="query">
       <q-btn flat
         icon="search"
         @click.prevent="onSearch"
@@ -17,16 +17,14 @@
 import { QBtn } from 'quasar'
 
 export default {
+  props: {
+    query: {
+      type: String,
+      default: ''
+    }
+  },
   components: {
     QBtn
-  },
-  data () {
-    return {}
-  },
-  computed: {
-    q () {
-      return this.$store.state.searchQ
-    }
   },
   mounted () {
     this.$nextTick(() => {
@@ -38,11 +36,9 @@ export default {
       return this.$t('tools.search.' + key, ...args)
     },
     onSearch () {
-      let q = this.$refs.search_input.value
-      this.$store.commit('setAutoselectResult', true)
-      this.$store.commit('search', q)
-      this.$router.push('/search/' + q + (q ? '/' : ''))
-      this.$emit('search-start')
+      const q = this.$refs.search_input.value
+      this.$store.dispatch('search/search', { query: q, forceRefresh: true })
+      this.$router.push({ name: 'search', params: { q } })
     },
     onSearchType (event) {
       if (event.keyCode === 13) {

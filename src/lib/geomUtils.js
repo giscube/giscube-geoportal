@@ -1,4 +1,7 @@
+import axios from 'axios'
+import Vue from 'vue'
 import L from './leaflet.js'
+import makeGeoJsonOptions from './makeGeoJsonOptions'
 
 export function visiblePart (bbox, visibility) {
   /*
@@ -39,4 +42,117 @@ export function visibleMapPart (map, visibility) {
     bbox: unprojectBounds(map, result.bbox),
     visibility: result.visibility
   }
+}
+
+function applyExtraOptions (defaultOptions, extraOptions, allowedOptions) {
+  const options = {}
+  if (typeof extraOptions !== 'undefined') {
+    for (const k in extraOptions) {
+      if (allowedOptions.indexOf(k) !== -1) {
+        options[k] = extraOptions[k]
+      }
+    }
+  }
+  return Object.assign(defaultOptions, options)
+}
+
+export function createLayerFromConfig (config) {
+  if (config.result.geojson) {
+    return Promise.resolve({
+      layer: createGeoJSONLayer(config),
+      type: 'GeoJSON'
+    })
+  } else {
+    return createExternalLayer(config)
+  }
+}
+
+export function createGeoJSONLayer ({ result, popupComponent }) {
+  const layer = L.GeoJSON.geometryToLayer(result.geojson)
+  if (popupComponent) {
+    const PopupContent = Vue.extend(popupComponent)
+    const popup = new PopupContent({
+      propsData: {
+        feature: result
+      }
+    })
+    popup.$on('delete', () => {
+      layer.remove()
+    })
+    layer.bindPopup(popup.$mount().$el)
+  }
+  return layer
+}
+
+const createExternalLayerActions = {
+  wms: createExternalLayerWMS,
+  tms: createExternalLayerTMS,
+  geojson: createExternalLayerGeoJSON
+}
+
+export function createExternalLayer (config) {
+  const type = config.layerDescriptor.type
+  if (type && typeof type === 'string') {
+    const action = createExternalLayerActions[type.toLowerCase()]
+    if (action) {
+      return action(config)
+    }
+  }
+
+  console.warn(`Trying to add layer of unknown type "${type}"`)
+  return Promise.reject()
+}
+
+function createExternalLayerWMS ({ layerDescriptor, title, options }) {
+  const defaultOptions = {
+    layers: layerDescriptor.layers,
+    format: 'image/png',
+    transparent: true,
+    maxZoom: 22
+  }
+  const allowedOptions = ['minZoom', 'maxZoom', 'layers', 'styles', 'format', 'transparent', 'format', 'version',
+    'csr', 'uppercase', 'attribution']
+  const layerOptions = applyExtraOptions(defaultOptions, options, allowedOptions)
+  const wms = L.tileLayer.wms(layerDescriptor.url, layerOptions)
+
+  return Promise.resolve({
+    type: 'WMS',
+    layer: wms
+  })
+}
+
+function createExternalLayerTMS ({ layerDescriptor, title, options }) {
+  const defaultOptions = {
+    transparent: true,
+    maxZoom: 22
+  }
+  const allowedOptions = ['minZoom', 'maxZoom', 'tms', 'attribution']
+  const layerOptions = applyExtraOptions(defaultOptions, options, allowedOptions)
+  const tms = L.tileLayer(layerDescriptor.url, layerOptions)
+  return Promise.resolve({
+    type: 'TMS',
+    layer: tms
+  })
+}
+
+function createExternalLayerGeoJSON ({ layerDescriptor, title, options, map, popupComponent }) {
+  return new Promise((resolve, reject) => {
+    axios.get(layerDescriptor.url)
+      .then(response => {
+        response.data.metadata.styleRules = response.data.metadata.style_rules
+        delete response.data.metadata.style_rules
+
+        const options = makeGeoJsonOptions(response.data.metadata, {
+          map,
+          propsData: { title },
+          popup: { component: popupComponent }
+        })
+
+        resolve({
+          type: 'GeoJSON',
+          layer: L.geoJson(response.data, options)
+        })
+      })
+      .catch(reject)
+  })
 }

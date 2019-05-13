@@ -19,7 +19,6 @@
       :visible="$store.state.layout.sidebarVisible"
       :geoportalMap="$refs.map"
       @visibility-changed="onVisibilityChanged"
-      @search-start="onSearchStart"
       class="sidebar-left"
     />
 
@@ -75,10 +74,6 @@ export default {
     },
     onMapReady (map) {
       this.map = map
-    },
-    onSearchStart (q) {
-      this.$store.commit('layout/setSidebarVisible', true)
-      this.$router.push('/search/' + q + '/')
     },
     onVisibilityChanged (visible) {
       this.$store.commit('layout/setSidebarVisible', visible)

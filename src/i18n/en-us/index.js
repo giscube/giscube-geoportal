@@ -8,6 +8,7 @@ export default {
     delete: 'delete',
     discard: 'discard',
     previous: 'previous',
+    pinToMap: 'pin to map',
     print: 'print',
     next: 'next',
     save: 'save',
@@ -25,9 +26,11 @@ export default {
   names: {
     coords: 'coordinates',
     element: 'no elements | {count} element | {count} elements',
+    keywords: 'keywords',
     layers: 'layers',
     lat: 'latitude',
     lng: 'longitude',
+    metadata: 'metadata',
     opacity: 'opacity'
   },
   states: {
@@ -115,6 +118,7 @@ export default {
     search: {
       headerName: 'Search',
 
+      history: 'search history',
       instructions: 'Please type something to search',
       noResults: 'No matches found',
       results: 'Results for {q}',

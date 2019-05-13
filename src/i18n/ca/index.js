@@ -8,6 +8,7 @@ export default {
     delete: 'elimina',
     discard: 'descarta',
     previous: 'anterior',
+    pinToMap: 'fixa al mapa',
     print: 'imprimeix',
     next: 'següent',
     save: 'guarda',
@@ -25,9 +26,11 @@ export default {
   names: {
     coords: 'coordenades',
     element: 'cap element | {count} element | {count} elements',
+    keywords: 'paraules clau',
     layers: 'capes',
     lat: 'latitud',
     lng: 'longitud',
+    metadata: 'metadades',
     opacity: 'opacitat'
   },
   states: {
@@ -122,6 +125,7 @@ export default {
       headerName: 'Cerca',
       help: 'Feu servir la barra de cerca per trobar ràpidament el que busqueu.',
 
+      history: 'Historial de cerca',
       instructions: 'Si us plau, escriviu quelcom per cercar',
       noResults: 'No s\'ha trobat cap resultat',
       results: 'Resultats per a {q}',

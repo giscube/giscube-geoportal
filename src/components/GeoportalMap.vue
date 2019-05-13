@@ -63,17 +63,7 @@ export default {
       return this.$store.state.dataLayer.editStatus.editing
     },
     resultsLayer () {
-      return this.$store.state.resultsLayer
-    }
-  },
-  created () {
-    if (!this.resultsLayer) {
-      let layerGeoJson = L.geoJson('', {
-        onEachFeature: function (feature, layer) {
-          layer.bindPopup(feature.properties.title)
-        }
-      })
-      this.$store.commit('createResultsLayer', layerGeoJson)
+      return this.$store.state.search.resultsLayer
     }
   },
   mounted () {

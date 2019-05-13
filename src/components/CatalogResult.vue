@@ -40,17 +40,8 @@ export default {
     },
     viewResultMain () {
       if (this.isResultClickable) {
-        let element = this.result
-        // save selected place in store
-        this.$store.commit('selectResult', element)
-        // then produces the route change
-        // FIXME: base this on search used
-        if (this.result.geojson) {
-          // this.$router.push('/place/' + element.title + '/')
-          this.$router.push({ name: 'place', params: { q: element.title } })
-        } else {
-          this.$router.push('/geoportal/' + element.title + '/')
-        }
+        this.$store.commit('search/result', this.result)
+        this.$router.push({ name: 'place', params: { q: this.result.title } })
       }
     }
   }
