@@ -1,196 +1,79 @@
 <template>
   <div class="panel search-panel">
 
-    <search-bar @search-start="qChanged" />
+    <search-bar :query="q" />
 
     <div class="panel-content">
-
-      <p v-if="!q">{{ t('instructions') }}</p>
-
-      <p v-if="q" class="panel-title">{{ t('results', { q }) }}
-        <q-spinner v-if="searching" />
+      <p v-if="state === STATES.INITIAL">{{ t('instructions') }}</p>
+      <div v-else-if="state === STATES.HAS_QUERY">
+        <p class="panel-title">{{ t('history') | capitalize }}</p>
+        <p
+          v-for="(s, i) in searchHistory"
+          :key="'search-history-' + i"
+        >
+          <a @click="search(s)" class="cursor-pointer">{{ s }}</a>
+        </p>
+      </div>
+      <p v-else-if="state === STATES.LOADING_RESULTS || state === STATES.RESULTS_LOADED" class="panel-title">{{ t('results', { q }) }}
+        <q-spinner v-if="state === STATES.LOADING_RESULTS" />
       </p>
 
-      <p v-if="showSearchError" class="list-group-item">{{ t('resultsError') }}</p>
-      <p v-if="q && showSearchEmpty && !showSearchError" class="list-group-item">{{ t('noResults')}}</p>
+      <p v-if="hasErrors" class="list-group-item">{{ t('resultsError') }}</p>
+      <p v-else-if="state === STATES.RESULTS_LOADED && results.length === 0" class="list-group-item">{{ t('noResults')}}</p>
     </div>
-    <div v-if="results">
-      <search-result v-for="(result, index) in results" :result='result'
-        :key="index" :map='map' :resultsLayer='resultsLayer' />
-    </div>
+    <search-result
+      v-for="(result, index) in results"
+      :result='result'
+      :key="index"
+    />
   </div>
 </template>
 
 <script>
 import { QSpinner } from 'quasar'
-import Vue from 'vue'
-import axios from 'axios'
-import L from '../lib/leaflet'
+import { STATES } from '../store/module-search/constants'
 import SearchBar from 'components/SearchBar.vue'
 import SearchResult from './SearchResult.vue'
-import SearchResultPopup from './SearchResultPopup'
-import { coordsRegex } from './CoordsPanel'
 
 export default {
-  props: ['map'],
   components: {
     QSpinner,
     SearchBar,
     SearchResult
   },
-  data () {
-    return {
-      searchsRunning: 0,
-      searchError: false,
-      searchEmpty: false,
-      coordsResult: null,
-      resultsPartials: {}
-    }
-  },
-  computed: {
-    q () {
-      return this.$store.state.searchQ
-    },
-    resultsLayer () {
-      return this.$store.state.resultsLayer
-    },
-    searching () {
-      return this.searchsRunning > 0
-    },
-    showSearchEmpty () {
-      if (this.searching) {
-        return false
-      } else {
-        return this.results.length === 0
-      }
-    },
-    showSearchError () {
-      if (this.searching) {
-        return false
-      } else {
-        return this.searchError && this.results.length === 0
-      }
-    },
-    results () {
-      var all = []
-      if (this.coordsResult) {
-        all.push(this.coordsResult)
-      }
-      this.$store.config.searches.forEach(search => {
-        if (this.resultsPartials[search.name]) {
-          all.push.apply(all, this.resultsPartials[search.name])
-        }
-      })
-      return all
-    }
-  },
-  watch: {
-    'q': 'qChanged',
-    'searching': 'searchingChanged'
-  },
   beforeRouteEnter (to, from, next) {
-    next(vm => {
-      vm.$store.commit('search', to.params.q)
-      vm.qChanged()
-    })
+    next(vm => vm.$store.dispatch('search/search', { query: to.params.q }))
   },
   beforeRouteUpdate (to, from, next) {
-    this.$store.commit('search', to.params.q)
-    this.qChanged()
+    this.$store.dispatch('search/search', { query: to.params.q })
     next()
   },
-  destroyed () {
-    this.resultsLayer.clearLayers()
+  computed: {
+    STATES () {
+      return STATES
+    },
+    hasErrors () {
+      return this.$store.state.search.errorFetching
+    },
+    q () {
+      return this.$store.state.search.query
+    },
+    searchHistory () {
+      return this.$store.state.search.history
+    },
+    results () {
+      return this.$store.state.search.finalResults
+    },
+    state () {
+      return this.$store.getters['search/state']
+    }
   },
   methods: {
     t (key, ...args) {
       return this.$t('tools.search.' + key, ...args)
     },
-    qChanged () {
-      // reset
-      this.resultsPartials = {}
-      this.coordsResult = null
-      this.searchEmpty = false
-      this.searchError = false
-      if (this.resultsLayer) {
-        this.resultsLayer.clearLayers()
-      }
-
-      if (this.q === undefined || this.q === '') {
-        return
-      }
-
-      if (coordsRegex().test(this.q)) {
-        this.coordsResult = { coords: this.q }
-      }
-
-      let self = this
-      this.$store.config.searches.forEach(search => {
-        var searchUrl = search.url
-
-        self.searchsRunning += 1
-        axios.get(searchUrl, {
-          params: {
-            q: self.q
-          }
-        })
-          .then(function (response) {
-            self.parseResults(search, response.data)
-            self.searchsRunning -= 1
-          })
-          .catch(function (error) {
-            self.$except(error)
-            self.searchsRunning -= 1
-            self.searchError = true
-          })
-      })
-    },
-    parseResults (search, data) {
-      if (data.results === undefined) {
-        this.searchError = true
-        return
-      }
-
-      if (data['results'].length === 0) {
-        this.searchEmpty = true
-        return
-      }
-
-      if (search.is_geojson) {
-        data.results.forEach(element => {
-          var layer = L.GeoJSON.geometryToLayer(element.geojson)
-          let PopupContent = Vue.extend(SearchResultPopup)
-          let popup = new PopupContent({
-            propsData: {
-              feature: element
-            }
-          })
-          layer.bindPopup(popup.$mount().$el)
-          this.resultsLayer.addLayer(layer)
-          element.layer = layer
-        })
-      }
-
-      Vue.set(this.resultsPartials, search.name, data.results)
-    },
-    searchingChanged () {
-      if (!this.searching) {
-        if (this.results.length === 1 && this.$store.state.autoselectResult) {
-          let element = this.results[0]
-          // save selected place in store
-          this.$store.commit('selectResult', element)
-          // then produces the route change
-          // FIXME: base this on search used
-          if (element.coords) {
-            this.$router.push('/coords/4326/' + element.coords + '/')
-          } else if (element.geojson) {
-            this.$router.push('/place/' + element.title + '/')
-          } else {
-            this.$router.push('/geoportal/' + element.title + '/')
-          }
-        }
-        this.$store.commit('setAutoselectResult', false)
-      }
+    search (s) {
+      this.$router.push({ name: 'search', params: { q: s } })
     }
   }
 }

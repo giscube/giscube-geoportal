@@ -6,6 +6,7 @@ import auth from './module-auth'
 import dataLayer from './module-data-layer'
 import layout from './module-layout'
 import map from './module-map'
+import search from './module-search'
 
 Vue.use(Vuex)
 
@@ -20,39 +21,20 @@ export default function (/* { ssrContext } */) {
       auth,
       dataLayer,
       layout,
-      map
+      map,
+      search
     },
     state: {
       currentTool: null,
-      searchQ: '',
-      searching: false,
-      count: 0,
-      result: null,
-      resultsLayer: null,
-      autoselectResult: false,
       query: null
     },
     mutations: {
-      createResultsLayer: (state, value) => {
-        state.resultsLayer = value
-      },
-      setAutoselectResult: (state, value) => {
-        state.autoselectResult = value
-      },
       setCurrentTool: (state, value) => {
         state.currentTool = value
       },
       setQuery: (state, query) => {
         state.query = query
-      },
-      selectResult: (state, result) => {
-        state.result = result
-      },
-      search: (state, q) => {
-        state.searchQ = q
-        state.searching = true
-      },
-      showResults: state => state.count--
+      }
     }
   })
 

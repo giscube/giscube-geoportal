@@ -108,6 +108,13 @@ export default {
       }
     },
     addOverlay (layer, name, options) {
+      const existing = this.layers.find(o => o.layer === layer)
+      if (existing) {
+        existing.name = name
+        existing.visible = true
+        return
+      }
+
       if (!options) {
         options = {}
       }

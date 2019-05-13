@@ -1,56 +1,41 @@
-<template>
-  <div class="panel place-panel">
-    <div class="panel-content">
-      <p class="panel-title">{{ $t('names.coords') | capitalize }}</p>
-
-      <div v-if="error">
-        {{ error }}
-      </div>
-      <div v-else class="row-info">
-        <q-icon name="place" size="20px" /> GPS: {{ coordinates }}
-      </div>
-
-      <div class="row reverse">
-        <q-btn outline no-caps
-          icon="zoom_in"
-          :disable="!this.coords"
-          :label="$t('actions.zoom') | capitalize"
-          @click="zoomResult"
-        />
-      </div>
-
-    </div>
-  </div>
-</template>
-
 <script>
+import Vue from 'vue'
 import { QBtn, QIcon } from 'quasar'
 import L from 'src/lib/leaflet'
 
-export function coordsRegex () {
+import LatLngPopup from './LatLngPopup'
+import ResultPanelMixin from './ResultPanelMixin'
+
+function coordsRegex () {
   return /^([\w.,]+),? ([\w.,]+)$/g
 }
 
+export function toCoords (coords) {
+  coords = coordsRegex().exec(coords)
+  if (!coords) {
+    return null
+  }
+
+  const lat = parseFloat(coords[1])
+  const lng = parseFloat(coords[2])
+  if (isNaN(lat) || isNaN(lng)) {
+    return null
+  }
+
+  return [lat, lng]
+}
+
 export default {
+  mixins: [ResultPanelMixin],
   components: {
     QBtn,
     QIcon
   },
   data () {
     return {
-      result: null,
       coords: null,
       error: null
     }
-  },
-  mounted () {
-    this.result = this.$route.params
-    this.applyResult()
-  },
-  beforeRouteUpdate (to, from, next) {
-    this.result = to.params
-    this.applyResult()
-    next()
   },
   destroyed () {
     if (this.coords) {
@@ -61,41 +46,35 @@ export default {
     coordinates () {
       return this.result && this.result.coords
     },
-    resultsLayer () {
-      return this.$store.state.resultsLayer
+    description () {
+      return this.error
     },
-    map () {
-      return this.$store.state.map.mapObject
+    geom () {
+      return this.coords
+    },
+    title () {
+      return this.$t('names.coords')
     }
   },
-  watch: {
-    'map': 'applyResult',
-    'resultsLayer': 'applyResult'
-  },
   methods: {
-    applyResult () {
-      if (!this.map || !this.resultsLayer) {
-        // wait everything to be loaded
-        return
+    applyParameters (params) {
+      if (params.coords !== this.query) {
+        this.$store.commit('search/result', {
+          origin: 'coordinates',
+          ...params
+        })
       }
-
+      this.$nextTick(() => this.applyResult())
+    },
+    applyResult () {
       if (this.result.espg !== '4326') {
         this.error = 'Invalid ESPG'
         return
       }
 
-      const coords = coordsRegex().exec(this.result.coords)
+      const coords = toCoords(this.result.coords)
       if (!coords) {
-        this.error = 'Invalid coordinate'
-        return
-      }
-
-      let lat, lng
-      try {
-        lat = parseFloat(coords[1])
-        lng = parseFloat(coords[2])
-      } catch (e) {
-        this.error = 'Invalid coordinate'
+        this.error = 'Invalid coordinates'
         return
       }
 
@@ -103,19 +82,26 @@ export default {
         this.coords.remove()
       }
 
-      // TODO coordinates may be invalid or swaped
-      // TODO setup zoom in config
-      this.coords = L.marker([lat, lng]).addTo(this.resultsLayer, 19)
+      // TODO coordinates may be invalid or swapped
+      this.coords = L.marker(coords)
 
-      this.zoomResult()
+      this.resultsLayer.addLayer(this.coords)
+
+      const PopupContent = Vue.extend(LatLngPopup)
+      const popup = new PopupContent({
+        parent: this,
+        propsData: {
+          latlng: this.coords.getLatLng()
+        }
+      })
+      this.coords.bindPopup(popup.$mount().$el)
+      this.coords.openPopup()
     },
-    zoomResult () {
-      if (this.map) {
-        this.map.flyTo(this.coords.getLatLng())
-      }
+    pin () {
+      this.resultsLayer.removeLayer(this.coords)
+      this.map.addLayer(this.coords)
+      this.map.layerswitcher.addOverlay(this.coords, this.coordinates)
     }
   }
 }
 </script>
-
-<!-- Style reused from PlacePanel.vue -->

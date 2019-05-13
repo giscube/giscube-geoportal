@@ -18,7 +18,7 @@ function isAxiosError (error) {
   return !!(error.config && (error.config.url || error.config.baseUrl) && error.config.method)
 }
 
-function except (error, hide = false) {
+function except (error, { hide = false } = {}) {
   const self = except
   if (error instanceof ErrorEvent && error.error) {
     error = error.error // extract the error from the event

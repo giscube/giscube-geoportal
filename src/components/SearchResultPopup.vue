@@ -6,7 +6,7 @@
     <div class="tools" v-if="properties">
       <q-btn flat dense
         icon="delete"
-        @click="_removeResult"
+        @click="$emit('delete')"
       />
     </div>
   </div>
@@ -27,13 +27,6 @@ export default {
         return this.feature.geojson.properties
       } else {
         return {}
-      }
-    }
-  },
-  methods: {
-    _removeResult () {
-      if (this.feature.layer) {
-        this.feature.layer.remove()
       }
     }
   }

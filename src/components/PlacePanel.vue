@@ -1,145 +1,120 @@
-<template>
-  <div class="panel place-panel">
-    <div class="panel-content">
-      <p class="panel-title">{{ result.title }}</p>
-
-      <div v-if="result && properties.address" class="row-info">
-        <q-icon name="home" size="20px" /> {{ properties.address }}
-      </div>
-
-      <div v-if="coordinates" class="row-info">
-        <q-icon name="place" size="20px" /> GPS: {{ coordinates }}
-      </div>
-
-      <div class="row reverse">
-        <q-btn outline no-caps
-          icon="zoom_in"
-          :label="$t('actions.zoom') | capitalize"
-          @click="zoomResult"
-        />
-      </div>
-
-    </div>
-  </div>
-</template>
-
 <script>
-import { QBtn, QIcon } from 'quasar'
-import L from '../lib/leaflet'
-
-import BaseResultMixin from './BaseResultMixin.js'
+import ResultPanelMixin from './ResultPanelMixin'
+import FeaturePopup from './FeaturePopup'
+import SearchResultPopup from './SearchResultPopup'
+import { createLayerFromConfig } from '../lib/geomUtils'
 
 export default {
-  mixins: [BaseResultMixin],
-  props: ['map'],
-  components: {
-    QBtn,
-    QIcon
+  mixins: [ResultPanelMixin],
+  data () {
+    return {
+      layer: null,
+      layerType: null
+    }
   },
   computed: {
+    address () {
+      return this.properties.address
+    },
     coordinates () {
-      if (this.result.latlng) {
+      if (this.result && this.result.latlng) {
         return this.result.latlng.coordinates[0].toFixed(6) + ', ' + this.result.latlng.coordinates[1].toFixed(6)
       } else {
         return null
       }
     },
-    properties () {
-      if (this.result.geojson) {
-        return this.result.geojson.properties
-      } else {
-        return {}
+    description () {
+      return this.result && this.result.description
+    },
+    geom () {
+      return this.layer
+    },
+    keywords () {
+      return this.result && this.result.keywords && this.result.keywords.split(',').map(item => item.trim())
+    },
+    metadata () {
+      const metadata = []
+      let url = this.layerOptions.layerDescriptor && this.layerOptions.layerDescriptor.url
+      if (url) {
+        let text = url
+        if (this.layerOptions.layerDescriptor.type && this.layerOptions.layerDescriptor.type.toLowerCase() === 'wms') {
+          url += '?service=WMS&request=GetCapabilities'
+        }
+        metadata.push({
+          name: 'URL',
+          text: text,
+          href: url
+        })
+      }
+
+      return metadata
+    },
+    layerOptions () {
+      const isGeojson = !!this.result.geojson
+
+      return {
+        result: this.result,
+        layerDescriptor: this.result && this.result.children && this.result.children.length > 0 && this.result.children[0],
+        title: this.result && this.result.title,
+        options: (this.result && this.result.options) || {},
+        map: this.map,
+        popupComponent: isGeojson ? SearchResultPopup : FeaturePopup
       }
     },
-    resultsLayer () {
-      return this.$store.state.resultsLayer
+    properties () {
+      return (this.result && this.result.geojson && this.result.geojson.properties) || {}
     },
-    isResultClickable () {
-      return this.result.geojson
-    }
-  },
-  destroyed () {
-    if (this.result.layer) {
-      this.result.layer.removeFrom(this.resultsLayer)
-      this.$store.commit('selectResult', null)
+    title () {
+      return this.result && this.result.title
     }
   },
   methods: {
-    isValidResult () {
-      if (!this.isResultClickable) {
-        // Result is not clickable
-        return false
-      }
-
-      let element = this.result
-      if (!element.geojson) {
-        // Result is not Geojson
-        return false
-      }
-      if (!('type' in element.geojson && element.geojson['type'] === 'Feature')) {
-        // Result is not Feature
-        return false
-      }
-
-      return true
-    },
-    viewResult () {
-      if (!this.isValidResult()) {
-        return
-      }
-
-      let element = this.result
-      let mapInfo = this.map.giscube.getMapInfo()
-      let bounds
-      let geom = element.geojson.geometry
-
-      if (geom.type === 'Point') {
-        var point = L.latLng(
-          geom.coordinates[1],
-          geom.coordinates[0])
-        bounds = point.toBounds(
-          Math.min(mapInfo.visibleHeightMeters, mapInfo.visibleWidthMeters) * 0.5)
+    applyParameters (params) {
+      if (!this.result) {
+        return true
       } else {
-        if (!element.layer) {
-          element.layer = L.geoJSON.geometryToLayer(geom)
-        }
-        bounds = element.layer.getBounds().pad(0.1)
+        this.applyResult()
       }
-      this.resultsLayer.addLayer(element.layer)
-
-      let visible = mapInfo.visibleBounds.contains(bounds)
-
-      if (!visible || !mapInfo.isVisible) {
-        this.zoomResult()
-      }
-      element.layer.openPopup()
     },
-    zoomResult () {
-      if (!this.isValidResult()) {
+    applyResult () {
+      createLayerFromConfig(this.layerOptions)
+        .then(({ type, layer }) => {
+          this.layer = layer
+          this.layerType = type
+
+          this.show()
+          if (type === 'GeoJSON') {
+            const visibleBBox = this.$store.getters['map/bbox']() // => map/bounds
+            const paddedVisibleBBox = visibleBBox.pad(-this.$config.layout.mapZoomPadding)
+            const pos = layer.getBounds ? layer.getBounds() : layer.getLatLng()
+            const visible = paddedVisibleBBox.contains(pos)
+
+            if (!visible) {
+              this.zoom()
+            }
+            this.layer.openPopup()
+          }
+        })
+        .catch(e => {
+          if (e) {
+            this.$except(e)
+          }
+        })
+    },
+    show () {
+      this.resultsLayer.addLayer(this.layer)
+    },
+    pin () {
+      if (!this.layer) {
         return
       }
 
-      let element = this.result
-      let mapInfo = this.map.giscube.getMapInfo()
-      let geojson = L.geoJSON(element.geojson.geometry)
-      let bounds = geojson.getBounds().pad(0.1)
+      this.resultsLayer.removeLayer(this.layer)
+      this.map.addLayer(this.layer)
 
-      this.map.flyToBounds(bounds, {
-        paddingTopLeft: [mapInfo.sidebarWidthPx, 0],
-        maxZoom: 19
-      })
+      const t = this.layerType === 'WMS' ? this.layerOptions.layerDescriptor.title : this.layerOptions.title
+      this.map.layerswitcher.addOverlay(this.layer, t, { layerType: this.layerType })
     }
   }
 }
 </script>
-
-<style lang="scss">
-.place-panel {
-  .panel-title {
-    margin-bottom: 20px;
-  }
-  .row-info {
-    margin-bottom: 15px;
-  }
-}
-</style>

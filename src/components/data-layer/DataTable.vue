@@ -279,7 +279,7 @@ export default {
     },
     checkBbox () {
       if (this.mapFilter && !this.editing) {
-        const newBbox = this.$store.getters['map/bbox']()
+        const newBbox = this.$store.getters['map/drfgBbox']()
         if (!isEqual(newBbox, this.bbox)) {
           this.bbox = newBbox
           this.refreshData()

@@ -7,7 +7,6 @@ import HelpPanel from 'components/HelpPanel'
 import HomePanel from 'components/HomePanel'
 import AuthPanel from 'components/AuthPanel'
 import MeasurePanel from 'components/MeasurePanel'
-import GeoportalPanel from 'components/GeoportalPanel'
 import PlacePanel from 'components/PlacePanel'
 import SearchPanel from 'components/SearchPanel'
 import StreetViewPanel from 'components/StreetViewPanel'
@@ -25,7 +24,7 @@ const routes = [
       { path: 'contact/', component: ContactPanel, name: 'contact' },
       { path: 'coords/:espg/:coords', component: CoordsPanel, name: 'coords' },
       { path: 'data/:sourceName?/:layerName?/', component: DataPanel, name: 'data' },
-      { path: 'geoportal/:q/', component: GeoportalPanel },
+      { path: 'geoportal/:q/', redirect: { name: 'place' } },
       { path: 'help/', component: HelpPanel, name: 'help' },
       { path: 'home/', component: HomePanel, name: 'home' },
       { path: 'measure/', component: MeasurePanel, name: 'measure' },

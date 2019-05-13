@@ -295,7 +295,7 @@ aside.q-drawer--left {
   font-size: 1.3em;
   font-family: 'Lato', sans-serif;
   font-weight: 400;
-  margin-top: 10px;
+  margin-top: 15px;
   margin-bottom: 10px;
 }
 </style>

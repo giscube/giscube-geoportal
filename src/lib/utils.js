@@ -1,5 +1,14 @@
 import isEqualWith from 'lodash/isEqualWith.js'
 
+export function createEnum (elements, ordered = false) {
+  const values = ordered ? elements.map((_, i) => i) : elements.map(e => Symbol(e))
+
+  const result = {}
+  values.forEach(value => { result[value] = value })
+  elements.forEach((e, i) => { result[e] = values[i] })
+  return Object.freeze(result)
+}
+
 export function cloneClean (obj, allowEmptyString = true) {
   if (!allowEmptyString && obj === '') {
     return null

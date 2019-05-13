@@ -128,6 +128,7 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
 
   const isMarker = (style.shapetype.toLowerCase() === 'marker')
   const isImage = (style.shapetype.toLowerCase() === 'image')
+  styleRules = styleRules || []
 
   let rules
   if (isImage) {
@@ -173,7 +174,7 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
 
   // popup
   const PopupContent = popup.component && (typeof popup.component === 'object' ? Vue.extend(popup.component) : popup.component)
-  const renderContents = typeof design.popup === 'function' ? design.popup : makeTemplate(design.popup)
+  const renderContents = design.popup && (typeof design.popup === 'function' ? design.popup : makeTemplate(design.popup))
 
   // Setup feature to have a single popup and, if using markes, a single icon which are reused
   function prepareFeature (feature) {

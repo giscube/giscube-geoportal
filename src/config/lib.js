@@ -72,6 +72,9 @@ export default new Options({
       'fullscreen',
       'auth'
     ],
+    mapPointZoom: 19,
+    mapZoomPadding: 0.05,
+    mapMaxFlyZoom: 19,
     printHeaderToolbar: [
       'cancelPrint',
       'printPage',
@@ -159,7 +162,9 @@ export default new Options({
     },
     search: {
       icon: 'search',
-      to: 'search'
+      to: 'search',
+
+      historyLength: 5
     },
     streetview: {
       icon: 'fas fa-street-view',
