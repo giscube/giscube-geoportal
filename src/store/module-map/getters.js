@@ -6,12 +6,13 @@ export function bbox (state, getters, rootState, rootGetters) {
   }
 
   return () => {
-    const sidebarOverlaying = rootGetters['layout/drawersOverlaying']
+    const sidebarOverlaying = rootGetters['layout/drawersFullOverlay']
     const sidebarVisible = rootState.layout.sidebarVisible
-    const visibility = sidebarOverlaying || !sidebarVisible ? {} : {
+
+    const visibility = (!sidebarOverlaying && sidebarVisible) ? {
       left: rootState.layout.leftDrawerSize,
       width: rootState.layout.size.width
-    }
+    } : {}
 
     const { bbox } = visibleMapPart(state.mapObject, visibility)
     const result = [
