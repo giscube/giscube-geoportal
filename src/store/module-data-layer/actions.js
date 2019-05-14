@@ -202,6 +202,7 @@ export function cancelEdits (context) {
 
   context.commit('revertAllFeatures')
   context.commit('editing', false)
+  context.commit('cleanup')
 }
 
 export function saveEdits (context) {
@@ -286,6 +287,7 @@ export function saveEdits (context) {
       .then(result => {
         context.commit('unselectFeatures', unselect)
         context.commit('editing', false)
+        context.commit('cleanup')
         resolve(result)
       })
       .catch(error => {

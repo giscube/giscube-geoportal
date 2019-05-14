@@ -15,13 +15,19 @@ function preventExit (e, str) {
 export default {
   name: 'App',
   beforeMount () {
-    window.addEventListener('beforeunload', e => {
+    window.addEventListener('beforeunload', this.onLeave)
+  },
+  destroyed () {
+    window.removeEventListener('beforeunload', this.onLeave)
+  },
+  methods: {
+    onLeave (e) {
       if (this.$store.state.dataLayer.editStatus.saving) {
         preventExit(e, this.$t('tools.data.quitWhileSaving'))
       } else if (this.$store.getters['dataLayer/editLayerModified']) {
         preventExit(e, this.$t('tools.data.quitWithChanges'))
       }
-    })
+    }
   }
 }
 </script>

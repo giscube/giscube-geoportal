@@ -8,6 +8,13 @@ export function sources (state, value) {
   Vue.set(state, 'sources', value)
 }
 
+export function cleanup (state) {
+  state.editStatus.editing = false
+  state.editStatus.adding = false
+  state.editStatus.originals = {}
+  state.editStatus.newPkGenerator = null
+}
+
 export function current (state, value) {
   if (state.editStatus.editing) {
     console.warn('Trying to change layers while editing')
@@ -18,10 +25,8 @@ export function current (state, value) {
   state.layerConfig.layerInfo = null
   state.layerConfig.fields = null
   state.table.selected = []
-  state.editStatus.editing = false
-  state.editStatus.adding = false
-  state.editStatus.originals = {}
-  state.editStatus.newPkGenerator = null
+
+  cleanup(state)
 }
 
 export function layerInfoFromRequest (state, value) {
@@ -189,8 +194,6 @@ export function revertAllFeatures (state) {
   ++index
   // index = first new
   geojson.splice(index)
-
-  state.editStatus.originals = {}
 }
 
 export function featureHistory (state, feature) {
