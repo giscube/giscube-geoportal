@@ -1,9 +1,15 @@
 import Vue from 'vue'
 
 function _notify (message, config) {
-  if (message instanceof Error) {
+  if (message.message) {
     message = message.message
   }
+
+  if (!message) {
+    message = 'Unknwon error'
+  }
+
+  message = message.toString()
 
   const dismiss = Vue.prototype.$q.notify({
     position: 'top',

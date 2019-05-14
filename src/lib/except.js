@@ -3,7 +3,7 @@ import { notifyError, notifyHttpError } from './notifications'
 
 function except (error) {
   const self = except
-  if (error instanceof ErrorEvent) {
+  if (error instanceof ErrorEvent && error.error) {
     error = error.error // extract the error from the event
   }
   self._sentry(error)
