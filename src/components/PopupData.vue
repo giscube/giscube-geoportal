@@ -2,7 +2,7 @@
   <div
     @click="onClick"
   >
-    <q-resize-observer @resize="onResize" :debounce="0" />
+    <q-resize-observer @resize="onResize" :debounce="1" />
     <div
       v-if="result && !resultIsError"
       v-html="result"
