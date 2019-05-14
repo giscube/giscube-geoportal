@@ -130,6 +130,7 @@ export default {
       return this.field.tableHeaders
         .filter(({ i }) => i >= 0)
         .map(({ name, i, label }) => ({
+          align: 'left',
           name,
           label,
           field: row => row[i],
