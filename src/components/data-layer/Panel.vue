@@ -324,6 +324,7 @@ export default {
         },
         persistent: true
       }).onDismiss(() => {
+        this.forceLeave = true
         this.$router.push(to)
       })
       next(false)
