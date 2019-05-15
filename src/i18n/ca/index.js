@@ -69,7 +69,7 @@ export default {
       title: 'Capa de dades',
 
       allDeleted: 'Alguns dels elements seleccionats estan marcats per ser eliminats.',
-      colFilter: 'Filtar per "{name}"',
+      colFilter: 'Filtrar per "{label}"',
       defaultProperties: 'Propietats per defecte dels nous elements',
       deleteElements: 'Elimina {elements}',
       dialogNew: 'Mostrar formulari després d\'afegir la geometria',
