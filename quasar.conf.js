@@ -11,7 +11,8 @@ module.exports = function (ctx) {
       'config',
       'except',
       'i18n',
-      'axios'
+      'axios',
+      'moment'
     ],
 
     css: [

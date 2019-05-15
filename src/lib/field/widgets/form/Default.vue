@@ -4,11 +4,12 @@
     :disable="disable"
     :label="field.label"
     :clearable="field.null"
-    :rules="field.rules($t)"
+    :rules="field.rules($t.bind(this))"
+    :mask="field.mask"
     lazy-rules
     :value="v"
     :hint="hint"
-    @input="$emit('input', $event)"
+    @input="$emit('input', field.input2val($event))"
   />
 </template>
 
