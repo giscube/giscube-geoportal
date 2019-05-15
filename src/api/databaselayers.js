@@ -42,7 +42,6 @@ export default {
     })
 
     const conf = {
-      timeout: 10000,
       params,
       ...config
     }
