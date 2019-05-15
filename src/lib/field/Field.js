@@ -56,13 +56,21 @@ export default class Field {
     }
   }
 
-  cloneValue ({ feature, properties, cleanup = false }) {
+  clone ({ feature, properties, cleanup = false }) {
     let value = this.getValue({ feature, properties })
     if (value === '' || value === undefined) {
       if (cleanup) {
         value = null
       }
-    } else if (AsyncValue.is(value)) {
+    } else {
+      value = this.cloneValue(value)
+    }
+
+    return value
+  }
+
+  cloneValue (value) {
+    if (AsyncValue.is(value)) {
       // Keep the same value
     } else {
       value = cloneClean(value)
@@ -72,7 +80,7 @@ export default class Field {
   }
 
   cloneSetValue (a, b) {
-    this.setValue({ ...b, value: this.cloneValue(a) })
+    this.setValue({ ...b, value: this.clone(a) })
   }
 
   moveValue (from, to) {
@@ -88,6 +96,10 @@ export default class Field {
 
   val2str (value) {
     return Field.toString(value)
+  }
+
+  input2val (value) {
+    return value
   }
 
   str (data) {

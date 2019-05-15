@@ -7,7 +7,7 @@ function aggregate (fields, features) {
   for (let field of fields) {
     let current
     for (let feature of features) {
-      const value = field.cloneValue({ feature, cleanup: true })
+      const value = field.clone({ feature, cleanup: true })
 
       if (current === undefined) {
         current = value

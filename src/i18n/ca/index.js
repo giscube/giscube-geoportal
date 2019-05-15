@@ -82,6 +82,7 @@ export default {
       filterByView: 'Mapa',
       filters: 'Filtres',
       findInTable: 'Cerca a la taula',
+      invalidDate: 'Data invàlida',
       multipleNew: 'Afegir varis elements',
       newElement: 'Nou element',
       qDiscardChanges: 'Esteu segur de descartar tots els canvis?',

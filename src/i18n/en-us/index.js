@@ -78,6 +78,7 @@ export default {
       filterByView: 'Map',
       filters: 'Filters',
       findInTable: 'Find in table',
+      invalidDate: 'Invalid date',
       multipleNew: 'Add multiple elements',
       newElement: 'New element',
       qDiscardChanges: 'Are you sure you want to discard all the changes?',

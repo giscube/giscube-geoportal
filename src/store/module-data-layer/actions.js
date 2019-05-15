@@ -176,7 +176,7 @@ export function editMultiple (context, { features, properties }) {
         // keep same value
         p[fieldName] = f.getValue({ feature })
       } else {
-        p[fieldName] = f.cloneValue({ properties })
+        p[fieldName] = f.clone({ properties })
         edited = true
       }
     })

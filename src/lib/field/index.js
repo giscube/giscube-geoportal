@@ -2,22 +2,28 @@ import Field from './Field'
 
 import BooleanField from './BooleanField'
 import ChoicesField from './ChoicesField'
+import DateField from './DateField'
+import DateTimeField from './DateTimeField'
 import ImageField from './ImageField'
 import NumberField from './NumberField'
 import LinkedField from './LinkedField'
 import PkField from './PkField'
 import SqlChoicesField from './SqlChoicesField'
+import TimeField from './TimeField'
 
 export const fields = {
   default: Field,
 
   boolean: BooleanField,
   choices: ChoicesField,
+  date: DateField,
+  datetime: DateTimeField,
   image: ImageField,
   number: NumberField,
   linkedfield: LinkedField,
   pk: PkField,
-  sqlchoices: SqlChoicesField
+  sqlchoices: SqlChoicesField,
+  time: TimeField
 }
 
 function getFieldClass (field, fieldInfo) {
