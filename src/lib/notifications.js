@@ -1,5 +1,7 @@
 import Vue from 'vue'
 
+export const MSG_SIZE_LIMIT = 1000
+
 function _notify (message, config) {
   if (message.message) {
     message = message.message
@@ -9,7 +11,7 @@ function _notify (message, config) {
     message = 'Unknwon error'
   }
 
-  message = message.toString()
+  message = message.toString().substring(0, MSG_SIZE_LIMIT)
 
   const dismiss = Vue.prototype.$q.notify({
     position: 'top',
@@ -46,7 +48,8 @@ export function notifyHttpError (error, details = true) {
         m = m.detail
       }
 
-      if (m) {
+      const isHTML = /^\s*<(?:!DOCTYPE|html)/i.test(m)
+      if (m && !isHTML) {
         message += `: ${m}`
       }
     }

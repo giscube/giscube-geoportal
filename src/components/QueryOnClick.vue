@@ -204,7 +204,7 @@ export default {
               queryResults = results
             }
           })
-          .catch(this.$except.http)
+          .catch(this.$except)
       }
 
       // return null for no results

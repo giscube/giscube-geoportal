@@ -25,7 +25,7 @@ export function credentialsLogin (context, { username, password }) {
         if (error.request && error.request.status === 401) {
           context.commit('setAccessToken', null)
         } else {
-          except.http(error)
+          except(error)
         }
         reject(error)
       })
@@ -106,7 +106,7 @@ export function updateUserInfo (context) {
       if (error.request && error.request.status >= 300 && (error.request.status < 400 || error.request.status === 401 || error.request.status === 403)) {
         context.commit('setAccessToken', null)
       } else {
-        except.http(error)
+        except(error)
       }
     })
 }

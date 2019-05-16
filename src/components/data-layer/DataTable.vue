@@ -355,7 +355,7 @@ export default {
         })
         .catch(error => {
           this.loading = false
-          this.$except.http(error)
+          this.$except(error)
         })
     },
     onColFilterInput (col, value) {
@@ -396,7 +396,7 @@ export default {
           this.processLayerInfo()
           this.$nextTick(() => this.refreshDataNow())
         })
-        .catch(this.$except.http)
+        .catch(this.$except)
     },
     getRowsPerPage () {
       const layerInfo = this.$store.state.dataLayer.layerConfig.layerInfo

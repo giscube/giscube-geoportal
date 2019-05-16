@@ -162,7 +162,7 @@ export default {
                 vm.canCloseWindow = true
               })
               .catch(error => {
-                vm.$except.http(error)
+                vm.$except(error)
                 vm.loginCodeError = true
                 vm.canCloseWindow = true
               })

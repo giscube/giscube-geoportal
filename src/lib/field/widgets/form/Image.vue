@@ -112,7 +112,7 @@ export default {
       const files = this.$refs.files.files
       if (files.length > 0) {
         const newValue = new AsyncPhoto(files[0], this.$store.state.dataLayer.current.source, this.$store.getters['auth/headers'])
-        newValue.getValue().catch(this.$except.http)
+        newValue.getValue().catch(this.$except)
         this.$store.dispatch('dataLayer/uploadPhoto', newValue)
         this.$emit('input', newValue)
       }
