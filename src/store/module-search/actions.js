@@ -1,6 +1,5 @@
 import axios from 'axios'
 import Vue from 'vue'
-import router from 'src/router'
 import { createGeoJSONLayer } from 'src/lib/geomUtils'
 
 import SearchResultPopup from 'components/SearchResultPopup'
@@ -90,6 +89,7 @@ export function uniqueSelection (context) {
 }
 
 export function select (context, { result, replace = false }) {
+  const router = Vue.prototype.$realRouter
   context.commit('selectResult', result)
   const go = (replace ? router.replace : router.push).bind(router)
 
