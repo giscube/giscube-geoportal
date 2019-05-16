@@ -31,7 +31,7 @@ export function fetch (context) {
   if (toCoords(q)) {
     context.state.fetchingResults.push({
       origin: 'coordinates',
-      espg: '4326',
+      epsg: '4326',
       coords: q
     })
   }
@@ -95,7 +95,7 @@ export function select (context, { result, replace = false }) {
 
   if (result.origin === 'coordinates') {
     const params = {
-      espg: '4326',
+      epsg: '4326',
       coords: result.coords
     }
     go({ name: 'coords', params })

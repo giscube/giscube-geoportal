@@ -67,7 +67,7 @@ export default {
       this.$nextTick(() => this.applyResult())
     },
     applyResult () {
-      if (this.result.espg !== '4326') {
+      if (this.result.epsg !== '4326') {
         this.error = 'Invalid ESPG'
         return
       }
