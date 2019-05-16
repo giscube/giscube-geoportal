@@ -1,7 +1,7 @@
 <template>
   <div class='popup'>
     <div class='title'>{{ $t('names.lat') | capitalize }}, {{ $t('names.lng') | capitalize }}</div>
-    <a @click='onClick'>{{ latlng.lat.toFixed(6) }}, {{ latlng.lng.toFixed(6) }}</a>
+    <a @click='onClick'>{{ coords }}</a>
   </div>
 </template>
 
@@ -12,8 +12,15 @@ export default {
   data () {
     return {}
   },
+  computed: {
+    coords () {
+      return this.latlng && `${this.latlng.lat.toFixed(6)}, ${this.latlng.lng.toFixed(6)}`
+    }
+  },
   methods: {
     onClick () {
+      this.$store.commit('layout/setSidebarVisible', true)
+      this.$router.push({ name: 'coords', params: { epsg: '4326', coords: this.coords } })
     }
   }
 }
