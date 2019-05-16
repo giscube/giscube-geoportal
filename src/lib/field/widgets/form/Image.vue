@@ -59,6 +59,8 @@ import ValidateMixin from '../mixins/ValidateMixin'
 
 import { AsyncPhoto } from '../../ImageField.js'
 
+import resizeImage from 'src/lib/resizeImage'
+
 import ImageDialog from 'components/ImageDialog'
 
 export default {
@@ -111,10 +113,12 @@ export default {
     upload () {
       const files = this.$refs.files.files
       if (files.length > 0) {
-        const newValue = new AsyncPhoto(files[0], this.$store.state.dataLayer.current.source, this.$store.getters['auth/headers'])
-        newValue.getValue().catch(this.$except)
-        this.$store.dispatch('dataLayer/uploadPhoto', newValue)
-        this.$emit('input', newValue)
+        resizeImage(files[0], this.field.size).then(photo => {
+          const newValue = new AsyncPhoto(photo, this.$store.state.dataLayer.current.source, this.$store.getters['auth/headers'])
+          newValue.getValue().catch(this.$except)
+          this.$store.dispatch('dataLayer/uploadPhoto', newValue)
+          this.$emit('input', newValue)
+        })
       }
     },
     showImage (src) {
