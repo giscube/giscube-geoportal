@@ -9,7 +9,6 @@ import CatalogResult from 'components/CatalogResult'
 import CoordsPanel from 'components/CoordsPanel'
 import DataPanel from 'components/data-layer/Panel'
 import Sidebar from 'components/Sidebar'
-import GeoportalPanel from 'components/GeoportalPanel'
 import MeasurePanel from 'components/MeasurePanel'
 import PlacePanel from 'components/PlacePanel'
 import SearchBar from 'components/SearchBar'
@@ -35,7 +34,6 @@ export {
   GeoportalMap,
   GiscubeLayout,
   Sidebar,
-  GeoportalPanel,
   MeasurePanel,
   PlacePanel,
   SearchBar,
