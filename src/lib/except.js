@@ -1,4 +1,3 @@
-import { AxiosError } from 'axios'
 import Vue from 'vue'
 import { notifyError, notifyHttpError } from './notifications'
 
@@ -15,6 +14,10 @@ function isInternalError (error) {
   return INTERNAL_ERROR_CLASSES.some(ErrorClass => error instanceof ErrorClass)
 }
 
+function isAxiosError (error) {
+  return !!(error.config && (error.config.url || error.config.baseUrl) && error.config.method)
+}
+
 function except (error, hide = false) {
   const self = except
   if (error instanceof ErrorEvent && error.error) {
@@ -28,7 +31,7 @@ function except (error, hide = false) {
     if (!hide) {
       self._notify('Internal error')
     }
-  } else if (error instanceof AxiosError) {
+  } else if (isAxiosError(error)) {
     const details = (error.code >= 400 && error.code < 500)
     self._sentry(error)
     self._log(error)
