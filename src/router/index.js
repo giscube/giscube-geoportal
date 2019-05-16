@@ -22,7 +22,7 @@ const routes = [
       { path: 'auth/', name: 'auth', component: AuthPanel },
       { path: 'catalog/:q?', component: CatalogPanel, name: 'catalog' },
       { path: 'contact/', component: ContactPanel, name: 'contact' },
-      { path: 'coords/:espg/:coords', component: CoordsPanel, name: 'coords' },
+      { path: 'coords/:epsg/:coords', component: CoordsPanel, name: 'coords' },
       { path: 'data/:sourceName?/:layerName?/', component: DataPanel, name: 'data' },
       { path: 'geoportal/:q/', redirect: { name: 'place' } },
       { path: 'help/', component: HelpPanel, name: 'help' },
