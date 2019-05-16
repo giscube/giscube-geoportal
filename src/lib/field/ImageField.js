@@ -40,7 +40,16 @@ export class AsyncPhoto extends AsyncValue {
 
 export default class ImageField extends Field {
   constructor (info) {
+    const options = info.widget_options
+    const size = options.upload_size || 1024
+    delete options.upload_size
+
     super(info)
+
+    this.size = {
+      width: size,
+      height: size
+    }
     this.requiresFeatures = true
   }
 
