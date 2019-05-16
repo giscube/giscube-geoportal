@@ -82,7 +82,12 @@ export default {
   },
   beforeRouteUpdate (to, from, next) {
     this.$store.dispatch('search/clearResultLayer')
-    next({ name: 'search', params: to.params })
+    const redirect = this.applyParameters(to.params)
+    if (redirect) {
+      next({ name: 'search', params: to.params })
+    } else {
+      next()
+    }
   },
   beforeRouteLeave (to, from, next) {
     this.$store.dispatch('search/clearResultLayer')
