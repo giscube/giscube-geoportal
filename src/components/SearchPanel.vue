@@ -139,7 +139,7 @@ export default {
             self.searchsRunning -= 1
           })
           .catch(function (error) {
-            self.$except.http(error)
+            self.$except(error)
             self.searchsRunning -= 1
             self.searchError = true
           })

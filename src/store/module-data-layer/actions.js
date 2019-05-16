@@ -23,7 +23,7 @@ export function refreshSources (context) {
         s.index = index
         return s
       })
-      .catch(except.http)
+      .catch(except)
     requests.push(request)
   })
   const result = new Promise((resolve, reject) => {
@@ -63,7 +63,7 @@ export function selectLayer (context, { sourceName, layerName }) {
         }
       })
       .catch(error => {
-        except.http(error)
+        except(error)
         reject(error)
       })
   })
@@ -291,7 +291,7 @@ export function saveEdits (context) {
         resolve(result)
       })
       .catch(error => {
-        except.http(error, false)
+        except(error)
         reject(error)
       })
   })

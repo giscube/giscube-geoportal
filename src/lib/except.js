@@ -1,22 +1,51 @@
+import { AxiosError } from 'axios'
 import Vue from 'vue'
 import { notifyError, notifyHttpError } from './notifications'
 
-function except (error) {
+const INTERNAL_ERROR_CLASSES = [
+  EvalError,
+  RangeError,
+  ReferenceError,
+  SyntaxError,
+  TypeError,
+  URIError
+]
+
+function isInternalError (error) {
+  return INTERNAL_ERROR_CLASSES.some(ErrorClass => error instanceof ErrorClass)
+}
+
+function except (error, hide = false) {
   const self = except
   if (error instanceof ErrorEvent && error.error) {
     error = error.error // extract the error from the event
   }
-  self._sentry(error)
-  self._log(error)
-  self._notify(error)
-}
-Object.assign(except, {
-  http (error, details = true) {
-    const self = except
+
+  if (isInternalError(error)) {
     self._sentry(error)
     self._log(error)
-    self._notifyHttp(error, details)
-  },
+
+    if (!hide) {
+      self._notify('Internal error')
+    }
+  } else if (error instanceof AxiosError) {
+    const details = (error.code >= 400 && error.code < 500)
+    self._sentry(error)
+    self._log(error)
+
+    if (!hide) {
+      self._notifyHttp(error, details)
+    }
+  } else {
+    self._sentry(error)
+    self._log(error)
+
+    if (!hide) {
+      self._notify(error)
+    }
+  }
+}
+Object.assign(except, {
   vue (error, vm, info) {
     const self = except
     self._sentry(error)

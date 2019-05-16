@@ -103,5 +103,5 @@ export function addLayerGeoJSON (context, { layerDescriptor, title, options }) {
       const geojson = L.geoJson(response.data, options).addTo(map)
       map.layerswitcher.addOverlay(geojson, title)
     })
-    .catch(except.http)
+    .catch(except)
 }
