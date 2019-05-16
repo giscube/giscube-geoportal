@@ -70,10 +70,11 @@ export default {
   },
   methods: {
     applyParameters (params) {
-      if (!this.result) {
-        return true
-      } else {
+      if (this.result && params.q === this.title) {
         this.applyResult()
+      } else {
+        // redirect
+        return true
       }
     },
     applyResult () {
