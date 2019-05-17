@@ -1,5 +1,7 @@
 import template from 'lodash/template.js'
 
+import { strContains } from 'src/lib/utils'
+
 import Field from './Field'
 import SqlChoicesWidget from './widgets/form/SqlChoices'
 
@@ -59,5 +61,21 @@ export default class SqlChoicesField extends Field {
 
   formWidget () {
     return SqlChoicesWidget
+  }
+
+  search (value) {
+    const choices = this.valuesList
+      .filter(
+        row => this.tableHeaders.some(
+          ({ i }) => strContains(row[i], value)
+        )
+      )
+      .map(row => JSON.stringify(row[0]))
+      .join(',')
+
+    return {
+      key: this.name + '__in',
+      value: choices
+    }
   }
 }

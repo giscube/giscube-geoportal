@@ -16,4 +16,11 @@ export default class BooleanField extends Field {
   formWidget () {
     return BooleanWidget
   }
+
+  search (value) {
+    return {
+      key: this.name,
+      value
+    }
+  }
 }

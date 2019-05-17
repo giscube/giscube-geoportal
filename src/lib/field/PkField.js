@@ -13,4 +13,11 @@ export default class PkField extends Field {
       return value ? value.toString() : null
     }
   }
+
+  search (value) {
+    return {
+      key: this.name,
+      value
+    }
+  }
 }

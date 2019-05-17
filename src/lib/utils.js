@@ -35,6 +35,26 @@ export function isCleanEqual (a, b) {
   return isEqualWith(a, b, (aValue, bValue, key) => ignoreKey(key) ? true : undefined)
 }
 
+export function strContains (a, b) {
+  if (a === null || a === void 0 || b === null || b === void 0) {
+    return false
+  }
+
+  if (a === '') {
+    return a === b
+  }
+
+  if (a === b) {
+    return true
+  } else {
+    return a.toString().toLowerCase().includes(b.toString().toLowerCase())
+  }
+}
+
+export function escapeRegex (unsafe) {
+  return unsafe.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
 export function escapeHtml (unsafe) {
   return unsafe
     .replace(/&/g, '&amp;')

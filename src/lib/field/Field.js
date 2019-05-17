@@ -90,8 +90,8 @@ export default class Field {
     return Field.toString(value)
   }
 
-  str (feature) {
-    return this.val2str(this.getValue(feature))
+  str (data) {
+    return this.val2str(this.getValue(data))
   }
 
   repr (data) {
@@ -109,6 +109,13 @@ export default class Field {
 
   formWidget () {
     return DefaultWidget
+  }
+
+  search (value) {
+    return {
+      key: this.name + '__icontains',
+      value
+    }
   }
 
   // Defining onUpdate make the field logic on edits.

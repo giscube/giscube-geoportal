@@ -5,4 +5,11 @@ export default class NumberField extends Field {
   formWidget () {
     return NumberWidget
   }
+
+  search (value) {
+    return {
+      key: this.name,
+      value
+    }
+  }
 }

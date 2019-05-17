@@ -308,18 +308,15 @@ export default {
         extraParams: {}
       }
 
-      this.layerInfo && this.layerInfo.fields.forEach(f => {
-        if (f.name === this.layerInfo.geom_field) {
+      this.fields.forEach(f => {
+        if (f.geom) {
           return
         }
 
         const value = this.colFilters[f.name]
         if (value) {
-          let key = f.name
-          if (f.widget === 'string') {
-            key += '__icontains'
-          }
-          args.colFilters[key] = value
+          const s = f.search(value)
+          args.colFilters[s.key] = s.value
         }
       })
 
