@@ -15,6 +15,7 @@ function preventExit (e, str) {
 export default {
   name: 'App',
   beforeMount () {
+    this.$store.commit('router', this.$router)
     window.addEventListener('beforeunload', this.onLeave)
   },
   destroyed () {
