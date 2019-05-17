@@ -1,7 +1,11 @@
+import { merge } from 'lodash'
+
 import config from '../config'
 import except from '../lib/except.js'
 
 export default async ({ Vue }) => {
+  merge(except.config, config.except || {})
+
   window.addEventListener('error', except)
   Vue.config.errorHandler = except.vue
 

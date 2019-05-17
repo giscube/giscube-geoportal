@@ -43,6 +43,9 @@ export default new Options({
   },
   editsources: [
   ],
+  except: {
+    silent: false
+  },
   geoportalMap: {
     queryOnClick: require('components/QueryOnClick.vue').default
   },
