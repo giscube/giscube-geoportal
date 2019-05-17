@@ -1,3 +1,5 @@
+import { escapeRegex, strContains } from 'src/lib/utils'
+
 import Field from './Field'
 import ChoicesWidget from './widgets/form/Choices'
 
@@ -30,5 +32,20 @@ export default class ChoicesField extends Field {
 
   formWidget () {
     return ChoicesWidget
+  }
+
+  search (value) {
+    const choices = this.valuesList
+      .filter(
+        row => strContains(row.label, value)
+      )
+      .map(row => `^${escapeRegex(row.value)}$`)
+
+    choices.unshift(escapeRegex(value))
+
+    return {
+      key: this.name + '__iregex',
+      value: `(${choices.join('|')})`
+    }
   }
 }
