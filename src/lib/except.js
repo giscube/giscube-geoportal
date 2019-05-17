@@ -49,6 +49,10 @@ function except (error, { hide = false } = {}) {
   }
 }
 Object.assign(except, {
+  config: {
+    silent: false
+  },
+
   vue (error, vm, info) {
     const self = except
     self._sentry(error)
@@ -68,8 +72,16 @@ Object.assign(except, {
   },
 
   _log: console.error,
-  _notify: notifyError,
-  _notifyHttp: notifyHttpError,
+  _notify () {
+    if (!this.config.silent) {
+      notifyError.apply(null, arguments)
+    }
+  },
+  _notifyHttp () {
+    if (!this.config.silent) {
+      notifyHttpError.apply(null, arguments)
+    }
+  },
   _sentry () { /* Does nothing by default. Gets overriden by setSentry */ },
   _vue (error, vm, info) {
     Vue.util.warn(error, vm)
