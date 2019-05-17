@@ -8,7 +8,6 @@ module.exports = function (ctx) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     boot: [
-      'router',
       'config',
       'except',
       'i18n',
@@ -19,9 +18,10 @@ module.exports = function (ctx) {
       'app.styl'
     ],
 
+    // icon fonts
     extras: [
       'roboto-font',
-      'material-icons', // optional, you are not bound to it
+      'material-icons',
       'ionicons-v4',
       'fontawesome-v5',
       'mdi-v3'

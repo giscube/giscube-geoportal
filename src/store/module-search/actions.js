@@ -89,7 +89,7 @@ export function uniqueSelection (context) {
 }
 
 export function select (context, { result, replace = false }) {
-  const router = Vue.prototype.$realRouter
+  const router = context.rootState.router
   context.commit('selectResult', result)
   const go = (replace ? router.replace : router.push).bind(router)
 

@@ -25,10 +25,14 @@ export default function (/* { ssrContext } */) {
       search
     },
     state: {
+      router: null,
       currentTool: null,
       query: null
     },
     mutations: {
+      router (state, value) {
+        state.router = value
+      },
       setCurrentTool: (state, value) => {
         state.currentTool = value
       },
