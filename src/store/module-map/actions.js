@@ -3,6 +3,11 @@ import { createExternalLayer } from '../../lib/geomUtils'
 
 import FeaturePopup from '../../components/FeaturePopup'
 
+export function invalidateOffset (context) {
+  const padding = context.rootGetters['layout/hiddenMap']
+  context.state.mapObject.setGlobalPadding(padding)
+}
+
 export function invalidateSize (context) {
   context.state.mapObject.invalidateSize()
 }

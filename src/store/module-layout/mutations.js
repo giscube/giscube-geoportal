@@ -2,7 +2,7 @@ export function leftDrawerSize (state, value) {
   state.leftDrawerSize = value
 }
 
-export function setSidebarVisible (state, value) {
+export function sidebarVisible (state, value) {
   state.sidebarVisible = value
 }
 

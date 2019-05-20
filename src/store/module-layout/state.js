@@ -1,5 +1,5 @@
 export default {
-  size: null,
+  size: {},
   drawerBreakpoint: 600,
   drawerOverlay: true,
   drawerBehavior: 'default',

@@ -63,7 +63,7 @@ export default {
     this.$nextTick(() => {
       const { width, height } = this.$refs.layout
       this.$store.commit('layout/size', { width, height })
-      this.$store.commit('layout/setSidebarVisible', true)
+      this.$store.dispatch('layout/setSidebarVisible', true)
     })
   },
   methods: {
@@ -76,7 +76,7 @@ export default {
       this.map = map
     },
     onVisibilityChanged (visible) {
-      this.$store.commit('layout/setSidebarVisible', visible)
+      this.$store.dispatch('layout/setSidebarVisible', visible)
     }
   }
 }

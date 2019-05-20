@@ -19,7 +19,7 @@ export default {
   },
   methods: {
     onClick () {
-      this.$store.commit('layout/setSidebarVisible', true)
+      this.$store.dispatch('layout/setSidebarVisible', true)
       this.$router.push({ name: 'coords', params: { epsg: '4326', coords: this.coords } })
     }
   }
