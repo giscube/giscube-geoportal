@@ -61,7 +61,7 @@ export default {
         return this.$store.state.layout.leftDrawerSize
       },
       set: function (newValue) {
-        this.$store.commit('layout/leftDrawerSize', newValue)
+        this.$store.dispatch('layout/setLeftDrawerSize', newValue)
       }
     },
     sidebarVisible: {
@@ -69,7 +69,7 @@ export default {
         return this.$store.state.layout.sidebarVisible
       },
       set: function (newValue) {
-        this.$store.commit('layout/setSidebarVisible', newValue)
+        this.$store.dispatch('layout/setSidebarVisible', newValue)
       }
     }
   },
@@ -145,7 +145,7 @@ export default {
       this.width = width
     },
     onToggleClick () {
-      this.$store.commit('layout/setSidebarVisible', !this.sidebarVisible)
+      this.$store.dispatch('layout/setSidebarVisible', !this.sidebarVisible)
     },
     onToggleWidthClick () {
       if (this.resized) {
