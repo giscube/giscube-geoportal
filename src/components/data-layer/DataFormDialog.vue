@@ -92,6 +92,11 @@ export default {
       return this.deleted === this.features.length
     }
   },
+  watch: {
+    features () {
+      this.result = {}
+    }
+  },
   methods: {
     t (key, ...args) {
       return this.$t('tools.data.' + key, ...args)
