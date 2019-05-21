@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import * as ShareQuery from 'src/lib/shareQuery'
 import CatalogPanel from 'components/CatalogPanel'
 import ContactPanel from 'components/ContactPanel'
 import CoordsPanel from 'components/CoordsPanel'
@@ -9,6 +10,7 @@ import AuthPanel from 'components/AuthPanel'
 import MeasurePanel from 'components/MeasurePanel'
 import PlacePanel from 'components/PlacePanel'
 import SearchPanel from 'components/SearchPanel'
+import SharePanel from 'components/SharePanel'
 import StreetViewPanel from 'components/StreetViewPanel'
 import DataPanel from 'components/data-layer/Panel'
 
@@ -30,6 +32,7 @@ const routes = [
       { path: 'measure/', component: MeasurePanel, name: 'measure' },
       { path: 'place/:q*', component: PlacePanel, name: 'place' },
       { path: 'search/:q*', component: SearchPanel, name: 'search' },
+      { path: 'share', component: SharePanel, name: 'share' },
       { path: 'streetview/:q?', component: StreetViewPanel, name: 'streetview' },
 
       { path: ':q?', name: 'auth_params', component: AuthPanel },
@@ -39,5 +42,7 @@ const routes = [
 ]
 
 export default new Router({
-  routes: routes
+  routes: routes,
+  parseQuery: ShareQuery.fromQuery,
+  stringifyQuery: ShareQuery.toQuery
 })

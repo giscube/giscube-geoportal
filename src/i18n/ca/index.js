@@ -133,6 +133,10 @@ export default {
       resultsError: 'Error al cercar',
       search: 'cerca'
     },
+    share: {
+      headerName: 'Comparteix',
+      title: 'Comparteix'
+    },
     streetview: {
       headerName: 'Street View',
       title: 'Google Street View',
