@@ -13,3 +13,7 @@ export function hiddenMap (state) {
     bottom: 0
   }
 }
+
+export function dialog (state) {
+  return state.dialogs.length > 0 && state.dialogs[0]
+}

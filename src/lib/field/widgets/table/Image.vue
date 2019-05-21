@@ -28,7 +28,7 @@ export default {
   },
   methods: {
     showImage (src) {
-      this.$q.dialog({
+      this.$store.dispatch('layout/createDialog', {
         component: ImageDialog,
         src
       })

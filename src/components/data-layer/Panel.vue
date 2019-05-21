@@ -303,7 +303,11 @@ export default {
     })
   },
   beforeRouteUpdate (to, from, next) {
-    if (!this.editing) {
+    const dialog = this.$store.getters['layout/dialog']
+    if (dialog) {
+      dialog.hide()
+      next(false)
+    } else if (!this.editing) {
       const current = this.$store.state.dataLayer.current
       const alreadyCurrent = current && current.source.name === to.params.sourceName && current.layer.name === to.params.layerName
       if (!alreadyCurrent) {
@@ -315,7 +319,11 @@ export default {
     }
   },
   beforeRouteLeave (to, from, next) {
-    if (!this.forceLeave && this.changed) {
+    const dialog = this.$store.getters['layout/dialog']
+    if (dialog) {
+      dialog.hide()
+      next(false)
+    } else if (!this.forceLeave && this.changed) {
       this.$q.dialog({
         title: this.t('changedLeaveTitle'),
         message: this.t('changedLeaveMsg'),

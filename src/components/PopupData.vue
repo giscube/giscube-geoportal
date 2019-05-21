@@ -73,7 +73,7 @@ export default {
     onClick (event) {
       const { target } = event
       if (target.hasAttribute(DIALOG_IMG_ATTR)) {
-        this.$q.dialog({
+        this.$store.dispatch('layout/createDialog', {
           component: ImageDialog,
           src: target.getAttribute(DIALOG_IMG_ATTR)
         })
