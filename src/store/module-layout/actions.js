@@ -1,3 +1,5 @@
+import { Dialog } from 'quasar'
+
 export function setPrinting (context, value) {
   if (value) {
     document.documentElement.setAttribute('data-print', '')
@@ -16,4 +18,12 @@ export function setLeftDrawerSize (context, value) {
 export function setSidebarVisible (context, value) {
   context.commit('sidebarVisible', value)
   context.dispatch('map/invalidateOffset', void 0, { root: true })
+}
+
+export function createDialog (context, config) {
+  const dialog = Dialog.create(config)
+  context.commit('addDialog', dialog)
+  return dialog.onDismiss(() => {
+    context.commit('removeDialog', dialog)
+  })
 }

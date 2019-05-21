@@ -5,5 +5,6 @@ export default {
   drawerBehavior: 'default',
   leftDrawerSize: 0,
   sidebarVisible: false,
-  printing: false
+  printing: false,
+  dialogs: []
 }
