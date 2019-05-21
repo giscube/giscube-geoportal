@@ -92,7 +92,7 @@ export default {
         if (toolName.startsWith('-')) {
           r.push({ spacer: true, name: 'spacer-' + i })
           addSeparator = false // skip next separator
-        } else {
+        } else if (toolName in tools) {
           if (addSeparator) {
             r.push({ separator: true, name: 'separator-' + i })
           } else {
@@ -101,6 +101,8 @@ export default {
           }
 
           r.push({ name: toolName, tool: tools[toolName] })
+        } else {
+          console.warn(`[AppHeader.vue] Tool "${toolName}" is not defined in the current configuration.`)
         }
       })
 
