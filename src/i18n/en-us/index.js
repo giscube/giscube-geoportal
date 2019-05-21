@@ -126,6 +126,10 @@ export default {
       resultsError: 'Error retrieving results',
       search: 'search'
     },
+    share: {
+      headerName: 'Share',
+      title: 'Share'
+    },
     streetview: {
       headerName: 'Street View',
       title: 'Google Street View'

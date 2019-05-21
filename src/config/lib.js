@@ -71,6 +71,7 @@ export default new Options({
       'print',
       'help',
       'contact',
+      'share',
       '----------',
       'fullscreen',
       'auth'
@@ -168,6 +169,10 @@ export default new Options({
       to: 'search',
 
       historyLength: 5
+    },
+    share: {
+      icon: 'share',
+      to: 'share'
     },
     streetview: {
       icon: 'fas fa-street-view',

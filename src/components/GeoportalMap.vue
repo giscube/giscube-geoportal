@@ -5,6 +5,7 @@
       :center="$store.config.home.center"
       :options="mapOptions"
       @leaflet:load='onMapReady'
+      @move="onMapMove"
     >
       <layers-control ref="layersControl"></layers-control>
       <!-- Query On Click -->
@@ -19,6 +20,7 @@
 
 <script>
 import { QPage } from 'quasar'
+import { debounce } from 'lodash'
 import L from '../lib/leaflet'
 import { LMap, LGeoJson } from 'vue2-leaflet'
 
@@ -65,6 +67,9 @@ export default {
     resultsLayer () {
       return this.$store.state.search.resultsLayer
     }
+  },
+  created () {
+    this.onMapMove = debounce(this.updateMapPosition, 100)
   },
   mounted () {
     if (this.map) {
@@ -137,7 +142,12 @@ export default {
         this.resultsLayer.addTo(this.map)
         this.$store.commit('map/mapObject', this.map)
         this.$emit('map-ready', this.map)
+        this.updateMapPosition()
       })
+    },
+    updateMapPosition () {
+      this.$store.commit('map/center', this.map.getCenter())
+      this.$store.commit('map/zoom', this.map.getZoom())
     },
     setMapWidth (width) {
       this.containerStyle.width = width
