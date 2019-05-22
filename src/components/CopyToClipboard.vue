@@ -3,14 +3,13 @@
     ref="copy"
     :value="value"
     outlined
-    class="q-mx-lg"
     bg-color="white"
   >
     <template v-slot:append>
       <q-btn
-        :icon="copied > 0 ? 'fas fa-clipboard-check' : 'fas fa-clipboard'"
-        dense
+        :icon="copied > 0 ? 'fas fa-check' : 'fas fa-clipboard'"
         flat
+        :ripple="false"
         @click="copy"
         :color="copied > 0 ? 'green' : void 0"
       />

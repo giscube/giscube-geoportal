@@ -9,6 +9,17 @@ params.center = params.c = {
   multi: behaviors.overrides
 }
 
+params.message = params.m = {
+  key: 'm',
+  type: types.string,
+  multi: behaviors.overrides
+}
+
+params.options = params.o = {
+  key: 'o',
+  type: types.flags(['mc', 'om']),
+  multi: behaviors.merges
+}
 params.zoom = params.z = {
   key: 'z',
   type: types.number,

@@ -30,8 +30,10 @@ export default {
     layers: 'capes',
     lat: 'latitud',
     lng: 'longitud',
+    message: 'missatge',
     metadata: 'metadades',
-    opacity: 'opacitat'
+    opacity: 'opacitat',
+    options: 'opcions'
   },
   states: {
     empty: 'buit',
@@ -135,7 +137,10 @@ export default {
     },
     share: {
       headerName: 'Comparteix',
-      title: 'Comparteix'
+      title: 'Comparteix',
+
+      message: '@:names.message',
+      options: '@:names.options'
     },
     streetview: {
       headerName: 'Street View',

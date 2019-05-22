@@ -18,6 +18,14 @@ export function extract (obj, key) {
   }
 }
 
+export function apply (obj, key, callback) {
+  const val = extract(obj, key)
+  if (val !== void 0) {
+    callback(val)
+  }
+  return val
+}
+
 function addArgument (obj, key, value) {
   const param = _getParam(key)
   obj[param.key] = param.multi(obj[param.key], value)
@@ -44,7 +52,10 @@ export function toQuery (obj) {
     .map(([key, value]) => {
       const param = _getParam(key)
       if (value !== void 0) {
-        return param.key + '=' + param.type.toQuery(value)
+        const arg = param.type.toQuery(value)
+        if (arg !== void 0) {
+          return param.key + '=' + arg
+        }
       }
     })
     .filter(v => !!v)
