@@ -9,6 +9,12 @@ params.center = params.c = {
   multi: behaviors.overrides
 }
 
+params.geometry = params.geom = params.g = {
+  key: 'g',
+  type: types.list(types.geometry, ':'),
+  multi: behaviors.overrides
+}
+
 params.message = params.m = {
   key: 'm',
   type: types.string,

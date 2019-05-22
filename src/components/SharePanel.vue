@@ -10,8 +10,6 @@
       <q-input
         :label="t('message') | capitalize"
         v-model="message"
-        outlined
-        bg-color="white"
       />
       <div
         class="q-mt-sm"
@@ -53,7 +51,8 @@ export default {
       urlBase,
 
       options: {},
-      message: ''
+      message: '',
+      sharedLayer: null
     }
   },
   computed: {
@@ -61,6 +60,7 @@ export default {
       return this.$store.state.map.state
     },
     queryStr () {
+      // a return ''
       return ShareQuery.toQuery({
         options: this.options,
         ...this.mapState,
@@ -94,63 +94,91 @@ export default {
       })
     },
     applyQuery (query) {
-      this.message = ShareQuery.extract(query, 'm')
+      this.$nextTick(() => {
+        this.message = ShareQuery.extract(query, 'm')
 
-      const map = this.$store.state.map.mapObject
-      if (!map) {
-        // Watch map until is set and then apply map-related queries
-        this.waitFor('$store.state.map.mapObject', newMap => {
-          this.applyMapQuery(query, newMap)
-        })
-      } else {
-        this.applyMapQuery(query, map)
-      }
+        const map = this.$store.state.map.mapObject
+        if (!map) {
+          // Watch map until is set and then apply map-related queries
+          this.waitFor('$store.state.map.mapObject', newMap => {
+            this.applyMapQuery(query, newMap)
+          })
+        } else {
+          this.applyMapQuery(query, map)
+        }
+      })
     },
     applyMapQuery (query, map) {
-      ShareQuery.apply(query, 'z', map.setZoom.bind(map))
-      const center = ShareQuery.apply(query, 'c', map.flyTo.bind(map))
+      if (this.sharedLayer) {
+        this.sharedLayer.remove()
+        this.sharedLayer = null
+      }
+      const center = ShareQuery.extract(query, 'c')
+      const zoom = ShareQuery.extract(query, 'z')
+      map.setView(center, zoom)
+
+      const g = ShareQuery.extract(query, 'g')
 
       this.options = ShareQuery.extract(query, 'o') || {}
       const marker = this.options.mc && L.marker(center)
-      if (marker) {
-        map.addLayer(marker)
+
+      if (g) {
+        if (marker) {
+          g.unshift(marker)
+        }
+        this.sharedLayer = L.layerGroup(g)
+      } else if (marker) {
+        this.sharedLayer = L.layerGroup([marker])
+      }
+
+      if (this.sharedLayer) {
+        this.sharedLayer.addTo(map)
       }
 
       if (this.message) {
-        const popup = this.makePopup({ map, marker })
+        const popup = this.makePopup({ map, layer: this.sharedLayer })
 
         if (this.options.om) {
-          if (marker) {
-            marker.openPopup()
+          if (this.sharedLayer) {
+            this.sharedLayer.getLayers()[0].openPopup()
           } else {
             map.openPopup(popup, center)
           }
         }
       }
     },
-    makePopup ({ map, marker }) {
+    makePopup ({ map, layer = [ null ] }) {
       const Popup = Vue.extend(BasicPopup)
-      const popupComponent = new Popup({
-        parent: this,
-        propsData: {
-          message: this.message
+
+      let result
+
+      layer.getLayers().map((l, i) => {
+        const popupComponent = new Popup({
+          parent: this,
+          propsData: {
+            message: this.message
+          }
+        })
+
+        const popupContainer = L.popup({
+          closeOnClick: true,
+          closeOnEscapeKey: true
+        })
+        popupContainer.setContent(popupComponent.$mount().$el)
+
+        if (l) {
+          popupComponent.$on('close', () => l.closePopup())
+          l.bindPopup(popupContainer)
+        } else {
+          popupComponent.$on('close', () => popupContainer.remove())
+        }
+
+        if (i === 0) {
+          result = popupContainer
         }
       })
 
-      const popupContainer = L.popup({
-        closeOnClick: true,
-        closeOnEscapeKey: true
-      })
-      popupContainer.setContent(popupComponent.$mount().$el)
-
-      if (marker) {
-        popupComponent.$on('close', () => marker.closePopup())
-        marker.bindPopup(popupContainer)
-      } else {
-        popupComponent.$on('close', () => popupContainer.remove())
-      }
-
-      return popupContainer
+      return result
     },
     setFlag (obj, key, value) {
       if (value) {

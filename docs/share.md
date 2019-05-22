@@ -15,12 +15,15 @@ The link must follow this format:
   * [Table of Contents](#table-of-contents)
   * [Parameters](#parameters)
      * [[c] Center](#c-center)
+     * [[g] Geometry](#g-geometry)
      * [[m] Message](#m-message)
      * [[o] Options](#o-options)
      * [[z] Zoom level](#z-zoom-level)
   * [Types](#types)
      * [Coordinates](#coordinates)
      * [Flags](#flags)
+     * [Geometry](#geometry)
+     * [List (T, s)](#list-t-s)
      * [Number](#number)
      * [String](#string)
 
@@ -39,6 +42,13 @@ Point to center the map to.
   - Type: [Coordinates](#coordinates)
   - Multiple: overrides
   - Example: `c=41.973,2.780`
+
+### [g] Geometry
+Geometry to be added to the map.
+
+  - Type: [List](#list)([Geometry](#geometry), `:`)
+  - Multiple: overrides
+  - Example: `g=m41.973,2.780:l41.973,2.780;41.973,2.6;42,2.6`
 
 ### [m] Message
 Message to share it with.
@@ -84,6 +94,21 @@ They may be restricted to a list.
 
 Examples:
  - `a,b,c,d`
+
+### Geometry
+Representation of a geometry. It contains the type and the list of coordinates separated by semicolon (`;`): `<type><list (Coordinates, ';')>`
+
+Types:
+ - `m`: Marker
+ - `l`: Line
+ - `p`: Polygon
+
+Examples:
+ - `m41.973,2.780`
+ - `l41.973,2.780;41.973,2.6;42,2.6`
+
+### List (T, s)
+Representation of list of type `T` with spacer `s`. `s` should not be used by `T`.
 
 ### Number
 Representation of a number. Use a dot (`.`) as the decimal separator.

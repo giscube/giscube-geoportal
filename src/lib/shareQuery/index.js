@@ -45,7 +45,7 @@ export function fromQuery (query) {
 }
 
 export function toQuery (obj) {
-  if (!obj) {
+  if (!obj || Object.keys(obj).length === 0) {
     return ''
   }
   const q = Object.entries(obj)
