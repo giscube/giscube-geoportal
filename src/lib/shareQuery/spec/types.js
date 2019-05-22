@@ -6,6 +6,17 @@ const truthy = v => !!v
 
 const types = {}
 
+function list (type, separator) {
+  return {
+    fromQuery (str) {
+      return str.split(separator).map(type.fromQuery)
+    },
+    toQuery (obj) {
+      return obj.map(type.toQuery).filter(v => v !== void 0).join(separator)
+    }
+  }
+}
+
 types.coords = types.coordinates = {
   fromQuery (str) {
     const coords = str.split(',').map(types.number.fromQuery)
@@ -60,6 +71,46 @@ types.coords = types.coordinates = {
   types.flags.toQuery = defaultGroup.toQuery.bind(defaultGroup)
 }
 
+const geomCoordsList = list(types.coords, ';')
+types.geom = types.geometry = {
+  fromQuery (str) {
+    if (!str) {
+      return // TODO exception?
+    }
+
+    const type = str[0]
+    const coords = geomCoordsList.fromQuery(str.substring(1))
+    if (coords.length === 0) {
+      return // TODO exception?
+    }
+
+    if (type === 'm') {
+      return L.marker(coords[0])
+    } else if (type === 'l') {
+      return L.polyline(coords)
+    } else if (type === 'p') {
+      return L.polygon(coords)
+    } else {
+      // TODO exception?
+    }
+  },
+  toQuery (obj) {
+    if (obj instanceof L.Polygon) {
+      const latlngs = obj.getLatLngs()[0].map(c => [c.lat, c.lng])
+      return 'p' + geomCoordsList.toQuery(latlngs)
+    } else if (obj instanceof L.Polyline) {
+      const latlngs = obj.getLatLngs().map(c => [c.lat, c.lng])
+      return 'l' + geomCoordsList.toQuery(latlngs)
+    } else if (obj instanceof L.Marker) {
+      console.log('hi')
+      return 'm' + geomCoordsList.toQuery([obj.getLatLng()])
+    } else {
+      throw new UnsupportedTypeError('geometry', obj)
+    }
+  }
+}
+
+types.list = list
 types.number = {
   fromQuery (str) {
     let r

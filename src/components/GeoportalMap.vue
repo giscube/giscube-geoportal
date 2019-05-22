@@ -146,7 +146,7 @@ export default {
       })
     },
     updateMapPosition () {
-      this.$store.commit('map/center', this.map.getCenter())
+      this.$store.commit('map/center', this.map.getVisibleCenter())
       this.$store.commit('map/zoom', this.map.getZoom())
     },
     setMapWidth (width) {

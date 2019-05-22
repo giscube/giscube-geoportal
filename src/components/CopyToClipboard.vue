@@ -4,14 +4,17 @@
     :value="value"
     outlined
     bg-color="white"
+    dense
   >
     <template v-slot:append>
       <q-btn
-        :icon="copied > 0 ? 'fas fa-check' : 'fas fa-clipboard'"
+        :icon="feedback || copied > 0 ? 'fas fa-check' : 'fas fa-clipboard'"
         flat
+        dense
         :ripple="false"
         @click="copy"
-        :color="copied > 0 ? 'green' : void 0"
+        @mouseleave="feedback = false"
+        :color="feedback || copied > 0 ? 'green' : void 0"
       />
     </template>
   </q-input>
@@ -29,6 +32,7 @@ export default {
   data () {
     return {
       native: null,
+      feedback: false,
       copied: 0
     }
   },
@@ -45,8 +49,9 @@ export default {
       this.native.selectionEnd = this.native.selectionStart
 
       // user feedback
+      this.feedback = true
       ++this.copied
-      setTimeout(() => --this.copied, 1500)
+      setTimeout(() => --this.copied, 700)
     }
   }
 }
