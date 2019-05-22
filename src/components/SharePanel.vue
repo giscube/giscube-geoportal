@@ -2,30 +2,70 @@
   <div class="panel">
 
     <div class="panel-content">
-      <p class="panel-title">{{ t('title') }}</p>
+      <p class="panel-title">{{ t('title') | capitalize }}</p>
+      <copy-to-clipboard
+        :value="urlBase + queryStr"
+      />
+      <p class="panel-subtitle">{{ t('options') | capitalize }}</p>
+      <q-input
+        :label="t('message') | capitalize"
+        v-model="message"
+        outlined
+        bg-color="white"
+      />
+      <div
+        class="q-mt-sm"
+      >
+        <q-toggle
+          label="Open message"
+          :value="!!options.om"
+          @input="setFlag(options, 'om', $event)"
+        />
+        <q-toggle
+          label="Marker at the center"
+          :value="!!options.mc"
+          @input="setFlag(options, 'mc', $event)"
+        />
+      </div>
     </div>
-
-    <copy-to-clipboard
-      :value="urlBase + queryStr"
-    />
   </div>
 </template>
 
 <script>
+import { QInput, QToggle } from 'quasar'
+import Vue from 'vue'
+import L from 'src/lib/leaflet'
 import * as ShareQuery from 'src/lib/shareQuery'
+
 import CopyToClipboard from './CopyToClipboard'
+import BasicPopup from './BasicPopup'
 
 export default {
   components: {
-    CopyToClipboard
+    CopyToClipboard,
+    QInput,
+    QToggle
   },
   data () {
     const l = window.location
     const urlBase = l.origin + l.pathname + '#/share/'
     return {
       urlBase,
-      queryStr: '',
-      copied: 0
+
+      options: {},
+      message: ''
+    }
+  },
+  computed: {
+    mapState () {
+      return this.$store.state.map.state
+    },
+    queryStr () {
+      return ShareQuery.toQuery({
+        options: this.options,
+        ...this.mapState,
+        message: this.message
+      })
     }
   },
   beforeRouteEnter (to, from, next) {
@@ -41,45 +81,83 @@ export default {
     }
     next()
   },
-  watch: {
-    '$store.state.map.state': {
-      handler: 'setMapState',
-      deep: true
-    }
-  },
-  mounted () {
-    this.$nextTick(() => this.setMapState(this.$store.state.map.state))
-  },
   methods: {
     t (key) {
       return this.$t('tools.share.' + key)
     },
+    waitFor (key, callback, condition) {
+      const unwatch = this.$watch(key, newValue => {
+        if (condition ? condition(newValue) : newValue) {
+          unwatch()
+          callback(newValue)
+        }
+      })
+    },
     applyQuery (query) {
+      this.message = ShareQuery.extract(query, 'm')
+
       const map = this.$store.state.map.mapObject
       if (!map) {
         // Watch map until is set and then apply map-related queries
-        const unwatch = this.$watch('$store.state.map.mapObject', newMap => {
-          if (newMap) {
-            unwatch()
-            this.applyMapQuery(query, newMap)
-          }
+        this.waitFor('$store.state.map.mapObject', newMap => {
+          this.applyMapQuery(query, newMap)
         })
       } else {
         this.applyMapQuery(query, map)
       }
     },
     applyMapQuery (query, map) {
-      const z = ShareQuery.extract(query, 'z')
-      if (z !== void 0) {
-        map.setZoom(z)
+      ShareQuery.apply(query, 'z', map.setZoom.bind(map))
+      const center = ShareQuery.apply(query, 'c', map.flyTo.bind(map))
+
+      this.options = ShareQuery.extract(query, 'o') || {}
+      const marker = this.options.mc && L.marker(center)
+      if (marker) {
+        map.addLayer(marker)
       }
-      const c = ShareQuery.extract(query, 'c')
-      if (c !== void 0) {
-        map.flyTo(c)
+
+      if (this.message) {
+        const popup = this.makePopup({ map, marker })
+
+        if (this.options.om) {
+          if (marker) {
+            marker.openPopup()
+          } else {
+            map.openPopup(popup, center)
+          }
+        }
       }
     },
-    setMapState (value) {
-      this.queryStr = ShareQuery.toQuery(value)
+    makePopup ({ map, marker }) {
+      const Popup = Vue.extend(BasicPopup)
+      const popupComponent = new Popup({
+        parent: this,
+        propsData: {
+          message: this.message
+        }
+      })
+
+      const popupContainer = L.popup({
+        closeOnClick: true,
+        closeOnEscapeKey: true
+      })
+      popupContainer.setContent(popupComponent.$mount().$el)
+
+      if (marker) {
+        popupComponent.$on('close', () => marker.closePopup())
+        marker.bindPopup(popupContainer)
+      } else {
+        popupComponent.$on('close', () => popupContainer.remove())
+      }
+
+      return popupContainer
+    },
+    setFlag (obj, key, value) {
+      if (value) {
+        this.$set(obj, key, true)
+      } else {
+        this.$delete(obj, key)
+      }
     }
   }
 }

@@ -30,8 +30,10 @@ export default {
     layers: 'layers',
     lat: 'latitude',
     lng: 'longitude',
+    message: 'message',
     metadata: 'metadata',
-    opacity: 'opacity'
+    opacity: 'opacity',
+    options: 'options'
   },
   states: {
     empty: 'empty',
@@ -128,7 +130,10 @@ export default {
     },
     share: {
       headerName: 'Share',
-      title: 'Share'
+      title: 'Share',
+
+      message: '@:names.message',
+      options: '@:names.options'
     },
     streetview: {
       headerName: 'Street View',
