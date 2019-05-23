@@ -35,3 +35,12 @@ export function drfgBbox (state, getters, rootState, rootGetters) {
     return result
   }
 }
+
+export function drawnLayers (state) {
+  return () => {
+    if (state.mapObject) {
+      const layers = state.mapObject.measureControl._layer.getLayers().map(l => l.getLayers()[0])
+      return layers.filter(l => state.mapObject.hasLayer(l))
+    }
+  }
+}

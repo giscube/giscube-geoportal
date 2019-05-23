@@ -12,7 +12,7 @@ function list (type, separator) {
       return str.split(separator).map(type.fromQuery)
     },
     toQuery (obj) {
-      return obj.map(type.toQuery).filter(v => v !== void 0).join(separator)
+      return (obj && obj.length > 0) ? obj.map(type.toQuery).filter(v => v !== void 0).join(separator) : void 0
     }
   }
 }
@@ -28,7 +28,7 @@ types.coords = types.coordinates = {
       const r = obj.map(types.number.toQuery)
       r.length = 2
       return r.join(',')
-    } else if (obj instanceof L.LatLng) {
+    } else if (obj.hasOwnProperty('lat') && obj.hasOwnProperty('lng')) {
       const lat = types.number.toQuery(obj.lat)
       const lng = types.number.toQuery(obj.lng)
       return lat + ',' + lng
@@ -101,10 +101,10 @@ types.geom = types.geometry = {
     } else if (obj instanceof L.Polyline) {
       const latlngs = obj.getLatLngs().map(c => [c.lat, c.lng])
       return 'l' + geomCoordsList.toQuery(latlngs)
-    } else if (obj instanceof L.Marker) {
-      console.log('hi')
+    } else if (obj.getLatLng) {
       return 'm' + geomCoordsList.toQuery([obj.getLatLng()])
     } else {
+      console.log({ obj })
       throw new UnsupportedTypeError('geometry', obj)
     }
   }
@@ -139,7 +139,7 @@ types.number = {
 
 types.string = {
   fromQuery: decodeURIComponent,
-  toQuery: encodeURIComponent
+  toQuery: v => v ? encodeURIComponent(v) : void 0
 }
 
 // Export types

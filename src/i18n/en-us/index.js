@@ -97,6 +97,16 @@ export default {
       quitWhileSaving: 'Saving, please wait...',
       quitWithChanges: 'You have unsaved changes'
     },
+    draw: {
+      headerName: 'Draw',
+      title: 'Draw and measue',
+
+      area: 'Area',
+      explanation: 'Please select geometry type, then click on the map. Double-click to finish drawing.',
+      marker: 'Point',
+      path: 'Path',
+      stop: 'Stop drawing'
+    },
     fullscreen: { headerName: 'Fullscreen' },
     help: {
       headerName: 'Help',
@@ -106,15 +116,6 @@ export default {
     },
     home: {
       headerName: 'Home'
-    },
-    measure: {
-      headerName: 'Measure',
-      title: 'Measure',
-
-      area: 'Area',
-      explanation: 'Please select measure type, then click on the map. Double-click to finish a measure.',
-      path: 'Path',
-      stop: 'Stop measuring'
     },
     print: { headerName: 'Print' },
     printPage: { headerName: 'Print' },

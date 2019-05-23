@@ -1,4 +1,8 @@
 export function mapObject (state, value) {
+  if (value) {
+    state.shared.remove()
+    state.shared.addTo(value)
+  }
   state.mapObject = value
 }
 

@@ -7,7 +7,7 @@ import CoordsPanel from 'components/CoordsPanel'
 import HelpPanel from 'components/HelpPanel'
 import HomePanel from 'components/HomePanel'
 import AuthPanel from 'components/AuthPanel'
-import MeasurePanel from 'components/MeasurePanel'
+import DrawPanel from 'components/DrawPanel'
 import PlacePanel from 'components/PlacePanel'
 import SearchPanel from 'components/SearchPanel'
 import SharePanel from 'components/SharePanel'
@@ -29,7 +29,7 @@ const routes = [
       { path: 'geoportal/:q/', redirect: { name: 'place' } },
       { path: 'help/', component: HelpPanel, name: 'help' },
       { path: 'home/', component: HomePanel, name: 'home' },
-      { path: 'measure/', component: MeasurePanel, name: 'measure' },
+      { path: 'draw/', component: DrawPanel, name: 'draw' },
       { path: 'place/:q*', component: PlacePanel, name: 'place' },
       { path: 'search/:q*', component: SearchPanel, name: 'search' },
       { path: 'share', component: SharePanel, name: 'share' },

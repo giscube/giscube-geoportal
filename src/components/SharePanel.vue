@@ -51,8 +51,7 @@ export default {
       urlBase,
 
       options: {},
-      message: '',
-      sharedLayer: null
+      message: ''
     }
   },
   computed: {
@@ -64,8 +63,15 @@ export default {
       return ShareQuery.toQuery({
         options: this.options,
         ...this.mapState,
-        message: this.message
+        message: this.message,
+        geom: [
+          ...this.sharedLayer.getLayers(),
+          ...(this.$store.getters['map/drawnLayers']() || [])
+        ]
       })
+    },
+    sharedLayer () {
+      return this.$store.state.map.shared
     }
   },
   beforeRouteEnter (to, from, next) {
@@ -109,10 +115,7 @@ export default {
       })
     },
     applyMapQuery (query, map) {
-      if (this.sharedLayer) {
-        this.sharedLayer.remove()
-        this.sharedLayer = null
-      }
+      this.sharedLayer.clearLayers()
       const center = ShareQuery.extract(query, 'c')
       const zoom = ShareQuery.extract(query, 'z')
       map.setView(center, zoom)
@@ -122,17 +125,11 @@ export default {
       this.options = ShareQuery.extract(query, 'o') || {}
       const marker = this.options.mc && L.marker(center)
 
-      if (g) {
-        if (marker) {
-          g.unshift(marker)
-        }
-        this.sharedLayer = L.layerGroup(g)
-      } else if (marker) {
-        this.sharedLayer = L.layerGroup([marker])
+      if (marker) {
+        this.sharedLayer.addLayer(marker)
       }
-
-      if (this.sharedLayer) {
-        this.sharedLayer.addTo(map)
+      if (g) {
+        g.forEach(this.sharedLayer.addLayer.bind(this.sharedLayer))
       }
 
       if (this.message) {

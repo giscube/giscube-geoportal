@@ -98,6 +98,17 @@ export default {
       thisDeleted: 'Aquest element està marcat per ser eliminat.',
       undoConfirm: 'Segur que voleu desfer els canvis d\'aquest element?'
     },
+    draw: {
+      headerName: 'Dibuixar',
+      title: 'Dibuixar i mesurar',
+      help: 'Dibuixar geometries sobre el mapa, mesurar-ne les distàncies i àrees',
+
+      area: 'Àrea',
+      explanation: 'Escolliu tipus de geometria, i seguidament cliqueu el mapa. Podeu fer doble clic per acabar de dibuixar.',
+      marker: 'Punt',
+      path: 'Línia',
+      stop: 'Parar de dibuixar'
+    },
     fullscreen: { headerName: 'Pantalla complerta' },
     help: {
       headerName: 'Ajuda',
@@ -108,16 +119,6 @@ export default {
     home: {
       headerName: 'Inici',
       help: 'Recupera la vista inicial.'
-    },
-    measure: {
-      headerName: 'Mesurar',
-      title: 'Mesurar',
-      help: 'Mesurar distàncies i àrees',
-
-      area: 'Àrea',
-      explanation: 'Escolliu tipus de mesura, i seguidament cliqueu el mapa. Podeu fer doble clic per acabar la mesura.',
-      path: 'Línia',
-      stop: 'Parar de mesurar'
     },
     print: {
       headerName: 'Impressió',

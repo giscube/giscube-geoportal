@@ -67,7 +67,7 @@ export default new Options({
       'catalog',
       'streetview',
       'data',
-      'measure',
+      'draw',
       'print',
       'help',
       'contact',
@@ -121,6 +121,10 @@ export default new Options({
       icon: 'edit',
       to: 'data'
     },
+    draw: {
+      icon: 'mdi-ruler',
+      to: 'draw'
+    },
     fullscreen: {
       supported () {
         return this.$q.fullscreen.isCapable
@@ -140,10 +144,6 @@ export default new Options({
       icon: 'home',
       to: 'home',
       emit: 'home'
-    },
-    measure: {
-      icon: 'mdi-ruler',
-      to: 'measure'
     },
     print: {
       icon: 'print',
