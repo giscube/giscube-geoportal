@@ -8,10 +8,18 @@
 
       <q-btn
         outline
+        icon="place"
+        v-show="!measuring"
+        @click="addMarker"
+        :label="t('marker')"
+      />
+      <q-btn
+        outline
         icon="timeline"
         v-show="!measuring"
         @click="startMeasuring(false)"
         :label="t('path')"
+        class="q-ml-md"
       />
       <q-btn
         outline
@@ -28,6 +36,16 @@
       >{{ t('stop') }}</q-btn>
 
       <div class='q-mt-md'>
+        <div v-for='(layer, key) in sharedLayers' class='measure' :key="'shared-' + key">
+          <q-chip
+            color="primary"
+            text-color="white"
+            removable
+            @remove="removeFromShared(layer)"
+          >
+            <span style="width: 8ch"></span>
+          </q-chip>
+        </div>
         <div v-for='(measure, key) in measureControl.measures' class='measure' :key="key">
           <q-chip
             color="primary"
@@ -59,7 +77,8 @@ export default {
       q: '',
       measureType: 'Path',
       measuring: false,
-      single: true
+      single: true,
+      sharedLayers: []
     }
   },
   computed: {
@@ -69,6 +88,15 @@ export default {
       } else {
         return {}
       }
+    },
+    shared () {
+      return this.$store.state.map.shared
+    }
+  },
+  watch: {
+    shared: {
+      handler: 'updateSharedLayers',
+      immediate: true
     }
   },
   beforeRouteEnter (to, from, next) {
@@ -86,7 +114,12 @@ export default {
   },
   methods: {
     t (key) {
-      return this.$t('tools.measure.' + key)
+      return this.$t('tools.draw.' + key)
+    },
+    updateSharedLayers () {
+      this.$nextTick(() => {
+        this.sharedLayers = this.shared.getLayers()
+      })
     },
     measurementText (measure) {
       let result = ''
@@ -130,6 +163,16 @@ export default {
         this.map.measureControl.startMeasuring({ measureArea })
       })
     },
+    addMarker () {
+      this.measuring = true
+      this.$store.commit('setCurrentTool', this.map.measureControl)
+      this.map.on('click', this.finishAddMarker)
+    },
+    finishAddMarker ({ latlng }) {
+      this.$store.dispatch('map/addSharedMarker', latlng)
+      this.updateSharedLayers()
+      this.stopMeasuring()
+    },
     stopMapMeasuring () {
       this.$nextTick(_ => {
         // $nextTick needed to prevent infinite event loop
@@ -143,6 +186,7 @@ export default {
       this.measuring = false
       this.map.off('measure:measurestop', this.stopMeasuring)
       this.map.off('measure:finishedpath', this.stopMeasuring)
+      this.map.off('click', this.finishAddMarker)
       // FIXME: hardcoded 300ms value from QueryOnClick, get from config
       setTimeout(() => {
         this.$store.commit('setCurrentTool', null)
@@ -150,6 +194,10 @@ export default {
     },
     removeMeasure (measure) {
       measure.layer.remove()
+    },
+    removeFromShared (layer) {
+      this.shared.removeLayer(layer)
+      this.updateSharedLayers()
     }
   }
 }

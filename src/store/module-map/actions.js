@@ -1,3 +1,4 @@
+import L from 'src/lib/leaflet'
 import except from '../../lib/except'
 import { createExternalLayer } from '../../lib/geomUtils'
 
@@ -40,4 +41,9 @@ export function addLayer (context, { layerDescriptor, title, options }) {
         except(e)
       }
     })
+}
+
+export function addSharedMarker (context, latlng) {
+  const marker = L.marker(latlng)
+  context.state.shared.addLayer(marker)
 }
