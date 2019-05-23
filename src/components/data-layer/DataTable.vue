@@ -2,6 +2,8 @@
   <q-table
     v-if="fields"
     ref="table"
+    class="column no-wrap"
+    table-class="data-table col"
     :data="features"
     :columns="columns"
     row-key="id"
@@ -14,7 +16,6 @@
     :hide-bottom="editing"
     @update:selected="onSelected"
     @request="onRequest"
-    table-class="data-table"
     :rows-per-page-options="rowsPerPageOptions"
   >
     <template
