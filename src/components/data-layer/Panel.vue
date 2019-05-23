@@ -1,8 +1,8 @@
 <template>
-  <div class="panel">
+  <div class="panel fit">
 
-    <div class="panel-content">
-      <div class="row items-center justify-end q-mb-md">
+    <div class="panel-content fit column no-wrap">
+      <div class="col-auto row items-center justify-end q-mb-md">
         <layers-list
           v-model="layersListOpen"
           :disable="editing"
@@ -37,7 +37,7 @@
       </div>
       <div
         v-show="layerLoaded"
-        class="row items-center justify-end data-panel-controls"
+        class="col-auto row items-center justify-end data-panel-controls"
       >
         <!-- Filters -->
         <div
@@ -141,15 +141,17 @@
       </div>
 
       <!-- Table with all the data logic -->
-      <data-table
-        v-show="layerLoaded"
-        ref="dataTable"
-        class="q-my-md"
-        :filter="filter"
-        :mapFilter="mapFilter"
-        :polygonFilter="polygonFilter"
-        @edit="startFeatureEdit"
-      />
+      <div class="col full-width q-my-md">
+        <data-table
+          v-show="layerLoaded"
+          ref="dataTable"
+          class="limit-parent"
+          :filter="filter"
+          :mapFilter="mapFilter"
+          :polygonFilter="polygonFilter"
+          @edit="startFeatureEdit"
+        />
+      </div>
     </div>
 
     <!-- popups -->
@@ -465,6 +467,10 @@ export default {
 
 <style lang="stylus">
 @import '~quasar-variables'
+
+.limit-parent
+  max-width: 100%
+  max-height: 100%
 
 .q-btn.pushed
   background-color $primary !important
