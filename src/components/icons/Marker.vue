@@ -10,7 +10,7 @@
       stroke: strokeColor
     }"
   >
-    <svg viewBox="0 0 120 195.39214">
+    <svg viewBox="0 0 155 200">
       <use xlink:href="#markerIcon" />
     </svg>
     <div
@@ -23,14 +23,14 @@
         v-if="type === 'img'"
         :src="icon"
         :style="{
-          width: width * 0.5 + 'px',
-          height: width * 0.5 + 'px'
+          width: iconSize + 'px',
+          height: iconSize + 'px'
         }"
       />
       <q-icon
         v-else
         :name="icon"
-        :size="width * 0.5 + 'px'"
+        :size="iconSize + 'px'"
       />
     </div>
     <div
@@ -86,6 +86,9 @@ export default {
         return 'edit'
       }
       return null
+    },
+    iconSize () {
+      return this.width * 0.55
     }
   },
   methods: {

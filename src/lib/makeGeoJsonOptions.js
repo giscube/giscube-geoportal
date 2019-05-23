@@ -147,7 +147,7 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
       marker_color: style.marker_color || 'blue',
       icon: style.icon || 'fas fa-circle',
       icon_color: style.icon_color || 'white',
-      size: style.size || 25
+      size: style.size || 40
     }
     rules = makeRules(styleRules, base, style => {
       return {
