@@ -6,7 +6,7 @@ import base from './lib.js'
 
 export default base.merge({
   // catalog: {
-  //   'categories': 'https://www.giscube.org/apps/giscube-admin/api/v1/giscube/category/',
+  //   'categories': 'https://www.giscube.org/apps/giscube-admin/geoportal/category/',
   //   'search': 'https://www.giscube.org/apps/giscube-admin/geoportal/catalog/'
   // },
   // editsources: [
