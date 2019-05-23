@@ -1,7 +1,7 @@
 <template functional>
   <svg style="display: none">
-    <symbol id="markerIcon" viewBox="-10 -10 120 195.39214">
-      <path d="M4.147 69.93745 A50 50 0 1 1 95.853 69.93745 L50 175.39214 Z" />
+    <symbol id="markerIcon" viewBox="-28 -13 155 200">
+      <path d="M 42.796846,171.74815 C -7.2660506,99.171809 -16.558652,91.723255 -16.558652,65.05035 c 0,-36.53609 29.618124,-66.1542163 66.154214,-66.1542163 36.53609,0 66.154218,29.6181263 66.154218,66.1542163 0,26.672905 -9.2926,34.121459 -59.355502,106.6978 -3.285318,4.74586 -10.312482,4.74553 -13.597432,0 z" />
     </symbol>
   </svg>
 </template>
@@ -9,6 +9,7 @@
 <script>
 import Vue from 'vue'
 import L from '../../lib/leaflet'
+import { standarizeColour, colorLuminance } from '../../lib/color-utils'
 import MarkerClass from './Marker'
 
 const Marker = Vue.extend(MarkerClass)
@@ -46,27 +47,8 @@ function ensure (value, callback) {
   return value !== undefined && value !== null ? callback(value) : undefined
 }
 
-function colorLuminance (hex, lum) {
-  // validate hex string
-  hex = String(hex).replace(/[^0-9a-f]/gi, '')
-  if (hex.length < 6) {
-    hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2]
-  }
-  lum = lum || 0
-
-  // convert to decimal and change luminosity
-  let rgb = '#', c, i
-  for (i = 0; i < 3; i++) {
-    c = parseInt(hex.substr(i * 2, 2), 16)
-    c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16)
-    rgb += ('00' + c).substr(c.length)
-  }
-
-  return rgb
-}
-
-const HEIGHT_RATIO = 195.39214 / 120
-const ANCHOR_RATIO = 185.39214 / 120
+const HEIGHT_RATIO = 200 / 155
+const ANCHOR_RATIO = 186.45 / 155
 // const ICON_RATIO = 0.5
 
 export default {
@@ -75,7 +57,7 @@ export default {
       props: {
         type,
         fill,
-        strokeColor: ensure(fill, _ => colorLuminance(fill, -0.20)),
+        strokeColor: ensure(fill, _ => colorLuminance(standarizeColour(fill), -0.20)),
         icon,
         color,
         size,
