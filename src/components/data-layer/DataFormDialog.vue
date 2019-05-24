@@ -5,8 +5,8 @@
     persistent
     content-class="data-form"
   >
-    <q-card class="data-form">
-      <q-card-section>
+    <q-card class="data-form column no-wrap">
+      <q-card-section class="col scroll">
         <data-form
           ref="form"
           :features="features"
