@@ -18,17 +18,11 @@ export default class LinkedField extends Field {
     super(info)
   }
 
-  onUpdate (field, value, properties, callback) {
-    if (field !== this.sourceField) {
-      return
-    }
-
-    const origValue = this.getValue({ properties })
-
+  getLinkedValue (value) {
     if (this.validValue(value) && this.sourceField.valuesDict) {
-      value = field.valuesDict[value]
+      value = this.sourceField.valuesDict[value]
       if (this.validValue(value) && this.column) {
-        const i = field.headers.indexOf(this.column)
+        const i = this.sourceField.headers.indexOf(this.column)
         if (i >= 0) {
           value = value[i]
         } else {
@@ -43,6 +37,25 @@ export default class LinkedField extends Field {
         value = value[ref]
       }
     })
+
+    return value
+  }
+
+  getValue (data) {
+    if (this.virtual) {
+      return this.getLinkedValue(this.sourceField.getValue(data))
+    } else {
+      return super.getValue(data)
+    }
+  }
+
+  onUpdate (field, value, properties, callback) {
+    if (this.virtual || field !== this.sourceField) {
+      return
+    }
+
+    const origValue = this.getValue({ properties })
+    value = this.getLinkedValue(value)
 
     this.setValue({ properties, value })
 

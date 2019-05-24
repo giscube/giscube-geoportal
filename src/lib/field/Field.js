@@ -30,6 +30,9 @@ export default class Field {
   }
 
   setValue ({ feature, properties, value }) {
+    if (this.virtual) {
+      throw new Error('Cannot set value of virtual field')
+    }
     const props = properties || (feature && feature.properties)
     if (props) {
       if (AsyncValue.is(value)) {
@@ -57,6 +60,9 @@ export default class Field {
   }
 
   clone ({ feature, properties, cleanup = false }) {
+    if (this.virtual) {
+      throw new Error('Cannot clone value of virtual field')
+    }
     let value = this.getValue({ feature, properties })
     if (value === '' || value === undefined) {
       if (cleanup) {
@@ -84,6 +90,9 @@ export default class Field {
   }
 
   moveValue (from, to) {
+    if (this.virtual) {
+      throw new Error('Cannot move value of virtual field')
+    }
     from = from.properties || (from.feature && from.feature.properties)
     to = to.properties || (to.feature && to.feature.properties)
 
