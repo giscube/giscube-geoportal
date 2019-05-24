@@ -242,7 +242,9 @@ export function saveEdits (context) {
 
         result.properties = {}
         fields.forEach(field => {
-          result.properties[field.name] = field.repr(feature)
+          if (!field.virtual) {
+            result.properties[field.name] = field.repr(feature)
+          }
         })
 
         added.push(result)
@@ -258,7 +260,7 @@ export function saveEdits (context) {
 
         result.properties = {}
         fields.forEach(field => {
-          if (!field.equals({ feature: original }, { feature })) {
+          if (!field.virtual && !field.equals({ feature: original }, { feature })) {
             result.properties[field.name] = field.repr(feature)
           }
         })
