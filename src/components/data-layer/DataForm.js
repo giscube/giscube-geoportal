@@ -5,20 +5,22 @@ function aggregate (fields, features) {
   const aggregatedProperties = {}
 
   for (let field of fields) {
-    let current
-    for (let feature of features) {
-      const value = field.clone({ feature, cleanup: true })
+    if (!field.virtual) {
+      let current
+      for (let feature of features) {
+        const value = field.clone({ feature, cleanup: true })
 
-      if (current === undefined) {
-        current = value
-      } else if (MultiResult.is(current)) {
-        current.values.add(value)
-      } else if (current !== value) {
-        current = new MultiResult([value, current])
+        if (current === undefined) {
+          current = value
+        } else if (MultiResult.is(current)) {
+          current.values.add(value)
+        } else if (current !== value) {
+          current = new MultiResult([value, current])
+        }
       }
-    }
 
-    aggregatedProperties[field.name] = current
+      aggregatedProperties[field.name] = current
+    }
   }
 
   return aggregatedProperties
@@ -79,7 +81,7 @@ export default {
         const { field, value } = this.callbacks.shift()
         field.setValue({ properties: this.aggregatedProperties, value })
         this.fields.forEach(f => {
-          f.onUpdate && f.onUpdate(
+          !f.virtual && f.onUpdate && f.onUpdate(
             field,
             value,
             this.aggregatedProperties,
@@ -100,10 +102,16 @@ export default {
     }
 
     return createElement('div', {}, this.renderableFields.map(field => {
+      let properties
+      if (field.virtual) {
+        properties = this.properties || aggregate([field.sourceField], this.features)
+      } else {
+        properties = this.aggregatedProperties
+      }
+
       const config = {
         props: {
-          properties: this.aggregatedProperties,
-          value: field.getValue({ properties: this.aggregatedProperties }),
+          value: field.getValue({ properties }),
           field: field,
           readonly: this.readonly,
           disable: this.disable
