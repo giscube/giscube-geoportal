@@ -62,7 +62,7 @@ export default {
       return this.$store.state.search.history
     },
     results () {
-      return this.$store.state.search.finalResults
+      return this.$store.state.search.fetchingResults || this.$store.state.search.finalResults
     },
     state () {
       return this.$store.getters['search/state']
