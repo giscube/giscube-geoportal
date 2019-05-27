@@ -14,12 +14,14 @@ The link must follow this format:
   -->
   * [Table of Contents](#table-of-contents)
   * [Parameters](#parameters)
+     * [[b] Base map](#b-base-map)
      * [[c] Center](#c-center)
      * [[g] Geometry](#g-geometry)
      * [[m] Message](#m-message)
      * [[o] Options](#o-options)
      * [[z] Zoom level](#z-zoom-level)
   * [Types](#types)
+     * [BaseMap](#basemap)
      * [Coordinates](#coordinates)
      * [Flags](#flags)
      * [Geometry](#geometry)
@@ -35,6 +37,12 @@ The parameters follow the URL query format.
 The parameters are applied in order but following its behavior:
   - Merges: Shallow merge of both objects
   - Overrides: Only the last is kept
+
+### [b] Base map
+Which layer is being used as a base layer.
+ - Type: [BaseMap](#basemap)
+ - Multiple: overrides
+ - Example: `b=cEE1`
 
 ### [c] Center
 Point to center the map to.
@@ -78,6 +86,12 @@ The zoom that the map will have.
 
 
 ## Types
+### BaseMap
+Representation of the selected base map. The first 3 characters are the base64 representation of the CRC16-IBM of its url. The rest is base 16 representation of the index (zero based) that it should be found on.
+
+Example:
+ - `cEE1`(`cEE` is the CRC16-IBM and `1` the index of the second map)
+
 ### Coordinates
 Representation of map coordinates with coordinate system `EPSG:4326`.
 

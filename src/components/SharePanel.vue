@@ -55,6 +55,9 @@ export default {
     }
   },
   computed: {
+    map () {
+      return this.$store.state.map.mapObject
+    },
     mapState () {
       return this.$store.state.map.state
     },
@@ -62,6 +65,7 @@ export default {
       // a return ''
       return ShareQuery.toQuery({
         options: this.options,
+        basemap: this.map ? this.map.layerswitcher.baseLayers.indexOf(this.map.layerswitcher.baseLayerSelected) : this.$router.history.current.params.q,
         ...this.mapState,
         message: this.message,
         geom: [

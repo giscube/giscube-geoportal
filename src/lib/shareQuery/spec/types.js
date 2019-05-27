@@ -1,4 +1,7 @@
+import Vue from 'vue'
 import L from 'src/lib/leaflet'
+import { strCrc16ibm } from 'src/lib/algs/crc16ibm'
+import { fromUInt16, toUInt16 } from 'src/lib/algs/base64'
 
 import { ParseError, UnsupportedTypeError } from './errors'
 
@@ -14,6 +17,51 @@ function list (type, separator) {
     toQuery (obj) {
       return (obj && obj.length > 0) ? obj.map(type.toQuery).filter(v => v !== void 0).join(separator) : void 0
     }
+  }
+}
+
+types.basemap = {
+  fromQuery (str) {
+    const config = Vue.prototype.$config
+    const basemaps = config.basemaps
+
+    const defaultMap = () => config.basemaps.findIndex(bm => bm.default) || 0
+
+    if (!str) {
+      return defaultMap()
+    }
+
+    const crc = toUInt16(str.slice(0, 3))
+    const index = parseInt(str.slice(3), 16)
+    const indexValid = !Number.isNaN(index) && index < basemaps.length
+
+    // Check if the index has the correct checksum
+    if (indexValid) {
+      if (strCrc16ibm(basemaps[index].url) === crc) {
+        return index
+      }
+    }
+
+    // Search for a basemap with the given checksum
+    for (let i = 0; i < basemaps.length; ++i) {
+      if (i !== index) { // already tested on the previous step
+        if (strCrc16ibm(basemaps[i].url) === crc) {
+          return i
+        }
+      }
+    }
+
+    // Return the index (if possible)
+    return indexValid ? index : defaultMap()
+  },
+  toQuery (index) {
+    if (typeof index !== 'number' || index < 0) {
+      return
+    }
+
+    const config = Vue.prototype.$config
+    const obj = config.basemaps[index]
+    return fromUInt16(strCrc16ibm(obj.url)) + index.toString(16)
   }
 }
 
