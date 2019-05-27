@@ -78,7 +78,9 @@ export default {
   },
   methods: {
     addBaseMaps () {
-      this.$store.config.basemaps.forEach(basemap => {
+      const b = this.$router.history.current.query.b
+      this.$store.config.basemaps.forEach((basemap, i) => {
+        const d = (b === void 0 ? basemap.default : i === b)
         var baselayer
         if (basemap.type === 'tilelayer') {
           baselayer = L.tileLayer(basemap.url, basemap)
@@ -86,9 +88,9 @@ export default {
           baselayer = L.tileLayer.wms(basemap.url, basemap)
         }
         this.layerswitcher.addBaseLayer(baselayer, basemap.name, {
-          default: basemap.default
+          default: d
         })
-        if (basemap.default) {
+        if (d) {
           this.map.addLayer(baselayer)
         }
       })

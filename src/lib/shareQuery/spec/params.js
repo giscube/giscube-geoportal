@@ -3,6 +3,12 @@ import behaviors from './behaviors'
 
 const params = {}
 
+params.basemap = params.base = params.b = {
+  key: 'b',
+  type: types.basemap,
+  multi: behaviors.overrides
+}
+
 params.center = params.c = {
   key: 'c',
   type: types.coordinates,
