@@ -1,4 +1,5 @@
 import { visibleMapPart } from '../../lib/geomUtils.js'
+import L from 'src/lib/leaflet'
 
 export function bbox (state, getters, rootState, rootGetters) {
   if (!state.mapObject) {
@@ -39,8 +40,10 @@ export function drfgBbox (state, getters, rootState, rootGetters) {
 export function drawnLayers (state) {
   return () => {
     if (state.mapObject) {
-      const layers = state.mapObject.measureControl._layer.getLayers().map(l => l.getLayers()[0])
-      return layers.filter(l => state.mapObject.hasLayer(l))
+      return state.mapObject.measureControl._layer.getLayers()
+        .filter(l => !(l instanceof L.Marker))
+        .map(l => l.getLayers()[0])
+        .filter(l => state.mapObject.hasLayer(l))
     }
   }
 }
