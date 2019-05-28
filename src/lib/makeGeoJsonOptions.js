@@ -274,6 +274,10 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
             })
 
             layer.on('remove', _ => {
+              if (this._content) {
+                this._content.$destroy()
+                delete this._content
+              }
               map.closePopup(this._container)
             })
 
