@@ -147,7 +147,7 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
       marker_color: style.marker_color || 'blue',
       icon: style.icon || 'fas fa-circle',
       icon_color: style.icon_color || 'white',
-      size: style.size || 40
+      size: style.size || 34
     }
     rules = makeRules(styleRules, base, style => {
       return {
@@ -241,7 +241,7 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
             if (isMarker) {
               popupConfig.offset = [
                 0,
-                -(this._icon.options.props.size * 1.2615068493150685 - 5) // size * (anchorRatio - (1-iconRatio)/2) - 5
+                -(this._icon.options.props.size * 0.9) // size * (anchorRatio - (1-iconRatio)/2) - 5
               ]
             }
             this._container = L.popup(popupConfig)

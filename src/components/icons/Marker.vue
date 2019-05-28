@@ -88,7 +88,7 @@ export default {
       return null
     },
     iconSize () {
-      return this.width * 0.55
+      return this.width * 0.5
     }
   },
   methods: {
