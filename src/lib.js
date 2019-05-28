@@ -13,6 +13,8 @@ import DrawPanel from 'components/DrawPanel'
 import PlacePanel from 'components/PlacePanel'
 import SearchBar from 'components/SearchBar'
 import SearchPanel from 'components/SearchPanel'
+import SharePanel from 'components/SharePanel'
+import * as ShareQuery from 'src/lib/shareQuery'
 import QueryOnClick from 'components/QueryOnClick'
 import LayersControl from 'components/LayersControl'
 import HelpPanel from 'components/HelpPanel'
@@ -38,6 +40,8 @@ export {
   PlacePanel,
   SearchBar,
   SearchPanel,
+  SharePanel,
+  ShareQuery,
   QueryOnClick,
   LayersControl,
   HelpPanel,
