@@ -16,6 +16,7 @@ export default async ({ app, Vue }) => {
     options.fallbackLocale = fallback
   }
   app.i18n = new VueI18n(options)
+  Vue.prototype._i18n = app.i18n
 
   let capitalize = value => value
   if (messages[main] && messages[main].capitalize) {
