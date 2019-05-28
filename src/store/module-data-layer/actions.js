@@ -161,7 +161,7 @@ export function startEditing (context) {
 
 export function editProperties (context, { feature, properties }) {
   context.commit('featureHistory', feature)
-  context.commit('featureProperties', { feature, properties: defaults(properties, feature) })
+  context.commit('featureProperties', { feature, properties: defaults(properties, feature.properties) })
 }
 
 export function editMultiple (context, { features, properties }) {
@@ -307,6 +307,7 @@ export function drawGeometry (context) {
     id: context.state.editStatus.newPkGenerator.next().value,
     properties: {}
   }
+  Vue.set(featureBase.properties, layerInfo.pk_field, featureBase.id)
 
   const result = newFeature(context.rootState.map.mapObject, featureBase, 'id', layerInfo.geom_type)
   return throwUnhandledExceptions(result)
