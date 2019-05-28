@@ -111,6 +111,7 @@ export default class Field {
     return value
   }
 
+  // data representation
   str (data) {
     return this.val2str(this.getValue(data))
   }
