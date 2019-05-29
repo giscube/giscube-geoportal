@@ -89,6 +89,7 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import { QBtn, QCard, QCardSection, QCheckbox, QIcon, QInput, QMenu, QTable, QTd, QTh, QTr } from 'quasar'
 
 import debounce from 'lodash/debounce.js'
@@ -215,7 +216,7 @@ export default {
         columns.push({
           name: '__actions',
           required: false,
-          label: 'Actions',
+          label: Vue.filter('capitalize')(this.$t('names.actions')),
           align: 'center',
           field: () => '',
           sortable: false
