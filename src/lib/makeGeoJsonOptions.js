@@ -184,14 +184,14 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
 
     Object.defineProperties(feature, {
       _settedUp: {
-        configurable: true,
+        configurable: false,
         enumerable: false,
         writable: false,
         value: true
       },
 
       _icon: {
-        configurable: true,
+        configurable: false,
         enumerable: false,
         writable: false,
         value: (_ => {
@@ -207,17 +207,17 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
       },
 
       _content: {
-        configurable: true,
+        configurable: false,
         enumerable: false,
         writable: true
       },
       _container: {
-        configurable: true,
+        configurable: false,
         enumerable: false,
         writable: true
       },
       _setUpPopup: {
-        configurable: true,
+        configurable: false,
         enumerable: false,
         get () {
           return () => {
@@ -254,7 +254,7 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
       },
 
       assignLayer: {
-        configurable: true,
+        configurable: false,
         enumerable: false,
         get () {
           return layer => {
@@ -274,11 +274,14 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
             })
 
             layer.on('remove', _ => {
+              if (this._container) {
+                map.closePopup(this._container)
+                this._container = void 0
+              }
               if (this._content) {
                 this._content.$destroy()
-                delete this._content
+                this._content = void 0
               }
-              map.closePopup(this._container)
             })
 
             transform(afterEachSelect, { feature, layer })
