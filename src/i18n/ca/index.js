@@ -24,6 +24,7 @@ export default {
     badPopupConfig: 'Error al llegir la configuració'
   },
   names: {
+    actions: 'accions',
     coords: 'coordenades',
     element: 'cap element | {count} element | {count} elements',
     keywords: 'paraules clau',
