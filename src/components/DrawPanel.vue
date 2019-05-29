@@ -43,7 +43,7 @@
             removable
             @remove="removeFromShared(layer)"
           >
-            <span style="width: 8ch"></span>
+            <span v-html="layerText(layer)"></span>
           </q-chip>
         </div>
         <div v-for='(measure, key) in measureControl.measures' class='measure' :key="key">
@@ -64,6 +64,10 @@
 <script>
 import { QBtn, QChip } from 'quasar'
 import Vue from 'vue'
+import length from '@turf/length'
+import area from '@turf/area'
+import L from 'src/lib/leaflet'
+
 import MeasureResultPopup from 'components/MeasureResultPopup.vue'
 
 export default {
@@ -120,6 +124,22 @@ export default {
       this.$nextTick(() => {
         this.sharedLayers = this.shared.getLayers()
       })
+    },
+    layerText (layer) {
+      if (layer instanceof L.Marker) {
+        const latlng = layer.getLatLng()
+        const lat = this.$n(latlng.lat, { maximumFractionDigits: 6, minimumFractionDigits: 6 })
+        const lng = this.$n(latlng.lng, { maximumFractionDigits: 6, minimumFractionDigits: 6 })
+        return lat + ' ' + lng
+      } else if (layer instanceof L.Polygon) {
+        const value = this.$n(Math.round(area(layer.toGeoJSON(), { units: 'meters' })))
+        return value + ' ' + this.$t('units.meters') + '<sup>2</sup>'
+      } else if (layer instanceof L.Polyline) {
+        const value = this.$n(Math.round(length(layer.toGeoJSON(), { units: 'meters' })))
+        return value + ' ' + this.$t('units.meters')
+      } else {
+        return '<span style="width: 8ch"></span>'
+      }
     },
     measurementText (measure) {
       let result = ''
