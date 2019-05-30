@@ -68,20 +68,19 @@
         <q-td auto-width>
           <q-checkbox color="primary" v-model="props.selected" />
         </q-td>
+        <q-td v-if="editing">
+          <custom-actions
+          :row-data="props.row"
+          :row-index="props.row.id"
+          @edit="$emit('edit', $event)"
+          />
+        </q-td>
         <data-cell
           v-for="field in fields"
           :key="props.row + '-' + field.name"
           :feature="props.row"
           :field="field"
         />
-        <q-td>
-          <custom-actions
-          v-if="editing"
-          :row-data="props.row"
-          :row-index="props.row.id"
-          @edit="$emit('edit', $event)"
-          />
-        </q-td>
       </q-tr>
     </template>
   </q-table>
@@ -208,16 +207,17 @@ export default {
       const columns = this.fields.map(field => ({
         name: field.name,
         label: field.label,
+        align: 'left',
         required: true,
         sortable: true
       }))
 
       if (this.editing) {
-        columns.push({
+        columns.unshift({
           name: '__actions',
           required: false,
           label: Vue.filter('capitalize')(this.$t('names.actions')),
-          align: 'center',
+          align: 'left',
           field: () => '',
           sortable: false
         })
