@@ -471,8 +471,6 @@ export default {
 </style>
 
 <style lang="stylus">
-@import '~quasar-variables'
-
 .q-table tbody tr.deleted
   background-color $red-5
 
