@@ -62,3 +62,10 @@ export function toQuery (obj) {
     .join('&')
   return q ? '?' + q : ''
 }
+
+export default {
+  apply,
+  extract,
+  fromQuery,
+  toQuery
+}
