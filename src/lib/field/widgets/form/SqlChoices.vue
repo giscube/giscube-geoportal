@@ -174,8 +174,6 @@ export default {
 </script>
 
 <style lang="stylus">
-@import '~quasar-variables'
-
 tr.sqlchoices-current
   background-color: $grey-5 !important // important to prevent :hover to change its style
 </style>

@@ -132,8 +132,6 @@ export default {
 </script>
 
 <style lang="stylus">
-@import '~quasar-variables'
-
 .control-icon:hover
   color $grey-10
 </style>

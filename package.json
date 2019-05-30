@@ -22,6 +22,7 @@
     "@types/leaflet": "^1.4.4",
     "ajv": "^6.10.0",
     "axios": "^0.18.0",
+    "install": "^0.12.2",
     "leaflet": "^1.5.1",
     "leaflet-editable": "git+https://github.com/copying/Leaflet.Editable.git",
     "leaflet-sidebar": "^0.2.0",
@@ -30,8 +31,9 @@
     "microdisseny-leaflet-measure": "git+https://github.com/Microdisseny/microdisseny-leaflet-measure.git",
     "moment": "^2.24.0",
     "node-sass": "^4.12.0",
+    "npm": "^6.9.0",
     "point-in-polygon": "^1.0.1",
-    "quasar": "^1.0.0-beta.23",
+    "quasar": "^1.0.0-beta.24",
     "sass-loader": "^7.1.0",
     "shepherd.js": "^2.8.0",
     "vue-i18n": "^8.11.2",
@@ -41,7 +43,7 @@
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
-    "@quasar/app": "^1.0.0-beta.24",
+    "@quasar/app": "^1.0.0-rc.1",
     "@vue/eslint-config-standard": "^4.0.0",
     "babel-eslint": "^10.0.1",
     "eslint": "^5.16.0",

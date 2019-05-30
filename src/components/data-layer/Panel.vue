@@ -466,8 +466,6 @@ export default {
 </script>
 
 <style lang="stylus">
-@import '~quasar-variables'
-
 .limit-parent
   max-width: 100%
   max-height: 100%
