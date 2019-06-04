@@ -6,5 +6,6 @@ export default {
     center: void 0,
     zoom: void 0
   },
-  shared: L.layerGroup()
+  shared: L.layerGroup(),
+  drawing: false // changed by map events set in GeoportalMap
 }

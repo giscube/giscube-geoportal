@@ -1,6 +1,7 @@
 import axios from 'axios'
 import Vue from 'vue'
 import L from './leaflet.js'
+import { CancelError } from './utils'
 import makeGeoJsonOptions from './makeGeoJsonOptions'
 
 export function visiblePart (bbox, visibility) {
@@ -155,4 +156,74 @@ function createExternalLayerGeoJSON ({ layerDescriptor, title, options, map, pop
       })
       .catch(reject)
   })
+}
+
+const multi = 'multi'
+
+const geomCreators = {
+  point (editTools, config) {
+    editTools.startMarker(void 0, config)
+  },
+  marker (editTools, config) {
+    this.point(editTools, config)
+  },
+  linestring (editTools, config) {
+    editTools.startPolyline(void 0, config)
+  },
+  polygon (editTools, config) {
+    editTools.startPolygon(void 0, config)
+  }
+}
+
+export function createLayer ({ map, type, config, keepDrawn = false }) {
+  const isMulti = type.startsWith(multi)
+  const baseType = isMulti ? type.slice(multi.length) : type
+
+  return new Promise((resolve, reject) => {
+    function cancel () {
+      removeEvents()
+      reject(new CancelError())
+    }
+    function commit (event) {
+      removeEvents()
+      let layer
+      if (isMulti) {
+        layer = L.layerGroup()
+        layer.addLayer(event.layer)
+      } else {
+        layer = event.layer
+      }
+      if (!keepDrawn) {
+        layer.remove()
+      }
+      resolve(layer)
+    }
+
+    // Events setting
+    function removeEvents () {
+      map.off('editable:drawing:commit', commit)
+      map.off('editable:drawing:end', cancel)
+    }
+    map.on('editable:drawing:commit', commit)
+    map.on('editable:drawing:end', cancel)
+
+    const create = geomCreators[baseType]
+    if (create) {
+      create.call(geomCreators, map.editTools, config) // sets this to geomCreators so the function can call each other
+    } else {
+      reject(new Error('Unsupported geometry type ' + type))
+    }
+  })
+}
+
+export function flipLatLng (coords) {
+  if (coords.length > 0 && Array.isArray(coords[0])) {
+    return coords.map(flipLatLng)
+  } else if (coords.length >= 2) {
+    const n = [...coords]
+    n.reverse()
+    return n
+  } else {
+    return coords
+  }
 }

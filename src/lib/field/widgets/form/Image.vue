@@ -64,7 +64,7 @@ import resizeImage from 'src/lib/resizeImage'
 import ImageDialog from 'components/ImageDialog'
 
 export default {
-  props: ['value', 'field', 'readonly', 'disable'],
+  props: ['table', 'value', 'field', 'readonly', 'disable'],
   mixins: [MultiValueMixin, ValidateMixin],
   components: {
     QField,
@@ -84,6 +84,9 @@ export default {
     },
     hint () {
       return null
+    },
+    remote () {
+      return this.table.remote
     }
   },
   methods: {
@@ -114,7 +117,7 @@ export default {
       const files = this.$refs.files.files
       if (files.length > 0) {
         resizeImage(files[0], this.field.size).then(photo => {
-          const newValue = new AsyncPhoto(photo, this.$store.state.dataLayer.current.source, this.$store.getters['auth/headers'])
+          const newValue = new AsyncPhoto(photo, this.remote.source, this.remote.getConfig().headers)
           newValue.getValue().catch(this.$except)
           this.$store.dispatch('dataLayer/uploadPhoto', newValue)
           this.$emit('input', newValue)

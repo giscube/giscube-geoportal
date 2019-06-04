@@ -12,7 +12,7 @@ import PlacePanel from 'components/PlacePanel'
 import SearchPanel from 'components/SearchPanel'
 import SharePanel from 'components/SharePanel'
 import StreetViewPanel from 'components/StreetViewPanel'
-import DataPanel from 'components/data-layer/Panel'
+import DataPanel from 'components/data-layer/DataPanel'
 
 Vue.use(Router)
 

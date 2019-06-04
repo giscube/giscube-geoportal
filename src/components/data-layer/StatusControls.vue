@@ -1,0 +1,68 @@
+<template>
+  <div>
+    <q-btn
+      v-show="table && !table.editing"
+      :label="t('edit')"
+      @click="startEditing"
+    />
+    <q-btn-group
+      v-show="table && table.editing"
+    >
+      <q-btn
+        v-show="!working"
+        :label="dataChanged ? $t('actions.discard') : $t('actions.cancel')"
+        @click="discard"
+      />
+      <q-btn
+        v-if="dataChanged"
+        :label="$t('actions.save')"
+        :loading="working"
+        icon="save"
+        @click="save"
+      />
+    </q-btn-group>
+  </div>
+</template>
+
+<script>
+import { QBtn, QBtnGroup } from 'quasar'
+import TranslationMixin from './TranslationMixin'
+
+export default {
+  mixins: [TranslationMixin],
+  props: ['table'],
+  components: {
+    QBtn,
+    QBtnGroup
+  },
+  computed: {
+    editing () {
+      return this.table.editing
+    },
+    dataChanged () {
+      return this.table.rows.some(row => row.status.new || row.status.edited || row.status.deleted)
+    },
+    working () {
+      return this.table.saving
+    }
+  },
+  methods: {
+    async _stopDrawing () {
+      this.$store.dispatch('map/stopDrawing')
+      await this.$nextTick()
+    },
+    async startEditing () {
+      await this._stopDrawing()
+      this.table.startEditing()
+    },
+    async discard () {
+      await this._stopDrawing()
+      this.table.discard()
+    },
+    async save () {
+      await this._stopDrawing()
+      this.table.save()
+    }
+  }
+}
+</script>

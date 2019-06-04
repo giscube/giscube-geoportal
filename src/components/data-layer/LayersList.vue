@@ -62,8 +62,10 @@
 
 <script>
 import { Ripple, QBtn, QExpansionItem, QItem, QItemLabel, QItemSection, QList, QSpinner } from 'quasar'
+import TranslationMixin from './TranslationMixin'
 
 export default {
+  mixins: [TranslationMixin],
   props: {
     value: {
       type: Boolean,
@@ -103,9 +105,6 @@ export default {
     }
   },
   methods: {
-    t (key, ...args) {
-      return this.$t('tools.data.' + key, ...args)
-    },
     refresh () {
       this.$store.dispatch('dataLayer/refreshSources')
     },

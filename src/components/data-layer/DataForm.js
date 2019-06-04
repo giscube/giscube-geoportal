@@ -1,14 +1,15 @@
 import MultiResult from '../../lib/MultiResult.js'
+import LinkedField from '../../lib/field/LinkedField'
 import FormWidget from '../../lib/field/components/FormWidget.js'
 
-function aggregate (fields, features) {
+function aggregate (fields, rows) {
   const aggregatedProperties = {}
 
   for (let field of fields) {
     if (!field.virtual) {
       let current
-      for (let feature of features) {
-        const value = field.clone({ feature, cleanup: true })
+      for (let row of rows) {
+        const value = field.clone({ row, cleanup: true })
 
         if (current === undefined) {
           current = value
@@ -27,47 +28,25 @@ function aggregate (fields, features) {
 }
 
 export default {
-  props: ['properties', 'features', 'readonly', 'disable'],
+  props: ['table', 'rows', 'readonly', 'disable'],
   data () {
     return {
       aggregatedProperties: this.aggregateProperties(),
       callbacks: []
     }
   },
-  computed: {
-    fields () {
-      return this.$store.getters['dataLayer/formFields']
-    },
-    renderableFields () {
-      return this.$store.getters['dataLayer/renderableFormFields']
-    }
-  },
-  watch: {
-    features () {
-      this.applyAggregateProperties()
-    }
-  },
   methods: {
     aggregateProperties () {
-      let fields = this.$store.getters['dataLayer/formFields']
-      if (!this.features) {
+      let fields = this.table.info.logicFormFields
+      if (!this.rows) {
         fields = fields.filter(f => !f.requiresFeatures)
       }
-      let properties = this.properties
-      if (!properties) {
-        properties = aggregate(fields, this.features)
-      } else if (Array.isArray(properties)) {
-        properties = aggregate(fields, [{ properties }])
-      }
-      return properties
-    },
-    applyAggregateProperties () {
-      this.aggregatedProperties = this.aggregateProperties()
+      return aggregate(fields, this.rows)
     },
     validate () {
       return this.$children.reduce(
         (total, children) => {
-          const currentValidation = children.validate === undefined || children.validate() === true
+          const currentValidation = children.validate === undefined || children.readonly || children.disabled || children.validate() === true
           return total && currentValidation
         },
         true
@@ -80,7 +59,7 @@ export default {
       while (this.callbacks.length > 0) {
         const { field, value } = this.callbacks.shift()
         field.setValue({ properties: this.aggregatedProperties, value })
-        this.fields.forEach(f => {
+        this.table.info.logicFormFields.forEach(f => {
           !f.virtual && f.onUpdate && f.onUpdate(
             field,
             value,
@@ -97,14 +76,10 @@ export default {
     }
   },
   render (createElement) {
-    if (!this.fields) {
-      return
-    }
-
-    return createElement('div', {}, this.renderableFields.map(field => {
+    return createElement('div', {}, this.table.info.formFields.map(field => {
       let properties
-      if (field.virtual) {
-        properties = this.properties || aggregate([field.sourceField], this.features)
+      if (field instanceof LinkedField) {
+        properties = aggregate([field.sourceField], this.rows)
       } else {
         properties = this.aggregatedProperties
       }
@@ -114,7 +89,8 @@ export default {
           value: field.getValue({ properties }),
           field: field,
           readonly: this.readonly,
-          disable: this.disable
+          disable: this.disable,
+          table: this.table
         },
         on: {
           input: value => this.onInput(field, value)
