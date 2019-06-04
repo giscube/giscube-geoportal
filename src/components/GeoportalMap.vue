@@ -10,10 +10,7 @@
       <layers-control ref="layersControl"></layers-control>
       <!-- Query On Click -->
       <component :is="$config.geoportalMap.queryOnClick" />
-      <l-geo-json ref='editGeoJsonLayer' v-if="currentTool === 'data' && editLayerGeojson && editLayerOptions" :geojson="editLayerGeojson" :options="editLayerOptions"></l-geo-json>
     </l-map>
-
-    <icons-generator />
 
   </q-page>
 </template>
@@ -28,11 +25,8 @@ import LayersControl from 'components/LayersControl.vue'
 require('microdisseny-leaflet-measure')
 require('microdisseny-leaflet-measure/dist/leaflet-measure.css')
 
-import IconsGenerator from './icons/IconsGenerator'
-
 export default {
   components: {
-    IconsGenerator,
     LayersControl,
     LGeoJson,
     LMap,
@@ -66,10 +60,28 @@ export default {
     },
     resultsLayer () {
       return this.$store.state.search.resultsLayer
+    },
+    mainTable () {
+      return this.$store.state.dataLayer.table
+    }
+  },
+  watch: {
+    mainTable: {
+      handler (newValue, oldValue) {
+        if (oldValue) {
+          oldValue.layer && oldValue.layer.remove()
+        }
+        if (newValue) {
+          newValue.addTo(this.map)
+        }
+      }
     }
   },
   created () {
     this.onMapMove = debounce(this.updateMapPosition, 100)
+    this.updateTable = this._updateTable.bind(this)
+    this.startDrawing = this._setDrawing.bind(this, true)
+    this.endDrawing = this._setDrawing.bind(this, false)
   },
   mounted () {
     if (this.map) {
@@ -138,13 +150,25 @@ export default {
     },
     onMapReady () {
       this.$nextTick(() => {
+        if (this.map) {
+          this.$store.dispatch('map/stopDrawing')
+          this.map.off('move zoom', this.updateTable)
+          this.map.off('editable:drawing:start', this.startDrawing)
+          this.map.off('editable:drawing:end', this.endDrawing)
+        }
         this.map = this.$refs.map.mapObject
         this.addControls()
         this.addBaseMaps()
         this.resultsLayer.addTo(this.map)
+        if (this.mainTable) {
+          this.mainTable.addTo(this.map)
+        }
         this.$store.commit('map/mapObject', this.map)
         this.$emit('map-ready', this.map)
         this.updateMapPosition()
+        this.map.on('editable:drawing:start', this.startDrawing)
+        this.map.on('editable:drawing:end', this.endDrawing)
+        this.map.on('move zoom', this.updateTable)
       })
     },
     updateMapPosition () {
@@ -156,6 +180,14 @@ export default {
       this.$nextTick(() => {
         this.map.invalidateSize(false)
       })
+    },
+    _updateTable () {
+      if (this.mainTable) {
+        this.mainTable.updateByMap()
+      }
+    },
+    _setDrawing (value) {
+      this.$store.commit('map/drawing', value)
     }
   }
 }

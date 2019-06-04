@@ -14,7 +14,7 @@ import { QImg } from 'quasar'
 import ImageDialog from 'components/ImageDialog'
 
 export default {
-  props: ['value', 'field', 'feature'],
+  props: ['value', 'field', 'row'],
   components: {
     QImg
   },

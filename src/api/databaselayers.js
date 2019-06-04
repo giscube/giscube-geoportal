@@ -51,7 +51,7 @@ export default {
   edit (target, changes, config) {
     const nChanges = changes.ADD.length + changes.UPDATE.length + changes.DELETE.length
     if (nChanges === 0) {
-      return
+      return Promise.resolve()
     }
     const url = target.source.url + `layerserver/databaselayers/${target.layer.name}/bulk/`
     const conf = {

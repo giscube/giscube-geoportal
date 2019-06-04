@@ -9,9 +9,10 @@ import NumberField from './NumberField'
 import LinkedField from './LinkedField'
 import PkField from './PkField'
 import SqlChoicesField from './SqlChoicesField'
+import TableField from './TableField'
 import TimeField from './TimeField'
 
-export const fields = {
+export const FIELDS = {
   default: Field,
 
   boolean: BooleanField,
@@ -22,22 +23,25 @@ export const fields = {
   number: NumberField,
   linkedfield: LinkedField,
   pk: PkField,
+  relation1n: TableField,
   sqlchoices: SqlChoicesField,
   time: TimeField
 }
 
 function getFieldClass (field, fieldInfo) {
-  return field.pk ? fields['pk'] : fields[fieldInfo.widget] || fields['default']
+  return field.pk ? FIELDS.pk : FIELDS[fieldInfo.widget] || FIELDS.default
 }
 
-function makeField ({ layerInfo, fieldInfo, virtual = false } = {}) {
+function makeField ({ layerInfo, fieldInfo, constFields, virtual = false } = {}) {
   // Add all the values of the field
+  const constant = constFields.hasOwnProperty(fieldInfo.name)
   const field = {
     virtual,
+    constant,
     null: fieldInfo.null,
     name: fieldInfo.name,
     label: fieldInfo.label || fieldInfo.name,
-    readonly: fieldInfo.readonly
+    readonly: fieldInfo.readonly || constant
   }
 
   const conditionalCopyList = ['size', 'decimals', 'values_list', 'values_list_headers', 'widget_options']
@@ -55,14 +59,13 @@ function makeField ({ layerInfo, fieldInfo, virtual = false } = {}) {
   return new F(field)
 }
 
-export function buildFields (layerInfo) {
-  const fields = []
-  layerInfo.fields.forEach(fieldInfo => fields.push(makeField({ layerInfo, fieldInfo })))
-  layerInfo.virtual_fields.forEach(fieldInfo => fields.push(makeField({ layerInfo, fieldInfo, virtual: true })))
+export function buildFields (layerInfo, constFields = {}) {
+  const fields = layerInfo.fields.map(fieldInfo => makeField({ layerInfo, fieldInfo, constFields }))
+  layerInfo.virtual_fields.forEach(fieldInfo => fields.push(makeField({ layerInfo, fieldInfo, constFields, virtual: true })))
 
   fields.forEach(field => {
-    if (field instanceof LinkedField) {
-      field.sourceField = fields.find(f => f.name === field.source)
+    if (field.onFieldsCreated) {
+      field.onFieldsCreated(fields)
     }
   })
 

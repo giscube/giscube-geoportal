@@ -18,6 +18,10 @@ export default class LinkedField extends Field {
     super(info)
   }
 
+  onFieldsCreated (fields) {
+    this.sourceField = fields.find(f => f.name === this.source)
+  }
+
   getLinkedValue (value) {
     if (this.validValue(value) && this.sourceField.valuesDict) {
       value = this.sourceField.valuesDict[value]

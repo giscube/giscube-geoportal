@@ -1,56 +1,34 @@
 import L from './leaflet.js'
 import pointInPolygon from 'point-in-polygon'
 
-const resultFound = Symbol('Found a result (skipping the rest)')
-
-function endableCallback (callback) {
-  return p => {
-    if (callback.call(this, p)) {
-      throw resultFound
-    }
-  }
-}
-
-function eachPoint (layer, callback) {
-  const cb = endableCallback(callback)
+function somePoint (layer, callback) {
   if (layer instanceof L.LayerGroup) {
-    layer.eachLayer(l => eachPoint(l, cb))
+    return layer.getLayers().some(l => somePoint(l, callback))
   } else if (layer instanceof L.Polygon) {
-    layer.getLatLngs()[0].forEach(cb)
+    return layer.getLatLngs()[0].some(callback)
   } else if (layer instanceof L.Polyline) {
-    layer.getLatLngs().forEach(cb)
+    return layer.getLatLngs().some(callback)
   } else if (layer instanceof L.Marker || layer instanceof L.CircleMarker) {
-    cb(layer.getLatLng())
+    return callback(layer.getLatLng())
   } else if (layer instanceof L.LatLng) {
-    cb(layer)
+    return callback(layer)
   } else {
     console.warn('[lib/layersInGeom] Unsupported geom type')
+    return false
   }
 }
 
 const toRaw = p => [p.lat, p.lng]
 function contains (layer, geomLatlongs, bounds) {
   const rawLatLngs = geomLatlongs[0].map(toRaw)
-  eachPoint(layer, p => bounds.contains(p) && pointInPolygon(toRaw(p), rawLatLngs))
+  return somePoint(layer, p => {
+    return bounds.contains(p) && pointInPolygon(toRaw(p), rawLatLngs)
+  })
 }
 
-export default function layersInGeom (features, geom) {
+export function rowsInGeom (rows, geom) {
   const latLngs = geom.getLatLngs()
   const bounds = geom.getBounds()
 
-  const result = []
-  features.forEach(feature => {
-    const layer = feature.getLayer()
-    try {
-      contains(layer, latLngs, bounds)
-    } catch (e) {
-      if (e === resultFound) {
-        result.push(feature)
-      } else {
-        throw e
-      }
-    }
-  })
-
-  return result
+  return rows.filter(row => contains(row.layer, latLngs, bounds))
 }

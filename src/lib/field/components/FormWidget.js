@@ -1,6 +1,6 @@
 export default {
   functional: true,
-  props: ['value', 'field', 'readonly', 'disable'],
+  props: ['table', 'value', 'field', 'readonly', 'disable'],
   render (createElement, context) {
     const formValue = context.props.field.formWidget()
 
@@ -12,7 +12,8 @@ export default {
         value: context.props.value,
         field: context.props.field,
         readonly: context.props.readonly || context.props.field.readonly,
-        disable: context.props.disable
+        disable: context.props.disable,
+        table: context.props.table
       }
     }
 

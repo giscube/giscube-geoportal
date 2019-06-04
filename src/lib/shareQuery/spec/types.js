@@ -152,7 +152,6 @@ types.geom = types.geometry = {
     } else if (obj.getLatLng) {
       return 'm' + geomCoordsList.toQuery([obj.getLatLng()])
     } else {
-      console.log({ obj })
       throw new UnsupportedTypeError('geometry', obj)
     }
   }

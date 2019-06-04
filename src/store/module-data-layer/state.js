@@ -1,24 +1,7 @@
-import AsyncQueue from '../../lib/async/Queue'
+import AsyncQueue from 'src/lib/async/Queue'
 
 export default {
   sources: null,
-  current: null,
-  geojson: null,
-  layerConfig: {
-    options: {},
-    layerInfo: null,
-    fields: null
-  },
-  editStatus: {
-    editing: false,
-    adding: false,
-    saving: false,
-    originals: {},
-    newPkGenerator: null
-  },
-  table: {
-    features: [],
-    selected: []
-  },
+  table: null,
   uploadQueue: new AsyncQueue()
 }

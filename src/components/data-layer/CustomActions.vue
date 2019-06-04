@@ -6,7 +6,7 @@
       dense
       size="sm"
       icon="undo"
-      :disabled="!edited || saving"
+      :disabled="!edited || saving || isNew"
       @click="revertItem()"
     />
     <q-btn
@@ -15,7 +15,7 @@
       size="sm"
       icon="edit"
       :disabled="!editing || saving"
-      @click="editItem(rowData, rowIndex)"
+      @click="row.uiEdit()"
     />
 
   </div>
@@ -26,39 +26,32 @@ import { QBtn } from 'quasar'
 
 export default {
   props: {
-    rowData: {
+    row: {
       type: Object,
       required: true
-    },
-    rowIndex: null
+    }
   },
   components: {
     QBtn
   },
   computed: {
-    originals () {
-      return this.$store.state.dataLayer.editStatus.originals
-    },
     editing () {
-      return this.$store.state.dataLayer.editStatus.editing
+      return this.row.parent.editing
     },
     deleted () {
-      return this.rowData.status && this.rowData.status.deleted
+      return this.row.status.deleted
     },
     edited () {
-      return this.editing && this.rowData.getPk && this.rowData.getPk() in this.originals
+      return this.row.status.edited
+    },
+    isNew () {
+      return this.row.status.new
     },
     saving () {
-      return this.$store.state.dataLayer.editStatus.saving
+      return this.row.parent.saving
     }
   },
   methods: {
-    formClosed () {
-      this.formVisible = false
-    },
-    editItem (data, index) {
-      this.$emit('edit', this.rowData)
-    },
     revertItem () {
       this.$q.dialog({
         message: this.$t('tools.data.undoConfirm'),
@@ -72,7 +65,7 @@ export default {
         },
         persistent: true
       }).onOk(_ => {
-        this.$store.commit('dataLayer/revertFeature', this.rowData)
+        this.row.revert()
       })
     }
   }

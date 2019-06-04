@@ -21,19 +21,22 @@ export default class Field {
     this.requiresFeatures = false
   }
 
-  getValue ({ feature, properties, value }) {
+  // Callback with all the fields that have been created
+  // onFieldsCreated (fields) {}
+
+  getValue ({ row, properties, value }) {
     if (value !== void 0) {
       return value
     }
-    const props = properties || (feature && feature.properties)
+    const props = properties || (row && row.properties)
     return props && props[this.name]
   }
 
-  setValue ({ feature, properties, value }) {
+  setValue ({ row, properties, value }) {
     if (this.virtual) {
       throw new Error('Cannot set value of virtual field')
     }
-    const props = properties || (feature && feature.properties)
+    const props = properties || (row && row.properties)
     if (props) {
       if (AsyncValue.is(value)) {
         value.incrementReference()
@@ -59,11 +62,11 @@ export default class Field {
     }
   }
 
-  clone ({ feature, properties, cleanup = false }) {
+  clone ({ row, properties, cleanup = false }) {
     if (this.virtual) {
       throw new Error('Cannot clone value of virtual field')
     }
-    let value = this.getValue({ feature, properties })
+    let value = this.getValue({ row, properties })
     if (value === '' || value === undefined) {
       if (cleanup) {
         value = null
@@ -93,8 +96,8 @@ export default class Field {
     if (this.virtual) {
       throw new Error('Cannot move value of virtual field')
     }
-    from = from.properties || (from.feature && from.feature.properties)
-    to = to.properties || (to.feature && to.feature.properties)
+    from = from.properties || (from.row && from.row.properties)
+    to = to.properties || (to.row && to.row.properties)
 
     if (AsyncValue.is(to[this.name])) {
       to[this.name].decrementReference()

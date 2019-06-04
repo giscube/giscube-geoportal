@@ -1,5 +1,11 @@
 import isEqualWith from 'lodash/isEqualWith.js'
 
+export class CancelError extends Error {
+  constructor (...args) {
+    super('Cancelled operation', ...args)
+  }
+}
+
 export function createEnum (elements, ordered = false) {
   const values = ordered ? elements.map((_, i) => i) : elements.map(e => Symbol(e))
 
@@ -63,3 +69,9 @@ export function escapeHtml (unsafe) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;')
 }
+
+export const INTERNAL_PROPERTY = Object.freeze({
+  configurable: true,
+  enumerable: false,
+  writable: false
+})

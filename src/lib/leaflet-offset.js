@@ -35,7 +35,6 @@ L.Map.include({
     delete options.padding
 
     const target = this._getBoundsCenterZoom(bounds, options)
-    console.log({ options, target, bounds })
     return _.flyTo.call(this, target.center, target.zoom, options)
   },
   setView (latlng, zoom, options = {}) {
@@ -64,9 +63,7 @@ L.Map.include({
   },
 
   getGlobalOffset () {
-    const result = this._offset || L.point([0, 0])
-    // console.log(result)
-    return result
+    return this._offset || L.point([0, 0])
   },
   setGlobalPadding (padding) {
     const pad = this._padding = {

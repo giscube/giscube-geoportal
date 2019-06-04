@@ -1,7 +1,7 @@
 <template>
   <q-dialog
+    ref="dialog"
     type="propt"
-    :value="value"
     persistent
     content-class="data-form"
   >
@@ -9,7 +9,8 @@
       <q-card-section class="col scroll">
         <data-form
           ref="form"
-          :features="features"
+          :table="table"
+          :rows="rows"
           :disable="disable"
           :readonly="readonly"
           @input="onInput"
@@ -44,10 +45,13 @@
 <script>
 import { QBtn, QCard, QCardActions, QCardSection, QDialog, QIcon, QSpace } from 'quasar'
 import DataForm from './DataForm'
+import TranslationMixin from './TranslationMixin'
 
 export default {
+  mixins: [TranslationMixin],
   props: {
-    features: {
+    table: null,
+    rows: {
       type: Array,
       required: true
     },
@@ -58,10 +62,6 @@ export default {
     readonly: {
       type: Boolean,
       default: false
-    },
-    value: {
-      type: Boolean,
-      default: true
     }
   },
   components: {
@@ -84,48 +84,37 @@ export default {
       return Object.keys(this.result).length > 0
     },
     deleted () {
-      return this.features.reduce((accumulated, feature) => {
-        return accumulated + (feature.status && feature.status.deleted ? 1 : 0)
+      return this.rows.reduce((accumulated, row) => {
+        return accumulated + (row.status.deleted ? 1 : 0)
       }, 0)
     },
     allDeleted () {
-      return this.deleted === this.features.length
+      return this.deleted === this.rows.length
     }
   },
   watch: {
-    features () {
+    rows () {
       this.result = {}
     }
   },
   methods: {
-    t (key, ...args) {
-      return this.$t('tools.data.' + key, ...args)
-    },
     onInput (value) {
       this.result = value
     },
-    _clearData () {
-      this.$store.state.dataLayer.layerConfig.fields.forEach(field => {
-        if (field.name in this.result) {
-          field.setValue({ properties: this.result, value: null })
-        }
-      })
-    },
     onDelete () {
       const deleted = !this.allDeleted
-      this.features.forEach(feature => {
-        if (feature.status) {
-          feature.status.deleted = deleted
+      this.rows.forEach(row => {
+        if (row.status) {
+          row.status.deleted = deleted
         }
       })
     },
     onCancel () {
-      this._clearData()
-      this.$emit('cancel')
+      this.$emit('hide')
     },
     onCommit () {
       if (this.$refs.form.validate()) {
-        this.$emit('commit', this.result)
+        this.doCommit()
       } else {
         this.$q.dialog({
           message: this.t('qInvalidCommit'),
@@ -139,9 +128,22 @@ export default {
           },
           persistent: true
         }).onOk(_ => {
-          this.$emit('commit', this.result)
+          this.doCommit()
         })
       }
+    },
+    doCommit () {
+      this.rows.forEach(row => row.edit(this.result))
+      this.$emit('ok')
+      this.hide()
+    },
+
+    // Required by Quasar's dialog API
+    show () {
+      this.$refs.dialog.show()
+    },
+    hide () {
+      this.$refs.dialog.hide()
     }
   }
 }
