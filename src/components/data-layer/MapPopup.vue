@@ -1,27 +1,29 @@
 <template>
-  <div class='popup'>
-    <popup-data
-      :feature="feature"
-      :fields="fields"
-      :render-contents="renderContents"
-    ></popup-data>
-    <div class="tools">
-      <q-checkbox
-        :value="feature.status.selected"
-        @input="select"
-      />
-      <q-btn flat
-        v-show="editing"
-        icon="edit"
-        :disable="saving"
-        @click="edit"
-      />
-      <q-btn flat
-        v-show="editing"
-        icon="delete"
-        :disable="saving"
-        @click="remove"
-      />
+  <div>
+    <div class='popup' v-if="row">
+      <popup-data
+        :feature="row"
+        :fields="fields"
+        :render-contents="popupTemplate"
+      ></popup-data>
+      <div>
+        <q-checkbox
+          :value="row.status.selected"
+          @input="select"
+        />
+        <q-btn flat
+          v-show="editing"
+          icon="edit"
+          :disable="saving"
+          @click="edit"
+        />
+        <q-btn flat
+          v-show="editing"
+          icon="delete"
+          :disable="saving"
+          @click="remove"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -32,7 +34,6 @@ import { QBtn, QCheckbox } from 'quasar'
 import PopupData from '../PopupData'
 
 export default {
-  props: ['feature', 'renderContents'],
   components: {
     PopupData,
     QBtn,
@@ -40,13 +41,16 @@ export default {
   },
   computed: {
     fields () {
-      return this.$store.state.dataLayer.layerConfig.fields
+      return this.row.parent.info.fields
+    },
+    popupTemplate () {
+      return this.row.parent.info.popupTemplate
     },
     editing () {
-      return this.$store.getters['dataLayer/editing']
+      return this.row.parent.editing
     },
     saving () {
-      return this.$store.state.dataLayer.editStatus.saving
+      return this.row.parent.saving
     }
   },
   updated () {
@@ -54,37 +58,14 @@ export default {
   },
   methods: {
     select (value) {
-      this.feature.status.selected = value
-      this.$emit('select', { feature: this.feature, value })
+      this.row.status.selected = value
     },
     edit () {
-      this.$emit('edit', this.feature)
+      this.row.uiEdit()
     },
     remove () {
-      this.$emit('delete', this.feature)
+      this.row.status.deleted = !this.row.status.deleted
     }
   }
 }
 </script>
-
-<style scoped>
-.tools {
-  display: inline-block;
-}
-.tool {
-  font-size: 0.8em;
-  text-align: center;
-  display: inline-block;
-  border-radius: 5px;
-  padding: 5px 10px;
-  margin-right: 5px;
-  cursor: pointer;
-}
-.tool.select {
-  padding: 0;
-  color: #a0cfff;
-}
-.tool.remove {
-  background-color: #eee;
-}
-</style>

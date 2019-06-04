@@ -56,8 +56,7 @@ function makeField ({ layerInfo, fieldInfo, virtual = false } = {}) {
 }
 
 export function buildFields (layerInfo) {
-  const fields = []
-  layerInfo.fields.forEach(fieldInfo => fields.push(makeField({ layerInfo, fieldInfo })))
+  const fields = layerInfo.fields.map(fieldInfo => makeField({ layerInfo, fieldInfo }))
   layerInfo.virtual_fields.forEach(fieldInfo => fields.push(makeField({ layerInfo, fieldInfo, virtual: true })))
 
   fields.forEach(field => {

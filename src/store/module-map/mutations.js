@@ -17,3 +17,7 @@ export function center (state, value) {
 export function padding (state, padding) {
   state.mapObject.setGlobalPadding(padding)
 }
+
+export function drawing (state, value) {
+  state.drawing = value
+}

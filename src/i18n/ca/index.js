@@ -48,8 +48,6 @@ export default {
 
       authenticatedAs: 'Autenticat com a usuari',
       closeWindow: 'Tancar finestra',
-      changedLeaveTitle: 'Marxant sense guardar',
-      changedLeaveMsg: 'Podeu tornar més tard per guardar-ho o continuar editant',
       logIn: 'Iniciar sessió',
       loginCodeError: 'L\'inici de sessió ha fallat',
       loginCodeOk: 'Inici de sessió correcte, podeu tancar la finestra.',
@@ -75,6 +73,8 @@ export default {
       title: 'Capa de dades',
 
       allDeleted: 'Alguns dels elements seleccionats estan marcats per ser eliminats.',
+      changedLeaveTitle: 'Marxant sense guardar',
+      changedLeaveMsg: 'Podeu tornar més tard per guardar-ho o continuar editant',
       colFilter: 'Filtrar per "{label}"',
       defaultProperties: 'Propietats per defecte dels nous elements',
       deleteElements: 'Elimina {elements}',
@@ -97,7 +97,10 @@ export default {
       selection: 'Selecció',
       someDeleted: 'Tots els elements seleccionats estan marcats per ser eliminats.',
       thisDeleted: 'Aquest element està marcat per ser eliminat.',
-      undoConfirm: 'Segur que voleu desfer els canvis d\'aquest element?'
+      undoConfirm: 'Segur que voleu desfer els canvis d\'aquest element?',
+
+      quitWhileSaving: 'Guardant, espereu si us plau...',
+      quitWithChanges: 'Teniu dades sense guardar'
     },
     draw: {
       headerName: 'Dibuixar',

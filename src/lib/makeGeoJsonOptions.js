@@ -3,7 +3,7 @@ import defaults from 'lodash/defaults.js'
 import omitBy from 'lodash/omitBy.js'
 import template from 'lodash/template.js'
 import L from './leaflet'
-import IconsGenerator from 'components/icons/IconsGenerator'
+import IconsGenerator from './table/geom-styles/icons/IconsGenerator'
 
 function transform (t, value, ...args) {
   return t ? t(value, ...args) : value

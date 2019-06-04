@@ -1,6 +1,6 @@
 import L from 'src/lib/leaflet'
 import except from '../../lib/except'
-import { createExternalLayer } from '../../lib/geomUtils'
+import { createExternalLayer, createLayer } from '../../lib/geomUtils'
 
 import FeaturePopup from '../../components/FeaturePopup'
 
@@ -11,6 +11,10 @@ export function invalidateOffset (context) {
 
 export function invalidateSize (context) {
   context.state.mapObject.invalidateSize()
+}
+
+export function draw (context, type) {
+  return createLayer({ map: context.state.mapObject, type: type.toLowerCase() })
 }
 
 export function stopDrawing (context) {

@@ -21,11 +21,21 @@ export default {
   destroyed () {
     window.removeEventListener('beforeunload', this.onLeave)
   },
+  computed: {
+    dataChanged () {
+      return this.$store.state.dataLayer.table.rows.some(row => {
+        return row.status.new || row.status.edited || row.status.deleted
+      })
+    },
+    savingData () {
+      return this.$store.state.dataLayer.table.saving
+    }
+  },
   methods: {
     onLeave (e) {
-      if (this.$store.state.dataLayer.editStatus.saving) {
+      if (this.savingData) {
         preventExit(e, this.$t('tools.data.quitWhileSaving'))
-      } else if (this.$store.getters['dataLayer/editLayerModified']) {
+      } else if (this.dataChanged) {
         preventExit(e, this.$t('tools.data.quitWithChanges'))
       }
     }
