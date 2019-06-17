@@ -106,6 +106,7 @@ export default {
       explanation: 'Please select geometry type, then click on the map. Double-click to finish drawing.',
       marker: 'Point',
       path: 'Path',
+      save: 'Save as GeoJSON',
       stop: 'Stop drawing'
     },
     fullscreen: { headerName: 'Fullscreen' },

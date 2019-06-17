@@ -31,6 +31,14 @@
       />
       <q-btn
         outline
+        icon="save_alt"
+        v-show="!measuring"
+        @click="downloadGeoJSON"
+        :label="t('save')"
+        class="q-ml-md"
+      />
+      <q-btn
+        outline
         v-show="measuring"
         @click="stopMapMeasuring"
       >{{ t('stop') }}</q-btn>
@@ -62,6 +70,7 @@
 </template>
 
 <script>
+import { saveAs } from 'file-saver'
 import { QBtn, QChip } from 'quasar'
 import Vue from 'vue'
 import length from '@turf/length'
@@ -218,6 +227,22 @@ export default {
     removeFromShared (layer) {
       this.shared.removeLayer(layer)
       this.updateSharedLayers()
+    },
+    downloadGeoJSON () {
+      const features = [
+        ...this.shared.getLayers().map(layer => layer.toGeoJSON()),
+        ...this.measureControl.measures.map(measure => {
+          let layer = measure.layer.getLayers()[0]
+          if (layer instanceof L.LayerGroup) {
+            // Area
+            layer = layer.getLayers()[0]
+          }
+          return layer.toGeoJSON()
+        })
+      ]
+      const geoJSON = JSON.stringify({ type: 'FeatureCollection', features })
+      const blob = new Blob([geoJSON], { type: 'application/geo+json;charset=utf-8' })
+      saveAs(blob, 'drawn-in-geoportal.geojson')
     }
   }
 }

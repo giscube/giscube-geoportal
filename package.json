@@ -22,6 +22,7 @@
     "@types/leaflet": "^1.4.4",
     "ajv": "^6.10.0",
     "axios": "^0.18.0",
+    "file-saver": "^2.0.2",
     "install": "^0.12.2",
     "leaflet": "^1.5.1",
     "leaflet-editable": "git+https://github.com/copying/Leaflet.Editable.git",
