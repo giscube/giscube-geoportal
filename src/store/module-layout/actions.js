@@ -27,3 +27,13 @@ export function createDialog (context, config) {
     context.commit('removeDialog', dialog)
   })
 }
+
+export function showMapWhile (context, promise) {
+  if (context.getters.drawersFullOverlay && context.state.sidebarVisible) {
+    context.dispatch('setSidebarVisible', false)
+    promise.finally(_ => {
+      context.dispatch('setSidebarVisible', true)
+    })
+  }
+  return promise
+}

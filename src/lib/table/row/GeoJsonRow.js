@@ -47,7 +47,7 @@ export default class GeoJsonRow extends Row {
     this.parent.info.geomStyle.apply(this)
   }
 
-  async asNew ({ map }) {
+  async _asNew ({ map }) {
     const config = {
       bubblingMouseEvents: false
     }
@@ -59,6 +59,12 @@ export default class GeoJsonRow extends Row {
     cloned.layer = layer
     cloned.prepareLayer()
     return cloned
+  }
+
+  asNew () {
+    const promise = this._asNew.apply(this, arguments)
+    this.parent.root.$store.dispatch('layout/showMapWhile', promise)
+    return promise
   }
 
   geomChanged () {
