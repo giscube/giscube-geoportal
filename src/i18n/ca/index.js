@@ -7,6 +7,7 @@ export default {
     close: 'tanca',
     delete: 'elimina',
     discard: 'descarta',
+    download: 'descarrega',
     previous: 'anterior',
     pinToMap: 'fixa al mapa',
     print: 'imprimeix',
@@ -111,6 +112,7 @@ export default {
       explanation: 'Escolliu tipus de geometria, i seguidament cliqueu el mapa. Podeu fer doble clic per acabar de dibuixar.',
       marker: 'Punt',
       path: 'Línia',
+      save: 'Guarda com a GeoJSON',
       stop: 'Parar de dibuixar'
     },
     fullscreen: { headerName: 'Pantalla complerta' },
