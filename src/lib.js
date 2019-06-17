@@ -7,7 +7,7 @@ import GiscubeLayout from 'layouts/GiscubeLayout'
 import CatalogPanel from 'components/CatalogPanel'
 import CatalogResult from 'components/CatalogResult'
 import CoordsPanel from 'components/CoordsPanel'
-import DataPanel from 'components/data-layer/Panel'
+import DataPanel from 'components/data-layer/DataPanel'
 import Sidebar from 'components/Sidebar'
 import DrawPanel from 'components/DrawPanel'
 import PlacePanel from 'components/PlacePanel'
@@ -19,10 +19,13 @@ import QueryOnClick from 'components/QueryOnClick'
 import LayersControl from 'components/LayersControl'
 import HelpPanel from 'components/HelpPanel'
 import StreetViewPanel from 'components/StreetViewPanel'
+import geoportalBoot from './boot'
 import store from './store/index.js'
 import config from './config/lib.js'
 import { except as exceptLib } from './lib/except.js'
 import i18n from './i18n/index.js'
+
+const boot = geoportalBoot.setup
 
 export {
   AppGeoportal,
@@ -46,6 +49,7 @@ export {
   LayersControl,
   HelpPanel,
   StreetViewPanel,
+  boot,
   store,
   config,
   exceptLib,
