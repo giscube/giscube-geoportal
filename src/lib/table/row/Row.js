@@ -72,6 +72,13 @@ export default class Row {
     return this.pk !== void 0 ? this.pk : this._internalPk
   }
 
+  _resetStatus () {
+    this.status.deleted = false
+    this.status.edited = false
+    this.status.propsEdited = false
+    this.status.geomEdited = false
+  }
+
   async asNew () {
     return this.clone()
   }
@@ -141,9 +148,8 @@ export default class Row {
   revert () {
     if (!this.status.new && this.status.propsEdited) {
       this.properties = this.getOriginalProperties()
-      this.status.edited = false
-      this.status.propsEdited = false
     }
+    this._resetStatus()
   }
 
   uiEdit () {

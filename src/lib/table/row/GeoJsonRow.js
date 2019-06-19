@@ -1,5 +1,6 @@
 import L from 'src/lib/leaflet'
 import { createLayer, flipLatLng } from 'src/lib/geomUtils'
+import { cloneClean } from 'src/lib/utils'
 
 import Row from './Row'
 
@@ -15,6 +16,11 @@ export default class GeoJsonRow extends Row {
         enumerable: false,
         writable: false,
         value: this.geomChanged.bind(this)
+      },
+      layer: {
+        configurable: true,
+        enumerable: false,
+        writable: true
       }
     })
   }
@@ -74,10 +80,10 @@ export default class GeoJsonRow extends Row {
 
     let f
     if (this.layer.getLatLngs) {
-      const geom = this.layer.getLatLngs()
+      const geom = cloneClean(this.layer.getLatLngs())
       f = this.layer.setLatLngs.bind(this.layer, geom)
     } else if (this.layer.getLatLng) {
-      const geom = this.layer.getLatLng()
+      const geom = cloneClean(this.layer.getLatLng())
       f = this.layer.setLatLng.bind(this.layer, geom)
     }
 

@@ -276,6 +276,7 @@ export default class Table {
   updateByMap (pagination) {
     if (this.mapDependent) {
       this.update(pagination)
+        .catch(Vue.prototype.$except)
     }
   }
 
@@ -288,7 +289,9 @@ export default class Table {
     this.remote.save(this.toBulk())
       .then(_ => {
         this.editing = false
+        this.rows.forEach(row => row._resetStatus())
         this.update({ immediate: true })
+          .catch(Vue.prototype.$except)
       })
       .catch(Vue.prototype.$except)
       .then(() => {
