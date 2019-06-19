@@ -85,7 +85,7 @@ export default {
     async loadData () {
       try {
         await this.table.fetchInfo()
-        await this.table.update(void 0, { immediate: true })
+        await this.table.update({ immediate: true })
       } catch (e) {
         this.$except(e)
       }

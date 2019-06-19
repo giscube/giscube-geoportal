@@ -10,8 +10,12 @@ const INTERNAL_ERROR_CLASSES = [
   URIError
 ]
 
+function isInvalidObject (error) {
+  return typeof error !== 'object' || error === null
+}
+
 function isInternalError (error) {
-  return INTERNAL_ERROR_CLASSES.some(ErrorClass => error instanceof ErrorClass)
+  return isInvalidObject(error) || INTERNAL_ERROR_CLASSES.some(ErrorClass => error instanceof ErrorClass)
 }
 
 function isAxiosError (error) {
@@ -20,12 +24,16 @@ function isAxiosError (error) {
 
 function except (error, { hide = false } = {}) {
   const self = except
-  if (error instanceof ErrorEvent && error.error) {
+  if (typeof error === 'object' && !!error && error instanceof ErrorEvent && error.error) {
     error = error.error // extract the error from the event
   }
 
   if (isInternalError(error)) {
-    self._sentry(error)
+    if (isInvalidObject(error)) {
+      self._sentry(`Error with non error type: "${error}" (${typeof error})`)
+    } else {
+      self._sentry(error)
+    }
     self._log(error)
 
     if (!hide) {

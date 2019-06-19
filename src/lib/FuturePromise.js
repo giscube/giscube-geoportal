@@ -31,7 +31,7 @@ export default class FuturePromise {
   /// Attaches the promise to the current one. Resets promise to a new one
   attach (promise) {
     const resolve = this._resolve
-    const reject = this._resolve
+    const reject = this._reject
     this.newPromise()
 
     // forward to the internal promise

@@ -76,6 +76,7 @@ import Vue from 'vue'
 import length from '@turf/length'
 import area from '@turf/area'
 import L from 'src/lib/leaflet'
+import { createLayer } from 'src/lib/geomUtils'
 
 import MeasureResultPopup from 'components/MeasureResultPopup.vue'
 
@@ -195,14 +196,20 @@ export default {
     addMarker () {
       this.measuring = true
       this.$store.commit('setCurrentTool', this.map.measureControl)
-      this.map.on('click', this.finishAddMarker)
+      createLayer({
+        map: this.map,
+        type: 'point'
+      })
+        .then(marker => this.finishAddMarker(marker))
+        .catch(_ => this.stopMeasuring())
     },
-    finishAddMarker ({ latlng }) {
-      this.$store.dispatch('map/addSharedMarker', latlng)
+    finishAddMarker (marker) {
+      this.$store.dispatch('map/addSharedMarker', marker)
       this.updateSharedLayers()
       this.stopMeasuring()
     },
     stopMapMeasuring () {
+      this.$store.dispatch('map/stopDrawing')
       this.$nextTick(_ => {
         // $nextTick needed to prevent infinite event loop
         this.map.measureControl.stopMeasuring()
@@ -215,7 +222,6 @@ export default {
       this.measuring = false
       this.map.off('measure:measurestop', this.stopMeasuring)
       this.map.off('measure:finishedpath', this.stopMeasuring)
-      this.map.off('click', this.finishAddMarker)
       // FIXME: hardcoded 300ms value from QueryOnClick, get from config
       setTimeout(() => {
         this.$store.commit('setCurrentTool', null)
