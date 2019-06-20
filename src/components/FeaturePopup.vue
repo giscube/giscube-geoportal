@@ -20,13 +20,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.popup {
-}
-.popup-content {
-  max-height: 300px;
-  overflow: auto;
-}
-
 .popup .title {
   font-size: 1.2em;
   font-weight: bold;
