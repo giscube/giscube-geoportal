@@ -54,7 +54,7 @@ import DataTable from './DataTable'
 import StatusControls from './StatusControls'
 
 export default {
-  props: ['table'],
+  props: ['table', 'dialogHandlers'],
   components: {
     DataEditControls,
     DataFilter,
@@ -67,6 +67,7 @@ export default {
     QSpace
   },
   async mounted () {
+    this.dialogHandlers.close = this.close.bind(this)
     await this.$nextTick()
     await this.loadData()
   },
@@ -89,6 +90,13 @@ export default {
       } catch (e) {
         this.$except(e)
       }
+    },
+    close () {
+      const closable = !this.editing && !this.saving
+      if (closable) {
+        this.hide()
+      }
+      return closable
     },
 
     show () {

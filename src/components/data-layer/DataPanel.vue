@@ -41,6 +41,7 @@
 <script>
 import { QSpace } from 'quasar'
 import { mapState } from 'vuex'
+import { isCleanEqual } from 'src/lib/utils'
 
 import TranslationMixin from './TranslationMixin'
 import DataEditControls from './DataEditControls'
@@ -75,6 +76,11 @@ export default {
     })
   },
   async beforeRouteUpdate (to, from, next) {
+    if (isCleanEqual(from.params, to.params)) {
+      next()
+      return
+    }
+
     const { sourceName, layerName } = from.params
     const nameOnly = this.table && !sourceName && !layerName
     const leaving = nameOnly || await this.checkLeaving()

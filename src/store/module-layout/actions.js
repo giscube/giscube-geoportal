@@ -1,4 +1,5 @@
 import { Dialog } from 'quasar'
+import Vue from 'vue'
 
 export function setPrinting (context, value) {
   if (value) {
@@ -20,14 +21,6 @@ export function setSidebarVisible (context, value) {
   context.dispatch('map/invalidateOffset', void 0, { root: true })
 }
 
-export function createDialog (context, config) {
-  const dialog = Dialog.create(config)
-  context.commit('addDialog', dialog)
-  return dialog.onDismiss(() => {
-    context.commit('removeDialog', dialog)
-  })
-}
-
 export function showMapWhile (context, promise) {
   if (context.getters.drawersFullOverlay && context.state.sidebarVisible) {
     context.dispatch('setSidebarVisible', false)
@@ -36,4 +29,87 @@ export function showMapWhile (context, promise) {
     })
   }
   return promise
+}
+
+export function createDialog (context, config) {
+  const handlers = {
+    close: null
+  }
+  Vue.observable(handlers)
+
+  const api = Dialog.create({
+    ...config,
+    dialogHandlers: handlers
+  })
+
+  const dialog = { api, handlers }
+  context.commit('addDialog', dialog)
+  api.onDismiss(() => {
+    // DO NOT MAKE IT ASYNC
+    context.commit('removeDialog', dialog)
+  })
+
+  this.$router.push({
+    ...this.$router.currentRoute,
+    hash: `#${context.state.dialogs.length.toString()}`
+  })
+
+  return api
+}
+
+export async function applyDialogs (context, { to, from, next }) {
+  const steps = to.hash.length > 1 ? to.hash.match(/\d+/g).map(parseInt) : [0]
+  const target = steps[0]
+  const current = context.state.dialogs.length
+
+  if (target === current) {
+    next()
+  } else if (target > current) {
+    next({
+      ...to,
+      hash: `#${current}~${steps.join('~')}`,
+      replace: true
+    })
+  } else {
+    let i = current - 1
+    while (i >= target) {
+      let closed = await context.dispatch('tryClosingDialog', i)
+      if (!closed) {
+        break
+      }
+      i = context.state.dialogs.length - 1
+    }
+
+    if (i === target) {
+      next()
+    } else {
+      next({
+        ...to,
+        hash: i === 0 ? '' : `#${i}`
+      })
+    }
+  }
+}
+
+export async function tryClosingDialog (context, i) {
+  const dialog = context.state.dialogs[i]
+  const close = dialog.handlers.close
+  let result = false
+  if (typeof close === 'function') {
+    result = await close()
+    if (result) {
+      context.commit('removeDialog', dialog)
+    }
+  } else {
+    await new Promise(resolve => {
+      dialog.api.onDismiss(() => {
+        // When using hide() the cleanup hook will be called
+        // Quasar's dialog API follow the order that the event handlers have
+        // been set; thus, at this point, the dialog has already been removed.
+        resolve()
+      })
+      dialog.api.hide()
+    })
+    result = true
+  }
 }

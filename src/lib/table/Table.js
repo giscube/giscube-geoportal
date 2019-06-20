@@ -1,4 +1,3 @@
-import { Dialog } from 'quasar'
 import L from 'src/lib/leaflet'
 import { rowsInGeom } from 'src/lib/layersInGeom'
 import Vue from 'vue'
@@ -26,7 +25,7 @@ export default class Table {
         writable: true,
         value: null
       },
-      root: {
+      $root: {
         configurable: true,
         enumerable: false,
         writable: false,
@@ -64,7 +63,7 @@ export default class Table {
   }
 
   get popup () {
-    return this._popup || (this._popup = new Popup(this.root))
+    return this._popup || (this._popup = new Popup(this.$root))
   }
 
   get tableFields () {
@@ -237,13 +236,13 @@ export default class Table {
   }
 
   uiEdit (rows) {
-    return new Promise((resolve, reject) => {
-      Dialog.create({
+    return new Promise(async (resolve, reject) => {
+      const api = await this.$root.$store.dispatch('layout/createDialog', {
         component: DBFormDialog,
         table: this,
         rows
       })
-        .onDismiss(() => resolve())
+      api.onDismiss(() => resolve())
     })
   }
 
