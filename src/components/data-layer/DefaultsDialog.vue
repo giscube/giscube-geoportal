@@ -15,6 +15,7 @@
           class="q-mb-md"
         />
         <q-checkbox
+          v-show="table.info.hasGeom"
           :value="editMultiple"
           @input="$emit('update:editMultiple', $event)"
           :label="t('multipleNew')"
@@ -22,7 +23,7 @@
         <q-checkbox
           :value="dialogForNew"
           @input="$emit('update:dialogForNew', $event)"
-          :label="t('dialogNew')"
+          :label="table.info.hasGeom ? t('dialogNewGeom') : t('dialogNew')"
         />
         <q-checkbox
           :value="selectNews"

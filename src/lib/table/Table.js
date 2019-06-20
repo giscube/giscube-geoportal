@@ -129,14 +129,15 @@ export default class Table {
 
   async makeRows ({ map, base, editMultiple, dialogForNew, selectNews }) {
     this.adding = true
+    editMultiple = editMultiple && this.info.hasGeom
     try {
       do {
         const row = await this.rowFromDefault({ base, map })
-        if (dialogForNew) {
-          await row.uiEdit()
-        }
         if (selectNews) {
           row.status.selected = true
+        }
+        if (dialogForNew) {
+          await row.uiEdit()
         }
 
         // Disable eslint because when looping we stop when an exception is thrown
