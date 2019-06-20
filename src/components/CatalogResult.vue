@@ -24,7 +24,7 @@ export default {
   },
   computed: {
     isResultClickable () {
-      return this.result.geojson || this.result.children.length > 0
+      return this.result.geojson || (this.result.children && this.result.children.length > 0)
     }
   },
   methods: {

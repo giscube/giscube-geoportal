@@ -55,7 +55,7 @@ export default {
       }
     },
     isResultClickable () {
-      return this.result.coords || this.result.geojson || this.result.children.length > 0
+      return this.result.coords || this.result.geojson || (this.result.children && this.result.children.length > 0)
     },
     resultCursor () {
       if (this.isResultClickable) {
