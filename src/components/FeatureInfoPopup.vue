@@ -1,5 +1,5 @@
 <template>
-  <div class='popup'>
+  <div class="popup limited">
     <q-tabs v-model="current">
       <q-tab
         v-for="(layer, layerIndex) in results"
@@ -53,9 +53,14 @@ export default {
 </script>
 
 <style lang="scss">
-.popup {
+.popup.limited {
   max-height: 40vh;
   max-width: 50vw;
+}
+
+.popup {
+  width: 100%;
+  height: 100%;
   overflow: auto;
 
   .layer .title {
