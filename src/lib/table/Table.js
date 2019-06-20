@@ -17,6 +17,7 @@ export default class Table {
     this.rows = []
     this.selected = new Set() /// selected rows' pks
     this.selectedList = [] // Vue won't support sets (until vue 3.0). Convert it manually
+    this.visibleSelectedList = []
 
     Object.defineProperties(this, {
       map: {
@@ -98,7 +99,7 @@ export default class Table {
   }
 
   deleteSelected () {
-    const selectedRows = this.rows.filter(row => this.selected.has(row.internalPk))
+    const selectedRows = this.visibleSelectedList
     const del = !selectedRows.every(row => row.status.deleted)
     selectedRows.forEach(row => { row.status.deleted = del })
   }
@@ -248,7 +249,7 @@ export default class Table {
   }
 
   uiEditSelected () {
-    this.uiEdit(this.rows.filter(row => this.selected.has(row.internalPk)))
+    this.uiEdit(this.visibleSelectedList)
   }
 
   update ({ pagination, immediate } = {}) {
@@ -282,6 +283,12 @@ export default class Table {
 
   updateSelectedList () {
     Vue.set(this, 'selectedList', Array.from(this.selected))
+    Vue.set(this, 'visibleSelectedList', [])
+    this.rows.forEach(row => {
+      if (this.selected.has(row.internalPk)) {
+        this.visibleSelectedList.push(row)
+      }
+    })
   }
 
   save () {
