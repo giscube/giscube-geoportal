@@ -53,7 +53,7 @@ export default {
   },
   methods: {
     revertItem () {
-      this.$q.dialog({
+      this.$store.dispatch('layout/createDialog', {
         message: this.$t('tools.data.undoConfirm'),
         ok: {
           flat: true,
@@ -63,10 +63,12 @@ export default {
           flat: true,
           label: this.$t('no')
         },
-        persistent: true
-      }).onOk(_ => {
-        this.row.revert()
+        persistent: true,
+        noRouteDismiss: true
       })
+        .then(api => api.onOk(_ => {
+          this.row.revert()
+        }))
     }
   }
 }

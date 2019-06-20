@@ -1,3 +1,5 @@
+import Vue from 'vue'
+
 export function leftDrawerSize (state, value) {
   state.leftDrawerSize = value
 }
@@ -15,12 +17,28 @@ export function printing (state, value) {
 }
 
 export function addDialog (state, obj) {
-  state.dialogs.unshift(obj)
+  state.dialogs.push(obj)
 }
 
 export function removeDialog (state, obj) {
-  const i = state.dialogs.indexOf(obj)
-  if (i >= 0) {
-    state.dialogs.splice(i, 1)
+  const dialogs = state.dialogs
+  // delete
+  {
+    const i = dialogs.indexOf(obj)
+    state.dialogs[i] = void 0
+  }
+
+  // cleanup
+  {
+    let i = dialogs.length - 1
+    for (; i >= 0; --i) {
+      if (dialogs[i]) {
+        break
+      }
+    }
+
+    // i is the last element (-1 if empty)
+    // i + 1 is the length that it should have
+    Vue.set(dialogs, 'length', i + 1)
   }
 }

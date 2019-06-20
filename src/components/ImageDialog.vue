@@ -2,6 +2,7 @@
   <q-dialog
     ref="dialog"
     maximized
+    no-route-dismiss
     @hide="onDialogHide"
   >
     <q-card class="column q-pa-md" >
@@ -18,7 +19,7 @@
 <script>
 import { QBtn, QCard, QCardActions, QCardSection, QDialog } from 'quasar'
 export default {
-  props: ['src'],
+  props: ['src', 'dialogHandlers'],
   components: {
     QBtn,
     QCard,
@@ -26,12 +27,19 @@ export default {
     QCardSection,
     QDialog
   },
+  mounted () {
+    this.dialogHandlers.close = this.close.bind(this)
+  },
   methods: {
     show () {
       this.$refs.dialog.show()
     },
     hide () {
       this.$refs.dialog.hide()
+    },
+    async close () {
+      this.hide()
+      return true
     },
     onDialogHide () {
       this.$emit('hide')

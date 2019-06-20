@@ -3,6 +3,7 @@
     ref="dialog"
     type="propt"
     persistent
+    no-route-dismiss
     content-class="data-form"
   >
     <q-card class="data-form column no-wrap">
@@ -116,7 +117,7 @@ export default {
       if (this.$refs.form.validate()) {
         this.doCommit()
       } else {
-        this.$q.dialog({
+        this.$store.dispatch('layout/createDialog', {
           message: this.t('qInvalidCommit'),
           ok: {
             flat: true,
@@ -126,10 +127,12 @@ export default {
             flat: true,
             label: this.$t('no')
           },
-          persistent: true
-        }).onOk(_ => {
-          this.doCommit()
+          persistent: true,
+          noRouteDismiss: true
         })
+          .then(api => api.onOk(_ => {
+            this.doCommit()
+          }))
       }
     },
     doCommit () {
