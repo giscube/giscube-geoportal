@@ -18,9 +18,9 @@
       />
     </q-btn-group>
     <q-btn-dropdown
-      v-show="table.selectedList.length > 0"
+      v-show="table.visibleSelectedList.length > 0"
       split
-      :label="t('editElements', {elements: $tc('names.element', table.selectedList.length, {count: table.selectedList.length})})"
+      :label="t('editElements', {elements: $tc('names.element', table.visibleSelectedList.length, {count: table.visibleSelectedList.length})})"
       :disable="saving"
       @click="table.uiEditSelected()"
     >
@@ -31,7 +31,7 @@
           @click="table.deleteSelected()"
         >
           <q-item-section>
-            <q-item-label>{{ t('deleteElements', {elements: $tc('names.element', table.selectedList.length, {count: table.selectedList.length})}) }}</q-item-label>
+            <q-item-label>{{ t('deleteElements', {elements: $tc('names.element', table.visibleSelectedList.length, {count: table.visibleSelectedList.length})}) }}</q-item-label>
           </q-item-section>
         </q-item>
       </q-list>
