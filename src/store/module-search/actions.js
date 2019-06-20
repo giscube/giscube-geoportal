@@ -59,7 +59,7 @@ export function fetch (context) {
 export function parseResults (context, { search, data }) {
   const except = Vue.prototype.$except
 
-  const results = data.results
+  const results = search.parseData ? search.parseData(data) : data.results
   if (results === void 0 || results === null) {
     except('Response without results', { hide: true })
     return
