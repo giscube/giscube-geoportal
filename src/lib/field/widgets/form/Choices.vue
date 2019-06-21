@@ -39,7 +39,7 @@ export default {
         return null
       }
 
-      const cleanValues = this.options.filter(option => this.valueObj.values.has(option.value))
+      const cleanValues = this.options.filter(option => this.valueObj.values.has(option.value)).map(option => option.value)
 
       if (this.valueObj.values.has(null)) {
         cleanValues.push(`<${this.$t('values.empty')}>`)

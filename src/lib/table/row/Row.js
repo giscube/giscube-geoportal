@@ -1,4 +1,5 @@
 import { isCleanEqual } from 'src/lib/utils'
+import MultiResult from 'src/lib/MultiResult'
 
 const pkGenerator = (function () {
   let n = 0
@@ -111,9 +112,16 @@ export default class Row {
   }
 
   edit (properties) {
+    const props = {}
+    Object.keys(properties).forEach(key => {
+      const value = properties[key]
+      if (!MultiResult.is(value)) {
+        props[key] = value
+      }
+    })
     this.properties = {
       ...this.properties,
-      ...properties
+      ...props
     }
     this.status.edited = true
     this.status.propsEdited = true
