@@ -22,13 +22,16 @@ export default {
     window.removeEventListener('beforeunload', this.onLeave)
   },
   computed: {
+    table () {
+      return this.$store.state.dataLayer.table
+    },
     dataChanged () {
-      return this.$store.state.dataLayer.table.rows.some(row => {
+      return this.table && this.table.rows.some(row => {
         return row.status.new || row.status.edited || row.status.deleted
       })
     },
     savingData () {
-      return this.$store.state.dataLayer.table.saving
+      return this.table && this.table.saving
     }
   },
   methods: {
