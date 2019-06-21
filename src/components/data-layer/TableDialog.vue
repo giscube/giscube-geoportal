@@ -2,7 +2,8 @@
   <q-dialog
     ref="dialog"
     maximized
-    :persistent="editing"
+    persistent
+    no-route-dismiss
   >
     <q-card>
       <q-card-section class="column q-pa-lg">
