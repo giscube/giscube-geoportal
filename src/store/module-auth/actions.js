@@ -80,9 +80,12 @@ export function saveState (context) {
   } else {
     localStorage.removeItem('username')
   }
+
+  context.dispatch('dataLayer/refreshSources', void 0, { root: true })
 }
 
 export function updateUserInfo (context) {
+  context.dispatch('dataLayer/refreshSources', void 0, { root: true })
   if (context.state.accessToken === null) {
     return
   }
