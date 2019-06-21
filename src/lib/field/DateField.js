@@ -7,6 +7,7 @@ export default class DateField extends DateTimeField {
   }
 
   repr (data) {
-    return this.getValue(data).format('YYYY-MM-DD')
+    const value = this.getValue(data)
+    return (value === null || value === void 0) ? null : value.format('YYYY-MM-DD')
   }
 }

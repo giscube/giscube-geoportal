@@ -7,6 +7,7 @@ export default class TimeField extends DateTimeField {
   }
 
   repr (data) {
-    return this.getValue(data).format('HH:mm:ss')
+    const value = this.getValue(data)
+    return (value === null || value === void 0) ? null : value.format('HH:mm:ss')
   }
 }
