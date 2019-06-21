@@ -8,6 +8,13 @@ import Popup from './Popup'
 import Remote from './Remote'
 import * as Row from './row'
 
+export class EditingError extends Error {
+  constructor () {
+    super('The action couldn\'t be performed because the table is being edited')
+    this.error = 'EditingError'
+  }
+}
+
 export default class Table {
   constructor (source, layer, root, contantFields) {
     const getConfig = () => root.$store.getters['auth/config']
@@ -254,7 +261,7 @@ export default class Table {
 
   update ({ pagination, immediate } = {}) {
     if (this.editing) {
-      return Promise.reject()
+      return Promise.reject(new EditingError())
     }
 
     let requestData
