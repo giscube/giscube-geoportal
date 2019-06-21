@@ -1,7 +1,7 @@
 <template>
-  <div class="panel result-panel">
-    <div class="panel-content">
-      <p class="panel-title">{{ title }}</p>
+  <div class="panel result-panel fit">
+    <div class="panel-content limit-parent column no-wrap">
+      <p class="col panel-title">{{ title }}</p>
 
       <div v-if="address" class="row-info">
         <q-icon name="home" size="1.4em" /> {{ address }}
@@ -57,19 +57,56 @@
         </q-chip>
       </div>
 
+      <div
+        v-if="table"
+        class="q-mt-lg col column no-wrap"
+      >
+        <div class="row items-center justify-end q-mb-md" v-if="table && table.info">
+          <draw-controls
+            v-if="drawing"
+          />
+          <data-filter
+            v-else
+            :table="table"
+          />
+          <q-space />
+          <selection-controls
+            :table="table"
+          />
+        </div>
+        <div class="full-width col">
+          <data-table
+            class="limit-parent"
+            v-if="table.info"
+            :table="table"
+          />
+        </div>
+      </div>
+
     </div>
   </div>
 </template>
 
 <script>
 import L from '../lib/leaflet'
-import { QChip, QBtn, QIcon } from 'quasar'
+import { QChip, QBtn, QIcon, QSpace } from 'quasar'
+import { mapState } from 'vuex'
+
+import DataFilter from './data-layer/DataFilter'
+import DataTable from './data-layer/DataTable'
+import DrawControls from './data-layer/DrawControls'
+import SelectionControls from './data-layer/SelectionControls'
 
 export default {
   components: {
+    DataFilter,
+    DataTable,
+    DrawControls,
+    SelectionControls,
     QChip,
     QBtn,
-    QIcon
+    QIcon,
+    QSpace
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
@@ -94,18 +131,13 @@ export default {
     next()
   },
   computed: {
-    map () {
-      return this.$store.state.map.mapObject
-    },
-    query () {
-      return this.$store.state.search.query
-    },
-    result () {
-      return this.$store.state.search.result
-    },
-    resultsLayer () {
-      return this.$store.state.search.resultsLayer
-    },
+    ...mapState({
+      drawing: state => state.map.drawing,
+      map: state => state.map.mapObject,
+      query: state => state.search.query,
+      result: state => state.search.result,
+      resultsLayer: state => state.search.resultsLayer
+    }),
 
     // To override
     address () {
@@ -124,6 +156,9 @@ export default {
       return null
     },
     metadata () {
+      return null
+    },
+    table () {
       return null
     },
     title () {

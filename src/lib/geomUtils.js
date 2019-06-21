@@ -3,6 +3,7 @@ import Vue from 'vue'
 import L from './leaflet.js'
 import { CancelError } from './utils'
 import makeGeoJsonOptions from './makeGeoJsonOptions'
+import Table from './table'
 
 export function visiblePart (bbox, visibility) {
   /*
@@ -88,7 +89,8 @@ export function createGeoJSONLayer ({ result, popupComponent }) {
 const createExternalLayerActions = {
   wms: createExternalLayerWMS,
   tms: createExternalLayerTMS,
-  geojson: createExternalLayerGeoJSON
+  geojson: createExternalLayerGeoJSON,
+  databaselayer: createExternalDataBaseLayer
 }
 
 export function createExternalLayer (config) {
@@ -158,6 +160,34 @@ function createExternalLayerGeoJSON ({ layerDescriptor, title, options, map, pop
   })
 }
 
+async function createExternalDataBaseLayer ({ layerDescriptor, metaOptions }) {
+  const url = layerDescriptor.url.replace(/([^:])\/\//g, '$1/') // Cleaned URL (no double slashes)
+
+  // Extract information from the url
+  const [, sourceUrl, layerName] = url.match(/^(.+)layerserver\/databaselayers\/([^/]+)\/?$/)
+  const source = {
+    url: sourceUrl
+  }
+  const layer = {
+    name: layerName
+  }
+
+  const { root } = metaOptions
+  const table = new Table(source, layer, root)
+  await table.fetchInfo()
+  await table.update({ immediate: true })
+
+  if (table.layer) {
+    table.layer.remove()
+  }
+
+  return {
+    type: 'DataBaseLayer',
+    layer: table.layer,
+    table
+  }
+}
+
 const multi = 'multi'
 
 const geomCreators = {
@@ -180,7 +210,10 @@ export function createLayer ({ map, type, config, keepDrawn = false }) {
   const baseType = isMulti ? type.slice(multi.length) : type
 
   return new Promise((resolve, reject) => {
-    function cancel () {
+    function cancel (event) {
+      if (event.layer) {
+        event.layer.remove()
+      }
       removeEvents()
       reject(new CancelError())
     }

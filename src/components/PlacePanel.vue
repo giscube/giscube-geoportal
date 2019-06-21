@@ -9,7 +9,8 @@ export default {
   data () {
     return {
       layer: null,
-      layerType: null
+      layerType: null,
+      table_: null
     }
   },
   computed: {
@@ -58,11 +59,17 @@ export default {
         title: this.result && this.result.title,
         options: (this.result && this.result.options) || {},
         map: this.map,
-        popupComponent: isGeojson ? SearchResultPopup : FeaturePopup
+        popupComponent: isGeojson ? SearchResultPopup : FeaturePopup,
+        metaOptions: {
+          root: this.$root
+        }
       }
     },
     properties () {
       return (this.result && this.result.geojson && this.result.geojson.properties) || {}
+    },
+    table () {
+      return this.table_
     },
     title () {
       return this.result && this.result.title
@@ -79,9 +86,10 @@ export default {
     },
     applyResult () {
       createLayerFromConfig(this.layerOptions)
-        .then(({ type, layer }) => {
+        .then(({ type, layer, table }) => {
           this.layer = layer
           this.layerType = type
+          this.table_ = table
 
           this.show()
           if (type === 'GeoJSON') {

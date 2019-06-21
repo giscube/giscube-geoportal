@@ -127,7 +127,7 @@ export default class Table {
             value: L.layerGroup()
           })
           if (this.map) {
-            this.layer.addTo(this.map)
+            this.addTo(this.map)
           }
         }
 

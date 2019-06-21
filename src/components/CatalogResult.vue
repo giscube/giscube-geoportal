@@ -36,7 +36,10 @@ export default {
       const layerDescriptor = this.result.children[0]
       const title = this.result.title
       const options = this.result.options || {}
-      this.$store.dispatch('map/addLayer', { layerDescriptor, title, options })
+      const metaOptions = {
+        root: this.$root
+      }
+      this.$store.dispatch('map/addLayer', { layerDescriptor, title, options, metaOptions })
     },
     viewResultMain () {
       if (this.isResultClickable) {
