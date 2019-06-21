@@ -55,6 +55,11 @@
         >
           <q-item-section>{{layer.name}}</q-item-section>
         </q-item>
+        <q-item
+          v-if="!source.layers.length"
+        >
+          <q-item-section class="text-caption">{{ $t('states.empty') | capitalize }}</q-item-section>
+        </q-item>
       </q-expansion-item>
     </q-expansion-item>
   </q-list>
