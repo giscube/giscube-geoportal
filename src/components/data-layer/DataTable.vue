@@ -135,7 +135,7 @@ export default {
           name: field.name,
           label: field.label,
           align: 'left',
-          sortable: !field.virtual && !field.constant,
+          sortable: !this.table.editing && !field.virtual && !field.constant,
           searchable: field.search && !field.virtual && !field.constant
         })
       })
