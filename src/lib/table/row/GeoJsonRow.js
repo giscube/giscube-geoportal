@@ -165,6 +165,7 @@ export default class GeoJsonRow extends Row {
 
   remove () {
     if (this.layer) {
+      this.parent.layer.removeLayer(this.layer)
       this.layer.remove()
       delete this.layer
     }

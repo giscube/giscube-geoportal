@@ -13,7 +13,14 @@ export function invalidateSize (context) {
 }
 
 export function draw (context, type) {
-  return createLayer({ map: context.state.mapObject, type: type.toLowerCase() })
+  const oldTool = context.rootState.currentTool
+  context.commit('setCurrentTool', 'draw', { root: true })
+
+  const promise = createLayer({ map: context.state.mapObject, type: type.toLowerCase() })
+  promise.finally(() => {
+    context.commit('setCurrentTool', oldTool, { root: true })
+  })
+  return promise
 }
 
 export function stopDrawing (context) {
@@ -30,9 +37,9 @@ export function enableDoubleClickZoom (context) {
   context.state.mapObject.doubleClickZoom.enable()
 }
 
-export function addLayer (context, { layerDescriptor, title, options }) {
+export function addLayer (context, { layerDescriptor, title, options, metaOptions }) {
   const map = context.state.mapObject
-  createExternalLayer({ layerDescriptor, title, options, map, popupComponent: FeaturePopup })
+  createExternalLayer({ layerDescriptor, title, options, map, popupComponent: FeaturePopup, metaOptions })
     .then(({ type, layer }) => {
       map.addLayer(layer)
 
