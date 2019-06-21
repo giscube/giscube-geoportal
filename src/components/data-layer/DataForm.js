@@ -1,5 +1,4 @@
 import MultiResult from '../../lib/MultiResult.js'
-import LinkedField from '../../lib/field/LinkedField'
 import FormWidget from '../../lib/field/components/FormWidget.js'
 
 function aggregate (fields, rows) {
@@ -77,12 +76,7 @@ export default {
   },
   render (createElement) {
     return createElement('div', {}, this.table.info.formFields.map(field => {
-      let properties
-      if (field instanceof LinkedField) {
-        properties = aggregate([field.sourceField], this.rows)
-      } else {
-        properties = this.aggregatedProperties
-      }
+      const properties = this.aggregatedProperties
 
       const config = {
         props: {

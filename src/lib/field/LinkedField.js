@@ -46,11 +46,11 @@ export default class LinkedField extends Field {
   }
 
   getValue (data) {
-    if (this.virtual) {
-      return this.getLinkedValue(this.sourceField.getValue(data))
-    } else {
-      return super.getValue(data)
+    let value = this.virtual ? void 0 : super.getValue(data)
+    if (value === void 0 || value === null) {
+      value = this.getLinkedValue(this.sourceField.getValue(data))
     }
+    return value
   }
 
   onUpdate (field, value, properties, callback) {
