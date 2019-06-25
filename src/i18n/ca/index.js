@@ -85,6 +85,8 @@ export default {
       dialogNewGeom: 'Mostrar formulari després d\'afegir la geometria',
       edit: 'Edita',
       editElements: 'Edita {elements}',
+      editing1: 'Editant element {index} de {total}',
+      editingN: 'Editant {n} elements de {total}',
       filterByPolygon: 'Polígon',
       filterByView: 'Mapa',
       filters: 'Filtres',
