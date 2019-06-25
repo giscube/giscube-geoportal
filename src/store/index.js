@@ -43,7 +43,6 @@ export default function (/* { ssrContext } */) {
   })
 
   Store.config = config
-  Store.dispatch('auth/loadState')
 
   return Store
 }
