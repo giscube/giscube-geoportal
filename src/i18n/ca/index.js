@@ -7,7 +7,6 @@ export default {
     close: 'tanca',
     delete: 'elimina',
     discard: 'descarta',
-    download: 'descarrega',
     previous: 'anterior',
     pinToMap: 'fixa al mapa',
     print: 'imprimeix',
@@ -46,6 +45,7 @@ export default {
     auth: {
       headerName: 'Iniciar sessió',
       title: 'Autenticació d\'usuari',
+      help: 'Inicieu sessió amb les vostres credencials.',
 
       authenticatedAs: 'Autenticat com a usuari',
       closeWindow: 'Tancar finestra',
@@ -73,6 +73,7 @@ export default {
     data: {
       headerName: 'Dades',
       title: 'Capa de dades',
+      help: 'Visualitza i edita taules de la base de dades.',
 
       allDeleted: 'Alguns dels elements seleccionats estan marcats per ser eliminats.',
       changedLeaveTitle: 'Marxant sense guardar',
@@ -108,7 +109,7 @@ export default {
     draw: {
       headerName: 'Dibuixar',
       title: 'Dibuixar i mesurar',
-      help: 'Dibuixar geometries sobre el mapa, mesurar-ne les distàncies i àrees',
+      help: 'Dibuixar geometries sobre el mapa, mesurar-ne les distàncies i àrees.',
 
       area: 'Àrea',
       explanation: 'Escolliu tipus de geometria, i seguidament cliqueu el mapa. Podeu fer doble clic per acabar de dibuixar.',
@@ -117,7 +118,10 @@ export default {
       save: 'Guarda com a GeoJSON',
       stop: 'Parar de dibuixar'
     },
-    fullscreen: { headerName: 'Pantalla complerta' },
+    fullscreen: {
+      headerName: 'Pantalla complerta',
+      help: 'Canvia vista a pantalla complerta.'
+    },
     help: {
       headerName: 'Ajuda',
       title: 'Ajuda',
@@ -147,6 +151,7 @@ export default {
     share: {
       headerName: 'Comparteix',
       title: 'Comparteix',
+      help: 'Comparteixi el mapa actual amb les geometries que hagi dibuixat.',
 
       message: '@:names.message',
       options: '@:names.options'
@@ -154,7 +159,7 @@ export default {
     streetview: {
       headerName: 'Street View',
       title: 'Google Street View',
-      help: 'Accedir a la vista de carrer de Google'
+      help: 'Accedir a la vista de carrer de Google.'
     }
   },
   units: {
