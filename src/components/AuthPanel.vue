@@ -46,7 +46,7 @@
                 name="username"
                 v-model="credentials.username"
                 :label="t('username')"
-                :rules="[ value => !!value ]"
+                :rules="[ value => !!value || $t('validations.empty') ]"
                 :readonly="loading"
                 clearable
                 no-error-icon
@@ -57,11 +57,16 @@
                 v-model="credentials.password"
                 type="password"
                 :label="t('password')"
-                :rules="[ value => !!value ]"
                 :readonly="loading"
                 clearable
                 no-error-icon
               />
+              <span
+                v-if="invalidCredentials"
+                class="text-negative"
+              >
+                {{ t('invalidCredentials') }}
+              </span>
               <div class="buttons">
                 <q-btn outline no-caps
                   type="submit"
@@ -112,7 +117,8 @@ export default {
       loading: false,
       canCloseWindow: false,
       loginCodeOk: false,
-      loginCodeError: false
+      loginCodeError: false,
+      invalidCredentials: false
     }
   },
   computed: {
@@ -176,6 +182,9 @@ export default {
     }
     next()
   },
+  mounted () {
+    this.invalidCredentials = false
+  },
   methods: {
     closeWindow () {
       window.close()
@@ -197,10 +206,14 @@ export default {
       this.loading = true
       this.$store.dispatch('auth/credentialsLogin', this.credentials)
         .then(() => {
+          this.invalidCredentials = false
           this.credentials.password = ''
           this.loading = false
         })
-        .catch(() => {
+        .catch(({ invalidCredentials }) => {
+          if (invalidCredentials) {
+            this.invalidCredentials = true
+          }
           this.loading = false
         })
     },

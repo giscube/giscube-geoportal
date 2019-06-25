@@ -48,6 +48,7 @@ export default {
 
       authenticatedAs: 'Authenticated as user',
       closeWindow: 'Close window',
+      invalidCredentials: 'Invalid credentials',
       logIn: 'Log in',
       loginCodeError: 'Login failed',
       loginCodeOk: 'Login succeeded, you can close this window',
@@ -146,6 +147,9 @@ export default {
   },
   units: {
     meters: 'meters'
+  },
+  validations: {
+    empty: 'This field cannot be empty'
   },
   values: {
     empty: 'empty value',

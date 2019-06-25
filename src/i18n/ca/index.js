@@ -49,6 +49,7 @@ export default {
 
       authenticatedAs: 'Autenticat com a usuari',
       closeWindow: 'Tancar finestra',
+      invalidCredentials: 'L\'usuari i/o la contrasenya no són vàlids',
       logIn: 'Iniciar sessió',
       loginCodeError: 'L\'inici de sessió ha fallat',
       loginCodeOk: 'Inici de sessió correcte, podeu tancar la finestra.',
@@ -158,6 +159,9 @@ export default {
   },
   units: {
     meters: 'metres'
+  },
+  validations: {
+    empty: 'Aquest valor no pot ser buit'
   },
   values: {
     empty: 'valor buit',
