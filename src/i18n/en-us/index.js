@@ -45,6 +45,7 @@ export default {
     auth: {
       headerName: 'Log in',
       title: 'User authentication',
+      help: 'Log in using your credentials.',
 
       authenticatedAs: 'Authenticated as user',
       closeWindow: 'Close window',
@@ -61,13 +62,18 @@ export default {
     catalog: {
       headerName: 'Catalog',
       title: 'Catalog',
+      help: 'View data organized in categories.',
 
       noItems: 'No items found in this subcategory'
     },
-    contact: { headerName: 'Contact' },
+    contact: {
+      headerName: 'Contact',
+      help: 'Contact to report to if you find any error or problem.'
+    },
     data: {
       headerName: 'Data',
       title: 'Data layer',
+      help: 'View and edit database tables.',
 
       allDeleted: 'All the selected elements have been marked as deleted.',
       changedLeaveTitle: 'Changing tool with changes',
@@ -103,6 +109,7 @@ export default {
     draw: {
       headerName: 'Draw',
       title: 'Draw and measue',
+      help: 'Draw geometries on the map and measure its distances or areas.',
 
       area: 'Area',
       explanation: 'Please select geometry type, then click on the map. Double-click to finish drawing.',
@@ -111,7 +118,10 @@ export default {
       save: 'Save as GeoJSON',
       stop: 'Stop drawing'
     },
-    fullscreen: { headerName: 'Fullscreen' },
+    fullscreen: {
+      headerName: 'Fullscreen',
+      help: 'Switch to fullscreen mode.'
+    },
     help: {
       headerName: 'Help',
       title: 'Help',
@@ -119,12 +129,17 @@ export default {
       start: 'Start tour'
     },
     home: {
-      headerName: 'Home'
+      headerName: 'Home',
+      help: 'Go to the inital map view.'
     },
-    print: { headerName: 'Print' },
+    print: {
+      headerName: 'Print',
+      help: 'Print the map.'
+    },
     printPage: { headerName: 'Print' },
     search: {
       headerName: 'Search',
+      help: 'Use the search bar to find what you\'re looking for quickly.',
 
       history: 'search history',
       instructions: 'Please type something to search',
@@ -136,13 +151,15 @@ export default {
     share: {
       headerName: 'Share',
       title: 'Share',
+      help: 'Share map with the drawn geometries.',
 
       message: '@:names.message',
       options: '@:names.options'
     },
     streetview: {
       headerName: 'Street View',
-      title: 'Google Street View'
+      title: 'Google Street View',
+      help: 'Open panel with Google Street View.'
     }
   },
   units: {
