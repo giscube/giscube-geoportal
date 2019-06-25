@@ -5,6 +5,7 @@ export default {
     apply: 'apply',
     close: 'close',
     cancel: 'cancel',
+    download: 'download',
     delete: 'delete',
     discard: 'discard',
     previous: 'previous',

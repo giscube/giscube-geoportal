@@ -17,6 +17,14 @@
 
       <div class="row reverse q-mt-md">
         <q-btn outline no-caps
+          v-show="canDownload"
+          icon="save_alt"
+          :label="$t('actions.download') | capitalize"
+          @click="download"
+          class="q-ml-md"
+        />
+
+        <q-btn outline no-caps
           icon="zoom_in"
           :label="$t('actions.zoomToData') | capitalize"
           @click="zoom"
@@ -143,6 +151,9 @@ export default {
     address () {
       return null
     },
+    canDownload () {
+      return false
+    },
     coordinates () {
       return null
     },
@@ -186,7 +197,8 @@ export default {
       // If we can't zoom, go to home view
       const home = this.$store.config.home
       this.map.flyTo(new L.LatLng(home.center.lat, home.center.lng), home.zoom)
-    }
+    },
+    download () {}
   }
 }
 </script>

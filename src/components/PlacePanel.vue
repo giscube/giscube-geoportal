@@ -1,4 +1,5 @@
 <script>
+import { saveAs } from 'file-saver'
 import ResultPanelMixin from './ResultPanelMixin'
 import FeaturePopup from './FeaturePopup'
 import SearchResultPopup from './SearchResultPopup'
@@ -14,8 +15,15 @@ export default {
     }
   },
   computed: {
+    isDescriptionGeoJSON () {
+      return this.layerOptions ? this.layerOptions.layerDescriptor.type.toLowerCase() === 'geojson' : false
+    },
+
     address () {
       return this.properties.address
+    },
+    canDownload () {
+      return this.isDescriptionGeoJSON
     },
     coordinates () {
       if (this.result && this.result.latlng) {
@@ -51,6 +59,10 @@ export default {
       return metadata
     },
     layerOptions () {
+      if (!this.result) {
+        return
+      }
+
       const isGeojson = !!this.result.geojson
 
       return {
@@ -123,6 +135,16 @@ export default {
 
       const t = this.layerType === 'WMS' ? this.layerOptions.layerDescriptor.title : this.layerOptions.title
       this.map.layerswitcher.addOverlay(this.layer, t, { layerType: this.layerType })
+    },
+    download () {
+      if (this.isDescriptionGeoJSON) {
+        this.$axios.get(this.layerOptions.layerDescriptor.url, {
+          responseType: 'blob'
+        })
+          .then(result => {
+            saveAs(result.data, 'result.geojson')
+          })
+      }
     }
   }
 }
