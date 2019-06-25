@@ -6,6 +6,7 @@
     content-class="left-drawer"
     elevated
     persistent
+    no-swipe-close
     :width="width"
     :breakpoint="$store.state.layout.drawerBreakpoint"
     :overlay="$store.state.layout.drawersOverlay"
