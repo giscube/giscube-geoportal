@@ -22,12 +22,13 @@ export function credentialsLogin (context, { username, password }) {
         resolve()
       })
       .catch(error => {
-        if (error.request && error.request.status === 401) {
+        const invalidCredentials = error.request && [400, 401].includes(error.request.status)
+        if (invalidCredentials) {
           context.commit('setAccessToken', null)
         } else {
           except(error)
         }
-        reject(error)
+        reject({ error, invalidCredentials })
       })
   })
 }
