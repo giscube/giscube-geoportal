@@ -3,6 +3,7 @@ export default {
     accept: 'entesos',
     addToMap: 'afegeix al mapa',
     apply: 'aplica',
+    download: 'descarrega',
     cancel: 'cancel·la',
     close: 'tanca',
     delete: 'elimina',
