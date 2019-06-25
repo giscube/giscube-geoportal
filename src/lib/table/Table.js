@@ -246,7 +246,7 @@ export default class Table {
   }
 
   uiEdit (rows) {
-    return new Promise(async (resolve, reject) => {
+    return new Promise(async resolve => {
       const api = await this.$root.$store.dispatch('layout/createDialog', {
         component: DBFormDialog,
         table: this,

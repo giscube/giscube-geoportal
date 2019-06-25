@@ -34,6 +34,12 @@ export default {
       callbacks: []
     }
   },
+  watch: {
+    rows () {
+      this.callbacks = []
+      this.aggregatedProperties = this.aggregateProperties()
+    }
+  },
   methods: {
     aggregateProperties () {
       let fields = this.table.info.logicFormFields

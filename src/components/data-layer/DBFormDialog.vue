@@ -6,12 +6,64 @@
     no-route-dismiss
     content-class="data-form"
   >
-    <q-card class="data-form column no-wrap">
-      <q-card-section class="col scroll">
+    <q-card class="data-form column no-wrap no-scroll">
+      <q-card-section v-if="currentRows.length === 1 && rowIndex >= 0" class="row">
+        <!-- Back -->
+        <div>
+          <q-btn
+            :disable="rowIndex === 0"
+            flat
+            dense
+            icon="mdi-chevron-double-left"
+            @click="goto(0)"
+          />
+          <q-btn
+            :disable="rowIndex === 0"
+            flat
+            dense
+            icon="mdi-chevron-left"
+            @click="goto(rowIndex - 1)"
+          />
+        </div>
+        <!-- Current -->
+        <span class="col q-ma-sm text-center">{{
+          t('editing1', {
+            index: rowIndex + 1, // start at 1
+            total: table.rows.length
+          })
+        }}</span>
+        <!-- Forward -->
+        <div>
+          <q-btn
+            :disable="rowIndex >= table.rows.length - 1"
+            flat
+            dense
+            icon="mdi-chevron-right"
+            @click="goto(rowIndex + 1)"
+          />
+          <q-btn
+            :disable="rowIndex >= table.rows.length - 1"
+            flat
+            dense
+            icon="mdi-chevron-double-right"
+            @click="goto(table.rows.length - 1)"
+          />
+        </div>
+      </q-card-section>
+      <q-card-section v-else-if="currentRows.length > 1" class="row">
+        <span>{{
+          t('editingN', {
+            n: currentRows.length,
+            total: table.rows.length
+          })
+        }}</span>
+      </q-card-section>
+
+      <q-card-section class="scroll">
         <data-form
           ref="form"
           :table="table"
-          :rows="rows"
+          :rows="currentRows"
           :disable="disable"
           :readonly="readonly"
           @input="onInput"
@@ -45,6 +97,8 @@
 
 <script>
 import { QBtn, QCard, QCardActions, QCardSection, QDialog, QIcon, QSpace } from 'quasar'
+import Vue from 'vue'
+
 import DataForm from './DataForm'
 import TranslationMixin from './TranslationMixin'
 
@@ -77,7 +131,9 @@ export default {
   },
   data () {
     return {
-      result: {}
+      result: {},
+      currentRows: this.rows,
+      rowIndex: this.rows.length === 1 && this.table.rows.indexOf(this.rows[0])
     }
   },
   computed: {
@@ -85,17 +141,12 @@ export default {
       return Object.keys(this.result).length > 0
     },
     deleted () {
-      return this.rows.reduce((accumulated, row) => {
+      return this.currentRows.reduce((accumulated, row) => {
         return accumulated + (row.status.deleted ? 1 : 0)
       }, 0)
     },
     allDeleted () {
-      return this.deleted === this.rows.length
-    }
-  },
-  watch: {
-    rows () {
-      this.result = {}
+      return this.deleted === this.currentRows.length
     }
   },
   methods: {
@@ -104,7 +155,7 @@ export default {
     },
     onDelete () {
       const deleted = !this.allDeleted
-      this.rows.forEach(row => {
+      this.currentRows.forEach(row => {
         if (row.status) {
           row.status.deleted = deleted
         }
@@ -114,31 +165,50 @@ export default {
       this.$emit('hide')
     },
     onCommit () {
-      if (this.$refs.form.validate()) {
-        this.doCommit()
-      } else {
-        this.$store.dispatch('layout/createDialog', {
-          message: this.t('qInvalidCommit'),
-          ok: {
-            flat: true,
-            label: this.$t('yes')
-          },
-          cancel: {
-            flat: true,
-            label: this.$t('no')
-          },
-          persistent: true,
-          noRouteDismiss: true
+      this.commit()
+        .then(_ => {
+          this.currentRows.forEach(row => row.edit(this.result))
+          this.hide()
         })
-          .then(api => api.onOk(_ => {
-            this.doCommit()
-          }))
+    },
+    commit () {
+      if (!this.hasResult) {
+        return Promise.reject()
+      } else if (this.$refs.form.validate()) {
+        return Promise.resolve()
+      } else {
+        return new Promise(resolve => {
+          this.$store.dispatch('layout/createDialog', {
+            message: this.t('qInvalidCommit'),
+            ok: {
+              flat: true,
+              label: this.$t('yes')
+            },
+            cancel: {
+              flat: true,
+              label: this.$t('no')
+            },
+            persistent: true,
+            noRouteDismiss: true
+          })
+            .then(api => {
+              api.onOk(_ => resolve())
+            })
+        })
       }
     },
-    doCommit () {
-      this.rows.forEach(row => row.edit(this.result))
-      this.$emit('ok')
-      this.hide()
+    goto (i) {
+      this.commit()
+        .then(_ => {
+          this.currentRows[0].edit(this.result)
+        })
+        .catch(_ => { /* do nothing */ })
+        .then(_ => {
+          Vue.set(this.currentRows, 'length', 0)
+          this.currentRows.push(this.table.rows[i])
+          this.rowIndex = i
+          this.result = {}
+        })
     },
 
     // Required by Quasar's dialog API
