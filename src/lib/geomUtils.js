@@ -5,6 +5,17 @@ import { CancelError } from './utils'
 import makeGeoJsonOptions from './makeGeoJsonOptions'
 import Table from './table'
 
+export function eachLayer (layer, callback) {
+  function _eachLayer (layer) {
+    if (layer.eachLayer) {
+      layer.eachLayer(_eachLayer)
+    } else {
+      callback(layer)
+    }
+  }
+  _eachLayer(layer)
+}
+
 export function visiblePart (bbox, visibility) {
   /*
     Bounding box values must be of the same unit

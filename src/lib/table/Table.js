@@ -1,4 +1,5 @@
 import L from 'src/lib/leaflet'
+import { eachLayer } from 'src/lib/geomUtils'
 import { rowsInGeom } from 'src/lib/layersInGeom'
 import Vue from 'vue'
 
@@ -88,7 +89,7 @@ export default class Table {
   discard () {
     this.editing = false
     if (this.info.hasGeom && this.map) {
-      this.layer.eachLayer(l => l.disableEdit(this.map))
+      eachLayer(this.layer, l => l.disableEdit(this.map))
     }
 
     for (let i = this.rows.length - 1; i >= 0; --i) {
@@ -239,7 +240,7 @@ export default class Table {
 
   startEditing () {
     if (this.info.hasGeom && this.map) {
-      this.layer.eachLayer(l => l.enableEdit(this.map))
+      eachLayer(this.layer, l => l.enableEdit(this.map))
     }
     this.editing = true
   }
