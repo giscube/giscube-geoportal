@@ -57,8 +57,11 @@ module.exports = function (ctx) {
       extendWebpack (cfg) {
         // cfg.plugins.push(new BundleAnalyzerPlugin())
 
+        const pkg = require('./package.json')
         cfg.plugins.push(
-            new webpack.DefinePlugin({
+          new webpack.DefinePlugin({
+            _VERSION: JSON.stringify(pkg.version),
+            _RELEASE: JSON.stringify(pkg.name + '@' + pkg.version),
             'process.env.CONFIG_PATH': JSON.stringify(
               'src/config/' + cfg.mode + (process.env.CONFIG ? '-' + process.env.CONFIG : '')
             )

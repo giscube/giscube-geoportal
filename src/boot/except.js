@@ -1,4 +1,5 @@
 import { merge } from 'lodash'
+import { RELEASE } from '../meta'
 import except from 'src/lib/except.js'
 
 export default async ({ Vue }) => {
@@ -15,6 +16,7 @@ export default async ({ Vue }) => {
 
     Sentry.init({
       dsn: config.sentry.dsn,
+      release: RELEASE,
       integrations: [new Integrations.Vue({ Vue })]
     })
 
