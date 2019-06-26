@@ -17,7 +17,7 @@ export function draw (context, type) {
   context.commit('setCurrentTool', 'draw', { root: true })
 
   const promise = createLayer({ map: context.state.mapObject, type: type.toLowerCase() })
-  promise.finally(() => {
+  promise.then(() => {}, () => {}).then(() => {
     context.commit('setCurrentTool', oldTool, { root: true })
   })
   return promise

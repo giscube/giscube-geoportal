@@ -14,7 +14,7 @@
 <script>
 import { QBtn } from 'quasar'
 import { mapState } from 'vuex'
-import { CancelError } from 'src/lib/utils'
+import { CancelError } from 'src/lib/geomUtils'
 
 import TranslationMixin from './TranslationMixin'
 
@@ -34,7 +34,11 @@ export default {
           this.table.selectByPolygon(layer)
         })
         .catch(e => {
-          if (!(e instanceof CancelError)) {
+          if (e instanceof CancelError) {
+            if (e.layer) {
+              this.table.selectByPolygon(e.layer)
+            }
+          } else {
             this.$except(e)
           }
         })
