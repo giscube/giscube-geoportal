@@ -102,7 +102,7 @@ export default class GeoJsonRow extends Row {
     }
   }
 
-  makeLayer () {
+  getGeomConfig () {
     const config = {
       style: {
         bubblingMouseEvents: false
@@ -112,8 +112,12 @@ export default class GeoJsonRow extends Row {
       config.pointToLayer = (_, latlng) => L.circleMarker(latlng)
     }
 
+    return config
+  }
+
+  makeLayer () {
     if (this.geometry) {
-      this.layer = L.GeoJSON.geometryToLayer(this.geometry, config)
+      this.layer = L.GeoJSON.geometryToLayer(this.geometry, this.getGeomConfig())
       this.prepareLayer()
     } else {
       this.layer = null
@@ -146,12 +150,15 @@ export default class GeoJsonRow extends Row {
         if (a > b) {
           for (; i < a; ++i) {
             this.layer.removeLayer(layers[i])
+            layers[i].remove()
           }
-        } else {
-          this.layer.addData({
+        } else if (a < b) {
+          const feature = {
             type: this.geometry.type,
             coordinates: this.geometry.coordinates.slice(i)
-          })
+          }
+          const group = L.GeoJSON.geometryToLayer(feature, this.getGeomConfig())
+          group.getLayers().forEach(layer => layer.addTo(this.layer))
         }
       }
     }
