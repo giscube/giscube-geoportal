@@ -2,7 +2,7 @@
   <q-btn
     class="full-width"
     icon-right="keyboard_arrow_right"
-    :disabled="readonly || disable || isMulti"
+    :disabled="readonly || disable || isVoid || isMulti"
     :label="field.label"
     @click="openTableDialog"
   />
@@ -21,6 +21,9 @@ export default {
     QBtn
   },
   computed: {
+    isVoid () {
+      return this.value === void 0 || this.value === null
+    },
     isMulti () {
       return MultiResult.is(this.value)
     }

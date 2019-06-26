@@ -22,7 +22,7 @@ export default class DateTimeField extends Field {
     }
 
     if (!this.moment.isMoment(value)) {
-      value = this.moment.utc(value)
+      value = this.moment.utc(value, this.format)
     }
     return value
   }
@@ -49,7 +49,7 @@ export default class DateTimeField extends Field {
   repr (data) {
     const v = this.getValue(data)
     if (v && v.isValid()) {
-      return v.format() // ISO 8601
+      return v.format(this.format)
     } else {
       return null
     }

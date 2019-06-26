@@ -1,11 +1,5 @@
 import isEqualWith from 'lodash/isEqualWith.js'
 
-export class CancelError extends Error {
-  constructor (...args) {
-    super('Cancelled operation', ...args)
-  }
-}
-
 export function createEnum (elements, ordered = false) {
   const values = ordered ? elements.map((_, i) => i) : elements.map(e => Symbol(e))
 

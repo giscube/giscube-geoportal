@@ -53,7 +53,7 @@ import { ClosePopup, QBtn, QBtnDropdown, QBtnGroup, QItem, QItemLabel, QItemSect
 import TranslationMixin from './TranslationMixin'
 import DefaultsDialog from './DefaultsDialog'
 
-import { CancelError } from 'src/lib/utils'
+import { CancelError } from 'src/lib/geomUtils'
 
 export default {
   mixins: [TranslationMixin],

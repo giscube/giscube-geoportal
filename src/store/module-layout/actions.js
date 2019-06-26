@@ -24,11 +24,19 @@ export function setSidebarVisible (context, value) {
 export function showMapWhile (context, promise) {
   if (context.getters.drawersFullOverlay && context.state.sidebarVisible) {
     context.dispatch('setSidebarVisible', false)
-    promise.finally(_ => {
+    promise.then(() => {}, () => {}).then(_ => {
       context.dispatch('setSidebarVisible', true)
     })
   }
   return promise
+}
+
+export function pushLengthState (context) {
+  const l = context.state.dialogs.length
+  this.$router.push({
+    ...this.$router.currentRoute,
+    hash: l > 0 ? `#${l}` : ''
+  })
 }
 
 export function createDialog (context, config) {
@@ -47,12 +55,10 @@ export function createDialog (context, config) {
   api.onDismiss(() => {
     // DO NOT MAKE IT ASYNC
     context.commit('removeDialog', dialog)
+    context.dispatch('pushLengthState')
   })
 
-  this.$router.push({
-    ...this.$router.currentRoute,
-    hash: `#${context.state.dialogs.length.toString()}`
-  })
+  context.dispatch('pushLengthState')
 
   return api
 }

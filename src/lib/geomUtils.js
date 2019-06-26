@@ -1,9 +1,16 @@
 import axios from 'axios'
 import Vue from 'vue'
 import L from './leaflet.js'
-import { CancelError } from './utils'
 import makeGeoJsonOptions from './makeGeoJsonOptions'
 import Table from './table'
+
+export class CancelError extends Error {
+  constructor (layer) {
+    super('Cancelled operation')
+    this.name = 'CancelError'
+    this.layer = layer
+  }
+}
 
 export function eachLayer (layer, callback) {
   function _eachLayer (layer) {
@@ -226,7 +233,13 @@ export function createLayer ({ map, type, config, keepDrawn = false }) {
         event.layer.remove()
       }
       removeEvents()
-      reject(new CancelError())
+      let layer = event.layer
+      if (baseType === 'polygon') {
+        if (layer.getLatLngs()[0].length < 3) {
+          layer = void 0
+        }
+      }
+      reject(new CancelError(layer))
     }
     function commit (event) {
       removeEvents()

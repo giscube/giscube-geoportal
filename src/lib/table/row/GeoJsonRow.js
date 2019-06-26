@@ -1,5 +1,5 @@
 import L from 'src/lib/leaflet'
-import { createLayer, flipLatLng } from 'src/lib/geomUtils'
+import { CancelError, createLayer, flipLatLng } from 'src/lib/geomUtils'
 import { cloneClean } from 'src/lib/utils'
 
 import Row from './Row'
@@ -60,7 +60,16 @@ export default class GeoJsonRow extends Row {
     if (this.info.geomType === 'point' && this.info.shapeType === 'circle') {
       config.markerClass = L.CircleMarker
     }
-    const layer = await createLayer({ map, type: this.info.geomType, config })
+    let layer
+    try {
+      layer = await createLayer({ map, type: this.info.geomType, config })
+    } catch (e) {
+      if (e instanceof CancelError && e.layer) {
+        layer = e.layer
+      } else {
+        throw e
+      }
+    }
     const cloned = super.clone()
     cloned.layer = layer
     cloned.prepareLayer()
@@ -69,7 +78,7 @@ export default class GeoJsonRow extends Row {
 
   asNew () {
     const promise = this._asNew.apply(this, arguments)
-    this.parent.root.$store.dispatch('layout/showMapWhile', promise)
+    this.parent.$root.$store.dispatch('layout/showMapWhile', promise)
     return promise
   }
 

@@ -75,6 +75,9 @@ export default {
       }
     },
     onInput (field, value) {
+      if (field.getValue({ properties: this.aggregatedProperties }) === value) {
+        return
+      }
       this.callbacks.push({ field, value })
       this.resolveCallbacks()
       this.$emit('input', this.aggregatedProperties)
