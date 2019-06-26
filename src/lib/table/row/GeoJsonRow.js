@@ -138,9 +138,9 @@ export default class GeoJsonRow extends Row {
         let i = 0
         for (; i < a && i < b; ++i) {
           if (layers[i].setLatLng) {
-            layers[i].setLatLng(coords)
+            layers[i].setLatLng(coords[i])
           } else if (layers[i].setLatLngs) {
-            layers[i].setLatLngs(coords)
+            layers[i].setLatLngs(coords[i])
           }
         }
         if (a > b) {
