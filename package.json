@@ -10,7 +10,15 @@
   "private": false,
   "scripts": {
     "lint": "eslint --ext .js,.vue src",
-    "test": "echo \"No test specified\" && exit 0"
+    "test": "echo \"See package.json => scripts for available tests.\" && exit 0",
+    "test:unit": "jest",
+    "test:unit:coverage": "jest --coverage",
+    "test:unit:watch": "jest --watch",
+    "test:unit:watchAll": "jest --watchAll",
+    "serve:test:coverage": "quasar serve test/jest/coverage/lcov-report/ --port 8788",
+    "concurrently:dev:jest": "concurrently \"quasar dev\" \"jest --watch\"",
+    "test:e2e": "cypress open",
+    "test:e2e:CI": "cypress run"
   },
   "main": "dist/lib/giscube-geoportal.min.js",
   "dependencies": {
@@ -42,6 +50,9 @@
   },
   "devDependencies": {
     "@quasar/app": "^1.0.4",
+    "@quasar/quasar-app-extension-testing": "^1.0.0",
+    "@quasar/quasar-app-extension-testing-e2e-cypress": "^1.0.0-beta.10",
+    "@quasar/quasar-app-extension-testing-unit-jest": "^1.0.0",
     "@vue/eslint-config-standard": "^4.0.0",
     "babel-eslint": "^10.0.2",
     "eslint": "^5.16.0",
