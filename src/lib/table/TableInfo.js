@@ -23,6 +23,19 @@ export default class TableInfo {
     this.tableFields = this.strlist2fields(info.design.list_fields)
     this.formFields = this.strlist2fields(info.design.form_fields)
     this.logicFormFields = this.fields.filter(field => field.onUpdate || this.formFields.includes(field))
+    {
+      const related = new Set()
+      this.formFields.forEach(field => {
+        if (field.relatedFields) {
+          field.relatedFields().forEach(f => related.add(f))
+        }
+      })
+      related.forEach(f => {
+        if (!this.logicFormFields.includes(f)) {
+          this.logicFormFields.push(f)
+        }
+      })
+    }
 
     this.rowsPath = new DottedPath(info.objects_path)
     this.propsPath = new DottedPath(info.attributes_path)
