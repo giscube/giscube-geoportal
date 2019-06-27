@@ -3,7 +3,7 @@
     ref="dialog"
     maximized
     no-route-dismiss
-    @hide="onDialogHide"
+    @hide="$emit('hide')"
   >
     <q-card class="column q-pa-md" >
       <q-card-section class="col" >
@@ -40,9 +40,6 @@ export default {
     async close () {
       this.hide()
       return true
-    },
-    onDialogHide () {
-      this.$emit('hide')
     },
     onClose () {
       this.hide()
