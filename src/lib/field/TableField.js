@@ -20,6 +20,12 @@ export default class TableField extends Field {
     this.uniqueField = fields.find(f => f.name === this.toField)
   }
 
+  relatedFields () {
+    return [
+      this.uniqueField
+    ]
+  }
+
   getValue (data) {
     return this.uniqueField.getValue(data)
   }

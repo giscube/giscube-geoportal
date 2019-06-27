@@ -147,6 +147,7 @@ export default class Field {
   // Don't do it if you don't need it.
 
   // onUpdate (field, value, properties, callback) {}
+  // relatedFields () { return [...] }
 
   rules (t) {
     return [
