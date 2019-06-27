@@ -4,6 +4,7 @@
     maximized
     persistent
     no-route-dismiss
+    @hide="$emit('hide')"
   >
     <q-card>
       <q-card-section class="column q-pa-lg">

@@ -5,6 +5,7 @@
     persistent
     no-route-dismiss
     content-class="data-form"
+    @hide="$emit('hide')"
   >
     <q-card class="data-form column no-wrap no-scroll">
       <q-card-section v-if="currentRows.length === 1 && rowIndex >= 0" class="row">
@@ -162,12 +163,13 @@ export default {
       })
     },
     onCancel () {
-      this.$emit('hide')
+      this.hide()
     },
     onCommit () {
       this.commit()
         .then(_ => {
           this.currentRows.forEach(row => row.edit(this.result))
+          this.$emit('ok')
           this.hide()
         })
     },
