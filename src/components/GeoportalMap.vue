@@ -182,7 +182,7 @@ export default {
       })
     },
     _updateTable () {
-      if (this.mainTable) {
+      if (this.mainTable && !this.mainTable.editing) {
         this.mainTable.updateByMap()
       }
     },
