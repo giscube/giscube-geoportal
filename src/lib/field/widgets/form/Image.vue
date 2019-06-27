@@ -12,9 +12,7 @@
       :disable="disable"
       :label="field.label"
       :stack-label="!!filename"
-      :clearable="field.null"
       :hint="hint"
-      @input="onClear"
     >
       <template v-slot:control>
         <div class="self-center full-width no-outline" tabindex="0">{{ filename }}</div>
@@ -32,6 +30,12 @@
           class="control-icon q-px-md cursor-pointer all-pointer-events"
           name="folder"
           @click="askFile(false)"
+        />
+        <q-icon
+          v-if="field.null && value"
+          class="control-icon q-px-md cursor-pointer all-pointer-events"
+          name="cancel"
+          @click="onClear()"
         />
       </template>
     </q-field>
