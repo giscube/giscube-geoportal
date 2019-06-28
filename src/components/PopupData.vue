@@ -8,7 +8,7 @@
       v-html="result"
       style="min-width: 100%"
     ></div>
-    <div v-else-if="!result">
+    <div v-else-if="!result && !resultIsError">
       <table class="table table-striped table-hover">
         <tbody v-if="fields">
           <tr v-for='field in fields' class='attr' :key="field.name">
@@ -54,9 +54,13 @@ export default {
           return this.renderContents({ ...this.feature.properties, obj: this.feature })
         }
       } catch (e) {
-        this.$except('Bad popup template\'s configuration')
-        this.$except(e)
-        return e
+        let error = 'Bad popup template\'s configuration'
+        if (e.message) {
+          error += ` (${e.message})`
+        }
+        error = new Error(error)
+        this.$except(error, { hide: true })
+        return error
       }
     },
     resultIsError () {
