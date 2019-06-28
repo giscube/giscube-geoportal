@@ -23,6 +23,10 @@
           :table="table"
         />
         <q-space />
+        <zoom-controls
+          :table="table"
+        />
+        <q-space />
         <selection-controls
           :table="table"
         />
@@ -51,6 +55,7 @@ import DrawControls from './DrawControls'
 import LayersList from './LayersList'
 import SelectionControls from './SelectionControls'
 import StatusControls from './StatusControls'
+import ZoomControls from './ZoomControls'
 
 import Table from 'src/lib/table'
 
@@ -64,6 +69,7 @@ export default {
     LayersList,
     SelectionControls,
     StatusControls,
+    ZoomControls,
     QSpace
   },
   beforeRouteEnter (to, from, next) {

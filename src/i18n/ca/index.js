@@ -15,7 +15,8 @@ export default {
     save: 'guarda',
     search: 'cerca',
     zoom: 'fes zoom',
-    zoomToData: 'fes zoom a les dades'
+    zoomToData: 'fes zoom a les dades',
+    zoomToSelection: 'fes zoom a la selecció'
   },
   capitalize (value) {
     value = value.toString()

@@ -15,7 +15,8 @@ export default {
     save: 'save',
     search: 'search',
     zoom: 'zoom',
-    zoomToData: 'zoom to data'
+    zoomToData: 'zoom to data',
+    zoomToSelection: 'zoom to selection'
   },
   capitalize (value) {
     value = value.toString()

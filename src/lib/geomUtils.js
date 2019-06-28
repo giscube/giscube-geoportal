@@ -301,3 +301,17 @@ export function flipLatLng (coords) {
     return coords
   }
 }
+
+export function getBounds (layer) {
+  return layer.getBounds ? layer.getBounds() : layer.getLatLng()
+}
+
+export function layersBounds (layers) {
+  let bounds = new L.LatLngBounds()
+
+  layers.forEach(layer => {
+    bounds.extend(getBounds(layer))
+  })
+
+  return bounds
+}
