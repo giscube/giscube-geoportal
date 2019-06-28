@@ -1,20 +1,28 @@
 <template>
-  <div class="search-bar">
-    <div class="row search-row">
-
-      <input ref="search_input" type="text" class="search-input" :placeholder="t('search') | capitalize"
-        @keyup="onSearchType" :value="query">
-      <q-btn flat
+  <q-input
+    ref="search_input"
+    class="q-ma-sm search-bar"
+    v-model="q"
+    autofocus
+    square
+    outlined
+    hide-bottom-space
+    bg-color="white"
+    :placeholder="t('search') | capitalize"
+  >
+    <template v-slot:append>
+      <q-btn
+        flat
+        class="full-height"
         icon="search"
-        @click.prevent="onSearch"
+        @click="onSearch"
       />
-
-    </div>
-  </div>
+    </template>
+  </q-input>
 </template>
 
 <script>
-import { QBtn } from 'quasar'
+import { QBtn, QInput } from 'quasar'
 
 export default {
   props: {
@@ -24,21 +32,26 @@ export default {
     }
   },
   components: {
-    QBtn
+    QBtn,
+    QInput
   },
-  mounted () {
-    this.$nextTick(() => {
-      this.$refs.search_input.focus()
-    })
+  data () {
+    return {
+      q: this.query
+    }
+  },
+  watch: {
+    query (value) {
+      this.q = value
+    }
   },
   methods: {
     t (key, ...args) {
       return this.$t('tools.search.' + key, ...args)
     },
     onSearch () {
-      const q = this.$refs.search_input.value
-      this.$store.dispatch('search/search', { query: q, forceRefresh: true })
-      this.$router.push({ name: 'search', params: { q } })
+      this.$store.dispatch('search/search', { query: this.q, forceRefresh: true })
+      this.$router.push({ name: 'search', params: { q: this.q } })
     },
     onSearchType (event) {
       if (event.keyCode === 13) {
@@ -49,29 +62,8 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.search-bar {
-  margin: 8px 8px 16px 8px;
-
-  .search-row {
-    border: 1px solid #E4E4E4;
-    background-color: #fff;
-  }
-
-  .search-input {
-    padding: 3px 5px 3px 15px;
-    line-height: 40px;
-    font-size: 1.1em;
-    border: 0;
-    flex-grow: 1;
-  }
-
-  .search-input::placeholder {
-    font-weight: 500;
-  }
-
-  .q-btn--rectangle {
-    border-radius: 0;
-  }
+<style>
+.search-bar .q-field__control {
+  padding-right: 0;
 }
 </style>
