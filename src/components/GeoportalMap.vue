@@ -164,7 +164,6 @@ export default {
           this.mainTable.addTo(this.map)
         }
         this.$store.commit('map/mapObject', this.map)
-        this.$emit('map-ready', this.map)
         this.updateMapPosition()
         this.map.on('editable:drawing:start', this.startDrawing)
         this.map.on('editable:drawing:end', this.endDrawing)

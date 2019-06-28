@@ -6,27 +6,20 @@
   >
     <!-- AppHeader -->
     <component :is="$config.layout.header"
-        ref="header"
-        :brand-logo="$config.branding.header.logo"
-        :brand-text="$config.branding.header.text"
-        @home='navHome'
-        @sidebar-visibility-changed="onVisibilityChanged"
-        @right="right = !right"
-        />
+      ref="header"
+      :brand-logo="$config.branding.header.logo"
+      :brand-text="$config.branding.header.text"
+      @home='navHome'
+      @sidebar-visibility-changed="onVisibilityChanged"
+    />
 
     <Sidebar ref="sidebar"
-      :map='map'
-      :visible="$store.state.layout.sidebarVisible"
-      :geoportalMap="$refs.map"
-      @visibility-changed="onVisibilityChanged"
       class="sidebar-left"
     />
 
     <q-page-container class="max-height">
       <!-- GeoportalMap -->
-      <component :is="$config.layout.geoportalMap"
-        ref="map" @map-ready="onMapReady"
-      />
+      <component :is="$config.layout.geoportalMap" />
     </q-page-container>
 
    <AppFooter v-if="false" ref="footer" />
@@ -50,15 +43,6 @@ export default {
     QPageContainer,
     Sidebar
   },
-  data () {
-    return {
-      leftDrawerOpen: this.$q.platform.is.desktop,
-      map: null,
-      right: false,
-      left: true,
-      width: 300
-    }
-  },
   mounted () {
     this.$nextTick(() => {
       const { width, height } = this.$refs.layout
@@ -66,14 +50,16 @@ export default {
       this.$store.dispatch('layout/setSidebarVisible', true)
     })
   },
+  computed: {
+    map () {
+      return this.$store.map.mapObject
+    }
+  },
   methods: {
     navHome () {
       const home = this.$config.home
       this.map.flyTo(new L.LatLng(home.center.lat, home.center.lng), home.zoom)
       this.onVisibilityChanged(true)
-    },
-    onMapReady (map) {
-      this.map = map
     },
     onVisibilityChanged (visible) {
       this.$store.dispatch('layout/setSidebarVisible', visible)

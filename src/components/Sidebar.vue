@@ -12,9 +12,7 @@
     :overlay="$store.state.layout.drawersOverlay"
     :behavior="$store.state.layout.drawerBehavior"
   >
-    <router-view :map='map' @needs-wide='setWide'
-      :geoportalMap="geoportalMap"
-    />
+    <router-view @needs-wide='setWide' />
     <a @click.prevent="onToggleClick"
        class="sidebar-close"
        ><q-icon
@@ -42,7 +40,6 @@ import L from '../lib/leaflet'
 const worldBounds = L.latLngBounds([[-90, -180], [90, 180]])
 
 export default {
-  props: ['map', 'visible', 'geoportalMap'],
   components: {
     QDrawer,
     QIcon
