@@ -68,7 +68,7 @@ export default {
   },
   methods: {
     navHome () {
-      let home = this.$store.config.home
+      const home = this.$config.home
       this.map.flyTo(new L.LatLng(home.center.lat, home.center.lng), home.zoom)
       this.onVisibilityChanged(true)
     },

@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import config from '../config'
 
 import auth from './module-auth'
 import dataLayer from './module-data-layer'
@@ -16,7 +15,7 @@ Vue.use(Vuex)
  */
 
 export default function (/* { ssrContext } */) {
-  const Store = new Vuex.Store({
+  return new Vuex.Store({
     modules: {
       auth,
       dataLayer,
@@ -25,14 +24,10 @@ export default function (/* { ssrContext } */) {
       search
     },
     state: {
-      router: null,
       currentTool: null,
       query: null
     },
     mutations: {
-      router (state, value) {
-        state.router = value
-      },
       setCurrentTool: (state, value) => {
         state.currentTool = value
       },
@@ -41,8 +36,4 @@ export default function (/* { ssrContext } */) {
       }
     }
   })
-
-  Store.config = config
-
-  return Store
 }

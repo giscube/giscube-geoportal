@@ -1,12 +1,11 @@
 import axios from 'axios'
-import config from '../../config'
 import except from '../../lib/except'
 
 export function credentialsLogin (context, { username, password }) {
-  const apiUrl = config.oauth.token
+  const apiUrl = this.$config.oauth.token
   const data = new FormData()
   data.set('grant_type', 'password')
-  data.set('client_id', config.oauth.client_id)
+  data.set('client_id', this.$config.oauth.client_id)
   data.set('username', username)
   data.set('password', password)
 
@@ -75,7 +74,7 @@ export function observeAuth (context, { seconds }) {
 export function saveState (context) {
   localStorageSave('access_token', context.state.accessToken)
 
-  if (config.oauth.type === 'password') {
+  if (this.$config.oauth.type === 'password') {
     localStorageSave('username', context.state.username)
   } else {
     localStorage.removeItem('username')
@@ -89,11 +88,11 @@ export function updateUserInfo (context) {
   if (context.state.accessToken === null) {
     return
   }
-  if (!(config.oauth && config.oauth.profile)) {
+  if (!(this.$config.oauth && this.$config.oauth.profile)) {
     return
   }
 
-  let apiUrl = config.oauth.profile
+  let apiUrl = this.$config.oauth.profile
   var requestConfig = {
     timeout: 10000,
     headers: {

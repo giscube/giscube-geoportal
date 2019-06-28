@@ -26,7 +26,7 @@
 
             <div class="buttons q-mt-md">
               <a class="nav-link" target="_blank"
-                 :href="$store.config.oauth.authorize"
+                 :href="$config.oauth.authorize"
               >
                 <q-btn outline no-caps
                    icon="person"
@@ -141,7 +141,7 @@ export default {
           let params = vm.getUrlParams(location.search)
           let code = params.code
           if (code) {
-            let apiUrl = vm.$store.config.oauth.token
+            let apiUrl = vm.$config.oauth.token
 
             var config = {
               timeout: 10000,
@@ -151,10 +151,10 @@ export default {
             }
 
             let oauthParams = {
-              client_id: vm.$store.config.oauth.client_id,
+              client_id: vm.$config.oauth.client_id,
               grant_type: 'authorization_code',
               code: code,
-              redirect_uri: vm.$store.config.oauth.redirect_uri
+              redirect_uri: vm.$config.oauth.redirect_uri
             }
 
             axios.post(apiUrl, qs.stringify(oauthParams), config)

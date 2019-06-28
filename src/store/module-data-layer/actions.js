@@ -1,5 +1,4 @@
 import clone from 'lodash/clone.js'
-import Vue from 'vue'
 
 import databaseLayersApi from '../../api/databaselayers.js'
 
@@ -7,7 +6,7 @@ import except from '../../lib/except.js'
 import { throwUnhandledExceptions } from '../../lib/promiseUtils.js'
 
 export function refreshSources (context) {
-  const editsources = Vue.prototype.$config.editsources || []
+  const editsources = this.$config.editsources || []
 
   const requests = []
   editsources.forEach((source, index) => {
