@@ -1,7 +1,7 @@
 <template>
   <div class="panel catalog-panel">
     <div class="panel-content">
-      <p class="panel-title">{{ t('title') }}</p>
+      <p class="panel-title">{{ t('title') }} <q-spinner v-if="loading" /></p>
 
       <div class="categories">
         <q-list>
@@ -27,7 +27,8 @@
               </template>
 
               <div>
-                <p v-if="subcategory.loading || subcategory.results === undefined">&nbsp;</p>
+                <q-spinner v-if="subcategory.loading" />
+                <p v-else-if="subcategory.results === undefined">&nbsp;</p>
                 <div v-else-if="subcategory.results.length === 0" class="catalog-result empty">
                   <q-icon name="ion-information-circle-outline" size="20px" /> {{ $t('tools.catalog.noItems') }}
                 </div>
@@ -67,6 +68,7 @@ export default {
   },
   data () {
     return {
+      loading: false,
       q: '',
       categories: []
     }
@@ -86,6 +88,7 @@ export default {
   methods: {
     checkCategories () {
       let apiUrl = this.$config.catalog.categories
+      this.loading = true
       axios.get(apiUrl)
         .then(response => {
           Vue.set(this, 'categories', response.data)
@@ -98,6 +101,9 @@ export default {
         .catch(error => {
           this.$except(error)
           this.searchError = true
+        })
+        .then(() => {
+          this.loading = false
         })
     },
     getSubcategories (id) {
