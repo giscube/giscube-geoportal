@@ -195,7 +195,7 @@ export default {
       }
 
       // If we can't zoom, go to home view
-      const home = this.$store.config.home
+      const home = this.$config.home
       this.map.flyTo(new L.LatLng(home.center.lat, home.center.lng), home.zoom)
     },
     download () {}

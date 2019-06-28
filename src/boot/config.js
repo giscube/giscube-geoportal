@@ -12,8 +12,9 @@ function setup (conf) {
     }
   }
 
-  return async ({ Vue }) => {
+  return async ({ Vue, store }) => {
     Vue.prototype.$config = config
+    store.$config = config
   }
 }
 

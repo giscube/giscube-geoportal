@@ -1,5 +1,4 @@
 import axios from 'axios'
-import Vue from 'vue'
 import { createGeoJSONLayer } from 'src/lib/geomUtils'
 
 import SearchResultPopup from 'components/SearchResultPopup'
@@ -22,7 +21,6 @@ export function search (context, { query, forceRefresh = false }) {
 }
 
 export function fetch (context) {
-  const except = Vue.prototype.$except
   context.commit('fetchingResults', [])
 
   const q = context.state.query
@@ -39,7 +37,7 @@ export function fetch (context) {
   context.dispatch('clearResultLayer')
 
   // Generate a list of "get" promises
-  const promises = Vue.prototype.$config.searches.map(search => {
+  const promises = this.$config.searches.map(search => {
     const params = { q }
     return axios.get(search.url, { params })
       .then(response => {
@@ -47,7 +45,7 @@ export function fetch (context) {
       })
       .catch(error => {
         context.commit('errorFetching', true)
-        except(error)
+        this.$except(error)
       })
   })
 
@@ -57,11 +55,9 @@ export function fetch (context) {
 }
 
 export function parseResults (context, { search, data }) {
-  const except = Vue.prototype.$except
-
   const results = search.parseData ? search.parseData(data) : data.results
   if (results === void 0 || results === null) {
-    except('Response without results', { hide: true })
+    this.$except('Response without results', { hide: true })
     return
   }
 
@@ -89,7 +85,7 @@ export function uniqueSelection (context) {
 }
 
 export function select (context, { result, replace = false }) {
-  const router = context.rootState.router
+  const router = this.$router
   context.commit('selectResult', result)
   const go = (replace ? router.replace : router.push).bind(router)
 

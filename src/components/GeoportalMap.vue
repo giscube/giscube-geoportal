@@ -1,8 +1,8 @@
 <template>
   <q-page class="max-height" :style="containerStyle">
     <l-map ref='map'
-      :zoom='$store.config.home.zoom'
-      :center="$store.config.home.center"
+      :zoom='$config.home.zoom'
+      :center="$config.home.center"
       :options="mapOptions"
       @leaflet:load='onMapReady'
       @move="onMapMove"
@@ -91,7 +91,7 @@ export default {
   methods: {
     addBaseMaps () {
       const b = this.$router.history.current.query.b
-      this.$store.config.basemaps.forEach((basemap, i) => {
+      this.$config.basemaps.forEach((basemap, i) => {
         const d = (b === void 0 ? basemap.default : i === b)
         var baselayer
         if (basemap.type === 'tilelayer') {

@@ -2,8 +2,8 @@ export function drawersFullOverlay (state) {
   return state.drawerBehavior === 'mobile' || state.drawerBreakpoint >= state.size.width
 }
 
-export function hiddenMap (state) {
-  const sidebarOverlaying = drawersFullOverlay(state)
+export function hiddenMap (state, getters) {
+  const sidebarOverlaying = getters['layout/drawersFullOverlay']
   const sidebarVisible = state.sidebarVisible
 
   return {

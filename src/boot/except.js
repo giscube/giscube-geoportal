@@ -2,7 +2,7 @@ import { merge } from 'lodash'
 import { RELEASE } from '../meta'
 import except from 'src/lib/except.js'
 
-export default async ({ Vue }) => {
+export default async ({ Vue, store }) => {
   const config = Vue.prototype.$config
   merge(except.config, config.except || {})
 
@@ -25,4 +25,5 @@ export default async ({ Vue }) => {
 
   // Shortcut
   Vue.prototype.$except = except
+  store.$except = except
 }

@@ -85,7 +85,7 @@ export default {
   },
   methods: {
     checkCategories () {
-      let apiUrl = this.$store.config.catalog.categories
+      let apiUrl = this.$config.catalog.categories
       axios.get(apiUrl)
         .then(response => {
           Vue.set(this, 'categories', response.data)
@@ -111,7 +111,7 @@ export default {
       })
     },
     getSubcategoriesResults (category) {
-      let api = this.$store.config.catalog.search
+      let api = this.$config.catalog.search
       let apiUrl = api + '?category_id=' + category.id
       axios.get(apiUrl)
         .then(response => {

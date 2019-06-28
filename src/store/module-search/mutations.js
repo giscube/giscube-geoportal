@@ -1,11 +1,9 @@
-import Vue from 'vue'
-
 export function addHistory (state, value) {
   if (value) {
     const h = state.history
     h.unshift(value)
 
-    const historyLength = Vue.prototype.$config.tools.search.historyLength
+    const historyLength = this.$config.tools.search.historyLength
     if (historyLength) {
       h.length = Math.min(h.length, historyLength)
     }
@@ -13,7 +11,7 @@ export function addHistory (state, value) {
 }
 
 export function query (state, value) {
-  addHistory(state, value)
+  this.commit('search/addHistory', value)
   state.query = value
   state.errorFetching = false
   state.fetchingResults = null
