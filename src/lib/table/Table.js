@@ -1,5 +1,5 @@
 import L from 'src/lib/leaflet'
-import { eachLayer } from 'src/lib/geomUtils'
+import { eachLayer, layersBounds } from 'src/lib/geomUtils'
 import { rowsInGeom } from 'src/lib/layersInGeom'
 import Vue from 'vue'
 
@@ -137,6 +137,22 @@ export default class Table {
 
         return this.info
       })
+  }
+
+  getSelectedBounds () {
+    if (this.info.hasGeom && this.layer) {
+      const layers = this.visibleSelectedList
+        .map(row => row.layer)
+        .filter(layer => !!layer)
+
+      return layersBounds(layers)
+    }
+  }
+
+  getVisibleBounds () {
+    if (this.info.hasGeom && this.layer) {
+      return layersBounds(this.layer.getLayers())
+    }
   }
 
   async makeRows ({ map, base, editMultiple, dialogForNew, selectNews }) {
