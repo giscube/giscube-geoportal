@@ -34,22 +34,22 @@
       />
     </div>
     <div
-      v-show="status.selected"
+      v-if="leftStatusStyle"
       class="marker-status"
-      :style="statusStyle('left', ['#3f82af', '#285370'])"
+      :style="resultStyle('left', leftStatusStyle)"
     >
       <q-icon
-        name="check"
+        :name="leftStatusStyle.icon"
         :size="width * 0.35 + 'px'"
       />
     </div>
     <div
-      v-if="statusColor"
+      v-if="rightStatusStyle"
       class="marker-status"
-      :style="statusStyle('right', statusColor)"
+      :style="resultStyle('right', rightStatusStyle)"
     >
       <q-icon
-        :name="statusIcon"
+        :name="rightStatusStyle.icon"
         :size="width * 0.35 + 'px'"
       />
     </div>
@@ -59,6 +59,7 @@
 
 <script>
 import { QIcon, QImg } from 'quasar'
+import { STATUS_STYLES } from '../utils'
 
 export default {
   props: ['type', 'icon', 'fill', 'color', 'width', 'height', 'anchor', 'strokeColor', 'status'],
@@ -67,40 +68,26 @@ export default {
     QImg
   },
   computed: {
-    statusColor () {
-      if (this.status.deleted) {
-        return ['#ad3e3e', '#6d2727']
-      } else if (this.status.new) {
-        return ['#45b240', '#2c7229']
-      } else if (this.status.modified) {
-        return ['#ad8f3e', '#6b5826']
-      }
-      return null
-    },
-    statusIcon () {
-      if (this.status.deleted) {
-        return 'close'
-      } else if (this.status.new) {
-        return 'add'
-      } else if (this.status.modified) {
-        return 'edit'
-      }
-      return null
-    },
     iconSize () {
       return this.width * 0.5
+    },
+    leftStatusStyle () {
+      return STATUS_STYLES.getByOrder(['selected'], this.status)
+    },
+    rightStatusStyle () {
+      return STATUS_STYLES.getByOrder(['deleted', 'new', 'edited'], this.status)
     }
   },
   methods: {
-    statusStyle (pos, color) {
+    resultStyle (pos, statusStyle) {
       const result = {
         top: -this.width * 0.1 + 'px',
         width: this.width * 0.5 + 'px',
         height: this.width * 0.5 + 'px',
         'border-style': 'solid',
         'border-width': this.width * 0.03 + 'px',
-        'background-color': color[0],
-        'border-color': color[1]
+        'background-color': statusStyle.fill,
+        'border-color': statusStyle.stroke
       }
       pos = (pos === 'right' ? pos : 'left')
       result[pos] = -this.width * 0.1 + 'px'

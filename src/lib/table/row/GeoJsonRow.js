@@ -48,8 +48,10 @@ export default class GeoJsonRow extends Row {
     eachLayer(this.layer, layer => layer.on(EDIT_EVENTS, this._geomChanged))
   }
 
-  applyGeomStyle () {
-    this.parent.info.geomStyle.apply(this)
+  applyStyle () {
+    if (this.parent.map) {
+      this.parent.info.geomStyle.apply(this)
+    }
   }
 
   async _asNew ({ map }) {
@@ -79,6 +81,11 @@ export default class GeoJsonRow extends Row {
     const promise = this._asNew.apply(this, arguments)
     this.parent.$root.$store.dispatch('layout/showMapWhile', promise)
     return promise
+  }
+
+  edit (properties) {
+    super.edit(properties)
+    this.applyStyle()
   }
 
   geomChanged () {
@@ -166,7 +173,7 @@ export default class GeoJsonRow extends Row {
   }
 
   prepareLayer () {
-    this.applyGeomStyle()
+    this.applyStyle()
     this.layer.on('click', this.openPopup.bind(this))
     this.addEditEvents()
   }

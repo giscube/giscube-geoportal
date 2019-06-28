@@ -183,7 +183,7 @@ export default {
       this.table.update({ pagination })
     },
     onSelect ({ keys, rows, added }) {
-      this.table.select(rows.map(row => row.internalPk), { added })
+      this.table.selectRows(rows, { added })
     }
   }
 }

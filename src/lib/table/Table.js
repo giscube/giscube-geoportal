@@ -109,7 +109,10 @@ export default class Table {
   deleteSelected () {
     const selectedRows = this.visibleSelectedList
     const del = !selectedRows.every(row => row.status.deleted)
-    selectedRows.forEach(row => { row.status.deleted = del })
+    selectedRows.forEach(row => {
+      row.status.deleted = del
+      row.applyStyle()
+    })
   }
 
   fetchInfo () {
@@ -193,6 +196,9 @@ export default class Table {
 
   selectRows (rows, ...args) {
     this.select(rows.map(r => r.internalPk), ...args)
+    rows.forEach(row => {
+      row.applyStyle()
+    })
   }
 
   /// Sets the new data
