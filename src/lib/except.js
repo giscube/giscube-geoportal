@@ -24,7 +24,9 @@ function isAxiosError (error) {
 
 function except (error, { hide = false } = {}) {
   const self = except
-  if (typeof error === 'object' && !!error && error instanceof ErrorEvent && error.error) {
+  if (typeof error === 'string') {
+    error = new Error(error)
+  } else if (typeof error === 'object' && !!error && error instanceof ErrorEvent && error.error) {
     error = error.error // extract the error from the event
   }
 
