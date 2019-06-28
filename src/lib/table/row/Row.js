@@ -51,7 +51,7 @@ export default class Row {
         return self.parent.selectedList.includes(self.internalPk)
       },
       set selected (value) {
-        self.parent.select([self.internalPk], { added: !!value })
+        self.parent.selectRows([self], { added: !!value })
       },
       new: !data
     }
@@ -78,7 +78,11 @@ export default class Row {
     this.status.edited = false
     this.status.propsEdited = false
     this.status.geomEdited = false
+
+    this.applyStyle()
   }
+
+  applyStyle () {}
 
   async asNew () {
     return this.clone()

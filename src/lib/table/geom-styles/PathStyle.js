@@ -1,5 +1,5 @@
 import GeomStyle from './Base'
-import { toNumber } from './utils'
+import { toNumber, STATUS_STYLES } from './utils'
 
 class PathStyle extends GeomStyle {
   getDefaultStyle () {
@@ -22,6 +22,15 @@ class PathStyle extends GeomStyle {
 
   applyStyle (row, style) {
     // Also used by CircleStyle
+
+    // Set style based on the geometry status
+    const statusStyle = STATUS_STYLES.get(row.status)
+    if (statusStyle) {
+      style.fillColor = statusStyle.fill
+      style.color = statusStyle.stroke
+    }
+
+    // apply it
     row.layer.setStyle({
       ...style,
       opacity: 1,
