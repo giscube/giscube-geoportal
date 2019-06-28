@@ -112,6 +112,7 @@ export default {
   methods: {
     refresh () {
       this.$store.dispatch('dataLayer/refreshSources')
+        .then(() => this.$emit('input', true))
     },
     onSelectItem ({ source, layer }) {
       this.$emit('input', false)
