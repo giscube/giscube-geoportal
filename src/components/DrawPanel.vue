@@ -73,6 +73,7 @@
 import { saveAs } from 'file-saver'
 import { QBtn, QChip } from 'quasar'
 import Vue from 'vue'
+import { mapState } from 'vuex'
 import length from '@turf/length'
 import area from '@turf/area'
 import L from 'src/lib/leaflet'
@@ -81,7 +82,6 @@ import { createLayer } from 'src/lib/geomUtils'
 import MeasureResultPopup from 'components/MeasureResultPopup.vue'
 
 export default {
-  props: ['map'],
   components: {
     QBtn,
     QChip
@@ -96,6 +96,9 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      map: state => state.map.mapObject
+    }),
     measureControl () {
       if (this.map && this.map.measureControl) {
         return this.map.measureControl

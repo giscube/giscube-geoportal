@@ -37,7 +37,6 @@
                   v-for="(result, index) in subcategory.results"
                   :key="index"
                   :result="result"
-                  :map="map"
                 />
               </div>
             </q-expansion-item>
@@ -57,7 +56,6 @@ import Vue from 'vue'
 import CatalogResult from './CatalogResult.vue'
 
 export default {
-  props: ['map'],
   components: {
     CatalogResult,
     QExpansionItem,

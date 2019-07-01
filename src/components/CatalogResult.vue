@@ -15,7 +15,7 @@
 import { QIcon } from 'quasar'
 
 export default {
-  props: ['result', 'map'],
+  props: ['result'],
   components: {
     QIcon
   },
