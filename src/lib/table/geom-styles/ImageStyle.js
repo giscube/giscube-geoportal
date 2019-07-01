@@ -22,7 +22,7 @@ class ImageStyle extends GeomStyle {
     }
   }
 
-  apply (row) {
+  _apply (row) {
     const { icon, width, height } = this.generate(row)
 
     eachLayer(row.layer, layer => {

@@ -240,9 +240,14 @@ const geomCreators = {
   }
 }
 
-export function createLayer ({ map, type, config, keepDrawn = false }) {
+export function splitType (type) {
   const isMulti = type.startsWith(multi)
   const baseType = isMulti ? type.slice(multi.length) : type
+  return { isMulti, baseType }
+}
+
+export function createLayer ({ map, type, config, keepDrawn = false }) {
+  const { isMulti, baseType } = splitType(type)
 
   return new Promise((resolve, reject) => {
     function cancel (event) {

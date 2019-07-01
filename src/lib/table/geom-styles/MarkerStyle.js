@@ -24,7 +24,7 @@ class MarkerStyle extends GeomStyle {
     }
   }
 
-  apply (row) {
+  _apply (row) {
     eachLayer(row.layer, layer => {
       layer.setIcon(
         IconsGenerator.icon({

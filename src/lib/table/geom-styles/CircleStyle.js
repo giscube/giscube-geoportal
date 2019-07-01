@@ -17,7 +17,7 @@ class CircleStyle extends PathStyle {
     }
   }
 
-  apply (row) {
+  _apply (row) {
     const style = this.generate(row)
     this.applyStyle(row, style)
     eachLayer(row.layer, layer => {

@@ -41,7 +41,7 @@ class PathStyle extends GeomStyle {
     })
   }
 
-  apply (row) {
+  _apply (row) {
     this.applyStyle(row, this.generate(row))
   }
 }
