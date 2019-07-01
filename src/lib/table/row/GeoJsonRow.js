@@ -99,6 +99,8 @@ export default class GeoJsonRow extends Row {
       revertLayer()
       this.addEditEvents()
     }
+
+    this.applyStyle()
   }
 
   getGeomConfig () {
