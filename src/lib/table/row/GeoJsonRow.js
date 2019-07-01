@@ -1,6 +1,5 @@
 import L from 'src/lib/leaflet'
-import { CancelError, createLayer, flipLatLng } from 'src/lib/geomUtils'
-import { cloneClean } from 'src/lib/utils'
+import { CancelError, createLayer, eachLayer, flipLatLng, makeLayerReverter } from 'src/lib/geomUtils'
 
 import Row from './Row'
 
@@ -46,7 +45,7 @@ export default class GeoJsonRow extends Row {
   }
 
   addEditEvents () {
-    this.layer.on(EDIT_EVENTS, this._geomChanged)
+    eachLayer(this.layer, layer => layer.on(EDIT_EVENTS, this._geomChanged))
   }
 
   applyGeomStyle () {
@@ -83,21 +82,14 @@ export default class GeoJsonRow extends Row {
   }
 
   geomChanged () {
-    this.layer.off(EDIT_EVENTS, this._geomChanged)
+    this.removeEditEvents()
     this.status.geomEdited = true
     this.status.edited = true
 
-    let f
-    if (this.layer.getLatLngs) {
-      const geom = cloneClean(this.layer.getLatLngs())
-      f = this.layer.setLatLngs.bind(this.layer, geom)
-    } else if (this.layer.getLatLng) {
-      const geom = cloneClean(this.layer.getLatLng())
-      f = this.layer.setLatLng.bind(this.layer, geom)
-    }
+    const revertLayer = makeLayerReverter(this.layer)
 
     this._revertLayer = () => {
-      f()
+      revertLayer()
       this.addEditEvents()
     }
   }
@@ -185,6 +177,10 @@ export default class GeoJsonRow extends Row {
       this.layer.remove()
       delete this.layer
     }
+  }
+
+  removeEditEvents () {
+    eachLayer(this.layer, layer => layer.off(EDIT_EVENTS, this._geomChanged))
   }
 
   revert () {

@@ -3,6 +3,7 @@ import Vue from 'vue'
 import L from './leaflet.js'
 import makeGeoJsonOptions from './makeGeoJsonOptions'
 import Table from './table'
+import { cloneClean } from './utils'
 
 export class CancelError extends Error {
   constructor (layer) {
@@ -21,6 +22,22 @@ export function eachLayer (layer, callback) {
     }
   }
   _eachLayer(layer)
+}
+
+export function makeLayerReverter (layer) {
+  if (layer.getLatLngs) {
+    const geom = cloneClean(layer.getLatLngs())
+    return layer.setLatLngs.bind(layer, geom)
+  } else if (layer.getLatLng) {
+    const geom = cloneClean(layer.getLatLng())
+    return layer.setLatLng.bind(layer, geom)
+  } else if (layer.getLayers) {
+    // For now don't support adding or removing elements
+    const reverts = layer.getLayers().map(makeLayerReverter)
+    return () => reverts.forEach(f => f())
+  } else {
+    console.warn('Unsuported type to revert')
+  }
 }
 
 export function visiblePart (bbox, visibility) {
