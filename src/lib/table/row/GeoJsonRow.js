@@ -176,7 +176,7 @@ export default class GeoJsonRow extends Row {
 
   prepareLayer () {
     this.applyStyle()
-    this.layer.on('click', this.openPopup.bind(this))
+    eachLayer(this.layer, layer => layer.on('click', this.openPopup.bind(this)))
     this.addEditEvents()
   }
 
