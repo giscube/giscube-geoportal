@@ -1,3 +1,4 @@
+import { eachLayer } from 'src/lib/geomUtils'
 import GeomStyle from './Base'
 import { toNumber, STATUS_STYLES } from './utils'
 
@@ -31,10 +32,12 @@ class PathStyle extends GeomStyle {
     }
 
     // apply it
-    row.layer.setStyle({
-      ...style,
-      opacity: 1,
-      bubblingMouseEvents: false
+    eachLayer(row.layer, layer => {
+      layer.setStyle({
+        ...style,
+        opacity: 1,
+        bubblingMouseEvents: false
+      })
     })
   }
 

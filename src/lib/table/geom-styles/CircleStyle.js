@@ -1,3 +1,4 @@
+import { eachLayer } from 'src/lib/geomUtils'
 import PathStyle from './PathStyle'
 import { toNumber } from './utils'
 
@@ -19,9 +20,11 @@ class CircleStyle extends PathStyle {
   apply (row) {
     const style = this.generate(row)
     this.applyStyle(row, style)
-    if (row.layer.setRadius && style.radius !== void 0 && style.radius !== null) {
-      row.layer.setRadius(style.radius)
-    }
+    eachLayer(row.layer, layer => {
+      if (layer.setRadius && style.radius !== void 0 && style.radius !== null) {
+        layer.setRadius(style.radius)
+      }
+    })
   }
 }
 

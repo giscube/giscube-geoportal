@@ -1,3 +1,4 @@
+import { eachLayer } from 'src/lib/geomUtils'
 import GeomStyle from './Base'
 import { toNumber } from './utils'
 import IconsGenerator from './icons/IconsGenerator'
@@ -23,12 +24,15 @@ class ImageStyle extends GeomStyle {
 
   apply (row) {
     const { icon, width, height } = this.generate(row)
-    row.layer.setIcon(
-      IconsGenerator.imgIcon({
-        icon,
-        sizes: [width, height]
-      })
-    )
+
+    eachLayer(row.layer, layer => {
+      layer.setIcon(
+        IconsGenerator.imgIcon({
+          icon,
+          sizes: [width, height]
+        })
+      )
+    })
   }
 }
 
