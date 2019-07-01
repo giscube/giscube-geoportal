@@ -43,7 +43,7 @@ export default class Row {
 
     const self = this
     this.status = {
-      deleted: false,
+      _deleted: false,
       edited: false,
       propsEdited: false,
       geomEdited: false,
@@ -55,6 +55,15 @@ export default class Row {
       },
       new: !data
     }
+
+    Object.defineProperty(this.status, 'deleted', {
+      get: () => this.status._deleted,
+      set: value => {
+        this.status._deleted = value
+        this.applyStyle()
+        return value
+      }
+    })
 
     this.properties = this.getOriginalProperties()
   }
