@@ -58,7 +58,7 @@ export default class GeoJsonRow extends Row {
     const config = {
       bubblingMouseEvents: false
     }
-    if (this.info.geomType === 'point' && this.info.shapeType === 'circle') {
+    if (this.info.shapeType === 'circle') {
       config.markerClass = L.CircleMarker
     }
     let layer

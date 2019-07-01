@@ -1,3 +1,4 @@
+import { eachLayer } from 'src/lib/geomUtils'
 import GeomStyle from './Base'
 import { toNumber } from './utils'
 import IconsGenerator from './icons/IconsGenerator'
@@ -24,12 +25,14 @@ class MarkerStyle extends GeomStyle {
   }
 
   apply (row) {
-    row.layer.setIcon(
-      IconsGenerator.icon({
-        ...this.generate(row),
-        status: row.status
-      })
-    )
+    eachLayer(row.layer, layer => {
+      layer.setIcon(
+        IconsGenerator.icon({
+          ...this.generate(row),
+          status: row.status
+        })
+      )
+    })
   }
 }
 
