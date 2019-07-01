@@ -323,10 +323,13 @@ export default class Table {
 
   save () {
     this.saving = true
+    if (this.info.hasGeom && this.map) {
+      eachLayer(this.layer, l => l.disableEdit(this.map))
+    }
     this.remote.save(this.toBulk())
       .then(_ => {
         this.editing = false
-        this.rows.forEach(row => row._resetStatus())
+        this.rows.forEach(row => row.resetStatus())
         this.update({ immediate: true })
           .catch(Vue.prototype.$except)
       })

@@ -120,4 +120,10 @@ export default class GeomStyle {
 
     return { deps: _deps, rules }
   }
+
+  apply (row) {
+    if (row.layer) {
+      this._apply(row)
+    }
+  }
 }

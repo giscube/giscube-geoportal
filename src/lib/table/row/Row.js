@@ -1,3 +1,4 @@
+import { getGeometry } from 'src/lib/geoJson'
 import { isCleanEqual } from 'src/lib/utils'
 import MultiResult from 'src/lib/MultiResult'
 
@@ -82,7 +83,7 @@ export default class Row {
     return this.pk !== void 0 ? this.pk : this._internalPk
   }
 
-  _resetStatus () {
+  resetStatus () {
     this.status.deleted = false
     this.status.edited = false
     this.status.propsEdited = false
@@ -160,7 +161,7 @@ export default class Row {
     })
     this.info.propsPath.setTo(result, props)
     if (this.info.hasGeom) {
-      this.info.geomPath.setTo(result, this.layer.toGeoJSON().geometry)
+      this.info.geomPath.setTo(result, getGeometry(this.layer, this.info.geomType))
     }
     this.setPk(result, this.pk)
     return result
@@ -170,7 +171,7 @@ export default class Row {
     if (!this.status.new && this.status.propsEdited) {
       this.properties = this.getOriginalProperties()
     }
-    this._resetStatus()
+    this.resetStatus()
   }
 
   uiEdit () {

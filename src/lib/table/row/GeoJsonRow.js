@@ -97,6 +97,7 @@ export default class GeoJsonRow extends Row {
 
     this._revertLayer = () => {
       revertLayer()
+      this._revertLayer = null
       this.addEditEvents()
     }
 
@@ -190,6 +191,14 @@ export default class GeoJsonRow extends Row {
 
   removeEditEvents () {
     eachLayer(this.layer, layer => layer.off(EDIT_EVENTS, this._geomChanged))
+  }
+
+  resetStatus () {
+    super.resetStatus()
+    if (this._revertLayer) {
+      this._revertLayer = null
+      this.addEditEvents()
+    }
   }
 
   revert () {
