@@ -29,6 +29,7 @@
 
 <script>
 import { QLayout, QPageContainer } from 'quasar'
+import { mapState } from 'vuex'
 import L from '../lib/leaflet'
 import AppFooter from 'components/AppFooter'
 import GeoportalMap from 'components/GeoportalMap'
@@ -50,11 +51,9 @@ export default {
       this.$store.dispatch('layout/setSidebarVisible', true)
     })
   },
-  computed: {
-    map () {
-      return this.$store.map.mapObject
-    }
-  },
+  computed: mapState({
+    map: state => state.map.mapObject
+  }),
   methods: {
     navHome () {
       const home = this.$config.home
