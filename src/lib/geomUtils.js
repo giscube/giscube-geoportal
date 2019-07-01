@@ -267,7 +267,7 @@ export function createLayer ({ map, type, config, keepDrawn = false }) {
       removeEvents()
       let layer
       if (isMulti) {
-        layer = L.layerGroup()
+        layer = L.featureGroup()
         layer.addLayer(event.layer)
       } else {
         layer = event.layer
