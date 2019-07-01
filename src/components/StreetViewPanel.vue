@@ -17,16 +17,19 @@
 <script>
 import { QSpinner } from 'quasar'
 import debounce from 'lodash/debounce.js'
+import { mapState } from 'vuex'
 
 import L from '../lib/leaflet'
 import gmapsInit from '../lib/gmaps'
 
 export default {
   name: 'StreetViewPanel',
-  props: ['map'],
   components: {
     QSpinner
   },
+  computed: mapState({
+    map: state => state.map.mapObject
+  }),
   data () {
     return {
       q: '',
