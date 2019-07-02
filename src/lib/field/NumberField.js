@@ -6,6 +6,14 @@ export default class NumberField extends Field {
     return NumberWidget
   }
 
+  setValue (args) {
+    const v = parseFloat(args.value)
+    if (!isNaN(v)) {
+      args.value = v
+    }
+    return super.setValue(args)
+  }
+
   search (value) {
     return {
       key: this.name,

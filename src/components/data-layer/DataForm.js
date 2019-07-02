@@ -29,8 +29,10 @@ function aggregate (fields, rows) {
 export default {
   props: ['table', 'rows', 'readonly', 'disable'],
   data () {
+    const aggregatedProperties = this.aggregateProperties()
     return {
-      aggregatedProperties: this.aggregateProperties(),
+      aggregatedProperties,
+      origProps: { ...aggregatedProperties },
       callbacks: []
     }
   },
@@ -80,7 +82,14 @@ export default {
       }
       this.callbacks.push({ field, value })
       this.resolveCallbacks()
-      this.$emit('input', this.aggregatedProperties)
+
+      const result = {}
+      this.table.info.logicFormFields.forEach(field => {
+        if (!field.equals({ properties: this.aggregatedProperties }, { properties: this.origProps })) {
+          field.cloneSetValue({ properties: this.aggregatedProperties }, { properties: result })
+        }
+      })
+      this.$emit('input', result)
     }
   },
   render (createElement) {
