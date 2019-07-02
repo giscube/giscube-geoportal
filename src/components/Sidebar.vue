@@ -36,6 +36,7 @@
 
 <script>
 import { QDrawer, QIcon } from 'quasar'
+import { mapState } from 'vuex'
 import L from '../lib/leaflet'
 const worldBounds = L.latLngBounds([[-90, -180], [90, 180]])
 
@@ -51,9 +52,10 @@ export default {
     }
   },
   computed: {
-    layoutSize () {
-      return this.$store.state.layout.size
-    },
+    ...mapState({
+      map: state => state.map.mapObject,
+      layoutSize: state => state.layout.size
+    }),
     width: {
       get: function () {
         return this.$store.state.layout.leftDrawerSize
