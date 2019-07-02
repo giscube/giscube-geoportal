@@ -53,8 +53,6 @@ import { ClosePopup, QBtn, QBtnDropdown, QBtnGroup, QItem, QItemLabel, QItemSect
 import TranslationMixin from './TranslationMixin'
 import DefaultsDialog from './DefaultsDialog'
 
-import { CancelError } from 'src/lib/geomUtils'
-
 export default {
   mixins: [TranslationMixin],
   props: ['table'],
@@ -99,13 +97,7 @@ export default {
         dialogForNew: this.dialogForNew,
         selectNews: this.selectNews
       })
-        .catch(e => {
-          if (e instanceof CancelError) {
-            // Do nothing, allow to cancel when drawing
-          } else {
-            this.$except(e)
-          }
-        })
+        .catch(this.$except)
     },
     setDefaults () {
       this.$refs.defaultDialog.show()

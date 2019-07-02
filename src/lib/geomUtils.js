@@ -255,11 +255,21 @@ export function createLayer ({ map, type, config, keepDrawn = false }) {
         event.layer.remove()
       }
       removeEvents()
-      let layer = event.layer
-      if (baseType === 'polygon') {
-        if (layer.getLatLngs()[0].length < 3) {
-          layer = void 0
-        }
+
+      let layer
+      switch (baseType) {
+        case 'point':
+          break
+        case 'linestring':
+          if (layer.getLatLngs().length >= 2) {
+            layer = event.layer
+          }
+          break
+        case 'polygon':
+          if (layer.getLatLngs()[0].length >= 3) {
+            layer = event.layer
+          }
+          break
       }
       reject(new CancelError(layer))
     }
