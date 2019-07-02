@@ -1,5 +1,5 @@
 import L from 'src/lib/leaflet'
-import { eachLayer, layersBounds } from 'src/lib/geomUtils'
+import { CancelError, eachLayer, layersBounds } from 'src/lib/geomUtils'
 import { rowsInGeom } from 'src/lib/layersInGeom'
 import Vue from 'vue'
 
@@ -172,6 +172,10 @@ export default class Table {
         //   most likely a cancellation
         // eslint-disable-next-line no-unmodified-loop-condition
       } while (editMultiple)
+    } catch (e) {
+      if (!(e instanceof CancelError)) {
+        throw e
+      }
     } finally {
       this.adding = false
     }

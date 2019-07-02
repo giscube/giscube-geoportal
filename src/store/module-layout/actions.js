@@ -28,7 +28,6 @@ export function showMapWhile (context, promise) {
       context.dispatch('setSidebarVisible', true)
     })
   }
-  return promise
 }
 
 export function pushLengthState (context) {
