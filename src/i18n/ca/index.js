@@ -77,7 +77,7 @@ export default {
       title: 'Capa de dades',
       help: 'Visualitza i edita taules de la base de dades.',
 
-      allDeleted: 'Alguns dels elements seleccionats estan marcats per ser eliminats.',
+      allDeleted: 'Tots els elements seleccionats estan marcats per ser eliminats.',
       changedLeaveTitle: 'Marxant sense guardar',
       changedLeaveMsg: 'Podeu tornar més tard per guardar-ho o continuar editant',
       colFilter: 'Filtrar per "{label}"',
@@ -103,7 +103,7 @@ export default {
       selectByPolygon: 'Polígon',
       selectNews: 'Seleccionar els nous elements creats',
       selection: 'Selecció',
-      someDeleted: 'Tots els elements seleccionats estan marcats per ser eliminats.',
+      someDeleted: 'Alguns dels elements seleccionats estan marcats per ser eliminats.',
       thisDeleted: 'Aquest element està marcat per ser eliminat.',
       undoConfirm: 'Segur que voleu desfer els canvis d\'aquest element?',
 

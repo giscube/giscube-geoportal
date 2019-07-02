@@ -83,11 +83,11 @@
         />
         <q-space />
         <q-btn
-          :label="!disable && !readonly && hasResult ? $t('actions.cancel') : $t('actions.accept')"
+          :label="toCommit ? $t('actions.cancel') : $t('actions.accept')"
           @click="onCancel"
         />
         <q-btn
-          v-show="!disable && !readonly && hasResult && !allDeleted"
+          v-show="toCommit && !allDeleted"
           :label="$t('actions.apply')"
           @click="onCommit"
         />
@@ -148,6 +148,12 @@ export default {
     },
     allDeleted () {
       return this.deleted === this.currentRows.length
+    },
+    isNew () {
+      return !this.rows.some(row => !row.status.new)
+    },
+    toCommit () {
+      return !this.disable && !this.readonly && (this.isNew || this.hasResult)
     }
   },
   methods: {
@@ -174,7 +180,7 @@ export default {
         })
     },
     commit () {
-      if (!this.hasResult) {
+      if (!this.hasResult && !this.isNew) {
         return Promise.reject()
       } else if (this.$refs.form.validate()) {
         return Promise.resolve()

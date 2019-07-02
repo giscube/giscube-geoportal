@@ -57,6 +57,10 @@ export default class Field {
     } else if (AsyncValue.is(av)) {
       // both are async values thus we need just need to compare if they are the same object
       return av === bv
+    } else if (MultiResult.is(av) !== MultiResult.is(bv)) {
+      return false
+    } else if (MultiResult.is(av)) {
+      return av === bv
     } else {
       return isCleanEqual(av, bv)
     }
