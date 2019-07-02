@@ -2,12 +2,13 @@
   <div class="custom-actions"
       @click.prevent.stop="">
     <q-btn
+      v-show="edited && !isNew"
       flat
       dense
       size="sm"
       icon="undo"
       :disabled="!edited || saving || isNew"
-      @click="revertItem()"
+      @click="undoRow(row)"
     />
     <q-btn
       flat
@@ -23,8 +24,10 @@
 
 <script>
 import { QBtn } from 'quasar'
+import UndoMixin from './UndoMixin'
 
 export default {
+  mixins: [UndoMixin],
   props: {
     row: {
       type: Object,
@@ -49,26 +52,6 @@ export default {
     },
     saving () {
       return this.row.parent.saving
-    }
-  },
-  methods: {
-    revertItem () {
-      this.$store.dispatch('layout/createDialog', {
-        message: this.$t('tools.data.undoConfirm'),
-        ok: {
-          flat: true,
-          label: this.$t('yes')
-        },
-        cancel: {
-          flat: true,
-          label: this.$t('no')
-        },
-        persistent: true,
-        noRouteDismiss: true
-      })
-        .then(api => api.onOk(_ => {
-          this.row.revert()
-        }))
     }
   }
 }

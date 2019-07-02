@@ -12,6 +12,12 @@
           @input="select"
         />
         <q-btn flat
+          v-show="editing && row.status.edited"
+          icon="undo"
+          :disable="saving"
+          @click="undoRow(row)"
+        />
+        <q-btn flat
           v-show="editing"
           icon="edit"
           :disable="saving"
@@ -31,9 +37,11 @@
 <script>
 import { QBtn, QCheckbox } from 'quasar'
 
+import UndoMixin from './UndoMixin'
 import PopupData from '../PopupData'
 
 export default {
+  mixins: [UndoMixin],
   components: {
     PopupData,
     QBtn,
