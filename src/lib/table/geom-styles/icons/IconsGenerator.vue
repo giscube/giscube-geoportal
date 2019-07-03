@@ -101,3 +101,14 @@ const Component = {
 
 export default Component
 </script>
+
+<style>
+#markerIcon {
+  /*
+  The icon's pointer-events should only be the visible part, not the entire SVG tag.
+  Setting it to the symbol so it will be forwarded to any that uses it.
+  */
+  pointer-events: auto;
+  pointer-events: all;
+}
+</style>

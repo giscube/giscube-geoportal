@@ -4,6 +4,7 @@
     <popup-data
       :feature="feature"
       :render-contents="renderContents"
+      table-fallback
     ></popup-data>
   </div>
 </template>

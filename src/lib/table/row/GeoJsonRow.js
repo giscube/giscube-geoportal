@@ -1,6 +1,7 @@
 import L from 'src/lib/leaflet'
 import { CancelError, createLayer, eachLayer, flipLatLng, makeLayerReverter } from 'src/lib/geomUtils'
 
+import Tooltip from '../Tooltip'
 import Row from './Row'
 
 const EDIT_EVENTS = 'editable:dragstart editable:drawing:start editable:vertex:click editable:editing'
@@ -20,6 +21,12 @@ export default class GeoJsonRow extends Row {
         configurable: true,
         enumerable: false,
         writable: true
+      },
+      tooltip: {
+        configurable: true,
+        enumerable: false,
+        writable: true,
+        value: new Tooltip(this)
       }
     })
   }
@@ -51,6 +58,7 @@ export default class GeoJsonRow extends Row {
   applyStyle () {
     if (this.parent.map) {
       this.parent.info.geomStyle.apply(this)
+      this.tooltip.apply()
     }
   }
 

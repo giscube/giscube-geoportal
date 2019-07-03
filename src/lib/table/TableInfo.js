@@ -57,6 +57,7 @@ export default class TableInfo {
         this.geomStyle = new PathStyle(info)
       }
       this.popupTemplate = makeTemplate(info.design.popup)
+      this.tooltipTemplate = info.design.tooltip && makeTemplate(info.design.tooltip)
     }
   }
 

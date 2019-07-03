@@ -8,7 +8,7 @@
       v-html="result"
       style="min-width: 100%"
     ></div>
-    <div v-else-if="!result && !resultIsError">
+    <div v-else-if="tableFallback && !result && !resultIsError">
       <table class="table table-striped table-hover">
         <tbody v-if="fields">
           <tr v-for='field in fields' class='attr' :key="field.name">
@@ -35,7 +35,7 @@ import ImageDialog from 'components/ImageDialog'
 const DIALOG_IMG_ATTR = 'data-dialog-img'
 
 export default {
-  props: ['feature', 'fields', 'renderContents'],
+  props: ['feature', 'fields', 'renderContents', 'table-fallback'],
   components: {
     QResizeObserver
   },
