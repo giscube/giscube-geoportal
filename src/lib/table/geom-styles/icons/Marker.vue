@@ -99,11 +99,11 @@ export default {
 
 <style>
   .marker {
-    /* background-color: yellow; */
     overflow-y: visible;
     position: relative;
     top: 0;
     left: 0;
+    pointer-events: none; /* Only the symbol should have the events. See IconsGenerator.vue */
   }
   .marker > * {
     position: absolute;

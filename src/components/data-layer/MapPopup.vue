@@ -5,6 +5,7 @@
         :feature="row"
         :fields="fields"
         :render-contents="popupTemplate"
+        table-fallback
       ></popup-data>
       <div>
         <q-checkbox
