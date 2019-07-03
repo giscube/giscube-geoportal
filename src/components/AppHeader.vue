@@ -1,7 +1,7 @@
 <template>
   <q-header class="giscube-header">
     <q-toolbar class="giscube-toolbar">
-      <a class="giscube-header-brand" href="#"><img :src="brandLogo"><span>{{ brandText }}</span></a>
+      <a class="giscube-header-brand cursor-pointer" v-touch-hold:2500.mouse="infoPopup"><img :src="brandLogo"><span>{{ brandText }}</span></a>
 
       <header-item-holder
         v-for="(item, i) in headerTools"
@@ -49,7 +49,8 @@
 </template>
 
 <script>
-import { QBtn, QHeader, QList, QMenu, QSpace, QToolbar } from 'quasar'
+import { QBtn, QHeader, QList, QMenu, QSpace, QToolbar, TouchHold } from 'quasar'
+import { VERSION } from 'src/meta'
 import HeaderItemHolder from './HeaderItemHolder'
 
 export default {
@@ -65,6 +66,9 @@ export default {
     QMenu,
     QSpace,
     QToolbar
+  },
+  directives: {
+    TouchHold
   },
   data () {
     return {}
@@ -107,6 +111,12 @@ export default {
       })
 
       return r
+    },
+    infoPopup () {
+      this.$store.dispatch('layout/createDialog', {
+        title: 'Development information',
+        message: `Geoportal version: ${VERSION}`
+      })
     }
   }
 }

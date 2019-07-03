@@ -196,8 +196,7 @@ export default {
               flat: true,
               label: this.$t('no')
             },
-            persistent: true,
-            noRouteDismiss: true
+            persistent: true
           })
             .then(api => {
               api.onOk(_ => resolve())

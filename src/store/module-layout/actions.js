@@ -45,6 +45,7 @@ export function createDialog (context, config) {
   Vue.observable(handlers)
 
   const api = Dialog.create({
+    noRouteDismiss: true,
     ...config,
     dialogHandlers: handlers
   })
