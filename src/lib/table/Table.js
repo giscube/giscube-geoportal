@@ -182,10 +182,7 @@ export default class Table {
   }
 
   newRow (data) {
-    return Row.toRow(this, {
-      ...this.remote.constFields,
-      ...data
-    })
+    return Row.toRow(this, data, this.remote.constFields)
   }
 
   async rowFromDefault (opts) {

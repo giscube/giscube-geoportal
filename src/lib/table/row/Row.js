@@ -15,7 +15,7 @@ const pkGenerator = (function () {
 })()
 
 export default class Row {
-  constructor (parent, data) {
+  constructor (parent, data, constFields = {}) {
     // Set internal components.
     // I made them non enumerable because it's very likely to make circular dependencies
     Object.defineProperties(this, {
@@ -66,7 +66,12 @@ export default class Row {
       }
     })
 
-    this.properties = this.getOriginalProperties()
+    this.properties = {
+      ...this.getOriginalProperties(),
+      ...constFields
+    }
+    // updates data to contain the constFields
+    this.info.propsPath.setTo(this.data, this.properties)
   }
 
   get geometry () {
