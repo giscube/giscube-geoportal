@@ -9,6 +9,7 @@
     hide-bottom-space
     bg-color="white"
     :placeholder="t('search') | capitalize"
+    @keyup.enter="onSearch"
   >
     <template v-slot:append>
       <q-btn
@@ -50,8 +51,10 @@ export default {
       return this.$t('tools.search.' + key, ...args)
     },
     onSearch () {
-      this.$store.dispatch('search/search', { query: this.q, forceRefresh: true })
-      this.$router.push({ name: 'search', params: { q: this.q } })
+      if (this.q) {
+        this.$store.dispatch('search/search', { query: this.q, forceRefresh: true })
+        this.$router.push({ name: 'search', params: { q: this.q } })
+      }
     },
     onSearchType (event) {
       if (event.keyCode === 13) {
