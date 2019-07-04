@@ -3,7 +3,7 @@ export function drawersFullOverlay (state) {
 }
 
 export function hiddenMap (state, getters) {
-  const sidebarOverlaying = getters['layout/drawersFullOverlay']
+  const sidebarOverlaying = getters['drawersFullOverlay']
   const sidebarVisible = state.sidebarVisible
 
   return {
