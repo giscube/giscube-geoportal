@@ -176,8 +176,8 @@ export default {
         return
       }
       event.stopPropagation()
-      const mouseX = event.pageX || event.touches[0].pageX
-      if (event.movementX) {
+      const mouseX = event.pageX === void 0 ? event.touches[0].pageX : event.pageX
+      if (event.movementX !== void 0) {
         this.resized = this.resized || (Math.abs(event.movementX) > 1) || (Math.abs(event.movementY) > 1)
       } else {
         this.resized = true
