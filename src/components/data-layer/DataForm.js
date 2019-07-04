@@ -85,7 +85,7 @@ export default {
 
       const result = {}
       this.table.info.logicFormFields.forEach(field => {
-        if (!field.equals({ properties: this.aggregatedProperties }, { properties: this.origProps })) {
+        if (!field.virtual && !field.equals({ properties: this.aggregatedProperties }, { properties: this.origProps })) {
           field.cloneSetValue({ properties: this.aggregatedProperties }, { properties: result })
         }
       })
