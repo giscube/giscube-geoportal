@@ -8,8 +8,8 @@ export function bbox (state, getters, rootState, rootGetters) {
 
   return () => {
     const visibility = {
-      ...rootGetters['layout/hiddenMap'],
-      ...rootState.layout.size
+      ...rootState.layout.size,
+      ...rootGetters['layout/hiddenMap']
     }
 
     const { bbox } = visibleMapPart(state.mapObject, visibility)
