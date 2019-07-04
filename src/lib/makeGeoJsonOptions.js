@@ -175,6 +175,7 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
   // popup
   const PopupContent = popup.component && (typeof popup.component === 'object' ? Vue.extend(popup.component) : popup.component)
   const renderContents = design.popup && (typeof design.popup === 'function' ? design.popup : makeTemplate(design.popup))
+  const renderTooltip = design.tooltip && (typeof design.tooltip === 'function' ? design.tooltip : makeTemplate(design.tooltip))
 
   // Setup feature to have a single popup and, if using markes, a single icon which are reused
   function prepareFeature (feature) {
@@ -253,6 +254,29 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
         }
       },
 
+      _tooltip: {
+        configurable: false,
+        enumerable: false,
+        writable: false,
+        value: (_ => {
+          if (!renderTooltip) {
+            return
+          }
+
+          try {
+            const r = renderTooltip({ ...feature.properties, obj: feature })
+            if (r) {
+              const el = document.createElement('div')
+              el.innerHTML = r
+              return el
+            }
+          } catch (e) {
+            // Only show it in cansole (do not use except)
+            console.error(e)
+          }
+        })()
+      },
+
       assignLayer: {
         configurable: false,
         enumerable: false,
@@ -260,6 +284,12 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
           return layer => {
             if (isImage || isMarker) {
               layer.setIcon(this._icon)
+            }
+
+            if (this._tooltip) {
+              layer.bindTooltip(this._tooltip, {
+                sticky: true
+              })
             }
 
             layer.on('click', ({ sourceTarget }) => {
