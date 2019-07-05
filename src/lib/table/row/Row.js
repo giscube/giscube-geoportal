@@ -124,7 +124,7 @@ export default class Row {
       this.info.propsPath.setTo(result, properties)
     }
     if (this.info.hasGeom && this.status.geomEdited) {
-      this.info.geomPath.setTo(result, this.layer.toGeoJSON().geometry)
+      this.info.geomPath.setTo(result, getGeometry(this.layer, this.info.geomType))
     }
     this.setPk(result, this.pk)
     return result
