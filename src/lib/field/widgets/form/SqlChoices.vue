@@ -4,7 +4,7 @@
       :readonly="readonly"
       :disable="disable"
       :label="field.label"
-      :stack-label="valid(v)"
+      :stack-label="valid(current) || showDialog"
       :clearable="field.null"
       :hint="hint"
       bottom-slots
@@ -19,6 +19,7 @@
 
     <q-dialog
       ref="dialog"
+      v-model="showDialog"
       :maximized="!$q.screen.gt.sm"
       :full-width="$q.screen.gt.sm"
       :full-height="$q.screen.gt.sm"
@@ -100,6 +101,7 @@ export default {
   },
   data () {
     return {
+      showDialog: false,
       filter: '',
       pagination: { rowsPerPage: 0 }
     }
@@ -109,7 +111,7 @@ export default {
       if (MultiResult.is(this.value)) {
         return null
       }
-      return this.valid(this.value) && this.field.valuesDict[this.value]
+      return this.valid(this.value) ? this.field.valuesDict[this.value] : null
     },
     v () {
       if (MultiResult.is(this.value)) {
