@@ -56,7 +56,8 @@ export default class SqlChoicesField extends Field {
 
   repr (data) {
     const value = this.getValue(data)
-    return this.valuesDict[value][0]
+    const repr = this.valuesDict[value]
+    return repr && repr[0]
   }
 
   formWidget () {
