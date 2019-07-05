@@ -1,7 +1,6 @@
 import config from './config'
 import except from './except'
 import i18n from './i18n'
-import info from './info'
 import axios from './axios'
 import moment from './moment'
 
@@ -15,7 +14,6 @@ function setup (conf = {}) {
     await axios.apply(this, arguments)
     await moment.apply(this, arguments)
     await except.apply(this, arguments)
-    await info.apply(this, arguments)
   }
 }
 
