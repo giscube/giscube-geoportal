@@ -30,5 +30,5 @@ export function rowsInGeom (rows, geom) {
   const latLngs = geom.getLatLngs()
   const bounds = geom.getBounds()
 
-  return rows.filter(row => contains(row.layer, latLngs, bounds))
+  return rows.filter(row => row.layer && contains(row.layer, latLngs, bounds))
 }
