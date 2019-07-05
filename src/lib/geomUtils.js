@@ -261,12 +261,12 @@ export function createLayer ({ map, type, config, keepDrawn = false }) {
         case 'point':
           break
         case 'linestring':
-          if (layer.getLatLngs().length >= 2) {
+          if (event.layer && event.layer.getLatLngs().length >= 2) {
             layer = event.layer
           }
           break
         case 'polygon':
-          if (layer.getLatLngs()[0].length >= 3) {
+          if (event.layer && event.layer.getLatLngs()[0].length >= 3) {
             layer = event.layer
           }
           break
