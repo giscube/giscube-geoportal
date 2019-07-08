@@ -98,8 +98,8 @@ export default {
       return this.$store.getters['dataLayer/sources']
     },
     mainLabel () {
-      const current = this.$store.state.dataLayer.current
-      return current ? `${current.source.name} > ${current.layer.name}` : this.t('title')
+      const table = this.$store.state.dataLayer.table
+      return table ? `${table.remote.source.name} > ${table.remote.layer.name}` : this.t('title')
     }
   },
   watch: {
