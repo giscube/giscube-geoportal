@@ -33,6 +33,10 @@ function getFieldClass (field, fieldInfo) {
 }
 
 function makeField ({ layerInfo, fieldInfo, constFields, virtual = false } = {}) {
+  if (layerInfo.error) {
+    return layerInfo.error
+  }
+
   // Add all the values of the field
   const constant = constFields.hasOwnProperty(fieldInfo.name)
   const field = {
@@ -59,9 +63,40 @@ function makeField ({ layerInfo, fieldInfo, constFields, virtual = false } = {})
   return new F(field)
 }
 
+export class FieldsError extends Error {
+  constructor (errors) {
+    const details = Object.keys(errors)
+      .map(key => {
+        return key + ': ' + errors[key].toString()
+      })
+      .join('\n')
+    super('The fields have the following errors:\n' + details)
+
+    this.errors = errors
+  }
+}
+
 export function buildFields (layerInfo, constFields = {}) {
-  const fields = layerInfo.fields.map(fieldInfo => makeField({ layerInfo, fieldInfo, constFields }))
-  layerInfo.virtual_fields.forEach(fieldInfo => fields.push(makeField({ layerInfo, fieldInfo, constFields, virtual: true })))
+  const errors = {}
+  const fields = layerInfo.fields.map(fieldInfo => {
+    if (fieldInfo.error) {
+      errors[fieldInfo.name] = fieldInfo.error
+    } else {
+      return makeField({ layerInfo, fieldInfo, constFields })
+    }
+  })
+  layerInfo.virtual_fields.forEach(fieldInfo => {
+    if (fieldInfo.error) {
+      errors[fieldInfo.name] = fieldInfo.error
+    } else {
+      const field = makeField({ layerInfo, fieldInfo, constFields, virtual: true })
+      fields.push(field)
+    }
+  })
+
+  if (Object.keys(errors).length > 0) {
+    throw new FieldsError(errors)
+  }
 
   fields.forEach(field => {
     if (field.onFieldsCreated) {
