@@ -18,6 +18,7 @@
     />
 
     <q-page-container class="max-height">
+      <loading-map-state />
       <!-- GeoportalMap -->
       <component :is="$config.layout.geoportalMap" />
     </q-page-container>
@@ -33,6 +34,7 @@ import { mapState } from 'vuex'
 import L from '../lib/leaflet'
 import AppFooter from 'components/AppFooter'
 import GeoportalMap from 'components/GeoportalMap'
+import LoadingMapState from 'components/LoadingMapState'
 import Sidebar from 'components/Sidebar'
 
 export default {
@@ -40,6 +42,7 @@ export default {
   components: {
     AppFooter,
     GeoportalMap,
+    LoadingMapState,
     QLayout,
     QPageContainer,
     Sidebar
