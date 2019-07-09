@@ -1,3 +1,5 @@
+import { CancelToken, isCancel } from 'axios'
+import Vue from 'vue'
 import databaseLayersApi from 'src/api/databaselayers'
 import { INTERNAL_PROPERTY, isCleanEqual } from 'src/lib/utils'
 import { promisedDebounce } from 'src/lib/FuturePromise'
@@ -92,13 +94,12 @@ export default class Remote {
   }
 
   requestData (pagination) {
-    if (this.fetching) {
-      return Promise.reject()
-    }
     this.fetching = true
 
     if (pagination === void 0) {
       pagination = this.pagination
+    } else {
+      this.pagination = pagination
     }
 
     const args = {
@@ -117,9 +118,27 @@ export default class Remote {
       }
     }
 
+    const cancelToken = CancelToken.source()
+    const cancel = cancelToken.cancel
+    this._cancelFetch = cancel
+
+    const config = {
+      ...this.getConfig(),
+      cancelToken: cancelToken.token
+    }
+
     return new Promise((resolve, reject) => {
-      databaseLayersApi.getData(args, this.getConfig())
-        .then(response => {
+      databaseLayersApi.getData(args, config)
+        .then(async response => {
+          await Vue.nextTick()
+          if (this._cancelFetch !== cancel) {
+            resolve()
+            return
+          } else if (isCancel(response)) {
+            this.fetching = false
+            resolve()
+          }
+
           const { data } = response
 
           this.pagination = pagination
@@ -132,7 +151,9 @@ export default class Remote {
           resolve(data)
         })
         .catch(error => {
-          this.fetching = false
+          if (this._cancelFetch === cancel) {
+            this.fetching = false
+          }
           reject(error)
         })
     })
