@@ -34,6 +34,10 @@ class MarkerStyle extends GeomStyle {
       )
     })
   }
+
+  get reactive () {
+    return true
+  }
 }
 
 export { MarkerStyle as default, MarkerStyle }

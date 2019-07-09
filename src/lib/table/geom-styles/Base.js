@@ -126,4 +126,8 @@ export default class GeomStyle {
       this._apply(row)
     }
   }
+
+  get reactive () {
+    return false
+  }
 }
