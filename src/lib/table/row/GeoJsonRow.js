@@ -55,9 +55,11 @@ export default class GeoJsonRow extends Row {
     eachLayer(this.layer, layer => layer.on(EDIT_EVENTS, this._geomChanged))
   }
 
-  applyStyle () {
+  applyStyle ({ reactiveEmulation = false } = {}) {
     if (this.parent.map) {
-      this.parent.info.geomStyle.apply(this)
+      if (!(reactiveEmulation && this.parent.info.geomStyle.reactive)) {
+        this.parent.info.geomStyle.apply(this)
+      }
       this.tooltip.apply()
     }
   }
@@ -109,7 +111,7 @@ export default class GeoJsonRow extends Row {
       this.addEditEvents()
     }
 
-    this.applyStyle()
+    this.applyStyle({ reactiveEmulation: true })
   }
 
   getGeomConfig () {
