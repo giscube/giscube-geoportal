@@ -180,7 +180,7 @@ export default {
       }
     },
     onRequest ({ pagination }) {
-      this.table.update({ pagination })
+      this.table.update({ pagination, immediate: true })
     },
     onSelect ({ keys, rows, added }) {
       this.table.selectRows(rows, { added })
