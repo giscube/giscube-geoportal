@@ -2,7 +2,6 @@
   <div
     @click="onClick"
   >
-    <q-resize-observer @resize="onResize" :debounce="1" />
     <div
       v-if="result && !resultIsError"
       v-html="result"
@@ -29,16 +28,12 @@
 </template>
 
 <script>
-import { QResizeObserver } from 'quasar'
 import ImageDialog from 'components/ImageDialog'
 
 const DIALOG_IMG_ATTR = 'data-dialog-img'
 
 export default {
   props: ['feature', 'fields', 'renderContents', 'table-fallback'],
-  components: {
-    QResizeObserver
-  },
   computed: {
     result () {
       try {
@@ -66,6 +61,9 @@ export default {
     resultIsError () {
       return this.result instanceof Error
     }
+  },
+  mounted () {
+    this.$nextTick(_ => this.onResize())
   },
   updated () {
     this.$nextTick(_ => this.onResize())

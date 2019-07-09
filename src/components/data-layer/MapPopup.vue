@@ -62,9 +62,6 @@ export default {
       return this.row.parent.saving
     }
   },
-  updated () {
-    this.$nextTick(_ => this.$emit('updatePopupSize'))
-  },
   methods: {
     select (value) {
       this.row.status.selected = value

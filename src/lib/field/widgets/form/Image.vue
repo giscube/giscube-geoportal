@@ -105,7 +105,7 @@ export default {
     },
     onClear (v = null) {
       if (v === null) {
-        this.$emit('input', { src: null })
+        this.$emit('input', null)
       }
     },
     askFile (capture) {
