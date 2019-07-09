@@ -292,15 +292,18 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
               })
             }
 
-            layer.on('click', ({ sourceTarget }) => {
+            layer.on('click', ({ latlng, sourceTarget }) => {
               if (popup.openCondition && !popup.openCondition()) {
                 return
               }
 
               this._setUpPopup()
 
-              const latlng = sourceTarget.getCenter ? sourceTarget.getCenter() : sourceTarget.getLatLng()
-              map.openPopup(this._container, latlng)
+              let anchor = latlng
+              if (sourceTarget instanceof L.Marker || sourceTarget instanceof L.CircleMarker) {
+                anchor = sourceTarget.getCenter ? sourceTarget.getCenter() : sourceTarget.getLatLng()
+              }
+              map.openPopup(this._container, anchor)
             })
 
             layer.on('remove', _ => {
