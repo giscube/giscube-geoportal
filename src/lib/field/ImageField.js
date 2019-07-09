@@ -78,7 +78,12 @@ export default class ImageField extends Field {
   }
 
   popupValue (data) {
-    return this.getValue(data)
+    const value = this.getValue(data)
+    if (value instanceof AsyncValue) {
+      return value.done ? value.result : null
+    } else {
+      return value
+    }
   }
 
   static getUrl (value) {
