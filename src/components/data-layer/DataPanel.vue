@@ -1,6 +1,6 @@
 <template>
   <div class="panel fit">
-    <div class="panel-content fit column">
+    <div class="panel-content fit column no-wrap">
       <div class="col-auto row items-center justify-end q-mb-md">
         <layers-list
           v-model="layersListOpen"
