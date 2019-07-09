@@ -298,8 +298,10 @@ export default class Table {
     return new Promise((resolve, reject) => {
       requestData(pagination)
         .then(data => {
-          this.setData(data)
-          this.select(this.selectedList.filter(pk => typeof pk === 'symbol'), { added: false })
+          if (data) {
+            this.setData(data)
+            this.select(this.selectedList.filter(pk => typeof pk === 'symbol'), { added: false })
+          }
         })
         .then(resolve, reject)
     })
