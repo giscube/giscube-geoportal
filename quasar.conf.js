@@ -12,9 +12,7 @@ module.exports = function (ctx) {
       'i18n'
     ],
 
-    css: [
-      'app.styl'
-    ],
+    css: [],
 
     // icon fonts
     extras: [
