@@ -5,6 +5,7 @@
 </template>
 
 <script>
+require('./css/lib.styl')
 require('./css/print.styl')
 
 function preventExit (e, str) {
