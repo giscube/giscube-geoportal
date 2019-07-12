@@ -43,7 +43,7 @@ export default {
     },
     metadata () {
       const metadata = []
-      let url = this.layerOptions.layerDescriptor && this.layerOptions.layerDescriptor.url
+      let url = this.layerOptions && this.layerOptions.layerDescriptor && this.layerOptions.layerDescriptor.url
       if (url) {
         let text = url
         if (this.layerOptions.layerDescriptor.type && this.layerOptions.layerDescriptor.type.toLowerCase() === 'wms') {
