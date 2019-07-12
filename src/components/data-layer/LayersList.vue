@@ -1,5 +1,5 @@
 <template>
-  <q-list>
+  <q-list class="datalayer-layerslist" :class="{'full-width': value}">
     <q-expansion-item
       ref="parent"
       :value="value"
@@ -8,7 +8,7 @@
     >
       <template v-slot:header>
         <q-item-section>
-          <q-item-label class="text-h5">{{ mainLabel }}</q-item-label>
+          <q-item-label class="text-h6">{{ mainLabel }}</q-item-label>
         </q-item-section>
         <q-item-section
           side
@@ -16,7 +16,7 @@
         >
           <q-spinner />
         </q-item-section>
-        <q-item-section side>
+        <q-item-section side v-if="value">
           <q-item-label>
             <q-btn
               icon="refresh"
@@ -37,15 +37,14 @@
       >
         <q-item-section class="text-caption">{{ $t('states.empty') | capitalize }}</q-item-section>
       </q-item>
-      <q-expansion-item
+      <q-list
         v-else
         v-for="(source, i) in sources"
         :key="'source-' + i"
-        default-opened
-        :header-inset-level="1"
-        :content-inset-level="2"
-        :label="source.name"
       >
+        <q-item v-if="sources.length > 1" class="header">
+          <q-item-section>{{ source.name }}</q-item-section>
+        </q-item>
         <q-item
           v-for="(layer, j) in source.layers"
           :key="'layer-' + i + '-' + j"
@@ -53,14 +52,14 @@
           v-ripple
           @click="onSelectItem({ source, layer })"
         >
-          <q-item-section>{{layer.name}}</q-item-section>
+          <q-item-section>{{ layer.title || layer.name }}</q-item-section>
         </q-item>
         <q-item
           v-if="!source.layers.length"
         >
           <q-item-section class="text-caption">{{ $t('states.empty') | capitalize }}</q-item-section>
         </q-item>
-      </q-expansion-item>
+      </q-list>
     </q-expansion-item>
   </q-list>
 </template>
@@ -99,7 +98,15 @@ export default {
     },
     mainLabel () {
       const table = this.$store.state.dataLayer.table
-      return table ? `${table.remote.source.name} > ${table.remote.layer.name}` : this.t('title')
+      if (table) {
+        let base = ''
+        if (this.sources.length > 1) {
+          base = `${table.remote.source.name} > `
+        }
+        return base + (table.remote.layer.title || table.remote.layer.name)
+      } else {
+        return this.t('title')
+      }
     }
   },
   watch: {
@@ -129,3 +136,9 @@ export default {
   }
 }
 </script>
+<style>
+.datalayer-layerslist .q-item.header {
+  font-weight: bold;
+  background-color: #a1d7f5;
+}
+</style>
