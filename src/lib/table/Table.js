@@ -16,6 +16,8 @@ export class EditingError extends Error {
   }
 }
 
+const tileSize = Math.pow(2, Math.round(Math.log2(Math.min(document.documentElement.clientWidth, document.documentElement.clientHeight) / 2.5)))
+
 export default class Table {
   constructor (source, layer, root, contantFields) {
     const getConfig = () => root.$store.getters['auth/config']
@@ -81,8 +83,19 @@ export default class Table {
 
   addTo (map) {
     this.map = map || this.map
+    if (!this.map) {
+      return
+    }
+
     if (this.layer) {
       this.layer.addTo(this.map)
+    }
+    if (this.refLayers && this.map.layerswitcher) {
+      const layersControl = this.map.layerswitcher
+      this.refLayers.forEach(info => {
+        info.layer.addTo(this.map)
+        info._options = layersControl.addOverlay(info.layer, info.title)
+      })
     }
   }
 
@@ -121,18 +134,40 @@ export default class Table {
         this.info = info
 
         if (info.hasGeom) {
-          if (this.layer) {
-            this.layer.remove()
-          }
+          this.removeLayers()
           Object.defineProperty(this, 'layer', {
             configurable: true,
             enumerable: false,
             writable: false,
             value: L.layerGroup()
           })
-          if (this.map) {
-            this.addTo(this.map)
-          }
+        }
+
+        if (info.referenceLayers && info.referenceLayers.length > 0) {
+          const token = this.$root.$store.state.auth.accessToken
+          const refLayers = this.info.referenceLayers.map(info => {
+            const url = `${info.url}?access_token=${token}`
+            const layer = L.tileLayer.ajaxWMS(url, {
+              maxZoom: 22,
+              ...(info.options || {}),
+              tileSize
+            })
+            return {
+              layer,
+              title: info.title
+            }
+          })
+
+          Object.defineProperty(this, 'refLayers', {
+            configurable: true,
+            enumerable: false,
+            writable: false,
+            value: refLayers
+          })
+        }
+
+        if (this.map) {
+          this.addTo(this.map)
         }
 
         return this.info
@@ -183,6 +218,20 @@ export default class Table {
 
   newRow (data) {
     return Row.toRow(this, data, this.remote.constFields)
+  }
+
+  removeLayers () {
+    if (this.layer) {
+      this.layer.remove()
+    }
+
+    const layersControl = this.map.layerswitcher
+    if (layersControl && this.refLayers) {
+      this.refLayers.forEach(info => {
+        layersControl.removeLayer(info._options)
+        delete info._options
+      })
+    }
   }
 
   async rowFromDefault (opts) {

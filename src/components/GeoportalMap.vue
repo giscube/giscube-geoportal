@@ -69,7 +69,7 @@ export default {
     mainTable: {
       handler (newValue, oldValue) {
         if (oldValue) {
-          oldValue.layer && oldValue.layer.remove()
+          oldValue.removeLayers()
         }
         if (newValue) {
           newValue.addTo(this.map)

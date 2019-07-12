@@ -59,6 +59,8 @@ export default class TableInfo {
       this.popupTemplate = makeTemplate(info.design.popup)
       this.tooltipTemplate = info.design.tooltip && makeTemplate(info.design.tooltip)
     }
+
+    this.referenceLayers = info.references
   }
 
   strlist2fields (strlist) {
