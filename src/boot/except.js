@@ -7,6 +7,7 @@ export default async ({ Vue, store }) => {
   merge(except.config, config.except || {})
 
   window.addEventListener('error', except)
+  window.addEventListener('unhandledrejection', except)
   Vue.config.errorHandler = except.vue
 
   // Sentry setup
