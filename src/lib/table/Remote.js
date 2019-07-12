@@ -102,12 +102,23 @@ export default class Remote {
       this.pagination = pagination
     }
 
+    const colFilters = Object.fromEntries(
+      Object.entries(this.filters.columns)
+        .map(([fieldName, filter]) => {
+          const field = this.info.fieldsDict[fieldName]
+          if (field) {
+            return field.search(filter)
+          }
+        })
+        .filter(v => !!v)
+    )
+
     const args = {
       source: this.source,
       layer: this.layer,
       pagination,
       filter: this.filters.general,
-      colFilters: this.filters.columns
+      colFilters
     }
 
     if (this.info.hasGeom) {
