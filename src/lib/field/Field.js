@@ -141,10 +141,7 @@ export default class Field {
   }
 
   search (value) {
-    return {
-      key: this.name + '__icontains',
-      value
-    }
+    return [ this.name + '__icontains', value ]
   }
 
   // Defining onUpdate make the field logic on edits.

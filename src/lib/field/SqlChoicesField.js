@@ -74,9 +74,6 @@ export default class SqlChoicesField extends Field {
       .map(row => JSON.stringify(row[0]))
       .join(',')
 
-    return {
-      key: this.name + '__in',
-      value: choices
-    }
+    return [ this.name + '__in', choices ]
   }
 }

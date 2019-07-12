@@ -43,9 +43,6 @@ export default class ChoicesField extends Field {
 
     choices.unshift(escapeRegex(value))
 
-    return {
-      key: this.name + '__iregex',
-      value: `(${choices.join('|')})`
-    }
+    return [ this.name + '__iregex', `(${choices.join('|')})` ]
   }
 }

@@ -13,9 +13,6 @@ export default class PkField extends Field {
   }
 
   search (value) {
-    return {
-      key: this.name,
-      value
-    }
+    return [ this.name, value ]
   }
 }

@@ -18,9 +18,6 @@ export default class BooleanField extends Field {
   }
 
   search (value) {
-    return {
-      key: this.name,
-      value
-    }
+    return [ this.name, value ]
   }
 }
