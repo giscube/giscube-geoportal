@@ -212,9 +212,7 @@ async function createExternalDataBaseLayer ({ layerDescriptor, metaOptions }) {
   await table.fetchInfo()
   await table.update({ immediate: true })
 
-  if (table.layer) {
-    table.layer.remove()
-  }
+  table.removeLayers()
 
   return {
     type: 'DataBaseLayer',

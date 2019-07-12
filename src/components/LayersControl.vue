@@ -129,6 +129,8 @@ export default {
         this.lastZIndex++
         options.layer.setZIndex(this.lastZIndex)
       }
+
+      return options
     },
     changeBaseLayer (options) {
       this.map.removeLayer(this.baseLayerSelected.layer)

@@ -1,8 +1,9 @@
 import L from 'leaflet'
+import './leaflet-offset'
+import './leaflet-ajax-wms'
 import 'leaflet.locatecontrol'
 import 'leaflet.path.drag'
 import 'leaflet-editable'
-import './leaflet-offset'
 require('../../node_modules/leaflet/dist/leaflet.css')
 
 // FIX leaflet's default icon path problems with webpack
