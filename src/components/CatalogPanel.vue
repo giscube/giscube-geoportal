@@ -85,9 +85,10 @@ export default {
   },
   methods: {
     checkCategories () {
-      let apiUrl = this.$config.catalog.categories
       this.loading = true
-      axios.get(apiUrl)
+      const catalog = this.$config.catalog
+      const config = catalog.auth ? this.$store.getters['auth/config'] : {}
+      axios.get(catalog.categories, config)
         .then(response => {
           Vue.set(this, 'categories', response.data)
           this.categories.forEach(category => {
@@ -115,9 +116,10 @@ export default {
       })
     },
     getSubcategoriesResults (category) {
-      let api = this.$config.catalog.search
-      let apiUrl = api + '?category_id=' + category.id
-      axios.get(apiUrl)
+      const catalog = this.$config.catalog
+      const config = catalog.auth ? this.$store.getters['auth/config'] : {}
+      const url = `${catalog.search}?category_id=${category.id}`
+      axios.get(url, config)
         .then(response => {
           Vue.delete(category, 'loading')
           Vue.set(category, 'results', response.data.results)

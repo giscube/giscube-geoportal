@@ -4,6 +4,10 @@ import { createGeoJSONLayer } from 'src/lib/geomUtils'
 import SearchResultPopup from 'components/SearchResultPopup'
 import { toCoords } from 'components/CoordsPanel'
 
+export function invalidateState (context) {
+  context.commit('setInitialState')
+}
+
 export function clearResultLayer (context) {
   context.state.resultsLayer.clearLayers()
 }
@@ -38,8 +42,14 @@ export function fetch (context) {
 
   // Generate a list of "get" promises
   const promises = this.$config.searches.map(search => {
-    const params = { q }
-    return axios.get(search.url, { params })
+    const config = {
+      params: { q }
+    }
+    if (search.auth) {
+      Object.assign(config, context.rootGetters['auth/config'])
+    }
+
+    return axios.get(search.url, config)
       .then(response => {
         context.dispatch('parseResults', { search, data: response.data })
       })

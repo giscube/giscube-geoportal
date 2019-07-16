@@ -39,7 +39,7 @@ export default {
       const metaOptions = {
         root: this.$root
       }
-      this.$store.dispatch('map/addLayer', { layerDescriptor, title, options, metaOptions })
+      this.$store.dispatch('map/addLayer', { layerDescriptor, title, options, metaOptions, auth: this.result.private })
     },
     viewResultMain () {
       if (this.isResultClickable) {

@@ -37,9 +37,10 @@ export function enableDoubleClickZoom (context) {
   context.state.mapObject.doubleClickZoom.enable()
 }
 
-export function addLayer (context, { layerDescriptor, title, options, metaOptions }) {
+export function addLayer (context, { layerDescriptor, title, options, metaOptions, auth = false }) {
   const map = context.state.mapObject
-  createExternalLayer({ layerDescriptor, title, options, map, popupComponent: FeaturePopup, metaOptions })
+  const headers = auth ? context.rootGetters['auth/headers'] : void 0
+  createExternalLayer({ layerDescriptor, title, options, map, popupComponent: FeaturePopup, metaOptions, headers })
     .then(({ type, layer }) => {
       map.addLayer(layer)
 

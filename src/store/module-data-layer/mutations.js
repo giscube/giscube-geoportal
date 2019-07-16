@@ -1,5 +1,10 @@
 import Vue from 'vue'
 
+export function setInitialState (state) {
+  state.table = null
+  state.sources = null
+}
+
 export function sources (state, value) {
   Vue.set(state, 'sources', value)
 }

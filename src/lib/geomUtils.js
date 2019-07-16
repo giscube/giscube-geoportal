@@ -173,9 +173,9 @@ function createExternalLayerTMS ({ layerDescriptor, title, options }) {
   })
 }
 
-function createExternalLayerGeoJSON ({ layerDescriptor, title, options, map, popupComponent }) {
+function createExternalLayerGeoJSON ({ layerDescriptor, title, options, map, popupComponent, headers }) {
   return new Promise((resolve, reject) => {
-    axios.get(layerDescriptor.url)
+    axios.get(layerDescriptor.url, { headers })
       .then(response => {
         response.data.metadata.styleRules = response.data.metadata.style_rules
         delete response.data.metadata.style_rules
