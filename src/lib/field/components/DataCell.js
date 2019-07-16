@@ -1,5 +1,3 @@
-import { QTd } from 'quasar'
-
 export default {
   functional: true,
   render (createElement, context) {
@@ -15,11 +13,11 @@ export default {
           table: context.props.table
         }
       }
-      return createElement(QTd, {}, [
+      return createElement('div', {}, [
         createElement(value, config, context.children)
       ])
     } else {
-      return createElement(QTd, {}, [
+      return createElement('div', {}, [
         value
       ])
     }

@@ -97,6 +97,7 @@ export default {
       qDiscardChanges: 'Are you sure you want to discard all the changes?',
       qInvalidCommit: 'Some values seem to be invalid. Would you like to save anyways?',
       requiredField: 'Required Field',
+      recordsPerPage: 'Page size:',
       stopDrawing: 'Stop drawing elements',
       selectByPolygon: 'Polygon',
       selectNews: 'Select created elements',
