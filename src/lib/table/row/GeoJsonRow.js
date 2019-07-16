@@ -56,12 +56,10 @@ export default class GeoJsonRow extends Row {
   }
 
   applyStyle ({ reactiveEmulation = false } = {}) {
-    if (this.parent.map) {
-      if (!(reactiveEmulation && this.parent.info.geomStyle.reactive)) {
-        this.parent.info.geomStyle.apply(this)
-      }
-      this.tooltip.apply()
+    if (!(reactiveEmulation && this.parent.info.geomStyle.reactive)) {
+      this.parent.info.geomStyle.apply(this)
     }
+    this.tooltip.apply()
   }
 
   async _asNew ({ map }) {
