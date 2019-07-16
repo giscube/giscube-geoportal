@@ -82,13 +82,11 @@
             :table="table"
           />
         </div>
-        <div class="full-width col">
-          <data-table
-            class="limit-parent"
-            v-if="table.info"
-            :table="table"
-          />
-        </div>
+        <data-table
+          class="col full-width limit-parent"
+          v-if="table && table.info"
+          :table="table"
+        />
       </div>
 
     </div>

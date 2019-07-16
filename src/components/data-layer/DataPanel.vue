@@ -31,13 +31,11 @@
           :table="table"
         />
       </div>
-      <div class="col full-width" v-if="table">
-        <data-table
-          class="limit-parent"
-          v-if="table.info"
-          :table="table"
-        />
-      </div>
+      <data-table
+        class="col full-width limit-parent"
+        v-if="table && table.info"
+        :table="table"
+      />
     </div>
   </div>
 </template>

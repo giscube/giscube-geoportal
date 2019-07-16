@@ -99,6 +99,7 @@ export default {
       qDiscardChanges: 'Esteu segur de descartar tots els canvis?',
       qInvalidCommit: 'Sembla que algun valor és invalid. Voldrieu guardar igualment?',
       requiredField: 'Camp obligatori',
+      recordsPerPage: 'Mida de la pàgina:',
       stopDrawing: 'Deixar de dibuixar elements',
       selectByPolygon: 'Polígon',
       selectNews: 'Seleccionar els nous elements creats',
