@@ -64,6 +64,7 @@ export default {
       }
 
       const isGeojson = !!this.result.geojson
+      const isAuthenticated = this.result.private || (this.result.origin && this.result.origin.auth)
 
       return {
         result: this.result,
@@ -74,7 +75,8 @@ export default {
         popupComponent: isGeojson ? SearchResultPopup : FeaturePopup,
         metaOptions: {
           root: this.$root
-        }
+        },
+        headers: isAuthenticated ? this.$store.getters['auth/headers'] : void 0
       }
     },
     properties () {
@@ -139,6 +141,7 @@ export default {
     download () {
       if (this.isDescriptionGeoJSON) {
         this.$axios.get(this.layerOptions.layerDescriptor.url, {
+          headers: this.layerOptions.headers,
           responseType: 'blob'
         })
           .then(result => {

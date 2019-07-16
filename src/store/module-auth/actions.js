@@ -80,7 +80,8 @@ export function saveState (context) {
     localStorage.removeItem('username')
   }
 
-  context.dispatch('dataLayer/refreshSources', void 0, { root: true })
+  context.dispatch('dataLayer/invalidateState', void 0, { root: true })
+  context.dispatch('search/invalidateState', void 0, { root: true })
 }
 
 export function updateUserInfo (context) {

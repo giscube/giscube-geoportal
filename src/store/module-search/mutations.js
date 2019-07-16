@@ -1,3 +1,11 @@
+export function setInitialState (state) {
+  state.query = null
+  state.errorFetching = false
+  state.fetchingResults = null
+  state.finalResults = null
+  state.result = null
+}
+
 export function addHistory (state, value) {
   if (value) {
     const h = state.history

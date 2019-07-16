@@ -5,6 +5,11 @@ import databaseLayersApi from '../../api/databaselayers.js'
 import except from '../../lib/except.js'
 import { throwUnhandledExceptions } from '../../lib/promiseUtils.js'
 
+export function invalidateState (context) {
+  context.commit('setInitialState')
+  return context.dispatch('refreshSources')
+}
+
 export function refreshSources (context) {
   const editsources = this.$config.editsources || []
 
