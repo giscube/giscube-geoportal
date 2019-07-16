@@ -50,10 +50,10 @@ export default new Options({
     queryOnClick: require('components/QueryOnClick.vue').default
   },
   home: {
-    'zoom': 15,
-    'center': {
-      'lat': 41.973,
-      'lng': 2.780
+    zoom: 15,
+    center: {
+      lat: 41.973,
+      lng: 2.780
     }
   },
   layout: {
