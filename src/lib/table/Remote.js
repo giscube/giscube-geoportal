@@ -1,7 +1,7 @@
 import { CancelToken, isCancel } from 'axios'
 import Vue from 'vue'
 import databaseLayersApi from 'src/api/databaselayers'
-import { INTERNAL_PROPERTY, isCleanEqual } from 'src/lib/utils'
+import { INTERNAL_PROPERTY, isCleanEqual, fromEntries } from 'src/lib/utils'
 import { promisedDebounce } from 'src/lib/FuturePromise'
 import TableInfo from './TableInfo'
 
@@ -102,7 +102,7 @@ export default class Remote {
       this.pagination = pagination
     }
 
-    const colFilters = Object.fromEntries(
+    const colFilters = fromEntries(
       Object.entries(this.filters.columns)
         .map(([fieldName, filter]) => {
           const field = this.info.fieldsDict[fieldName]

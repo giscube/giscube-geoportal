@@ -1,5 +1,11 @@
 import isEqualWith from 'lodash/isEqualWith.js'
 
+export function fromEntries (iterable) {
+  // From https://github.com/feross/fromentries/blob/29b52a850bb3a47c390937631c2638edf3443942/index.js (under MIT)
+  return [...iterable]
+    .reduce((obj, { 0: key, 1: val }) => Object.assign(obj, { [key]: val }), {})
+}
+
 export function createEnum (elements, ordered = false) {
   const values = ordered ? elements.map((_, i) => i) : elements.map(e => Symbol(e))
 

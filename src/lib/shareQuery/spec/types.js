@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import L from 'src/lib/leaflet'
+import { fromEntries } from 'src/lib/utils'
 import { strCrc16ibm } from 'src/lib/algs/crc16ibm'
 import { fromUInt16, toUInt16 } from 'src/lib/algs/base64'
 
@@ -94,7 +95,7 @@ types.coords = types.coordinates = {
 
     fromQuery (str) {
       const keys = str.split(/\W+/g).filter(this.allowed ? this.allowed.includes : truthy)
-      return Object.fromEntries(keys.map(key => [key, true]))
+      return fromEntries(keys.map(key => [key, true]))
     }
 
     toQuery (obj) {
