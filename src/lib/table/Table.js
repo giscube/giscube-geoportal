@@ -221,6 +221,10 @@ export default class Table {
   }
 
   removeLayers () {
+    if (!this.map) {
+      return
+    }
+
     if (this.layer) {
       this.layer.remove()
     }
