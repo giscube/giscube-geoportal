@@ -186,9 +186,22 @@ function createExternalLayerGeoJSON ({ layerDescriptor, title, options, map, pop
           popup: { component: popupComponent }
         })
 
+        const geoJsonLayer = L.geoJson(response.data, options)
+        const shapetype = response.data.metadata.style.shapetype
+        const isCluster = shapetype === 'marker' || shapetype === 'circle' || shapetype === 'image'
+        const clusterOptions = isCluster && response.data.metadata.design.cluster
+
+        let layer
+        if (clusterOptions) {
+          layer = L.markerClusterGroup(clusterOptions)
+          layer.addLayer(geoJsonLayer)
+        } else {
+          layer = geoJsonLayer
+        }
+
         resolve({
           type: 'GeoJSON',
-          layer: L.geoJson(response.data, options)
+          layer
         })
       })
       .catch(reject)
