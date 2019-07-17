@@ -147,7 +147,7 @@ export default class Table {
           const token = this.$root.$store.state.auth.accessToken
           const refLayers = this.info.referenceLayers.map(info => {
             const url = `${info.url}?access_token=${token}`
-            const layer = L.tileLayer.ajaxWMS(url, {
+            const layer = L.tileLayer.wms(url, {
               maxZoom: 22,
               ...(info.options || {}),
               tileSize
