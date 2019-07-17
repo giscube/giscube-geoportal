@@ -6,6 +6,7 @@ class PathStyle extends GeomStyle {
     return {
       weight: 1,
       color: '#FF3333',
+      opacity: 1,
       fillColor: '#FFC300',
       fillOpacity: 1
     }
@@ -15,6 +16,7 @@ class PathStyle extends GeomStyle {
     return {
       weight: toNumber(info.stroke_width),
       color: info.stroke_color,
+      opacity: toNumber(info.stroke_opacity),
       fillColor: info.fill_color,
       fillOpacity: toNumber(info.fill_opacity)
     }
@@ -33,7 +35,6 @@ class PathStyle extends GeomStyle {
     // apply it
     row.layer.setStyle({
       ...style,
-      opacity: 1,
       bubblingMouseEvents: false
     })
   }
