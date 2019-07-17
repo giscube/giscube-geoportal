@@ -71,6 +71,12 @@ export default class Remote {
     return this.fetching
   }
 
+  cancelRequests () {
+    if (this._cancelFetch) {
+      this._cancelFetch()
+    }
+  }
+
   debouncedRequestData (pagination) {
     if (pagination) {
       this.pagination = pagination
@@ -162,10 +168,15 @@ export default class Remote {
           resolve(data)
         })
         .catch(error => {
-          if (this._cancelFetch === cancel) {
+          if (isCancel(error)) {
             this.fetching = false
+            resolve()
+          } else {
+            if (this._cancelFetch === cancel) {
+              this.fetching = false
+            }
+            reject(error)
           }
-          reject(error)
         })
     })
   }

@@ -5,5 +5,8 @@ export function sources (state, value) {
 }
 
 export function table (state, table) {
+  if (state.table) {
+    state.table.remote.cancelRequests()
+  }
   state.table = table
 }
