@@ -26,6 +26,7 @@
     "leaflet": "^1.5.1",
     "leaflet-editable": "git+https://github.com/copying/Leaflet.Editable.git",
     "leaflet.locatecontrol": "^0.66.2",
+    "leaflet.markercluster": "^1.4.1",
     "leaflet.path.drag": "0.0.6",
     "microdisseny-leaflet-measure": "git+https://github.com/Microdisseny/microdisseny-leaflet-measure.git",
     "moment": "^2.24.0",

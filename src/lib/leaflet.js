@@ -1,9 +1,14 @@
 import L from 'leaflet'
-import './leaflet-offset'
 import 'leaflet.locatecontrol'
+import 'leaflet.markercluster'
 import 'leaflet.path.drag'
 import 'leaflet-editable'
+import './leaflet-offset'
+
+// CSS
 require('../../node_modules/leaflet/dist/leaflet.css')
+require('../../node_modules/leaflet.markercluster/dist/MarkerCluster.css')
+require('../../node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css')
 
 // FIX leaflet's default icon path problems with webpack
 delete L.Icon.Default.prototype._getIconUrl
