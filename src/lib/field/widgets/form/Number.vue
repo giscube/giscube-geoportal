@@ -5,7 +5,7 @@
     :disable="disable"
     :label="field.label"
     :clearable="field.null"
-    :rules="field.rules($t)"
+    :rules="rules"
     lazy-rules
     :value="v"
     :hint="hint"

@@ -1,6 +1,11 @@
 import MultiResult from '../../../MultiResult'
 
 export default {
+  computed: {
+    rules () {
+      return this.field && this.field.rules(this.$t.bind(this))
+    }
+  },
   methods: {
     validate () {
       if (MultiResult.is(this.value)) {
