@@ -1,7 +1,7 @@
 <template>
-  <div class="panel fit">
+  <div class="data-panel panel fit">
     <div class="panel-content fit column no-wrap">
-      <div class="col-auto row items-center justify-end q-mb-md">
+      <div class="col-auto row items-center justify-end">
         <layers-list
           v-model="layersListOpen"
           :disable="editing"
@@ -9,24 +9,24 @@
         <q-space />
         <status-controls v-if="table && table.info" :table="table" />
       </div>
-      <div class="col-auto row items-center justify-end q-mb-md" v-if="table && table.info">
-        <draw-controls
-          v-if="drawing"
-          :disable="saving"
-        />
-        <data-edit-controls
-          v-else-if="editing"
-          :table="table"
-        />
-        <data-filter
-          v-else
-          :table="table"
-        />
-        <q-space />
+      <div class="col-auto row items-center space-items-sm" v-if="table && table.info">
+        <div class="space row">
+          <draw-controls
+            v-if="drawing"
+            :disable="saving"
+          />
+          <data-edit-controls
+            v-else-if="editing"
+            :table="table"
+          />
+          <data-filter
+            v-else
+            :table="table"
+          />
+        </div>
         <zoom-controls
           :table="table"
         />
-        <q-space />
         <selection-controls
           :table="table"
         />
@@ -194,9 +194,8 @@ export default {
 }
 </script>
 
-<style>
-.limit-parent {
-  max-width: 100%;
-  max-height: 100%;
-}
+<style lang="stylus">
+.data-panel > .panel-content > :not(:last-child)
+  margin-bottom: $spaces.md.y
+
 </style>

@@ -1,13 +1,13 @@
 <template>
   <div class="panel result-panel fit">
     <div class="panel-content limit-parent column no-wrap">
-      <p class="col panel-title">{{ title }}</p>
+      <p class="panel-title">{{ title }}</p>
 
-      <div v-if="address" class="row-info">
+      <div v-if="address">
         <q-icon name="home" size="1.4em" /> {{ address }}
       </div>
 
-      <div v-if="coordinates" class="row-info">
+      <div v-if="coordinates">
         <q-icon name="place" size="1.4em" /> GPS: {{ coordinates }}
       </div>
 
@@ -15,20 +15,18 @@
         {{ description }}
       </div>
 
-      <div class="row reverse q-mt-md">
+      <div class="row justify-end space-items-sm">
         <q-btn outline no-caps
           v-show="canDownload"
           icon="save_alt"
           :label="$t('actions.download') | capitalize"
           @click="download"
-          class="q-ml-md"
         />
 
         <q-btn outline no-caps
           icon="zoom_in"
           :label="$t('actions.zoomToData') | capitalize"
           @click="zoom"
-          class="q-ml-md"
         />
 
         <q-btn outline no-caps
@@ -67,14 +65,10 @@
 
       <div
         v-if="table"
-        class="q-mt-lg col column no-wrap"
+        class="col column no-wrap"
       >
-        <div class="row items-center justify-end q-mb-md" v-if="table && table.info">
-          <draw-controls
-            v-if="drawing"
-          />
+        <div class="row items-center space-items-sm" v-if="table && table.info">
           <data-filter
-            v-else
             :table="table"
           />
           <q-space />
@@ -82,11 +76,13 @@
             :table="table"
           />
         </div>
-        <data-table
-          class="col full-width limit-parent"
-          v-if="table && table.info"
-          :table="table"
-        />
+        <div class="full-width col q-mt-sm">
+          <data-table
+            class="limit-parent"
+            v-if="table.info"
+            :table="table"
+          />
+        </div>
       </div>
 
     </div>
@@ -100,14 +96,12 @@ import { mapState } from 'vuex'
 
 import DataFilter from './data-layer/DataFilter'
 import DataTable from './data-layer/DataTable'
-import DrawControls from './data-layer/DrawControls'
 import SelectionControls from './data-layer/SelectionControls'
 
 export default {
   components: {
     DataFilter,
     DataTable,
-    DrawControls,
     SelectionControls,
     QChip,
     QBtn,
@@ -138,7 +132,6 @@ export default {
   },
   computed: {
     ...mapState({
-      drawing: state => state.map.drawing,
       map: state => state.map.mapObject,
       query: state => state.search.query,
       result: state => state.search.result,
@@ -201,18 +194,16 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.result-panel {
-  .row-info {
-    margin-bottom: 15px;
-  }
-  .description {
-    margin-bottom: 15px;
-  }
+<style lang="stylus">
+.result-panel
+  > .panel-content > :not(:last-child)
+     margin-bottom: $spaces.md.y
 
-  .q-chip {
-    color: #0a1923;
-    background-color: #a1d7f5 !important;
-  }
-}
+  .q-chip
+    color: #0a1923
+    background-color: #a1d7f5 !important
+
+  .metadata table td
+    padding: $spaces.xs.y $spaces.xs.x
+
 </style>

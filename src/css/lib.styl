@@ -10,3 +10,31 @@ html, body, #q-app, .max-height
     background-color $primary !important
     border-color $primary !important
     color white !important
+
+.limit-parent
+  max-width: 100%
+  max-height: 100%
+
+.column
+.row
+  & > .limit-parent
+    min-height: 0
+    flex-shrink: 1
+
+for $space, $value in $spaces
+  .space-items-{$space}
+    margin-left: -($value.x)
+    margin-top: -($value.y)
+    > :not(.q-space)
+      margin-left: $value.x
+      margin-top: $value.y
+
+for $space, $value in $spaces
+  for $space2, $value2 in $spaces
+    .space-items-{$space} > .space-items-{$space2}
+      margin-left: ($value.x - $value2.x) !important
+      margin-top: ($value.y - $value2.y) !important
+
+
+.space
+  flex-grow: 1

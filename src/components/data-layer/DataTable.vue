@@ -1,10 +1,10 @@
 <template>
-  <div class="column" style="min-height: 60px">
+  <div class="column no-wrap" style="min-height: 175px">
     <q-card class="full-width limit-parent column no-wrap">
       <q-resize-observer @resize="onResize" debounce="200" />
       <div
         ref="scroller"
-        class="col scroll"
+        class="col limit-parent scroll"
         @scroll="onScroll"
       >
         <table class="q-table data-table no-scroll">

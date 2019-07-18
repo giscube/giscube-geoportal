@@ -1,47 +1,45 @@
 <template>
   <div class="panel">
-
     <div class="panel-content">
       <p class="panel-title">{{ t('title') }}</p>
 
       <p>{{ t('explanation') }}</p>
 
-      <q-btn
-        outline
-        icon="place"
-        v-show="!measuring"
-        @click="addMarker"
-        :label="t('marker')"
-      />
-      <q-btn
-        outline
-        icon="timeline"
-        v-show="!measuring"
-        @click="startMeasuring(false)"
-        :label="t('path')"
-        class="q-ml-md"
-      />
-      <q-btn
-        outline
-        icon="fas fa-draw-polygon"
-        v-show="!measuring"
-        @click="startMeasuring(true)"
-        :label="t('area')"
-        class="q-ml-md"
-      />
-      <q-btn
-        outline
-        icon="save_alt"
-        v-show="!measuring"
-        @click="downloadGeoJSON"
-        :label="t('save')"
-        class="q-ml-md"
-      />
-      <q-btn
-        outline
-        v-show="measuring"
-        @click="stopMapMeasuring"
-      >{{ t('stop') }}</q-btn>
+      <div class="row space-items-md">
+        <q-btn
+          outline
+          icon="place"
+          v-show="!measuring"
+          @click="addMarker"
+          :label="t('marker')"
+        />
+        <q-btn
+          outline
+          icon="timeline"
+          v-show="!measuring"
+          @click="startMeasuring(false)"
+          :label="t('path')"
+        />
+        <q-btn
+          outline
+          icon="fas fa-draw-polygon"
+          v-show="!measuring"
+          @click="startMeasuring(true)"
+          :label="t('area')"
+        />
+        <q-btn
+          outline
+          icon="save_alt"
+          v-show="!measuring"
+          @click="downloadGeoJSON"
+          :label="t('save')"
+        />
+        <q-btn
+          outline
+          v-show="measuring"
+          @click="stopMapMeasuring"
+        >{{ t('stop') }}</q-btn>
+      </div>
 
       <div class='q-mt-md'>
         <div v-for='(layer, key) in sharedLayers' class='measure' :key="'shared-' + key">

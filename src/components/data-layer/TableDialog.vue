@@ -7,11 +7,9 @@
     @hide="$emit('hide')"
   >
     <q-card>
-      <q-card-section class="column q-pa-lg">
-        <div class="col-auto row items-center justify-end q-mb-md">
-          <q-space />
+      <q-card-section class="q-pa-lg column no-wrap data-table-dialog-contents">
+        <div class="col-auto row items-center justify-end space-items-md">
           <status-controls
-            class="q-mr-md"
             v-if="table && table.info"
             :table="table"
           />
@@ -21,7 +19,7 @@
             @click="hide"
           />
         </div>
-        <div class="col-auto row items-center justify-end q-mb-md" v-if="table && table.info">
+        <div class="col-auto row items-center" v-if="table.info">
           <data-edit-controls
             v-if="editing"
             :table="table"
@@ -30,17 +28,13 @@
             v-else
             :table="table"
           />
-          <q-space />
         </div>
-        <div class="col full-width" v-if="table">
-        <data-table
-          class="limit-parent"
-          v-if="table.info"
-          :table="table"
-        />
-      </div>
-        <div v-else>
-          <q-spinner size="10vmin" />
+        <div class="col full-width">
+          <data-table
+            class="limit-parent"
+            v-if="table.info"
+            :table="table"
+          />
         </div>
       </q-card-section>
     </q-card>
@@ -48,7 +42,7 @@
 </template>
 
 <script>
-import { QBtn, QCard, QCardSection, QDialog, QSpace } from 'quasar'
+import { QBtn, QCard, QCardSection, QDialog } from 'quasar'
 
 import DataEditControls from './DataEditControls'
 import DataFilter from './DataFilter'
@@ -56,7 +50,16 @@ import DataTable from './DataTable'
 import StatusControls from './StatusControls'
 
 export default {
-  props: ['table', 'dialogHandlers'],
+  props: {
+    table: {
+      type: Object,
+      required: true
+    },
+    dialogHandlers: {
+      type: Object,
+      default: () => {}
+    }
+  },
   components: {
     DataEditControls,
     DataFilter,
@@ -65,8 +68,7 @@ export default {
     QBtn,
     QCard,
     QCardSection,
-    QDialog,
-    QSpace
+    QDialog
   },
   async mounted () {
     this.dialogHandlers.close = this.close.bind(this)
@@ -121,4 +123,9 @@ img {
   width: unset;
   height: unset;
 }
+</style>
+<style lang="stylus">
+.data-table-dialog-contents > :not(:last-child)
+  margin-bottom: $spaces.md.y
+
 </style>
