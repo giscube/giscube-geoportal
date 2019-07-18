@@ -4,7 +4,7 @@
     :disable="disable"
     :label="field.label"
     :clearable="field.null"
-    :rules="field.rules($t.bind(this))"
+    :rules="rules"
     :mask="field.mask"
     lazy-rules
     :value="v"
