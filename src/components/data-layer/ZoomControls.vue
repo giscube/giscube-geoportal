@@ -1,7 +1,7 @@
 <template>
   <div
     v-show="table.info.hasGeom"
-    class="row items-center"
+    class="row items-center space-items-xs"
   >
     <q-btn
       :label="$t('actions.zoomToData')"
@@ -9,7 +9,6 @@
     />
     <q-btn
       v-show="table.visibleSelectedList.length > 0"
-      class="q-ml-md"
       :label="$t('actions.zoomToSelection')"
       @click="zoomSelected"
     />

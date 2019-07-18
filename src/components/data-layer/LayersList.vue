@@ -3,6 +3,7 @@
     <q-expansion-item
       ref="parent"
       :value="value"
+      :dense="!value"
       :disable="disable"
       @input="$emit('input', $event)"
     >

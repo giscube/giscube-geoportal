@@ -1,9 +1,9 @@
 <template>
   <div
     v-show="editing"
-    class="row items-center"
+    class="row items-center space-items-xs"
   >
-    <q-btn-group class="q-mr-sm">
+    <q-btn-group>
       <q-btn
         :label="t('newElement')"
         :disable="saving"

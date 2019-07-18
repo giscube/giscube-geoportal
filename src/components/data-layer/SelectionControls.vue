@@ -1,7 +1,7 @@
 <template>
   <div
     v-show="!drawing"
-    class="row items-center"
+    class="space row justify-end items-center"
   >
     <span class="q-mr-md">{{ t('selection') }}</span>
     <q-btn

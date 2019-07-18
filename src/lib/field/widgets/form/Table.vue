@@ -1,6 +1,6 @@
 <template>
   <q-btn
-    class="full-width"
+    class="full-width q-mb-sm"
     icon-right="keyboard_arrow_right"
     :disabled="readonly || disable || isVoid || isMulti"
     :label="field.label"

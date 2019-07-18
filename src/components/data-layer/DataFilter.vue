@@ -1,37 +1,40 @@
 <template>
   <div
     v-show="!editing"
-    class="row items-center"
+    class="row items-center space-items-xs"
   >
-    <span class="q-mr-md">{{ t('filters') }}</span>
-    <q-input
+    <div class="row no-wrap items-center">
+      <span class="q-mr-xs">{{ t('filters') }}</span>
+      <q-input
       v-model="filter"
-      class="q-mr-sm"
       outlined
       dense
       :placeholder="t('findInTable')"
       debounce="500"
-    />
-    <q-btn
-      v-if="table.info.hasGeom"
-      outline
-      no-caps
-      color="primary"
-      class="q-mr-sm toggle"
-      :class="{ pushed: mapFilter }"
-      :label="t('filterByView')"
-      @click="mapFilter = !mapFilter"
-    />
-    <q-btn
-      v-if="table.info.hasGeom"
-      outline
-      no-caps
-      color="primary"
-      class="q-mr-sm toggle"
-      :class="{ pushed: polygonFilter }"
-      :label="t('filterByPolygon')"
-      @click="onPolygonFilter"
-    />
+      />
+    </div>
+    <div>
+      <q-btn
+        v-if="table.info.hasGeom"
+        outline
+        no-caps
+        color="primary"
+        class="toggle q-mr-xs"
+        :class="{ pushed: mapFilter }"
+        :label="t('filterByView')"
+        @click="mapFilter = !mapFilter"
+      />
+      <q-btn
+        v-if="table.info.hasGeom"
+        outline
+        no-caps
+        color="primary"
+        class="toggle"
+        :class="{ pushed: polygonFilter }"
+        :label="t('filterByPolygon')"
+        @click="onPolygonFilter"
+      />
+    </div>
   </div>
 </template>
 
