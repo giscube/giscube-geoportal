@@ -2,7 +2,7 @@
   <q-img
     v-if="thumbnail"
     :src="thumbnail"
-    @click="showImage(src)"
+    @click.stop="showImage(src)"
     contain
     spinner-size="20px"
   />
