@@ -40,7 +40,7 @@ export default {
       return this.table.editing
     },
     dataChanged () {
-      return this.table.rows.some(row => row.status.new || row.status.edited || row.status.deleted)
+      return this.table && this.table.changedCount > 0
     },
     working () {
       return this.table.saving

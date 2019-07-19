@@ -30,6 +30,7 @@ export default class Table {
     this.selected = new Set() /// selected rows' pks
     this.selectedList = [] // Vue won't support sets (until vue 3.0). Convert it manually
     this.visibleSelectedList = []
+    this.changedCount = 0
 
     Object.defineProperties(this, {
       map: {
@@ -108,6 +109,10 @@ export default class Table {
       eachLayer(this.layer, l => l.disableEdit(this.map))
     }
 
+    if (this.changedCount === 0) {
+      return
+    }
+
     for (let i = this.rows.length - 1; i >= 0; --i) {
       const r = this.rows[i]
       if (r.status.new) {
@@ -116,9 +121,11 @@ export default class Table {
         this.selected.delete(r.internalPk)
       } else {
         r.revert()
-        r.status.deleted = false
+        r.status._deleted = false
+        r.applyStyle()
       }
     }
+    this.changedCount = 0
     this.updateSelectedList()
   }
 
@@ -308,6 +315,7 @@ export default class Table {
     })
 
     this.rows = rows
+    this.changedCount = 0
 
     this.selected.forEach(row => {
       if (!newPks.has(row.internalPk)) {
