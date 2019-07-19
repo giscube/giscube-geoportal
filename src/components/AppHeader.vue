@@ -129,7 +129,7 @@ export default {
 }
 /* q-header */
 .giscube-header {
-  background-color: #f8f9fa !important;
+  background-color: #f8f9fa;
   border-bottom: 1px solid #ccc;
   padding: 0px;
   color: #0a1924;
@@ -137,7 +137,6 @@ export default {
 }
 a.giscube-header-brand {
   padding: 10px 20px 10px 0px;
-  color: #0a1924;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -153,9 +152,6 @@ a.giscube-header-brand span {
   display: inline-block;
   line-height: 1em;
   margin-top: 9px;
-}
-.giscube-toolbar > :not(.giscube-header-brand) {
-  text-transform: uppercase;
 }
 .giscube-toolbar .q-btn {
   font-weight: 300;
