@@ -116,7 +116,7 @@ export default {
       return this.table && this.table.saving
     },
     dataChanged () {
-      return this.table && this.table.rows.some(row => row.status.new || row.status.edited || row.status.deleted)
+      return this.table && this.table.changedCount > 0
     }
   },
   methods: {

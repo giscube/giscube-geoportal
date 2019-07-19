@@ -27,9 +27,7 @@ export default {
       return this.$store.state.dataLayer.table
     },
     dataChanged () {
-      return this.table && this.table.rows.some(row => {
-        return row.status.new || row.status.edited || row.status.deleted
-      })
+      return this.table && this.table.changedCount > 0
     },
     savingData () {
       return this.table && this.table.saving

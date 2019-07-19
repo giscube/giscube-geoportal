@@ -44,8 +44,17 @@ export default class Row {
 
     const self = this
     this.status = {
+      _hasBeenModified: false,
       _deleted: false,
-      edited: false,
+      _edited: false,
+      get edited () {
+        return self._edited
+      },
+      set edited (value) {
+        self._edited = value
+        self._updateModified()
+        return self._edited
+      },
       propsEdited: false,
       geomEdited: false,
       get selected () {
@@ -61,6 +70,7 @@ export default class Row {
       get: () => this.status._deleted,
       set: value => {
         this.status._deleted = value
+        self._updateModified()
         this.applyStyle()
         return value
       }
@@ -72,6 +82,8 @@ export default class Row {
     }
     // updates data to contain the constFields
     this.info.propsPath.setTo(this.data, this.properties)
+
+    this._updateModified()
   }
 
   get geometry () {
@@ -181,6 +193,16 @@ export default class Row {
 
   uiEdit () {
     return this.parent.uiEdit([this])
+  }
+
+  _updateModified () {
+    const n = this.status.edited || this.status._deleted || this.status.new
+    if (this.status._hasBeenModified !== n) {
+      this.status._hasBeenModified = n
+      if (this.parent.rows.includes(this)) {
+        this.parent.changedCount += n ? 1 : -1
+      }
+    }
   }
 
   add (group) {
