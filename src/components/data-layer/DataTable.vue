@@ -78,6 +78,7 @@
                 deleted: row.status.deleted,
                 selected: row.status.selected
               }"
+              @click.stop="select(row, !row.status.selected)"
             >
               <td><q-checkbox :value="row.status.selected" @input="select(row, $event)" /></td>
               <td><custom-actions :row="row" /></td>
