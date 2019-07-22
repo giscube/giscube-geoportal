@@ -17,7 +17,8 @@ export class EditingError extends Error {
   }
 }
 
-const tileSize = Math.pow(2, Math.round(Math.log2(Math.min(document.documentElement.clientWidth, document.documentElement.clientHeight) / 2.5)))
+// const tileSize = Math.pow(2, Math.round(Math.log2(Math.max(document.documentElement.clientWidth, document.documentElement.clientHeight) / 2.5)))
+const tileSize = 256
 
 export default class Table {
   constructor (source, layer, root, contantFields) {
