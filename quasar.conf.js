@@ -1,6 +1,7 @@
 // Configuration for your app
 const webpack = require('webpack')
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+const HtmlWebpackPlugin = require("html-webpack-plugin")
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 module.exports = function (ctx) {
@@ -65,6 +66,9 @@ module.exports = function (ctx) {
             )
           })
         )
+
+        const htmlWebpackPlugin = cfg.plugins.find(plugin => plugin.constructor === HtmlWebpackPlugin)
+        htmlWebpackPlugin.options.clientVersion = Math.floor(Date.now() / 1000)
 
         if (process.env.LIB && cfg.mode === 'production') {
           console.log('process.env.LIB', process.env.LIB)
