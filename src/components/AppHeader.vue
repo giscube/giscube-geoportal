@@ -6,15 +6,15 @@
       <header-item-holder
         v-for="(item, i) in headerTools"
         :key="'header-tools-' + item.name + '-' + i"
-        class="gt-xs"
+        class="gt-sm"
         :class="'header-tools-' + item.name"
         :item="item"
         @sidebar-visibility-changed="$emit('sidebar-visibility-changed', $event)"
         @event="emit"
       />
 
-      <q-space class="lt-sm" v-if="!printing" />
-      <q-btn flat icon="menu" class="lt-sm" v-if="!printing">
+      <q-space class="lt-md" v-if="!printing" />
+      <q-btn flat icon="menu" class="lt-md" v-if="!printing">
         <q-menu>
           <q-list>
             <header-item-holder
