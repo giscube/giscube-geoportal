@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import { Platform } from 'quasar'
 import defaults from 'lodash/defaults.js'
 import omitBy from 'lodash/omitBy.js'
 import template from 'lodash/template.js'
@@ -123,9 +124,8 @@ function toNumber (value, d) {
   return d
 }
 
-export default function makeGeoJsonOptions ({ style, styleRules, design }, { parent, map, popup = {}, afterEachSelect, modStyle } = {}) {
-  /* popup = { componenet, propsData, onEachPopup, openCondition } */
-
+export default function makeGeoJsonOptions ({ style, styleRules, design }, { parent, map, popup = {}, afterEachSelect, modStyle, root }) {
+  /* popup = { component, propsData, onEachPopup, openCondition } */
   const isMarker = (style.shapetype.toLowerCase() === 'marker')
   const isImage = (style.shapetype.toLowerCase() === 'image')
   styleRules = styleRules || []
@@ -253,6 +253,20 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
           }
         }
       },
+      _openDialog: {
+        configurable: false,
+        enumerable: false,
+        get () {
+          return () => {
+            root.$store.dispatch('layout/createDialog', {
+              ...(popup.propsData || {}),
+              feature: this,
+              renderContents,
+              component: popup.dialog
+            })
+          }
+        }
+      },
 
       _tooltip: {
         configurable: false,
@@ -297,13 +311,17 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
                 return
               }
 
-              this._setUpPopup()
+              if (Platform.is.mobile) {
+                this._openDialog()
+              } else {
+                this._setUpPopup()
 
-              let anchor = latlng
-              if (sourceTarget instanceof L.Marker || sourceTarget instanceof L.CircleMarker) {
-                anchor = sourceTarget.getCenter ? sourceTarget.getCenter() : sourceTarget.getLatLng()
+                let anchor = latlng
+                if (sourceTarget instanceof L.Marker || sourceTarget instanceof L.CircleMarker) {
+                  anchor = sourceTarget.getCenter ? sourceTarget.getCenter() : sourceTarget.getLatLng()
+                }
+                map.openPopup(this._container, anchor)
               }
-              map.openPopup(this._container, anchor)
             })
 
             layer.on('remove', _ => {

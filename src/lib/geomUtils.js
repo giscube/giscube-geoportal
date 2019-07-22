@@ -173,7 +173,8 @@ function createExternalLayerTMS ({ layerDescriptor, title, options }) {
   })
 }
 
-function createExternalLayerGeoJSON ({ layerDescriptor, title, options, map, popupComponent, headers }) {
+function createExternalLayerGeoJSON ({ layerDescriptor, title, options, map, popupComponent, dialogComponent, headers, metaOptions = {} }) {
+  const { root } = metaOptions
   return new Promise((resolve, reject) => {
     axios.get(layerDescriptor.url, { headers })
       .then(response => {
@@ -183,7 +184,11 @@ function createExternalLayerGeoJSON ({ layerDescriptor, title, options, map, pop
         const options = makeGeoJsonOptions(response.data.metadata, {
           map,
           propsData: { title },
-          popup: { component: popupComponent }
+          popup: {
+            component: popupComponent,
+            dialog: dialogComponent
+          },
+          root
         })
 
         const geoJsonLayer = L.geoJson(response.data, options)

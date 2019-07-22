@@ -47,8 +47,12 @@ export default class Popup {
     this.current = row.layer
     if (this.current) {
       Vue.set(this.content, 'row', row)
-      this.current.bindPopup(this.container)
-      this.current.openPopup(latlng)
+
+      Vue.nextTick(() => {
+        this.container.update()
+        this.current.bindPopup(this.container)
+        this.current.openPopup(latlng)
+      })
     }
   }
 }

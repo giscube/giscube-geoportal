@@ -2,7 +2,9 @@
 import { saveAs } from 'file-saver'
 import ResultPanelMixin from './ResultPanelMixin'
 import FeaturePopup from './FeaturePopup'
+import FeaturePopupDialog from './FeaturePopupDialog'
 import SearchResultPopup from './SearchResultPopup'
+import SearchResultPopupDialog from './SearchResultPopupDialog'
 import { createLayerFromConfig } from '../lib/geomUtils'
 
 export default {
@@ -73,6 +75,7 @@ export default {
         options: (this.result && this.result.options) || {},
         map: this.map,
         popupComponent: isGeojson ? SearchResultPopup : FeaturePopup,
+        dialogComponent: isGeojson ? SearchResultPopupDialog : FeaturePopupDialog,
         metaOptions: {
           root: this.$root
         },
