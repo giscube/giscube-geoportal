@@ -6,6 +6,7 @@ import Vue from 'vue'
 import DBFormDialog from 'components/data-layer/DBFormDialog'
 
 import Popup from './Popup'
+import PopupDialog from './PopupDialog'
 import Remote from './Remote'
 import * as Row from './row'
 
@@ -74,7 +75,8 @@ export default class Table {
   }
 
   get popup () {
-    return this._popup || (this._popup = new Popup(this.$root))
+    const PopupClass = this.$root.$q.platform.is.mobile ? PopupDialog : Popup
+    return this._popup || (this._popup = new PopupClass(this.$root))
   }
 
   get tableFields () {

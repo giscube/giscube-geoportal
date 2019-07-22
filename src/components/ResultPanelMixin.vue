@@ -93,6 +93,7 @@
 import L from '../lib/leaflet'
 import { QChip, QBtn, QIcon, QSpace } from 'quasar'
 import { mapState } from 'vuex'
+import { isCleanEqual } from 'src/lib/utils'
 
 import DataFilter from './data-layer/DataFilter'
 import DataTable from './data-layer/DataTable'
@@ -118,6 +119,11 @@ export default {
     })
   },
   beforeRouteUpdate (to, from, next) {
+    if (isCleanEqual(from.params, to.params)) {
+      next()
+      return
+    }
+
     this.$store.dispatch('search/clearResultLayer')
     const redirect = this.applyParameters(to.params)
     if (redirect) {
