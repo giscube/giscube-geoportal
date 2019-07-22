@@ -164,7 +164,8 @@ export default class Table {
             })
             return {
               layer,
-              title: info.title
+              title: info.title,
+              refresh: info.refresh
             }
           })
 
@@ -347,7 +348,7 @@ export default class Table {
     this.uiEdit(this.visibleSelectedList)
   }
 
-  update ({ pagination, immediate } = {}) {
+  update ({ pagination, immediate, wms } = {}) {
     if (this.editing) {
       return Promise.reject(new EditingError())
     }
@@ -360,6 +361,14 @@ export default class Table {
     }
 
     return new Promise((resolve, reject) => {
+      if (wms) {
+        this.refLayers.forEach(ref => {
+          ref.refresh && ref.layer.setParams({
+            _fu: Date.now() // Force update
+          }, false)
+        })
+      }
+
       requestData(pagination)
         .then(data => {
           if (data) {
@@ -397,7 +406,7 @@ export default class Table {
       .then(_ => {
         this.editing = false
         this.rows.forEach(row => row.resetStatus())
-        this.update({ immediate: true })
+        this.update({ immediate: true, wms: true })
           .catch(Vue.prototype.$except)
       })
       .catch(Vue.prototype.$except)
