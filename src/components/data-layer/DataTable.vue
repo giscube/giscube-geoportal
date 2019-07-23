@@ -288,9 +288,10 @@ export default {
     will-change: contents
 
     .table-spacer, .table-spacer td
-      margin: 0
-      padding: 0
-      line-height: 0
+      margin: 0 !important
+      padding: 0 !important
+      line-height: 0 !important
+      border: none !important
 
     tr.deleted
       background-color $red-5
