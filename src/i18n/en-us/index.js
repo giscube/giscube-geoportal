@@ -108,6 +108,8 @@ export default {
       someDeleted: 'Some of the selected elements have been marked as deleted.',
       thisDeleted: 'This element has been marked as deleted.',
       undoConfirm: 'Are you sure you want to undo the changes in this element?',
+      undoConfirmN: 'Are you sure you want to undo the changes in {elements}?',
+      undoElements: 'Undo {elements}',
 
       quitWhileSaving: 'Saving, please wait...',
       quitWithChanges: 'You have unsaved changes'

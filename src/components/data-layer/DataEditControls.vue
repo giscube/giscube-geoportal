@@ -20,7 +20,7 @@
     <q-btn-dropdown
       v-show="table.visibleSelectedList.length > 0"
       split
-      :label="t('editElements', {elements: $tc('names.element', table.visibleSelectedList.length, {count: table.visibleSelectedList.length})})"
+      :label="t('editElements', { elements: elementsT })"
       :disable="saving"
       @click="table.uiEditSelected()"
     >
@@ -28,10 +28,19 @@
         <q-item
           clickable
           v-close-popup
+          @click="undoSelected()"
+        >
+          <q-item-section>
+            <q-item-label>{{ t('undoElements', { elements: elementsT }) }}</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item
+          clickable
+          v-close-popup
           @click="table.deleteSelected()"
         >
           <q-item-section>
-            <q-item-label>{{ t('deleteElements', {elements: $tc('names.element', table.visibleSelectedList.length, {count: table.visibleSelectedList.length})}) }}</q-item-label>
+            <q-item-label>{{ t('deleteElements', { elements: elementsT }) }}</q-item-label>
           </q-item-section>
         </q-item>
       </q-list>
@@ -86,6 +95,9 @@ export default {
     },
     map () {
       return this.$store.state.map.mapObject
+    },
+    elementsT () {
+      return this.$tc('names.element', this.table.visibleSelectedList.length, { count: this.table.visibleSelectedList.length })
     }
   },
   methods: {
@@ -104,6 +116,23 @@ export default {
     },
     stopDrawing () {
       this.$store.dispatch('map/stopDrawing')
+    },
+    undoSelected () {
+      this.$store.dispatch('layout/createDialog', {
+        message: this.$t('tools.data.undoConfirmN', { elements: this.elementsT }),
+        ok: {
+          flat: true,
+          label: this.$t('yes')
+        },
+        cancel: {
+          flat: true,
+          label: this.$t('no')
+        },
+        persistent: true
+      })
+        .then(api => api.onOk(_ => {
+          this.table.revertSelected()
+        }))
     }
   }
 }

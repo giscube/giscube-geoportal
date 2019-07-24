@@ -14,7 +14,7 @@ export default {
         persistent: true
       })
         .then(api => api.onOk(_ => {
-          row.revert()
+          row.status.edited && row.revert()
         }))
     }
   }
