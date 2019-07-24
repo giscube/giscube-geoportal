@@ -155,7 +155,7 @@ export default {
   computed: {
     allSelected () {
       let some = false
-      let all = true
+      let all = this.rows.length > 0
       this.rows.forEach(row => {
         some = some || row.status.selected
         all = all && row.status.selected
