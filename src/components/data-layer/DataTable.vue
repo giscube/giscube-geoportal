@@ -18,6 +18,9 @@
               >
                 <div
                   class="row no-wrap items-centred full-width all-pointer-events cursor-pointer"
+                  :class="{
+                    disabled: table.editing
+                  }"
                   @click="onOrderBy(field.name)"
                 >
                   {{ field.label || field.name }}
@@ -212,6 +215,10 @@ export default {
       this.update()
     },
     onOrderBy (field) {
+      if (this.table.editing) {
+        return
+      }
+
       if (this.pagination.sortBy === field) {
         if (this.pagination.descending) {
           Vue.delete(this.pagination, 'sortBy')
