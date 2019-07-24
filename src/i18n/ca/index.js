@@ -110,6 +110,8 @@ export default {
       someDeleted: 'Alguns dels elements seleccionats estan marcats per ser eliminats.',
       thisDeleted: 'Aquest element està marcat per ser eliminat.',
       undoConfirm: 'Segur que voleu desfer els canvis d\'aquest element?',
+      undoConfirmN: 'Segur que voleu desfer els canvis de {elements}?',
+      undoElements: 'Desfer {elements}',
 
       quitWhileSaving: 'Guardant, espereu si us plau...',
       quitWithChanges: 'Teniu dades sense guardar'

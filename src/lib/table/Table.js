@@ -249,6 +249,10 @@ export default class Table {
     }
   }
 
+  revertSelected () {
+    this.visibleSelectedList.forEach(row => row.status.edited && row.revert())
+  }
+
   async rowFromDefault (opts) {
     const base = opts.base
     delete opts.base
