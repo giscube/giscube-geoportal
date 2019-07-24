@@ -21,10 +21,15 @@ export function addHistory (state, value) {
 export function query (state, value) {
   this.commit('search/addHistory', value)
   state.query = value
+  state.auto = true
   state.errorFetching = false
   state.fetchingResults = null
   state.finalResults = null
   state.result = null
+}
+
+export function auto (state, value) {
+  state.auto = value
 }
 
 export function fetchingResults (state, value) {

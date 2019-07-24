@@ -57,7 +57,7 @@
           :key="keyword"
           clickable
           square
-          @click="$router.push({name: 'search', params: {q: keyword}})"
+          @click="searchKeyword(keyword)"
         >
           {{ keyword }}
         </q-chip>
@@ -174,6 +174,13 @@ export default {
     }
   },
   methods: {
+    searchKeyword (keyword) {
+      this.$store.dispatch('search/search', { query: keyword, auto: false })
+      this.$router.push({
+        name: 'search',
+        params: { q: keyword }
+      })
+    },
     pin () {},
     zoom () {
       const maxZoom = this.$config.layout.mapMaxFlyZoom

@@ -12,14 +12,18 @@ export function clearResultLayer (context) {
   context.state.resultsLayer.clearLayers()
 }
 
-export function search (context, { query, forceRefresh = false }) {
+export function search (context, { query, forceRefresh = false, auto }) {
+  if (auto !== void 0) {
+    context.commit('auto', auto)
+  }
   if (!forceRefresh && query === context.state.query) {
-    context.dispatch('uniqueSelection')
+    context.state.auto !== false && context.dispatch('uniqueSelection')
     return
   }
 
   context.commit('query', query)
   if (query) {
+    context.commit('auto', auto !== false)
     context.dispatch('fetch')
   }
 }
@@ -84,7 +88,7 @@ export function parseResults (context, { search, data }) {
 
 export function finishResults (context) {
   context.commit('finalResults', context.state.fetchingResults)
-  context.dispatch('uniqueSelection')
+  context.state.auto && context.dispatch('uniqueSelection')
 }
 
 export function uniqueSelection (context) {
