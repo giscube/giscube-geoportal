@@ -265,12 +265,13 @@ export default {
 
 <style lang="stylus">
 .data-table
-  table
-    overflow: auto
-
   div
     white-space: nowrap
     max-width: 100% !important
+
+  tr > :first-child
+    text-align: left
+    width: 0
 
   thead
     th
