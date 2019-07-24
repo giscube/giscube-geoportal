@@ -7,5 +7,6 @@ export default {
   fetchingResults: null,
   finalResults: null,
   result: null,
-  resultsLayer: L.featureGroup()
+  resultsLayer: L.featureGroup(),
+  auto: true
 }
