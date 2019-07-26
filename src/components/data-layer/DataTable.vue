@@ -199,6 +199,14 @@ export default {
       return this.rows.slice(this.range.start, this.range.end)
     }
   },
+  watch: {
+    filters: {
+      handler () {
+        this.update()
+      },
+      deep: true
+    }
+  },
   methods: {
     onColFilterInput (key, value) {
       if (value) {
@@ -212,7 +220,6 @@ export default {
           this.pagination.page = 1
         }
       }
-      this.update()
     },
     onOrderBy (field) {
       if (this.table.editing) {
