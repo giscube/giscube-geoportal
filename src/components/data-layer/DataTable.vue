@@ -87,7 +87,7 @@
               <td><custom-actions :row="row" /></td>
               <td
                 v-for="field in fields"
-                :key="row.internalPk + '__' + field.name"
+                :key="field.name"
               >
                 <data-cell
                   :table="table"
