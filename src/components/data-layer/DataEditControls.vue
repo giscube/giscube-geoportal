@@ -80,7 +80,6 @@ export default {
   },
   data () {
     return {
-      defaultRow: this.table.newRow(),
       editMultiple: false,
       dialogForNew: true,
       selectNews: false
@@ -98,6 +97,9 @@ export default {
     },
     elementsT () {
       return this.$tc('names.element', this.table.visibleSelectedList.length, { count: this.table.visibleSelectedList.length })
+    },
+    defaultRow () {
+      return this.$store.state.dataLayer.defaultRow
     }
   },
   methods: {
