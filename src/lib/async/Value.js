@@ -44,6 +44,10 @@ export default class AsyncValue {
     return isNaN(this._state.usedBy)
   }
 
+  get delay () {
+    return false
+  }
+
   getOrThrow () {
     if (this.done) {
       return this.result

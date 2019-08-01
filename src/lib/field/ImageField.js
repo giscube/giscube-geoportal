@@ -11,15 +11,16 @@ export class AsyncPhoto extends AsyncValue {
   constructor (photo, source, authHeaders) {
     const tokenSource = axios.CancelToken.source()
     const job = {
-      func: giscubeApi.uploadPhoto,
-      args: [
-        source,
-        photo,
-        {
-          cancelToken: tokenSource.token,
-          headers: authHeaders
-        }
-      ],
+      func: () => {
+        return giscubeApi.uploadPhoto(
+          source,
+          this.photo,
+          {
+            cancelToken: tokenSource.token,
+            headers: authHeaders
+          }
+        )
+      },
       cancel (job) {
         tokenSource.cancel()
       }
@@ -27,14 +28,30 @@ export class AsyncPhoto extends AsyncValue {
 
     super(job)
 
-    this.photo = photo
-    this.tempUrl = URL.createObjectURL(photo)
+    this.setPhoto(photo)
+
+    if (photo instanceof Promise) {
+      photo.then(
+        photo => this.setPhoto(photo),
+        _ => {}
+      )
+    }
+
     this.getValue()
       .then(result => {
-        this.tempUrl = null
         URL.revokeObjectURL(this.tempUrl)
+        this.tempUrl = null
       })
       .catch(() => {}) // not our responsibility
+  }
+
+  get delay () {
+    return this.photo instanceof Promise
+  }
+
+  setPhoto (photo) {
+    this.photo = photo
+    this.tempUrl = photo && !(photo instanceof Promise) && URL.createObjectURL(photo)
   }
 }
 
@@ -98,7 +115,7 @@ export default class ImageField extends Field {
         return value.tempUrl
       }
     } else {
-      return value && value.src
+      return value.src
     }
   }
 
@@ -114,7 +131,7 @@ export default class ImageField extends Field {
         return value.tempUrl
       }
     } else {
-      return value && (value.thumbnail || value.src)
+      return value.thumbnail || value.src
     }
   }
 

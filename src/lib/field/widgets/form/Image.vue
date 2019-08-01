@@ -120,12 +120,13 @@ export default {
     upload () {
       const files = this.$refs.files.files
       if (files.length > 0) {
-        normalizeImage(files[0], this.field.size).then(photo => {
-          const newValue = new AsyncPhoto(photo, this.remote.source, this.remote.getConfig().headers)
-          newValue.getValue().catch(this.$except)
-          this.$store.dispatch('dataLayer/uploadPhoto', newValue)
-          this.$emit('input', newValue)
-        })
+        const photoPromise = normalizeImage(files[0], this.field.size)
+        photoPromise.catch(this.$except)
+
+        const newValue = new AsyncPhoto(photoPromise, this.remote.source, this.remote.getConfig().headers)
+        newValue.getValue().catch(this.$except)
+        this.$store.dispatch('dataLayer/uploadPhoto', newValue)
+        this.$emit('input', newValue)
       }
     },
     showImage (src) {

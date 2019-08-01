@@ -24,16 +24,30 @@ export default class AsyncQueue {
   }
 
   async _doRun () {
-    while (this.asyncValues.length > 0) {
-      const asyncValue = this.asyncValues.shift()
-      if (!asyncValue.usable) {
-        continue
-      }
+    let retry
 
-      try {
-        await asyncValue.retrieve()
-      } catch (error) {
-        // Another one should do it
+    while (this.asyncValues.length > 0) {
+      retry = []
+      while (this.asyncValues.length > 0) {
+        const asyncValue = this.asyncValues.shift()
+        if (!asyncValue.usable) {
+          continue
+        }
+        if (asyncValue.delay) {
+          retry.push(asyncValue)
+          continue
+        }
+
+        try {
+          await asyncValue.retrieve()
+        } catch (error) {
+          // Another one should do it
+        }
+      }
+      if (retry.length > 0) {
+        this.asyncValues = retry
+        // allow other async coroutines to kick in
+        await new Promise(resolve => setTimeout(resolve, 0))
       }
     }
 
