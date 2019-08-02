@@ -117,6 +117,10 @@ printing()
       .q-layout__shadow::after
         content: none
 
+  .marker, .marker *
+    -webkit-print-color-adjust: exact !important
+    color-adjust: exact !important
+
 
 actualPrinting()
   for s in tools
