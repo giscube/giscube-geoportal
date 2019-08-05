@@ -111,7 +111,6 @@
       </div><!-- scroller -->
       <table-pagination :value="pagination" @input="onPaginationChange" />
     </q-card>
-    <div class="col full-width"></div>
   </div>
 </template>
 
