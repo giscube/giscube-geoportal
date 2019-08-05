@@ -206,7 +206,10 @@ export default class Table {
     editMultiple = editMultiple && this.info.hasGeom
     try {
       do {
-        const row = await this.rowFromDefault({ base, map })
+        const row = await base.asNew({ map })
+        this.rows.push(row)
+        row.addNew()
+
         if (selectNews) {
           row.status.selected = true
         }
@@ -251,18 +254,6 @@ export default class Table {
 
   revertSelected () {
     this.visibleSelectedList.forEach(row => row.status.edited && row.revert())
-  }
-
-  async rowFromDefault (opts) {
-    const base = opts.base
-    delete opts.base
-
-    const row = await base.asNew(opts)
-    this.rows.push(row)
-    if (this.info.hasGeom) {
-      this.layer.addLayer(row.layer)
-    }
-    return row
   }
 
   select (keys, { added = true } = {}) {
