@@ -82,8 +82,6 @@ export default class Row {
     }
     // updates data to contain the constFields
     this.info.propsPath.setTo(this.data, this.properties)
-
-    this._updateModified()
   }
 
   get geometry () {
@@ -107,6 +105,12 @@ export default class Row {
     this.status.geomEdited = false
 
     this.applyStyle()
+  }
+
+  addNew () {
+    this.status._hasBeenModified = false
+    this._updateModified()
+    this.add()
   }
 
   applyStyle () {}
@@ -205,7 +209,7 @@ export default class Row {
     }
   }
 
-  add (group) {
+  add () {
     // do nothing
   }
 
