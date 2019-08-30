@@ -169,7 +169,9 @@ export default {
     streetview: {
       headerName: 'Street View',
       title: 'Google Street View',
-      help: 'Accedir a la vista de carrer de Google.'
+      help: 'Accedir a la vista de carrer de Google.',
+
+      noDataError: 'En aquesta localització no s\'han pogut trobar dades de l\'Street View.'
     }
   },
   units: {

@@ -167,7 +167,9 @@ export default {
     streetview: {
       headerName: 'Street View',
       title: 'Google Street View',
-      help: 'Open panel with Google Street View.'
+      help: 'Open panel with Google Street View.',
+
+      noDataError: 'Street View data not found for this location.'
     }
   },
   units: {
