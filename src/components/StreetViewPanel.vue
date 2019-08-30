@@ -1,31 +1,43 @@
 <template>
   <div class="panel streetview-panel">
-    <div class="panel-content column">
+    <div class="panel-content column no-wrap">
       <div class="panel-title">{{ t('title') }}</div>
 
       <div>{{ q }}</div>
 
-      <div
-        id="street-view-panel-street-view"
-        ref="streetview"
-        class="street-view-container"
-      ><q-spinner class="q-mr-sm" />{{ t('headerName') }}</div>
+      <div class="col column no-wrap relative-position street-view__container">
+        <div
+          id="street-view-panel-street-view"
+          ref="streetview"
+          class="street-view-container"
+        >
+          <div v-if="!streetViewService">
+            <q-spinner class="q-mr-sm" />{{ t('headerName') }}
+          </div>
+        </div>
+
+        <div v-if="streetViewError" class="absolute-center column no-wrap items-center">
+          <q-icon name="warning" color="grey" size="3em" />
+          <span>{{ streetViewError }}</span>
+        </div>
       </div>
+
+    </div>
   </div>
 </template>
 
 <script>
-import { QSpinner } from 'quasar'
+import { QIcon, QSpinner } from 'quasar'
 import debounce from 'lodash/debounce.js'
 import { mapState } from 'vuex'
 
 import L from '../lib/leaflet'
-import { notify } from '../lib/notifications'
 import gmapsInit from '../lib/gmaps'
 
 export default {
   name: 'StreetViewPanel',
   components: {
+    QIcon,
     QSpinner
   },
   computed: mapState({
@@ -36,7 +48,9 @@ export default {
       q: '',
       panorama: null,
       marker: null,
-      positionChangedEnabled: true
+      positionChangedEnabled: true,
+      streetViewService: null,
+      streetViewError: null
     }
   },
   created () {
@@ -48,6 +62,19 @@ export default {
   },
   watch: {
     'map': 'mapChanged',
+    streetViewError (value) {
+      if (this.panorama) {
+        this.panorama.setVisible(!value)
+      }
+
+      if (this.marker) {
+        if (value) {
+          this.marker.removeFrom(this.map)
+        } else {
+          this.marker.addTo(this.map)
+        }
+      }
+    },
     '$store.state.query': 'queryChanged',
     '$store.state.layout.leftDrawerSize' () {
       this.resizeStreetView()
@@ -127,7 +154,8 @@ export default {
         shadowSize: [50, 64],
         iconAnchor: [20, 35],
         shadowAnchor: [4, 62],
-        popupAnchor: [-3, -76]
+        popupAnchor: [-3, -76],
+        className: 'street-view-marker'
       })
       icon.createIcon = function (oldIcon) {
         let div = (oldIcon && oldIcon.tagName === 'DIV') ? oldIcon : document.createElement('div')
@@ -145,7 +173,6 @@ export default {
       })
       this.marker.addTo(this.map)
       this.marker.on('dragend', this.markerDragEnd)
-      L.DomUtil.addClass(this.marker._icon, 'street-view-marker')
 
       this.panorama = new window.google.maps.StreetViewPanorama(
         document.getElementById('street-view-panel-street-view'), {
@@ -206,15 +233,14 @@ export default {
     },
     processSVData (data, status) {
       if (status === window.google.maps.StreetViewStatus.OK) {
-        this.panorama.setVisible(true)
+        this.streetViewError = null
         this.panorama.setPano(data.location.pano)
         this.panorama.setPov({
           heading: this.getHeading(),
           pitch: 0
         })
       } else {
-        notify('Street View data not found for this location.')
-        this.panorama.setVisible(false)
+        this.streetViewError = this.$t('tools.streetview.noDataError')
       }
     }
   }
@@ -233,7 +259,7 @@ export default {
     flex-grow: 1;
   }
 
-  #street-view-panel-street-view {
+  .street-view__container {
     min-height: 100px;
   }
 
