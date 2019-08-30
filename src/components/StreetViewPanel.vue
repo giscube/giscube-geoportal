@@ -20,6 +20,7 @@ import debounce from 'lodash/debounce.js'
 import { mapState } from 'vuex'
 
 import L from '../lib/leaflet'
+import { notify } from '../lib/notifications'
 import gmapsInit from '../lib/gmaps'
 
 export default {
@@ -205,13 +206,15 @@ export default {
     },
     processSVData (data, status) {
       if (status === window.google.maps.StreetViewStatus.OK) {
+        this.panorama.setVisible(true)
         this.panorama.setPano(data.location.pano)
         this.panorama.setPov({
           heading: this.getHeading(),
           pitch: 0
         })
       } else {
-        this.$except('Street View data not found for this location.')
+        notify('Street View data not found for this location.')
+        this.panorama.setVisible(false)
       }
     }
   }
