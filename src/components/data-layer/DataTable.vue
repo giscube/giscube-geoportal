@@ -1,17 +1,18 @@
 <template>
   <div class="column no-wrap" style="min-height: 175px">
     <q-card class="full-width limit-parent column no-wrap">
-      <q-resize-observer @resize="onResize" debounce="200" />
-      <div
-        ref="scroller"
-        class="col limit-parent scroll"
-        @scroll="onScroll"
+      <q-virtual-scroll
+        type="table"
+        class="col limit-parent"
+        :virtual-scroll-item-size="54"
+        :virtual-scroll-sticky-size-start="60"
+        :virtual-scroll-sticky-size-end="60"
+        :items="rows"
       >
-        <table class="q-table data-table no-scroll">
-          <thead>
+        <template v-slot:before>
+          <thead class="tsticky text-left">
             <tr>
               <th><q-checkbox :value="allSelected" @input="selectAll" /></th>
-              <th>{{ $t('names.actions') | capitalize }}</th>
               <th
                 v-for="field in fields"
                 :key="field.name"
@@ -63,59 +64,44 @@
               </th>
             </tr>
           </thead>
-          <tbody>
-            <tr class="table-spacer">
-              <td
-                :colspan="fields.length + 2"
-                :style="{
-                  height: `${topSpace}px !important`
-                }"
-              >
-                &nbsp;
-              </td>
-            </tr>
-            <tr
-              v-for="row in visibleRows"
-              :key="row.internalPk"
-              :class="{
-                deleted: row.status.deleted,
-                selected: row.status.selected
-              }"
-              @click.stop="select(row, !row.status.selected)"
+        </template>
+
+        <template v-slot:after>
+          <tfoot class="tsticky text-left">
+            <table-pagination :value="pagination" @input="onPaginationChange" />
+          </tfoot>
+        </template>
+
+        <template v-slot="{ item: row, index }">
+          <tr
+            :key="row.internalPk"
+            :class="{
+              deleted: row.status.deleted,
+              selected: row.status.selected
+            }"
+            @click.stop="select(row, !row.status.selected)"
+          >
+            <td><q-checkbox :value="row.status.selected" @input="select(row, $event)" /></td>
+            <td><custom-actions :row="row" /></td>
+            <td
+              v-for="field in fields"
+              :key="row.internalPk + '_____' + field.name"
             >
-              <td><q-checkbox :value="row.status.selected" @input="select(row, $event)" /></td>
-              <td><custom-actions :row="row" /></td>
-              <td
-                v-for="field in fields"
-                :key="field.name"
-              >
-                <data-cell
-                  :table="table"
-                  :row="row"
-                  :field="field"
-                />
-              </td>
-            </tr>
-            <tr class="table-spacer">
-              <td
-                :colspan="fields.length + 2"
-                :style="{
-                  height: `${bottomSpace}px !important`
-                }"
-              >
-                &nbsp;
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div><!-- scroller -->
-      <table-pagination :value="pagination" @input="onPaginationChange" />
+              <data-cell
+                :table="table"
+                :row="row"
+                :field="field"
+              />
+            </td>
+          </tr>
+        </template>
+      </q-virtual-scroll>
     </q-card>
   </div>
 </template>
 
 <script>
-import { QBtn, QCard, QCardSection, QCheckbox, QIcon, QInput, QMenu, QResizeObserver } from 'quasar'
+import { QBtn, QCard, QCardSection, QCheckbox, QIcon, QInput, QMenu, QVirtualScroll } from 'quasar'
 import Vue from 'vue'
 
 import TranslationMixin from './TranslationMixin'
@@ -123,11 +109,6 @@ import TranslationMixin from './TranslationMixin'
 import DataCell from 'src/lib/field/components/DataCell'
 import CustomActions from './CustomActions'
 import TablePagination from './TablePagination'
-
-const diff = 10
-const extra = diff + 2
-
-const rowHeight = 54 // from quasar style (it's hardcoded)
 
 export default {
   mixins: [TranslationMixin],
@@ -142,14 +123,8 @@ export default {
     QIcon,
     QInput,
     QMenu,
-    QResizeObserver,
+    QVirtualScroll,
     TablePagination
-  },
-  data () {
-    return {
-      current: 0,
-      nRows: 20
-    }
   },
   computed: {
     allSelected () {
@@ -161,9 +136,6 @@ export default {
       })
 
       return all || (some && null)
-    },
-    bottomSpace () {
-      return (this.rows.length - this.range.end) * rowHeight
     },
     colFilters () {
       return this.filters.columns
@@ -184,18 +156,6 @@ export default {
     },
     rows () {
       return this.table.rows
-    },
-    range () {
-      return {
-        start: Math.max(0, this.current - extra),
-        end: Math.min(this.rows.length, this.current + this.nRows + extra)
-      }
-    },
-    topSpace () {
-      return this.range.start * rowHeight
-    },
-    visibleRows () {
-      return this.rows.slice(this.range.start, this.range.end)
     }
   },
   watch: {
@@ -243,15 +203,6 @@ export default {
       this.pagination = pagination
       this.update()
     },
-    onResize (size) {
-      this.nRows = size.height / rowHeight
-    },
-    onScroll () {
-      const pos = Math.floor(this.$refs.scroller.scrollTop / rowHeight)
-      if (pos - this.current >= diff || this.current - pos >= diff) {
-        this.current = pos
-      }
-    },
     select (row, value) {
       this.table.selectRows([row], { added: value })
     },
@@ -279,24 +230,24 @@ export default {
     text-align: left
     width: 0
 
-  thead
-    th
-      position: sticky
-      top: 0
-      background-color: white
-      opacity: 1
-      z-index: 1
-
-      &:after
-        content: ''
-        position: absolute
-        left: 0
-        bottom: -1px
-        width: 100%
-        border-bottom: 1px solid rgba(0,0,0,0.12)
-
-      &:first-child, &:last-child
-        border-radius: $generic-border-radius
+  // thead
+  //   th
+  //     position: sticky
+  //     top: 0
+  //     background-color: white
+  //     opacity: 1
+  //     z-index: 1
+  //
+  //     &:after
+  //       content: ''
+  //       position: absolute
+  //       left: 0
+  //       bottom: -1px
+  //       width: 100%
+  //       border-bottom: 1px solid rgba(0,0,0,0.12)
+  //
+  //     &:first-child, &:last-child
+  //       border-radius: $generic-border-radius
 
   tbody
     will-change: contents
@@ -316,4 +267,17 @@ export default {
 
     :not(.table-spacer) td div
       max-height: 48px !important
+
+.tsticky tr > *
+  position sticky
+  opacity 1
+  z-index 1
+  background black
+  color white
+
+thead.tsticky tr:last-child > *
+  top 0
+
+tfoot.tsticky tr:first-child > *
+  bottom 0
 </style>
