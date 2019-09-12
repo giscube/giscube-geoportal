@@ -1,4 +1,5 @@
 import Options from '../lib/options.js'
+import Search from '../lib/search'
 
 // lib.js is used in library mode and also as a base when running the project
 // if running the project modify either development.js or production.js
@@ -92,6 +93,7 @@ export default new Options({
   },
   oauth: {
   },
+  searchEngine: Search,
   searches: [
   ],
   sentry: {

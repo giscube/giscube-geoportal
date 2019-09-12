@@ -1,7 +1,9 @@
 <template>
   <div class="panel search-panel">
 
-    <search-bar :query="q" />
+    <slot name="bar" :q="q">
+      <search-bar :query="q" />
+    </slot>
 
     <div class="panel-content">
       <p v-if="state === STATES.INITIAL">{{ t('instructions') }}</p>

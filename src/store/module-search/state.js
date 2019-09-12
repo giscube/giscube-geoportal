@@ -1,6 +1,7 @@
 import L from 'src/lib/leaflet'
 
 export default {
+  engine: null,
   query: null,
   history: [],
   errorFetching: false,
