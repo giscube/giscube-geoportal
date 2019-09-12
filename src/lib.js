@@ -24,6 +24,7 @@ import store from './store/index.js'
 import config from './config/lib.js'
 import { except as exceptLib } from './lib/except.js'
 import i18n from './i18n/index.js'
+import Search from './lib/search'
 
 const boot = geoportalBoot.setup
 
@@ -53,5 +54,6 @@ export {
   store,
   config,
   exceptLib,
-  i18n
+  i18n,
+  Search
 }

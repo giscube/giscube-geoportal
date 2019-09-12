@@ -1,5 +1,9 @@
 import isEqualWith from 'lodash/isEqualWith.js'
 
+export function noop () {
+  // No operation. Does nothing
+}
+
 export function fromEntries (iterable) {
   // From https://github.com/feross/fromentries/blob/29b52a850bb3a47c390937631c2638edf3443942/index.js (under MIT)
   return [...iterable]

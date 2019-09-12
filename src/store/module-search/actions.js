@@ -1,8 +1,6 @@
-import axios from 'axios'
 import { createGeoJSONLayer } from 'src/lib/geomUtils'
 
 import SearchResultPopup from 'components/SearchResultPopup'
-import { toCoords } from 'components/CoordsPanel'
 
 export function invalidateState (context) {
   context.commit('setInitialState')
@@ -29,65 +27,28 @@ export function search (context, { query, forceRefresh = false, auto }) {
 }
 
 export function fetch (context) {
-  context.commit('fetchingResults', [])
-
-  const q = context.state.query
-
-  // Add coords result
-  if (toCoords(q)) {
-    context.state.fetchingResults.push({
-      origin: 'coordinates',
-      epsg: '4326',
-      coords: q
-    })
-  }
-
   context.dispatch('clearResultLayer')
 
-  // Generate a list of "get" promises
-  const promises = this.$config.searches.map(search => {
-    const config = {
-      params: { q }
-    }
-    if (search.auth) {
-      Object.assign(config, context.rootGetters['auth/config'])
-    }
-
-    return axios.get(search.url, config)
-      .then(response => {
-        context.dispatch('parseResults', { search, data: response.data })
-      })
-      .catch(error => {
-        context.commit('errorFetching', true)
-        this.$except(error)
-      })
-  })
-
-  // When all fetched and parsed
-  Promise.all(promises)
-    .then(() => context.dispatch('finishResults'))
-}
-
-export function parseResults (context, { search, data }) {
-  const results = search.parseData ? search.parseData(data) : data.results
-  if (results === void 0 || results === null) {
-    this.$except('Response without results', { hide: true })
-    return
+  if (!context.state.engine) {
+    const Engine = this.$config.searchEngine
+    context.commit('engine', new Engine(this, context))
   }
 
-  if (search.is_geojson) {
-    results.forEach(result => context.dispatch('showResultLayer', result))
-  }
-  results.forEach(result => {
-    result.origin = search
-  })
+  const search = context.state.engine.search(context.state.query)
+  context.commit('fetchingResults', search.results)
 
-  const fr = context.state.fetchingResults
-  fr.push.apply(fr, results)
+  search
+    .then(results => {
+      context.dispatch('finishResults', results)
+    })
+    .catch(error => {
+      context.commit('errorFetching', true)
+      this.$except(error)
+    })
 }
 
-export function finishResults (context) {
-  context.commit('finalResults', context.state.fetchingResults)
+export function finishResults (context, results) {
+  context.commit('finalResults', results)
   context.state.auto && context.dispatch('uniqueSelection')
 }
 

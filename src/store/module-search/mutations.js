@@ -1,3 +1,7 @@
+export function engine (state, engine) {
+  state.engine = engine
+}
+
 export function setInitialState (state) {
   state.query = null
   state.errorFetching = false
