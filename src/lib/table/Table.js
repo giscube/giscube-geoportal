@@ -32,6 +32,8 @@ export default class Table {
     this.visibleSelectedList = []
     this.changedCount = 0
 
+    this.defaultRow = null
+
     Object.defineProperties(this, {
       map: {
         configurable: true,
@@ -181,6 +183,8 @@ export default class Table {
           this.addTo(this.map)
         }
 
+        this.defaultRow = this.newRow()
+
         return this.info
       })
   }
@@ -201,12 +205,12 @@ export default class Table {
     }
   }
 
-  async makeRows ({ map, base, editMultiple, dialogForNew, selectNews }) {
+  async makeRows ({ map, editMultiple, dialogForNew, selectNews }) {
     this.adding = true
     editMultiple = editMultiple && this.info.hasGeom
     try {
       do {
-        const row = await base.asNew({ map })
+        const row = await this.defaultRow.asNew({ map })
         this.rows.push(row)
         row.addNew()
 

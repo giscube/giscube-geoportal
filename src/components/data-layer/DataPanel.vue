@@ -182,7 +182,6 @@ export default {
     async loadData () {
       try {
         await this.table.fetchInfo()
-        this.$store.commit('dataLayer/resetDefault')
         await this.table.update({ immediate: true })
       } catch (e) {
         this.$except(e)
