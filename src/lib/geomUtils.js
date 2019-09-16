@@ -67,9 +67,34 @@ export function visiblePart (bbox, visibility) {
   }
 }
 
+export function normalizeLatLngBounds (bounds) {
+  const result = [[], []]
+
+  const deltaLat = bounds.getSouth() - bounds.getNorth()
+  if (deltaLat >= 180 || deltaLat <= -180) {
+    result[0].push(-90)
+    result[1].push(90)
+  } else {
+    result[0].push((bounds.getNorth() + 90) % 180 - 90)
+    result[1].push((bounds.getSouth() + 90) % 180 - 90)
+  }
+
+  const deltaLong = bounds.getWest() - bounds.getEast()
+  if (deltaLong >= 360 || deltaLong <= -360) {
+    result[0].push(-180)
+    result[1].push(180)
+  } else {
+    result[0].push((bounds.getWest() + 180) % 360 - 180)
+    result[1].push((bounds.getEast() + 180) % 360 - 180)
+  }
+
+  return L.latLngBounds(result)
+}
+
 export function unprojectBounds (map, bounds) {
   const zoom = map.getZoom()
-  return L.latLngBounds(map.unproject(bounds.min, zoom), map.unproject(bounds.max, zoom))
+  const result = L.latLngBounds(map.unproject(bounds.min, zoom), map.unproject(bounds.max, zoom))
+  return normalizeLatLngBounds(result)
 }
 
 export function visibleMapPart (map, visibility) {
