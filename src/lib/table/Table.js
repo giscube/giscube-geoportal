@@ -357,7 +357,7 @@ export default class Table {
 
     return new Promise((resolve, reject) => {
       if (wms) {
-        this.refLayers.forEach(ref => {
+        this.refLayers && this.refLayers.forEach(ref => {
           ref.refresh && ref.layer.setParams({
             _fu: Date.now() // Force update
           }, false)
