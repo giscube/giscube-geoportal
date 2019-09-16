@@ -99,14 +99,13 @@ export default {
       return this.$tc('names.element', this.table.visibleSelectedList.length, { count: this.table.visibleSelectedList.length })
     },
     defaultRow () {
-      return this.$store.state.dataLayer.defaultRow
+      return this.table.defaultRow
     }
   },
   methods: {
     newRow () {
       this.table.makeRows({
         map: this.map,
-        base: this.defaultRow,
         editMultiple: this.editMultiple,
         dialogForNew: this.dialogForNew,
         selectNews: this.selectNews

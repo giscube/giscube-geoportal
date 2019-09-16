@@ -1,7 +1,6 @@
 import Vue from 'vue'
 
 export function setInitialState (state) {
-  state.defaultRow = null
   state.table = null
   state.sources = null
 }
@@ -15,9 +14,4 @@ export function table (state, table) {
     state.table.remote.cancelRequests()
   }
   state.table = table
-  state.defaultRow = null
-}
-
-export function resetDefault (state) {
-  state.defaultRow = state.table.newRow()
 }
