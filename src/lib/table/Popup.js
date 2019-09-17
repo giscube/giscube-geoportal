@@ -39,6 +39,14 @@ export default class Popup {
     })
   }
 
+  getLatLng () {
+    return this.container && this.container.getLatLng()
+  }
+
+  isOpen () {
+    return (!!this.container) && this.container.isOpen()
+  }
+
   open (latlng, row) {
     if (this.current) {
       this.current.closePopup()
