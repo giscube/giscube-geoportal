@@ -73,10 +73,16 @@ Object.assign(except, {
 
   setSentry (Sentry) {
     this._sentry = function (error) {
-      if (error instanceof Error) {
-        Sentry.captureException(error)
-      } else {
-        Sentry.captureMessage(error.toString())
+      try {
+        if (error instanceof Error) {
+          Sentry.captureException(error)
+        } else {
+          Sentry.captureMessage(error.toString())
+        }
+      } catch (e) {
+        console.error('Error while trying to report the error')
+        console.error(e)
+        notifyError('Error while trying to report the error')
       }
     }
   },
