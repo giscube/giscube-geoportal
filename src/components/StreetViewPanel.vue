@@ -108,11 +108,20 @@ export default {
     getHeading () {
       let position = this.panorama.getPosition()
       let latlng = { lat: position.lat(), lng: position.lng() }
+      let towards
       if (this.$store.state.query) {
-        let p1 = latlng
-        let p2 = this.$store.state.query.latlng
+        towards = this.$store.state.query.latlng
+      } else {
+        const table = this.$store.state.dataLayer.table
+        const popup = table && table.popup
+        if (popup && popup.isOpen()) {
+          towards = popup.getLatLng()
+        }
+      }
+
+      if (towards !== undefined) {
         // Adapted from: https://gist.github.com/conorbuck/2606166
-        return Math.atan2(p2.lng - p1.lng, p2.lat - p1.lat) * 180 / Math.PI
+        return Math.atan2(towards.lng - latlng.lng, towards.lat - latlng.lat) * 180 / Math.PI
       } else {
         return 0
       }
@@ -212,14 +221,10 @@ export default {
       let position = this.panorama.getPosition()
       let latlng = { lat: position.lat(), lng: position.lng() }
       this.marker.setLatLng(latlng)
-      const povOptions = {
-        pitch: 0,
-        heading: 0
-      }
-      if (this.$store.state.query) {
-        povOptions.heading = this.getHeading()
-      }
-      this.panorama.setPov(povOptions)
+      this.panorama.setPov({
+        heading: this.getHeading(),
+        pitch: 0
+      })
     },
     queryChanged () {
       if (this.$store.state.query) {
