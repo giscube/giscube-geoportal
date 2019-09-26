@@ -28,6 +28,10 @@ import Search from './lib/search'
 
 const boot = geoportalBoot.setup
 
+// Importacions generiques
+import lib from './lib/'
+import components from './components'
+
 export {
   AppGeoportal,
   AppHeader,
@@ -55,5 +59,7 @@ export {
   config,
   exceptLib,
   i18n,
-  Search
+  Search,
+  components,
+  lib
 }
