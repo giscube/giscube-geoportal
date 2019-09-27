@@ -18,9 +18,9 @@ export default {
   },
   computed: {
     isDescriptionGeoJSON () {
-      return this.layerOptions ? this.layerOptions.layerDescriptor.type.toLowerCase() === 'geojson' : false
+      const type = this.layerOptions && this.layerOptions.layerDescriptor && this.layerOptions.layerDescriptor.type
+      return this.layerOptions ? type && type.toLowerCase() === 'geojson' : false
     },
-
     address () {
       return this.properties.address
     },
