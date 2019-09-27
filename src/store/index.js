@@ -6,13 +6,26 @@ import dataLayer from './module-data-layer'
 import layout from './module-layout'
 import map from './module-map'
 import search from './module-search'
+import root from './module-root'
 
 Vue.use(Vuex)
 
-/*
- * If not building with SSR mode, you can
- * directly export the Store instantiation
- */
+export const modules = {
+  auth,
+  dataLayer,
+  layout,
+  map,
+  search,
+  root
+}
+
+export function registerModules (store) {
+  for (let k in modules) {
+    if (store.state[k] === undefined) {
+      store.registerModule(k, modules[k])
+    }
+  }
+}
 
 export default function (/* { ssrContext } */) {
   return new Vuex.Store({
@@ -21,19 +34,8 @@ export default function (/* { ssrContext } */) {
       dataLayer,
       layout,
       map,
-      search
-    },
-    state: {
-      currentTool: null,
-      query: null
-    },
-    mutations: {
-      setCurrentTool: (state, value) => {
-        state.currentTool = value
-      },
-      setQuery: (state, query) => {
-        state.query = query
-      }
+      search,
+      root
     }
   })
 }
