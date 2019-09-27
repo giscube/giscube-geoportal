@@ -10,7 +10,7 @@ import root from './module-root'
 
 Vue.use(Vuex)
 
-export const modules = {
+const modules = {
   auth,
   dataLayer,
   layout,
@@ -19,7 +19,7 @@ export const modules = {
   root
 }
 
-export function registerModules (store) {
+function registerModules (store) {
   for (let k in modules) {
     if (store.state[k] === undefined) {
       store.registerModule(k, modules[k])
@@ -27,7 +27,7 @@ export function registerModules (store) {
   }
 }
 
-export default function (/* { ssrContext } */) {
+function createStore (/* { ssrContext } */) {
   return new Vuex.Store({
     modules: {
       auth,
@@ -39,3 +39,8 @@ export default function (/* { ssrContext } */) {
     }
   })
 }
+
+createStore.modules = modules
+createStore.registerModules = registerModules
+
+export default createStore
