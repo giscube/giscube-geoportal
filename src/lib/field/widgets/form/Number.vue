@@ -3,7 +3,7 @@
     type="number"
     :readonly="readonly"
     :disable="disable"
-    :label="field.label"
+    :label="field.label | capitalize"
     :clearable="field.null"
     :rules="rules"
     lazy-rules

@@ -10,7 +10,7 @@
     <q-field
       :readonly="readonly"
       :disable="disable"
-      :label="field.label"
+      :label="field.label | capitalize"
       :stack-label="!!filename"
       :hint="hint"
     >

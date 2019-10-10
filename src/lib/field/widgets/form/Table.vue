@@ -3,7 +3,7 @@
     class="full-width q-mb-sm"
     icon-right="keyboard_arrow_right"
     :disabled="readonly || disable || isVoid || isMulti"
-    :label="field.label"
+    :label="field.label | capitalize"
     @click="openTableDialog"
   />
 </template>
