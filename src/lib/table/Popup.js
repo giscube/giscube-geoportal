@@ -28,6 +28,7 @@ export default class Popup {
     // Define internals
     // We really, really do no want Vue getting in there
     const internal = {
+      $root: root,
       content,
       container
     }
@@ -60,6 +61,7 @@ export default class Popup {
         this.container.update()
         this.current.bindPopup(this.container)
         this.current.openPopup(latlng)
+        this.$root.$store.dispatch('streetView/setTowards', latlng)
       })
     }
   }
