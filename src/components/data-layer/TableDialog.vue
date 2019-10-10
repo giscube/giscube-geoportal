@@ -5,9 +5,10 @@
     persistent
     no-route-dismiss
     @hide="$emit('hide')"
+    @show="onShow"
   >
     <q-card>
-      <q-card-section class="q-pa-lg column no-wrap data-table-dialog-contents">
+      <q-card-section class="q-pa-lg column no-wrap data-table-dialog-contents" v-show="visible">
         <div class="col-auto row items-center justify-end space-items-md">
           <status-controls
             v-if="table && table.info"
@@ -70,6 +71,11 @@ export default {
     QCardSection,
     QDialog
   },
+  data () {
+    return {
+      visible: false
+    }
+  },
   async mounted () {
     this.dialogHandlers.close = this.close.bind(this)
     await this.$nextTick()
@@ -101,6 +107,9 @@ export default {
         this.hide()
       }
       return closable
+    },
+    onShow () {
+      this.visible = true
     },
 
     show () {
