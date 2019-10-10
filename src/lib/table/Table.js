@@ -337,7 +337,8 @@ export default class Table {
       const api = await this.$root.$store.dispatch('layout/createDialog', {
         component: DBFormDialog,
         table: this,
-        rows
+        rows,
+        readonly: !this.editing
       })
       api.onDismiss(() => resolve())
     })

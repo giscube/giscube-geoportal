@@ -5,8 +5,8 @@
       flat
       dense
       size="sm"
-      icon="edit"
-      :disabled="!editing || saving"
+      :icon="editing ? 'edit' : 'description'"
+      :disabled="saving"
       @click="row.uiEdit()"
     />
     <q-btn

@@ -11,7 +11,7 @@
       <q-card-section class="q-pa-lg column no-wrap data-table-dialog-contents" v-show="visible">
         <div class="col-auto row items-center justify-end space-items-md">
           <status-controls
-            v-if="table && table.info"
+            v-if="table && table.info && !disable && !readonly"
             :table="table"
           />
           <q-btn
@@ -59,6 +59,14 @@ export default {
     dialogHandlers: {
       type: Object,
       default: () => {}
+    },
+    disable: {
+      type: Boolean,
+      default: false
+    },
+    readonly: {
+      type: Boolean,
+      default: false
     }
   },
   components: {

@@ -2,7 +2,7 @@
   <q-btn
     class="full-width q-mb-sm"
     icon-right="keyboard_arrow_right"
-    :disabled="readonly || disable || isVoid || isMulti"
+    :disabled="isVoid || isMulti"
     :label="field.label | capitalize"
     @click="openTableDialog"
   />
@@ -42,7 +42,9 @@ export default {
       this.$store.dispatch('layout/createDialog', {
         component: TableDialog,
         root,
-        table: new Table(source, layer, root, constFields)
+        table: new Table(source, layer, root, constFields),
+        readonly: this.readonly,
+        disable: this.disable
       })
     }
   }
