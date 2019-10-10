@@ -12,8 +12,8 @@
       lazy-rules
       bottom-slots
       @input="onClear"
-      @focus.native="$refs.dialog.show()"
-      @click.native="$refs.dialog.show()"
+      @focus.native="focus"
+      @click.native="focus"
     >
       <template v-slot:control>
         <div class="self-center full-width no-outline" tabindex="0">{{ v }}</div>
@@ -151,6 +151,11 @@ export default {
     }
   },
   methods: {
+    focus () {
+      if (!this.readonly && !this.disabled) {
+        this.$refs.dialog.show()
+      }
+    },
     select (row) {
       this.$emit('input', row[0])
 
