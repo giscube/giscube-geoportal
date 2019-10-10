@@ -5,8 +5,11 @@
       :disable="disable"
       :label="field.label | capitalize"
       :stack-label="valid(current) || showDialog"
+      :value="current"
       :clearable="field.null"
       :hint="hint"
+      :rules="rules"
+      lazy-rules
       bottom-slots
       @input="onClear"
       @focus.native="$refs.dialog.show()"
@@ -85,8 +88,11 @@ import { QBtn, QCard, QCardSection, QDialog, QField, QIcon, QInput, QSpace, QTab
 
 import MultiResult from '../../../MultiResult.js'
 
+import ValidateMixin from '../mixins/ValidateMixin'
+
 export default {
   props: ['value', 'field', 'readonly', 'disable'],
+  mixins: [ValidateMixin],
   components: {
     QBtn,
     QCard,
