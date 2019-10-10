@@ -37,6 +37,8 @@ function setup (msgs) {
     }
 
     Vue.filter('capitalize', capitalize)
+
+    Vue.prototype.$filter = filter => Vue.filter(filter)
   }
 }
 

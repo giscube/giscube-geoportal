@@ -32,6 +32,10 @@ function getFieldClass (field, fieldInfo) {
   return field.pk ? FIELDS.pk : FIELDS[fieldInfo.widget] || FIELDS.default
 }
 
+function nameToLabel (name) {
+  return name.replace('_', ' ')
+}
+
 function makeField ({ layerInfo, fieldInfo, constFields, virtual = false } = {}) {
   if (layerInfo.error) {
     return layerInfo.error
@@ -44,7 +48,7 @@ function makeField ({ layerInfo, fieldInfo, constFields, virtual = false } = {})
     constant,
     null: fieldInfo.null,
     name: fieldInfo.name,
-    label: fieldInfo.label || fieldInfo.name,
+    label: fieldInfo.label || nameToLabel(fieldInfo.name),
     readonly: fieldInfo.readonly || constant
   }
 

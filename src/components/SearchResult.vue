@@ -20,7 +20,6 @@
 </template>
 
 <script>
-import Vue from 'vue'
 import { QIcon } from 'quasar'
 
 export default {
@@ -34,7 +33,7 @@ export default {
   computed: {
     title () {
       if (this.result.coords) {
-        return Vue.filter('capitalize')(this.$t('names.coords'))
+        return this.$filter('capitalize')(this.$t('names.coords'))
       }
       return this.result.title
     },

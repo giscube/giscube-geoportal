@@ -23,7 +23,7 @@
                   }"
                   @click="onOrderBy(field.name)"
                 >
-                  {{ field.label || field.name }}
+                  {{ field.label | capitalize }}
                   <q-btn
                     flat
                     dense
@@ -38,7 +38,7 @@
                           <q-input
                             autofocus
                             :readonly="table.editing"
-                            :label="t('colFilter', {label: (field.label || field.name)})"
+                            :label="t('colFilter', { label: $filter('capitalize')(field.label) })"
                             :value="colFilters[field.name] || ''"
                             @input="onColFilterInput(field.name, $event)"
                           >

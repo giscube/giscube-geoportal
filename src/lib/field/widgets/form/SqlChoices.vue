@@ -3,7 +3,7 @@
     <q-field
       :readonly="readonly"
       :disable="disable"
-      :label="field.label"
+      :label="field.label | capitalize"
       :stack-label="valid(current) || showDialog"
       :clearable="field.null"
       :hint="hint"
