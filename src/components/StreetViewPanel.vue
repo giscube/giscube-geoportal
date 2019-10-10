@@ -41,7 +41,8 @@ export default {
     QSpinner
   },
   computed: mapState({
-    map: state => state.map.mapObject
+    map: state => state.map.mapObject,
+    towards: state => state.streetView.towards
   }),
   data () {
     return {
@@ -75,6 +76,7 @@ export default {
         }
       }
     },
+    'towards': 'towardsChanged',
     '$store.state.query': 'queryChanged',
     '$store.state.layout.leftDrawerSize' () {
       this.resizeStreetView()
@@ -108,20 +110,9 @@ export default {
     getHeading () {
       let position = this.panorama.getPosition()
       let latlng = { lat: position.lat(), lng: position.lng() }
-      let towards
-      if (this.$store.state.query) {
-        towards = this.$store.state.query.latlng
-      } else {
-        const table = this.$store.state.dataLayer.table
-        const popup = table && table.popup
-        if (popup && popup.isOpen()) {
-          towards = popup.getLatLng()
-        }
-      }
-
-      if (towards !== undefined) {
+      if (this.towards !== null) {
         // Adapted from: https://gist.github.com/conorbuck/2606166
-        return Math.atan2(towards.lng - latlng.lng, towards.lat - latlng.lat) * 180 / Math.PI
+        return Math.atan2(this.towards.lng - latlng.lng, this.towards.lat - latlng.lat) * 180 / Math.PI
       } else {
         return 0
       }
@@ -227,11 +218,13 @@ export default {
       })
     },
     queryChanged () {
-      if (this.$store.state.query) {
-        let latlng = this.$store.state.query.latlng
-
+      const query = this.$store.state.query
+      this.$store.dispatch('streetView/setTowards', query && query.latlng)
+    },
+    towardsChanged (value) {
+      if (value) {
         this.streetViewService.getPanorama({
-          location: { lat: latlng.lat, lng: latlng.lng },
+          location: value,
           radius: 50
         }, this.processSVData)
       }
