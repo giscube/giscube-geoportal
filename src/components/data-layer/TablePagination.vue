@@ -18,7 +18,7 @@
         />
       </div>
       <div class="row no-wrap items-centred">
-        {{ $q.lang.table.pagination(first, vLast, value.rowsNumber) }}
+        {{ $q.lang.table.pagination(first, last, value.rowsNumber) }}
         <q-btn
           flat
           dense
@@ -68,7 +68,7 @@ export default {
       return pageSizes
     },
     first () {
-      return (this.value.page - 1) * this.value.rowsPerPage
+      return (this.value.page - 1) * this.value.rowsPerPage + 1
     },
     vLast () {
       return this.value.page * this.value.rowsPerPage - 1
