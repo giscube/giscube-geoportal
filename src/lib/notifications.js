@@ -49,8 +49,12 @@ export function notifyHttpError (error, details = true) {
     let message = `Error ${error.response.status} (${error.response.statusText})`
     if (details) {
       let m = error.response.data
-      if (typeof m === 'object') {
-        m = m.detail
+      while (typeof m === 'object') {
+        if (m.detail !== void 0) {
+          m = m.detail
+        } else {
+          m = JSON.stringify(m)
+        }
       }
 
       const isHTML = /^\s*<(?:!DOCTYPE|html)/i.test(m)
