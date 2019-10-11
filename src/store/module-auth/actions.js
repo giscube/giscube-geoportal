@@ -52,9 +52,24 @@ function localStorageSave (key, value) {
 }
 
 export function logout (context) {
-  context.commit('setAccessToken', null)
-  context.commit('setUsername', null)
-  context.dispatch('saveState')
+  const apiUrl = this.$config.oauth.revokeToken
+  const requestConfig = {
+    timeout: 10000
+  }
+  const data = new FormData()
+  data.set('client_id', this.$config.oauth.client_id)
+  data.set('token', context.state.accessToken)
+
+  return new Promise((resolve, reject) => {
+    axios.post(apiUrl, data, requestConfig)
+      .then(_ => {
+        context.commit('setAccessToken', null)
+        context.commit('setUsername', null)
+        context.dispatch('saveState')
+        resolve()
+      })
+      .catch(reject)
+  })
 }
 
 export function observeAuth (context, { seconds }) {
