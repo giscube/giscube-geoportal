@@ -42,9 +42,7 @@ export default {
       this.$store.dispatch('layout/createDialog', {
         component: TableDialog,
         root,
-        table: new Table(source, layer, root, constFields),
-        readonly: this.readonly,
-        disable: this.disable
+        table: new Table(source, layer, root, constFields)
       })
     }
   }
