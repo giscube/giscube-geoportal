@@ -2,7 +2,7 @@
   <q-dialog
     ref="dialog"
     type="propt"
-    persistent
+    :persistent="!disable && !readonly"
     no-route-dismiss
     content-class="data-form"
     @hide="$emit('hide')"
