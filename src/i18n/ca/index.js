@@ -164,7 +164,9 @@ export default {
       help: 'Comparteixi el mapa actual amb les geometries que hagi dibuixat.',
 
       message: '@:names.message',
-      options: '@:names.options'
+      options: '@:names.options',
+      openMessage: 'Obrir @:names.message',
+      markerAtCenter: 'Marcador al centre'
     },
     streetview: {
       headerName: 'Street View',
