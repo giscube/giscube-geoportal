@@ -162,7 +162,9 @@ export default {
       help: 'Share map with the drawn geometries.',
 
       message: '@:names.message',
-      options: '@:names.options'
+      options: '@:names.options',
+      openMessage: 'Open @:names.message',
+      markerAtCenter: 'Marker at the center'
     },
     streetview: {
       headerName: 'Street View',

@@ -15,12 +15,12 @@
         class="q-mt-sm"
       >
         <q-toggle
-          label="Open message"
+          :label="t('openMessage')"
           :value="!!options.om"
           @input="setFlag(options, 'om', $event)"
         />
         <q-toggle
-          label="Marker at the center"
+          :label="t('markerAtCenter')"
           :value="!!options.mc"
           @input="setFlag(options, 'mc', $event)"
         />
