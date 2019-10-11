@@ -5,6 +5,7 @@
         <layers-list
           v-model="layersListOpen"
           :disable="editing"
+          @close="closeTable"
         />
         <q-space />
         <status-controls v-if="table && table.info" :table="table" />
@@ -189,6 +190,10 @@ export default {
     },
     newTable (source, layer) {
       return new Table(source, layer, this.$root)
+    },
+    closeTable () {
+      this.$store.commit('dataLayer/table', null)
+      this.$router.push({ name: 'data', params: {} })
     }
   }
 }

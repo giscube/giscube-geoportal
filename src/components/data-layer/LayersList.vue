@@ -20,6 +20,13 @@
         <q-item-section side v-if="value">
           <q-item-label>
             <q-btn
+              v-show="table"
+              icon="close"
+              flat
+              dense
+              @click.stop="$emit('close')"
+            />
+            <q-btn
               icon="refresh"
               flat
               dense
@@ -97,14 +104,16 @@ export default {
     sources () {
       return this.$store.getters['dataLayer/sources']
     },
+    table () {
+      return this.$store.state.dataLayer.table
+    },
     mainLabel () {
-      const table = this.$store.state.dataLayer.table
-      if (table) {
+      if (this.table) {
         let base = ''
         if (this.sources.length > 1) {
-          base = `${table.remote.source.name} > `
+          base = `${this.table.remote.source.name} > `
         }
-        return base + (table.remote.layer.title || table.remote.layer.name)
+        return base + (this.table.remote.layer.title || this.table.remote.layer.name)
       } else {
         return this.t('title')
       }
