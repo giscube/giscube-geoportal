@@ -2,7 +2,7 @@
   <q-btn
     class="full-width q-mb-sm"
     icon-right="keyboard_arrow_right"
-    :disabled="isVoid || isMulti"
+    :disable="isVoid || isMulti"
     :label="field.label | capitalize"
     @click="openTableDialog"
   />
