@@ -41,6 +41,8 @@ export default {
   async mounted () {
     await this.$nextTick()
 
+    this.$store.dispatch('map/addDefaultLayers')
+
     if (this.automaticVersioning()) {
       this.checkNewVersion()
     }
