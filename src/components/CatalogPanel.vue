@@ -14,15 +14,26 @@
           >
             <q-expansion-item v-for="subcategory in category.subcategories"
               :key="subcategory.id"
-              @show="subcategoryChange(subcategory)"
+              @show="onShowSubcategory(subcategory)"
+              @before-hide="onHideSubcategory(subcategory)"
               header-class="subcategory"
             >
               <template v-slot:header>
                 <q-item-section>
                   {{ subcategory.name }}
                 </q-item-section>
-                <q-item-section side>
+                <q-item-section side v-show="subcategoriesOpen[subcategory.id]">
                   <q-spinner v-if="subcategory.loading" />
+                  <q-btn
+                    flat
+                    dense
+                    size="0.75em"
+                    style="color: initial"
+                    icon="layers"
+                    :label="$t('actions.addToMap') | capitalize"
+                    :disable="subcategory.loading"
+                    @click.stop="addAll(subcategory)"
+                  />
                 </q-item-section>
               </template>
 
@@ -50,14 +61,16 @@
 
 <script>
 import axios from 'axios'
-import { QExpansionItem, QIcon, QItemSection, QList, QSpinner } from 'quasar'
+import { QBtn, QExpansionItem, QIcon, QItemSection, QList, QSpinner } from 'quasar'
 import Vue from 'vue'
 
-import CatalogResult from './CatalogResult.vue'
+import CatalogResult from 'src/lib/CatalogResult'
+import CatalogResultComponent from './CatalogResult.vue'
 
 export default {
   components: {
-    CatalogResult,
+    CatalogResult: CatalogResultComponent,
+    QBtn,
     QExpansionItem,
     QIcon,
     QItemSection,
@@ -68,6 +81,7 @@ export default {
     return {
       loading: false,
       q: '',
+      subcategoriesOpen: {},
       categories: []
     }
   },
@@ -84,6 +98,14 @@ export default {
     next()
   },
   methods: {
+    addAll (subcategory) {
+      subcategory.results
+        .filter(result => result.isLayer)
+        .forEach(result => {
+          const layer = result.toLayer(this.$root)
+          this.$store.dispatch('map/addLayer', layer)
+        })
+    },
     checkCategories () {
       this.loading = true
       const catalog = this.$config.catalog
@@ -122,7 +144,8 @@ export default {
       axios.get(url, config)
         .then(response => {
           Vue.delete(category, 'loading')
-          Vue.set(category, 'results', response.data.results)
+          const results = response.data.results.map(CatalogResult.create)
+          Vue.set(category, 'results', results)
         })
         .catch(error => {
           Vue.delete(category, 'loading')
@@ -134,6 +157,13 @@ export default {
         Vue.set(category, 'loading', true)
         this.getSubcategoriesResults(category)
       }
+    },
+    onShowSubcategory (subcategory) {
+      this.subcategoryChange(subcategory)
+      this.$set(this.subcategoriesOpen, subcategory.id, true)
+    },
+    onHideSubcategory (subcategory) {
+      this.$set(this.subcategoriesOpen, subcategory.id, false)
     },
     t (key) {
       return this.$t('tools.catalog.' + key)
