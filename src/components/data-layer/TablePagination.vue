@@ -67,11 +67,14 @@ export default {
     options () {
       return pageSizes
     },
-    first () {
+    preFirst () {
       return (this.value.page - 1) * this.value.rowsPerPage + 1
     },
+    first () {
+      return Math.min(this.value.rowsNumber, this.preFirst)
+    },
     vLast () {
-      return this.value.page * this.value.rowsPerPage - 1
+      return this.value.page * this.value.rowsPerPage
     },
     last () {
       return Math.min(this.value.rowsNumber, this.vLast)
