@@ -11,19 +11,18 @@
         :value="row.status.selected"
         @input="select"
       />
-      <q-btn flat
-        v-show="editing"
-        icon="edit"
-        :disable="saving"
+      <q-btn flat dense
+        :icon="editing ? 'edit' : 'description'"
+        :disabled="saving"
         @click="edit"
       />
-      <q-btn flat
+      <q-btn flat dense
         v-show="editing && row.status.edited"
         icon="undo"
         :disable="saving"
         @click="undoRow(row)"
       />
-      <q-btn flat
+      <q-btn flat dense
         v-show="editing"
         icon="delete"
         :disable="saving"
