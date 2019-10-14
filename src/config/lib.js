@@ -42,6 +42,7 @@ export default new Options({
   },
   catalog: {
   },
+  defaultLayers: [],
   editsources: [
   ],
   except: {

@@ -1,7 +1,12 @@
+import { defaultsDeep } from 'lodash'
+
 import except from '../../lib/except'
 import { createExternalLayer, createLayer } from '../../lib/geomUtils'
+import validate from '../../lib/validate'
 
 import FeaturePopup from '../../components/FeaturePopup'
+
+import { LAYER_TEMPLATE, LAYER_TEMPLATE_DEFAULTS } from './constants'
 
 export function invalidateOffset (context) {
   const padding = context.rootGetters['layout/hiddenMap']
@@ -56,4 +61,18 @@ export function addLayer (context, { layerDescriptor, title, options, metaOption
 
 export function addSharedMarker (context, marker) {
   context.state.shared.addLayer(marker)
+}
+
+export function addDefaultLayers (context) {
+  const layers = this.$config.defaultLayers
+  if (!layers || layers.length <= 0) {
+    return
+  }
+  layers.forEach(layer => {
+    setTimeout(() => {
+      const l = defaultsDeep(layer, LAYER_TEMPLATE_DEFAULTS)
+      validate(l, LAYER_TEMPLATE)
+      context.dispatch('addLayer', layer)
+    }, 0)
+  })
 }
