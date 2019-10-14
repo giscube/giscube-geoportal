@@ -13,7 +13,7 @@
       />
       <q-btn flat dense
         :icon="editing ? 'edit' : 'description'"
-        :disabled="saving"
+        :disable="saving"
         @click="edit"
       />
       <q-btn flat dense

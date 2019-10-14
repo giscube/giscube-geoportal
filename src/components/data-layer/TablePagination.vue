@@ -23,7 +23,7 @@
           flat
           dense
           round
-          :disabled="!hasPrev"
+          :disable="!hasPrev"
           :icon="$q.iconSet.table.prevPage"
           @click="$emit('input', {
             ...value,
@@ -34,7 +34,7 @@
           flat
           dense
           round
-          :disabled="!hasNext"
+          :disable="!hasNext"
           :icon="$q.iconSet.table.nextPage"
           @click="$emit('input', {
             ...value,
