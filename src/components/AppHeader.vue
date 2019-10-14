@@ -135,24 +135,33 @@ export default {
   color: #0a1924;
   font-family: 'Lato', sans-serif;
 }
-a.giscube-header-brand {
-  padding: 10px 20px 10px 0px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-a.giscube-header-brand img {
-  height: 40px;
-  margin-right: 6px;
-  vertical-align: top
-}
-a.giscube-header-brand span {
-  font-weight: 300;
+
+.giscube-header-brand {
   font-size: 20px;
-  display: inline-block;
-  line-height: 1em;
-  margin-top: 9px;
+  font-weight: 300;
+  white-space: nowrap;
+
+  height: 2em;
+  margin: 0.5em 0;
+  padding-right: 1em;
+  overflow: hidden;
+
+  display: inline-flex;
+  flex-flow: row wrap;
 }
+.giscube-header-brand > * + * { /* Lobotomized owl */
+  margin-left: 1em;
+}
+.giscube-header-brand > img {
+  display: block;
+  height: 2em;
+}
+.giscube-header-brand > span {
+  display: inline-block;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
 .giscube-toolbar .q-btn {
   font-weight: 300;
   padding: 6px 16px;
