@@ -19,30 +19,15 @@ export default {
   components: {
     QIcon
   },
-  data () {
-    return {}
-  },
-  computed: {
-    isResultClickable () {
-      return this.result.geojson || (this.result.children && this.result.children.length > 0)
-    }
-  },
   methods: {
     viewResult () {
-      if (!this.isResultClickable) {
-        return
+      const layer = this.result.toLayer(this.$root)
+      if (layer) {
+        this.$store.dispatch('map/addLayer', layer)
       }
-
-      const layerDescriptor = this.result.children[0]
-      const title = this.result.title
-      const options = this.result.options || {}
-      const metaOptions = {
-        root: this.$root
-      }
-      this.$store.dispatch('map/addLayer', { layerDescriptor, title, options, metaOptions, auth: this.result.private })
     },
     viewResultMain () {
-      if (this.isResultClickable) {
+      if (this.result.isLayer) {
         this.$store.commit('search/result', this.result)
         this.$router.push({ name: 'place', params: { q: this.result.title } })
       }
