@@ -111,9 +111,9 @@ export default {
       if (this.table) {
         let base = ''
         if (this.sources.length > 1) {
-          base = `${this.table.remote.source.name} > `
+          base = `${this.table.remote.source.title} > `
         }
-        return base + (this.table.remote.layer.title || this.table.remote.layer.name)
+        return base + (this.table.remote.layer.title)
       } else {
         return this.t('title')
       }

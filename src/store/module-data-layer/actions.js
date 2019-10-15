@@ -30,6 +30,15 @@ export function refreshSources (context) {
       .then(results => {
         const sources = results
           .filter(result => result !== undefined)
+          .map(source => {
+            source.name = '' + source.name
+            if (!source.title) {
+              source.title = source.name
+            } else {
+              source.title = '' + source.title
+            }
+            return source
+          })
           .sort((a, b) => a.index < b.index)
 
         context.commit('sources', sources)
