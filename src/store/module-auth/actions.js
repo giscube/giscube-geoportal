@@ -53,6 +53,9 @@ function localStorageSave (key, value) {
 
 export function logout (context) {
   const apiUrl = this.$config.oauth.revokeToken
+  if (!apiUrl) {
+    throw new Error('revokeToken not defined')
+  }
   const requestConfig = {
     timeout: 10000
   }
