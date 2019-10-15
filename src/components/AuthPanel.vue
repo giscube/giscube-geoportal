@@ -197,7 +197,7 @@ export default {
       }, {})
     },
     logout () {
-      this.$store.dispatch('auth/logout')
+      this.$store.dispatch('auth/logout').catch(this.$except)
     },
     observeAuth () {
       this.$store.dispatch('auth/observeAuth', { seconds: 120 })
