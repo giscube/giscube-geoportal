@@ -113,7 +113,7 @@ export default {
         if (this.sources.length > 1) {
           base = `${this.table.remote.source.name} > `
         }
-        return base + (this.table.remote.layer.title || this.table.remote.layer.name)
+        return base + (this.table.remote.layer.title)
       } else {
         return this.t('title')
       }
