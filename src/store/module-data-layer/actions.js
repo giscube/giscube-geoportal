@@ -19,6 +19,16 @@ export function refreshSources (context) {
       .then(response => {
         const s = clone(source)
         s.layers = response.data
+          .map(layer => {
+            layer.name = '' + layer.name
+            if (!layer.title) {
+              layer.title = layer.name.replace(/[-_]/g, ' ')
+            } else {
+              layer.title = '' + layer.title
+            }
+            return layer
+          })
+          .sort((a, b) => a.title.localeCompare(b.title))
         s.index = index
         return s
       })
