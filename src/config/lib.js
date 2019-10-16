@@ -45,6 +45,14 @@ export default new Options({
   defaultLayers: [],
   editsources: [
   ],
+  epsgs: [
+    {
+      label: 'GPS',
+      code: 'EPSG:4326',
+      def: '+title=WGS 84 (long/lat) +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees',
+      format: ([x, y]) => `${y.toFixed(6)}, ${x.toFixed(6)}`
+    }
+  ],
   except: {
     silent: false
   },

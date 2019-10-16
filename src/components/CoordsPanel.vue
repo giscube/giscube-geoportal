@@ -46,6 +46,9 @@ export default {
     coordinates () {
       return this.result && this.result.coords
     },
+    latlng () {
+      return this.coords && this.coords.getLatLng()
+    },
     description () {
       return this.error
     },

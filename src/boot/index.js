@@ -1,8 +1,9 @@
+import axios from './axios'
 import config from './config'
 import except from './except'
 import i18n from './i18n'
-import axios from './axios'
 import moment from './moment'
+import proj4 from './proj4'
 
 function setup (conf = {}) {
   return async function () {
@@ -13,6 +14,7 @@ function setup (conf = {}) {
     // simple imports without specialization
     await axios.apply(this, arguments)
     await moment.apply(this, arguments)
+    await proj4.apply(this, arguments)
     await except.apply(this, arguments)
   }
 }
