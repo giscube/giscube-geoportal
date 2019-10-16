@@ -7,7 +7,16 @@
         <q-icon name="home" size="1.4em" /> {{ address }}
       </div>
 
-      <div v-if="coordinates">
+      <div v-if="latlng" class="result-panel-latlng">
+        <template
+          v-for="epsg in $config.epsgs"
+        >
+          <q-icon name="place" size="1.4em" :key="'result--' + epsg.code + '--icon'" />
+          <b :key="'result--' + epsg.code + '--label'">{{ epsg.label }}:</b>
+          <span :key="'result--' + epsg.code + '--value'">{{ projected(epsg) }}</span>
+        </template>
+      </div>
+      <div v-else-if="coordinates">
         <q-icon name="place" size="1.4em" /> GPS: {{ coordinates }}
       </div>
 
@@ -93,6 +102,7 @@
 import L from '../lib/leaflet'
 import { QChip, QBtn, QIcon, QSpace } from 'quasar'
 import { mapState } from 'vuex'
+import { formatCoords } from 'src/lib/geomUtils'
 import { isCleanEqual } from 'src/lib/utils'
 
 import DataFilter from './data-layer/DataFilter'
@@ -163,6 +173,9 @@ export default {
     keywords () {
       return null
     },
+    latlng () {
+      return null
+    },
     metadata () {
       return null
     },
@@ -202,7 +215,10 @@ export default {
       const home = this.$config.home
       this.map.flyTo(new L.LatLng(home.center.lat, home.center.lng), home.zoom)
     },
-    download () {}
+    download () {},
+    projected (epsg) {
+      return formatCoords(this.latlng, epsg)
+    }
   }
 }
 </script>
@@ -218,5 +234,12 @@ export default {
 
   .metadata table td
     padding: $spaces.xs.y $spaces.xs.x
+
+  .result-panel-latlng
+    white-space: nowrap
+    display: grid
+    grid-template-columns: auto auto auto
+    grid-column-gap: 0.8em
+    max-width: min-content
 
 </style>

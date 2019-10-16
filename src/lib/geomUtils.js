@@ -2,6 +2,7 @@ import axios from 'axios'
 import Vue from 'vue'
 import L from './leaflet.js'
 import makeGeoJsonOptions from './makeGeoJsonOptions'
+import proj4 from 'proj4'
 import Table from './table'
 import { cloneClean } from './utils'
 
@@ -370,4 +371,10 @@ export function layersBounds (layers) {
   })
 
   return bounds
+}
+
+const defaultFormat = ([x, y]) => `${Math.floor(x)}, ${Math.floor(y)}`
+export function formatCoords ({ lat, lng }, epsg) {
+  const format = epsg.format ? epsg.format : defaultFormat
+  return format(proj4('EPSG:4326', epsg.code, [lng, lat]))
 }

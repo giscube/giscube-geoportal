@@ -9,8 +9,8 @@ export default class Options {
   merge (config) {
     return mergeWith(this, config, (objValue, srcValue, key) => {
       if (isArray(objValue)) {
-        if (key.endsWith('__append')) {
-          return objValue.concat(srcValue)
+        if (srcValue.includes('__append__')) {
+          return objValue.concat(srcValue.filter(v => v !== '__append__'))
         } else {
           return srcValue
         }
