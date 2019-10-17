@@ -139,13 +139,7 @@ export default {
       // this.map.on('click', this.clickHandler)
 
       let mapInfo = this.map.giscube.getMapInfo()
-      let center
-
-      if (this.$store.state.query) {
-        center = this.$store.state.query.latlng
-      } else {
-        center = mapInfo.visibleBounds.getCenter()
-      }
+      const center = this.towards || mapInfo.visibleBounds.getCenter()
 
       let icon = L.icon({
         iconUrl: '',
@@ -184,6 +178,11 @@ export default {
       this.panorama.addListener('position_changed', this.positionChanged)
 
       this.streetViewService = new window.google.maps.StreetViewService()
+
+      this.panorama.setPov({
+        heading: this.getHeading(),
+        pitch: 0
+      })
     },
     markerDragEnd () {
       // marker was moved
