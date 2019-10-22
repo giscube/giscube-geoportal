@@ -171,7 +171,8 @@ export default {
       title: 'Google Street View',
       help: 'Open panel with Google Street View.',
 
-      noDataError: 'Street View data not found for this location.'
+      noDataError: 'Street View data not found for this location.',
+      centerMap: 'Center map'
     }
   },
   units: {

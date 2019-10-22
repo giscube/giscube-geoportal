@@ -1,7 +1,15 @@
 <template>
   <div class="panel streetview-panel">
     <div class="panel-content column no-wrap">
-      <div class="panel-title">{{ t('title') }}</div>
+      <div class="row">
+        <div class="panel-title space">{{ t('title') }}</div>
+        <q-btn
+          flat
+          @click="center"
+        >
+          {{ t('centerMap') }}
+        </q-btn>
+      </div>
 
       <div>{{ q }}</div>
 
@@ -27,7 +35,7 @@
 </template>
 
 <script>
-import { QIcon, QSpinner } from 'quasar'
+import { QBtn, QIcon, QSpinner } from 'quasar'
 import debounce from 'lodash/debounce.js'
 import { mapState } from 'vuex'
 
@@ -37,6 +45,7 @@ import gmapsInit from '../lib/gmaps'
 export default {
   name: 'StreetViewPanel',
   components: {
+    QBtn,
     QIcon,
     QSpinner
   },
@@ -102,6 +111,11 @@ export default {
   methods: {
     t (key, ...args) {
       return this.$t('tools.streetview.' + key, ...args)
+    },
+    center () {
+      if (this.map && this.marker) {
+        this.map.flyTo(this.marker.getLatLng())
+      }
     },
     clickHandler (event) {
       let latlng = event.latlng
