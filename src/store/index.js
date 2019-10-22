@@ -6,7 +6,6 @@ import dataLayer from './module-data-layer'
 import layout from './module-layout'
 import map from './module-map'
 import search from './module-search'
-import streetView from './module-street-view'
 import root from './module-root'
 
 Vue.use(Vuex)
@@ -17,7 +16,6 @@ const modules = {
   layout,
   map,
   search,
-  streetView,
   root
 }
 
@@ -30,17 +28,7 @@ function registerModules (store) {
 }
 
 function createStore (/* { ssrContext } */) {
-  const store = new Vuex.Store({
-    modules: {
-      auth,
-      dataLayer,
-      layout,
-      map,
-      search,
-      streetView,
-      root
-    }
-  })
+  const store = new Vuex.Store({ modules })
   window.$store = store
   return store
 }
