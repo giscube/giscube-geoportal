@@ -51,7 +51,7 @@ export default {
   },
   computed: mapState({
     map: state => state.map.mapObject,
-    towards: state => state.streetView.towards
+    query: state => state.root.query
   }),
   data () {
     return {
@@ -72,6 +72,7 @@ export default {
   },
   watch: {
     'map': 'mapChanged',
+    'query': 'queryChanged',
     streetViewError (value) {
       if (this.panorama) {
         this.panorama.setVisible(!value)
@@ -85,8 +86,6 @@ export default {
         }
       }
     },
-    'towards': 'towardsChanged',
-    '$store.state.root.query': 'queryChanged',
     '$store.state.layout.leftDrawerSize' () {
       this.resizeStreetView()
     }
@@ -121,14 +120,14 @@ export default {
       let latlng = event.latlng
       this.panorama.setPosition({ lat: latlng.lat, lng: latlng.lng })
     },
-    getHeading () {
-      let position = this.panorama.getPosition()
-      let latlng = { lat: position.lat(), lng: position.lng() }
-      if (this.towards !== null) {
-        // Adapted from: https://gist.github.com/conorbuck/2606166
-        return Math.atan2(this.towards.lng - latlng.lng, this.towards.lat - latlng.lat) * 180 / Math.PI
-      } else {
-        return 0
+    setPov () {
+      const pov = this.panorama.getPov()
+      if (this.query) {
+        const maps = window.google.maps
+        const position = this.panorama.getPosition()
+        const towards = new maps.LatLng(this.query.latlng)
+        pov.heading = maps.geometry.spherical.computeHeading(position, towards)
+        this.panorama.setPov(pov)
       }
     },
     async mapChanged () {
@@ -152,8 +151,14 @@ export default {
       // this.$store.commit('setCurrentTool', this)
       // this.map.on('click', this.clickHandler)
 
-      let mapInfo = this.map.giscube.getMapInfo()
-      const center = this.towards || mapInfo.visibleBounds.getCenter()
+      let center
+      if (this.query && this.$store.getters['map/bbox']().contains(this.query.latlng)) {
+        center = this.query.latlng
+      }
+      if (!center) {
+        const mapInfo = this.map.giscube.getMapInfo()
+        center = mapInfo.visibleBounds.getCenter()
+      }
 
       let icon = L.icon({
         iconUrl: '',
@@ -193,10 +198,7 @@ export default {
 
       this.streetViewService = new window.google.maps.StreetViewService()
 
-      this.panorama.setPov({
-        heading: this.getHeading(),
-        pitch: 0
-      })
+      this.setPov()
     },
     markerDragEnd () {
       // marker was moved
@@ -225,19 +227,12 @@ export default {
       let position = this.panorama.getPosition()
       let latlng = { lat: position.lat(), lng: position.lng() }
       this.marker.setLatLng(latlng)
-      this.panorama.setPov({
-        heading: this.getHeading(),
-        pitch: 0
-      })
+      this.setPov()
     },
-    queryChanged () {
-      const query = this.$store.state.root.query
-      this.$store.dispatch('streetView/setTowards', query && query.latlng)
-    },
-    towardsChanged (value) {
-      if (value) {
+    queryChanged (query) {
+      if (query) {
         this.streetViewService.getPanorama({
-          location: value,
+          location: query.latlng,
           radius: 50
         }, this.processSVData)
       }
@@ -246,10 +241,7 @@ export default {
       if (status === window.google.maps.StreetViewStatus.OK) {
         this.streetViewError = null
         this.panorama.setPano(data.location.pano)
-        this.panorama.setPov({
-          heading: this.getHeading(),
-          pitch: 0
-        })
+        this.setPov()
       } else {
         this.streetViewError = this.$t('tools.streetview.noDataError')
       }

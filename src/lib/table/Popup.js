@@ -32,7 +32,13 @@ export default class Popup {
     const internal = {
       $root: root,
       content,
-      container
+      container,
+      query: {
+        latlng: null
+      },
+      onClosePopup: () => {
+        this.$root.$store.dispatch('removeQuery', this.query)
+      }
     }
     Object.keys(internal).forEach(key => {
       Object.defineProperty(this, key, {
@@ -52,6 +58,7 @@ export default class Popup {
 
   open (latlng, row) {
     if (this.current) {
+      this.current.off('popupclose', this.onClosePopup)
       this.current.closePopup()
       this.current.unbindPopup()
     }
@@ -63,7 +70,9 @@ export default class Popup {
         this.container.update()
         this.current.bindPopup(this.container)
         this.current.openPopup(latlng)
-        this.$root.$store.dispatch('streetView/setTowards', latlng)
+        this.query.latlng = latlng
+        this.current.on('popupclose', this.onClosePopup)
+        this.$root.$store.commit('setQuery', this.query)
       })
     }
   }

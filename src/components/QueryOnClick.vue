@@ -1,6 +1,12 @@
 <template>
-  <l-marker v-if="query" :visible="query.visible" :lat-lng="query.latlng"
-            @add="onAdd">
+  <l-marker
+    v-if="query"
+    :lat-lng="query.latlng"
+    :visible="query.visible"
+    @add="onAdd"
+    @popupopen="_setQuery"
+    @popupclose="_unsetQuery"
+  >
     <l-popup ref="popup">
       <q-spinner v-if="!query.component" />
       <component v-bind:is="query.component" :results='query.results' :latlng='query.latlng'>
@@ -210,11 +216,15 @@ export default {
       // return null for no results
       return queryResults
     },
+    _setQuery () {
+      this.$store.commit('setQuery', this.query)
+    },
+    _unsetQuery () {
+      this.$store.dispatch('removeQuery', this.query)
+    },
     _removeQuery () {
-      if (this.query) {
-        this.query = null
-        this.$store.commit('setQuery', this.query)
-      }
+      this._unsetQuery()
+      this.query = null
     },
     _disableMapClickEvent () {
       this.map.off('dblclick', this.onMapDbClick, this)
