@@ -46,9 +46,6 @@ export default {
     }
   },
   computed: {
-    currentTool () {
-      return this.$store.state.currentTool
-    },
     editLayerGeojson () {
       return this.$store.state.dataLayer.geojson
     },

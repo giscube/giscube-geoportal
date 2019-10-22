@@ -86,7 +86,7 @@ export default {
       }
     },
     'towards': 'towardsChanged',
-    '$store.state.query': 'queryChanged',
+    '$store.state.root.query': 'queryChanged',
     '$store.state.layout.leftDrawerSize' () {
       this.resizeStreetView()
     }
@@ -231,7 +231,7 @@ export default {
       })
     },
     queryChanged () {
-      const query = this.$store.state.query
+      const query = this.$store.state.root.query
       this.$store.dispatch('streetView/setTowards', query && query.latlng)
     },
     towardsChanged (value) {

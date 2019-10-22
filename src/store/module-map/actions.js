@@ -18,7 +18,7 @@ export function invalidateSize (context) {
 }
 
 export function draw (context, type) {
-  const oldTool = context.rootState.currentTool
+  const oldTool = context.rootState.root.currentTool
   context.commit('setCurrentTool', 'draw', { root: true })
 
   const promise = createLayer({ map: context.state.mapObject, type: type.toLowerCase() })
