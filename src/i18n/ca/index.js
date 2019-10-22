@@ -173,7 +173,8 @@ export default {
       title: 'Google Street View',
       help: 'Accedir a la vista de carrer de Google.',
 
-      noDataError: 'En aquesta localització no s\'han pogut trobar dades de l\'Street View.'
+      noDataError: 'En aquesta localització no s\'han pogut trobar dades de l\'Street View.',
+      centerMap: 'Centra mapa'
     }
   },
   units: {
