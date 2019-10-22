@@ -82,6 +82,25 @@ export default class Field {
     return value
   }
 
+  aggregate (rows) {
+    if (this.virtual) {
+      return
+    }
+
+    let aggregation
+    for (let row of rows) {
+      const value = this.clone({ row, cleanup: true })
+      if (aggregation === undefined) {
+        aggregation = value
+      } else if (MultiResult.is(aggregation)) {
+        aggregation.values.add(value)
+      } else if (aggregation !== value) {
+        aggregation = new MultiResult([value, aggregation])
+      }
+    }
+    return aggregation
+  }
+
   cloneValue (value) {
     if (AsyncValue.is(value)) {
       // Keep the same value
