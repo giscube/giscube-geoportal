@@ -151,7 +151,7 @@ export default class Table {
             configurable: true,
             enumerable: false,
             writable: false,
-            value: L.layerGroup()
+            value: L.featureGroup()
           })
         }
 
