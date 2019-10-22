@@ -48,7 +48,7 @@ export default {
   },
   computed: {
     currentTool () {
-      return this.$store.state.currentTool
+      return this.$store.state.root.currentTool
     }
   },
   mounted () {
