@@ -1,25 +1,12 @@
-import MultiResult from '../../lib/MultiResult.js'
 import FormWidget from '../../lib/field/components/FormWidget.js'
 
 function aggregate (fields, rows) {
   const aggregatedProperties = {}
 
   for (let field of fields) {
-    if (!field.virtual) {
-      let current
-      for (let row of rows) {
-        const value = field.clone({ row, cleanup: true })
-
-        if (current === undefined) {
-          current = value
-        } else if (MultiResult.is(current)) {
-          current.values.add(value)
-        } else if (current !== value) {
-          current = new MultiResult([value, current])
-        }
-      }
-
-      aggregatedProperties[field.name] = current
+    const aggregation = field.aggregate(rows)
+    if (aggregation !== void 0) {
+      aggregatedProperties[field.name] = aggregation
     }
   }
 

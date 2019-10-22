@@ -3,7 +3,7 @@
     class="full-width q-mb-sm"
     icon-right="keyboard_arrow_right"
     :disable="isVoid || isMulti"
-    :label="field.label | capitalize"
+    :label="label | capitalize"
     @click="openTableDialog"
   />
 </template>
@@ -15,6 +15,10 @@ import MultiResult from 'src/lib/MultiResult'
 import Table from 'src/lib/table'
 import TableDialog from 'components/data-layer/TableDialog'
 
+function isEmpty (v) {
+  return v === void 0 || v === null
+}
+
 export default {
   props: ['value', 'field', 'table', 'readonly', 'disable'],
   components: {
@@ -22,10 +26,18 @@ export default {
   },
   computed: {
     isVoid () {
-      return this.value === void 0 || this.value === null
+      return isEmpty(this.value) || isEmpty(this.value._fk)
     },
     isMulti () {
       return MultiResult.is(this.value)
+    },
+    label () {
+      let label = this.field.label
+      if (!this.isVoid && !this.isMulti && !isEmpty(this.value.count)) {
+        label += ` (${this.value.count})`
+      }
+
+      return label
     }
   },
   methods: {
@@ -36,13 +48,18 @@ export default {
       }
       const root = this.$root
       const constFields = {
-        [this.field.layerFk]: this.value
+        [this.field.layerFk]: this.value._fk
       }
 
+      const table = new Table(source, layer, root, constFields)
       this.$store.dispatch('layout/createDialog', {
         component: TableDialog,
         root,
-        table: new Table(source, layer, root, constFields)
+        table
+      }).then(api => {
+        api.onDismiss(() => {
+          this.$emit('input', { count: table.remote.pagination.rowsNumber })
+        })
       })
     }
   }

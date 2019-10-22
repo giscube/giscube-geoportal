@@ -1,5 +1,5 @@
+import Vue from 'vue'
 import Field from './Field'
-
 import TableWidget from './widgets/form/Table'
 
 export default class TableField extends Field {
@@ -27,7 +27,22 @@ export default class TableField extends Field {
   }
 
   getValue (data) {
-    return this.uniqueField.getValue(data)
+    const value = super.getValue(data) || {}
+    value._fk = this.uniqueField.getValue(data)
+    return value
+  }
+
+  setValue ({ row, properties, value }) {
+    const props = properties || (row && row.properties)
+    if (props) {
+      Vue.set(props, this.name, value)
+    }
+  }
+
+  aggregate (rows) {
+    if (rows.length === 1) {
+      return this.getValue({ row: rows[0] })
+    }
   }
 
   str (data) {
