@@ -6,7 +6,7 @@
   >
     <q-card class="column q-pa-md">
       <q-card-section>
-        <popup-base :row="row" />
+        <popup-base :row="row" @update-popup-size="$emit('update-popup-size')" />
       </q-card-section>
       <q-card-actions align="right">
         <q-btn :label="$t('actions.close')" @click="onClose" />

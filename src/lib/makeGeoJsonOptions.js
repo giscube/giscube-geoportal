@@ -247,7 +247,7 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
             }
             this._container = L.popup(popupConfig)
             this._container.setContent(this._content.$el)
-            this._content.$on('updatePopupSize', _ => this._container.update())
+            this._content.$on('update-popup-size', _ => this._container.update())
 
             transform(popup.onEachPopup, { content: this._content, container: this._container })
           }
