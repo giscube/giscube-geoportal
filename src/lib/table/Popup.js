@@ -21,7 +21,9 @@ export default class Popup {
     content.$mount()
 
     container.setContent(content.$el)
-    content.$on('updatePopupSize', _ => container.update())
+    content.$on('update-popup-size', _ => {
+      container.update()
+    })
 
     this.current = null
 
