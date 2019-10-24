@@ -169,7 +169,7 @@ export default {
       return this.filters.columns
     },
     fields () {
-      return this.table.info.formFields
+      return this.table.info.tableFields
     },
     filters () {
       return this.table.remote.filters
