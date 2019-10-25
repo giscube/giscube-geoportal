@@ -73,6 +73,11 @@ export default {
       this.mapClicks = 0
     },
     onMapClick: function (event) {
+      if (this.currentTool) {
+        // A tool is active, skip querying map
+        return
+      }
+
       if (this.query) {
         this.query.visible = false
       }
