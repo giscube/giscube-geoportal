@@ -65,7 +65,7 @@ export default {
       // a return ''
       return ShareQuery.toQuery({
         options: this.options,
-        basemap: this.map ? this.map.layerswitcher.baseLayers.indexOf(this.map.layerswitcher.baseLayerSelected) : this.$router.history.current.params.q,
+        basemap: this.$store.getters['map/baseMapIndex'],
         ...this.mapState,
         message: this.message,
         geom: [

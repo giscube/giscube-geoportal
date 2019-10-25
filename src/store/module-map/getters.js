@@ -37,6 +37,10 @@ export function drfgBbox (state, getters, rootState, rootGetters) {
   }
 }
 
+export function baseMapIndex (state) {
+  return this.$config.basemaps.indexOf(this.$store.state.map.layers.baseLayer)
+}
+
 export function drawnLayers (state) {
   return () => {
     if (state.mapObject) {

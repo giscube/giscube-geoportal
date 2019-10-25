@@ -1,9 +1,14 @@
 export function mapObject (state, value) {
-  if (value) {
-    state.shared.remove()
-    state.shared.addTo(value)
-  }
   state.mapObject = value
+}
+
+export function _baseLayer (state, value) {
+  /* For internal use. Use setBaseLayer action instead */
+  state.layers.baseLayer = value
+}
+
+export function overlays (state, overlays) {
+  state.layers.overlays = overlays
 }
 
 export function zoom (state, value) {

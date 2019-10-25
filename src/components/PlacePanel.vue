@@ -138,8 +138,12 @@ export default {
       this.resultsLayer.removeLayer(this.layer)
       this.map.addLayer(this.layer)
 
-      const t = this.layerType === 'WMS' ? this.layerOptions.layerDescriptor.title : this.layerOptions.title
-      this.map.layerswitcher.addOverlay(this.layer, t, { layerType: this.layerType })
+      const name = this.layerType === 'WMS' ? this.layerOptions.layerDescriptor.title : this.layerOptions.title
+      this.$store.dispatch('map/addOverlay', {
+        layer: this.layer,
+        layerType: this.layerType,
+        name
+      })
     },
     download () {
       if (this.isDescriptionGeoJSON) {

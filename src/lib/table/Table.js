@@ -96,11 +96,12 @@ export default class Table {
     if (this.layer) {
       this.layer.addTo(this.map)
     }
-    if (this.refLayers && this.map.layerswitcher) {
-      const layersControl = this.map.layerswitcher
+    if (this.refLayers) {
       this.refLayers.forEach(info => {
-        info.layer.addTo(this.map)
-        info._options = layersControl.addOverlay(info.layer, info.title)
+        this.$root.$store.dispatch('map/addOverlay', {
+          layer: info.layer,
+          name: info.title
+        })
       })
     }
   }
@@ -247,11 +248,9 @@ export default class Table {
       this.layer.remove()
     }
 
-    const layersControl = this.map.layerswitcher
-    if (layersControl && this.refLayers) {
+    if (this.refLayers) {
       this.refLayers.forEach(info => {
-        layersControl.removeLayer(info._options)
-        delete info._options
+        this.$root.$store.dispatch('map/removeOverlayByLayer', info.layer)
       })
     }
   }
