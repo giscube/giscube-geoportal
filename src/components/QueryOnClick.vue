@@ -240,14 +240,7 @@ export default {
       this.map.on('dblclick', this.onMapDbClick, this)
     },
     _getMapOverlays () {
-      var layers = this.map.layerswitcher._layers
-      if (!layers) {
-        layers = this.map.layerswitcher.layers
-      }
-      return layers.filter(layer => {
-        // filter layers of type overlay and added to map (visible)
-        return layer.overlay && this.map._layers[layer.layer._leaflet_id]
-      })
+      return this.$store.state.map.layers.overlays.filter(overlay => overlay.visible)
     }
   }
 }

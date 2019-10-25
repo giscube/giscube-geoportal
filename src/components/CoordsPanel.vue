@@ -102,8 +102,10 @@ export default {
     },
     pin () {
       this.resultsLayer.removeLayer(this.coords)
-      this.map.addLayer(this.coords)
-      this.map.layerswitcher.addOverlay(this.coords, this.coordinates)
+      this.$store.dispatch('map/addOverlay', {
+        layer: this.coords,
+        name: this.coordinates
+      })
     }
   }
 }

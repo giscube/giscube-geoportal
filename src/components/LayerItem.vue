@@ -3,11 +3,11 @@
     <div>
       <div class="drag-handle" style="display: flex;">
         <q-checkbox
-          v-model="layer.visible"
+          :value="layer.visible"
           :label="layer.name"
           color="black"
           style="flex-grow: 1;"
-          @input="$emit('toggle-layer', { options: layer, visible: $event })"
+          @input="$emit('toggle-layer', { overlay: layer, visible: $event })"
         />
         <q-btn
           flat
@@ -37,7 +37,7 @@
           :max="1"
           :step="0"
           v-model="opacity"
-          @input="$emit('change-opacity', { options: layer, value: $event })"
+          @input="$emit('change-opacity', { overlay: layer, value: $event })"
         />
       </div>
     </div>

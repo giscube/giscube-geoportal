@@ -34,7 +34,6 @@ export default {
   },
   data () {
     return {
-      map: null,
       containerStyle: {
         width: null
       },
@@ -46,6 +45,14 @@ export default {
     }
   },
   computed: {
+    map: {
+      get () {
+        return this.$store.state.map.mapObject
+      },
+      set (value) {
+        return this.$store.dispatch('map/setMap', value)
+      }
+    },
     editLayerGeojson () {
       return this.$store.state.dataLayer.geojson
     },
@@ -54,9 +61,6 @@ export default {
     },
     editing () {
       return this.$store.state.dataLayer.editStatus.editing
-    },
-    resultsLayer () {
-      return this.$store.state.search.resultsLayer
     },
     mainTable () {
       return this.$store.state.dataLayer.table
@@ -86,30 +90,11 @@ export default {
     }
   },
   methods: {
-    addBaseMaps () {
-      const b = this.$router.history.current.query.b
-      this.$config.basemaps.forEach((basemap, i) => {
-        const d = (b === void 0 ? basemap.default : i === b)
-        var baselayer
-        if (basemap.type === 'tilelayer') {
-          baselayer = L.tileLayer(basemap.url, basemap)
-        } else if (basemap.type === 'wms') {
-          baselayer = L.tileLayer.wms(basemap.url, basemap)
-        }
-        this.layerswitcher.addBaseLayer(baselayer, basemap.name, {
-          default: d
-        })
-        if (d) {
-          this.map.addLayer(baselayer)
-        }
-      })
-    },
     addControls () {
       this.addAttribution()
       this.addScaleControl()
       this.addZoomControl()
       this.addGeolocationControl()
-      this.addLayersControl()
       this.addMeasureControl()
     },
     addAttribution () {
@@ -118,13 +103,6 @@ export default {
         position: 'bottomright'
       })
         .addTo(this.map)
-    },
-    addLayersControl () {
-      // leaflet's Layers Control
-      // this.layerswitcher = L.control.layers({}, {}, {collapsed: false})
-      // this.layerswitcher.addTo(this.map)
-      this.layerswitcher = this.$refs.layersControl
-      this.map.layerswitcher = this.layerswitcher
     },
     addMeasureControl () {
       this.map.measureControl = L.control.measure({
@@ -146,26 +124,23 @@ export default {
         .addTo(this.map)
     },
     onMapReady () {
-      this.$nextTick(() => {
-        if (this.map) {
-          this.$store.dispatch('map/stopDrawing')
-          this.map.off('move zoom', this.updateTable)
-          this.map.off('editable:drawing:start', this.startDrawing)
-          this.map.off('editable:drawing:end', this.endDrawing)
-        }
-        this.map = this.$refs.map.mapObject
-        this.addControls()
-        this.addBaseMaps()
-        this.resultsLayer.addTo(this.map)
-        if (this.mainTable) {
-          this.mainTable.addTo(this.map)
-        }
-        this.$store.commit('map/mapObject', this.map)
-        this.updateMapPosition()
-        this.map.on('editable:drawing:start', this.startDrawing)
-        this.map.on('editable:drawing:end', this.endDrawing)
-        this.map.on('move zoom', this.updateTable)
-      })
+      if (this.map) {
+        this.map.off('move zoom', this.updateTable)
+        this.map.off('editable:drawing:start', this.startDrawing)
+        this.map.off('editable:drawing:end', this.endDrawing)
+      }
+
+      this.map = this.$refs.map.mapObject
+
+      this.addControls()
+      this.$store.dispatch('map/setDefaultBaseLayer')
+      if (this.mainTable) {
+        this.mainTable.addTo(this.map)
+      }
+      this.updateMapPosition()
+      this.map.on('editable:drawing:start', this.startDrawing)
+      this.map.on('editable:drawing:end', this.endDrawing)
+      this.map.on('move zoom', this.updateTable)
     },
     updateMapPosition () {
       this.$store.commit('map/center', this.map.getVisibleCenter())

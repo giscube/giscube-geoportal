@@ -4,10 +4,39 @@ export function noop () {
   // No operation. Does nothing
 }
 
+export function unique () {
+  if (window.Symbol) {
+    return Symbol('')
+  } else {
+    const r = {}
+    Object.defineProperty(r, '_', {
+      enumerable: true,
+      configurable: false,
+      writable: false,
+      value: Date.now()
+    })
+    return Object.freeze(r)
+  }
+}
+
 export function fromEntries (iterable) {
   // From https://github.com/feross/fromentries/blob/29b52a850bb3a47c390937631c2638edf3443942/index.js (under MIT)
   return [...iterable]
     .reduce((obj, { 0: key, 1: val }) => Object.assign(obj, { [key]: val }), {})
+}
+
+export function* reverse (arr) {
+  for (let i = arr.length - 1; i >= 0; --i) {
+    yield arr[i]
+  }
+}
+
+export function* enumerate (ob) {
+  let i = 0
+  for (let value of ob) {
+    yield [i, value]
+    ++i
+  }
 }
 
 export function createEnum (elements, ordered = false) {

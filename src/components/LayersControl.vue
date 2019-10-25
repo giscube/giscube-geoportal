@@ -21,23 +21,22 @@
         </li>
       </ul>
 
-      <ul v-if="baseLayerSelect">
-        <li v-for="layer in baseLayers" :key="layer.id"
+      <ul v-show="!baseLayerSelected || baseLayerSelect">
+        <li v-for="(layer, i) in baseLayers" :key="layer.id"
             class="flex-nowrap-start link"
-            @click="changeBaseLayer(layer)">
+            @click="setBaseLayer(i)">
           <a class="flex-icon option gray"
              ><q-icon color="grey" size="2em" name="keyboard_arrow_right" /></a>
           <a class="flex-label link">{{ layer.name }}</a>
         </li>
       </ul>
 
-      <div v-if="layers.length > 0" class="sep"></div>
+      <div v-show="layers.length > 0" class="sep"></div>
 
       <draggable
         v-model="layers"
         tag="ul"
         handle=".drag-handle"
-        @change="layersChanged"
       >
         <layer-item
           v-for="layer in layers"
@@ -56,8 +55,9 @@
 
 <script>
 import { QIcon } from 'quasar'
+import { mapState } from 'vuex'
+
 import L from '../lib/leaflet'
-import { findRealParent } from 'vue2-leaflet'
 import draggable from 'vuedraggable'
 
 import LayerItem from 'components/LayerItem.vue'
@@ -70,102 +70,52 @@ export default {
   },
   data () {
     return {
-      baseLayers: [],
-      baseLayerSelected: null,
       baseLayerSelect: false,
-      collapsed: false,
+      collapsed: this.$q.screen.lt.md,
       showActions: false,
       layerLastId: 0,
-      layers: [],
-      map: null,
       lastZIndex: 0
+    }
+  },
+  computed: {
+    baseLayers () {
+      return this.$config.basemaps
+    },
+    ...mapState({
+      map: state => state.map.mapObject,
+      baseLayerSelected: state => state.map.layers.baseLayer
+    }),
+    layers: {
+      get () {
+        return this.$store.state.map.layers.overlays
+      },
+      set (value) {
+        this.$store.dispatch('map/setOverlays', value)
+      }
     }
   },
   mounted () {
     this.mapObject = new L.Control()
     this.mapObject.onAdd = this.onAdd
-    this.parentContainer = findRealParent(this.$parent)
-    this.map = this.parentContainer.mapObject
     this.mapObject.addTo(this.map)
   },
   methods: {
-    addBaseLayer (baselayer, name, options) {
-      if (!options) {
-        options = {}
-      }
-      options['id'] = this.layerLastId++
-      options['layer'] = baselayer
-      options['name'] = name
-      this.baseLayers.push(options)
-
-      if (options.default) {
-        this.baseLayerSelected = options
-      }
-
-      if (options.layer.setZIndex) {
-        this.lastZIndex++
-        options.layer.setZIndex(this.lastZIndex)
-      }
-    },
-    addOverlay (layer, name, options) {
-      const existing = this.layers.find(o => o.layer === layer)
-      if (existing) {
-        existing.name = name
-        existing.visible = true
-        return
-      }
-
-      if (!options) {
-        options = {}
-      }
-      options['id'] = this.layerLastId++
-      options['layer'] = layer
-      options['name'] = name
-      options['visible'] = this.map.hasLayer(layer)
-      options['overlay'] = true
-      this.layers.unshift(options)
-
-      if (options.layer.setZIndex) {
-        this.lastZIndex++
-        options.layer.setZIndex(this.lastZIndex)
-      }
-
-      return options
-    },
-    changeBaseLayer (options) {
-      this.map.removeLayer(this.baseLayerSelected.layer)
-      this.map.addLayer(options.layer)
-      this.baseLayerSelected = options
+    setBaseLayer (i) {
+      this.$store.dispatch('map/setBaseLayer', i)
       this.baseLayerSelect = false
-    },
-    layersChanged (event) {
-      let zIndex = this.lastZIndex
-      this.layers.forEach(options => {
-        options.layer.setZIndex(zIndex)
-        zIndex--
-      })
     },
     onAdd () {
       L.DomEvent.disableClickPropagation(this.$el)
       return this.$el
     },
-    removeLayer (options) {
-      this.layers.splice(this.layers.findIndex(function (el) {
-        return el.id === options.id
-      }), 1)
-      this.map.removeLayer(options.layer)
+    removeLayer (overlay) {
+      this.$store.dispatch('map/removeOverlay', overlay)
     },
-    toggleLayer ({ options, visible }) {
-      if (visible) {
-        this.map.addLayer(options.layer)
-      } else {
-        this.map.removeLayer(options.layer)
-      }
+    toggleLayer ({ overlay, visible }) {
+      overlay.setVisible(visible)
     },
-    changeOpacity ({ options, value }) {
-      if (options.layer.setOpacity) {
-        options.layer.setOpacity(value)
-      }
+    changeOpacity ({ overlay, value }) {
+      overlay.setOpacity(value)
     }
   }
 }
