@@ -36,7 +36,7 @@
           :min="0"
           :max="1"
           :step="0"
-          v-model="opacity"
+          :value="layer.opacity"
           @input="$emit('change-opacity', { overlay: layer, value: $event })"
         />
       </div>
@@ -57,8 +57,7 @@ export default {
   },
   data () {
     return {
-      panelOpen: false,
-      opacity: 1
+      panelOpen: false
     }
   }
 }

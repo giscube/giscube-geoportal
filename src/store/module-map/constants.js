@@ -1,4 +1,5 @@
 export const LAYER_TEMPLATE = Object.freeze({
+  id: void 0,
   layerDescriptor: {
     group: 'boolean',
     projection: 'string',
@@ -12,6 +13,7 @@ export const LAYER_TEMPLATE = Object.freeze({
 })
 
 export const LAYER_TEMPLATE_DEFAULTS = Object.freeze({
+  id: void 0,
   layerDescriptor: {
     group: false,
     type: 'GeoJSON',

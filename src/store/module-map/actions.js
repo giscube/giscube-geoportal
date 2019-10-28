@@ -71,6 +71,7 @@ export function setBaseLayer (context, value) {
     const map = context.state.mapObject
     const layer = _makeBaseLayer(baseLayer)
     if (map && layer) {
+      layer.setZIndex(0)
       map.addLayer(layer)
     }
     context.commit('_baseLayer', baseLayer)
@@ -106,14 +107,17 @@ export function addOverlay (context, { id, layer, layerType, name, opacity }) {
     if (name) {
       existing.name = name
     }
-    if (opacity !== void 0) {
-      existing.opacity = opacity
+    if (opacity === void 0) {
+      opacity = existing.opacity
     }
+
     if (existing.layer !== layer) {
-      existing.layer.remove()
+      existing.setVisible(false)
       existing.layer = layer
       existing.layerType = layerType
     }
+
+    existing.setOpacity(opacity)
     existing.setVisible(true)
   } else {
     const overlay = {
@@ -137,7 +141,7 @@ export function addOverlay (context, { id, layer, layerType, name, opacity }) {
         }
         this.visible = value
       },
-      opacity: void 0,
+      opacity: 1,
       setOpacity (value) {
         if (this.layer.setOpacity) {
           this.layer.setOpacity(value)
@@ -215,7 +219,7 @@ export function enableDoubleClickZoom (context) {
   context.state.mapObject.doubleClickZoom.enable()
 }
 
-export function addLayer (context, { layerDescriptor, title, options, metaOptions, auth = false }) {
+export function addLayer (context, { id, layerDescriptor, title, options, metaOptions, auth = false }) {
   const map = context.state.mapObject
   const headers = auth ? context.rootGetters['auth/headers'] : void 0
   createExternalLayer({ layerDescriptor, title, options, map, popupComponent: FeaturePopup, metaOptions, headers })
@@ -223,7 +227,7 @@ export function addLayer (context, { layerDescriptor, title, options, metaOption
       map.addLayer(layer)
 
       const name = type === 'WMS' ? layerDescriptor.title : title
-      context.dispatch('addOverlay', { layer, layerType: type, name })
+      context.dispatch('addOverlay', { id, layer, layerType: type, name })
     })
     .catch(e => {
       if (e) {
