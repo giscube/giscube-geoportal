@@ -1,7 +1,7 @@
 <template>
   <q-header class="giscube-header">
     <q-toolbar class="giscube-toolbar">
-      <a class="giscube-header-brand cursor-pointer" v-touch-hold:2500.mouse="infoPopup"><img :src="brandLogo"><span>{{ brandText }}</span></a>
+      <a class="giscube-header-brand cursor-pointer" v-touch-hold:2500.mouse="infoPopup"><span><img :src="brandLogo"></span><span>{{ brandText }}</span></a>
 
       <header-item-holder
         v-for="(item, i) in headerTools"
@@ -152,7 +152,7 @@ export default {
 .giscube-header-brand > * + * { /* Lobotomized owl */
   margin-left: 1em;
 }
-.giscube-header-brand > img {
+.giscube-header-brand img {
   display: block;
   height: 2em;
 }
