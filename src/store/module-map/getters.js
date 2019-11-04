@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import { visibleMapPart } from '../../lib/geomUtils.js'
 import L from 'src/lib/leaflet'
 
@@ -38,7 +39,7 @@ export function drfgBbox (state, getters, rootState, rootGetters) {
 }
 
 export function baseMapIndex (state) {
-  return this.$config.basemaps.indexOf(this.$store.state.map.layers.baseLayer)
+  return Vue.prototype.$config.basemaps.indexOf(state.layers.baseLayer)
 }
 
 export function drawnLayers (state) {
