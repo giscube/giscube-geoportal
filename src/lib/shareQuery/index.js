@@ -10,11 +10,11 @@ function _getParam (key) {
 }
 
 export function extract (obj, key) {
-  const k = spec.params[key]
-  if (k) {
-    const r = obj[k.key]
-    delete obj[k.key]
-    return r
+  const param = spec.params[key]
+  if (param) {
+    const r = obj[param.key]
+    delete obj[param.key]
+    return r && param.type.fromQuery(r)
   }
 }
 

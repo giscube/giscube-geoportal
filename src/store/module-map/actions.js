@@ -4,7 +4,8 @@ import L from '../../lib/leaflet'
 import except from '../../lib/except'
 import { createExternalLayer, createLayer } from '../../lib/geomUtils'
 import validate from '../../lib/validate'
-import { enumerate, reverse, unique } from '../../lib/utils'
+import { isVoid, enumerate, reverse, unique } from '../../lib/utils'
+import ShareQuery from '../../lib/shareQuery'
 
 import FeaturePopup from '../../components/FeaturePopup'
 
@@ -79,7 +80,7 @@ export function setBaseLayer (context, value) {
 }
 
 export function setDefaultBaseLayer (context) {
-  let selected = this.$router.params && this.$router.params.b
+  let selected = ShareQuery.extract(this.$router.currentRoute.query, 'b')
   if (selected === void 0) {
     selected = this.$config.basemaps.findIndex(basemap => basemap.selected)
   }
@@ -99,10 +100,10 @@ export function addOverlay (context, { id, layer, layerType, name, opacity }) {
   const overlays = context.state.layers.overlays
   const overlaysGroup = context.state.layers._overlaysGroup
   if (id === void 0) {
-    id = unique() // TODO get it from the layer info
+    id = unique()
   }
 
-  const existing = overlays.find(o => o.layer === layer || o.id === id)
+  const existing = overlays.find(o => layer === o.layer || id === o.id || (id.equals && id.equals(o.id)))
   if (existing) {
     if (name) {
       existing.name = name
@@ -148,6 +149,9 @@ export function addOverlay (context, { id, layer, layerType, name, opacity }) {
           this.opacity = value
         }
       }
+    }
+    if (!isVoid(opacity)) {
+      overlay.setOpacity(opacity)
     }
     overlay.setVisible(true)
     overlays.unshift(overlay)

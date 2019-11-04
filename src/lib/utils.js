@@ -4,6 +4,10 @@ export function noop () {
   // No operation. Does nothing
 }
 
+export function isVoid (value) {
+  return value === null || value === void 0
+}
+
 export function unique () {
   if (window.Symbol) {
     return Symbol('')

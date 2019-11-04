@@ -6,6 +6,8 @@ import FeaturePopupDialog from './FeaturePopupDialog'
 import SearchResultPopup from './SearchResultPopup'
 import SearchResultPopupDialog from './SearchResultPopupDialog'
 import { createLayerFromConfig } from '../lib/geomUtils'
+import { isVoid } from '../lib/utils'
+import GiscubeRef from '../lib/refs/giscube'
 
 export default {
   mixins: [ResultPanelMixin],
@@ -140,6 +142,7 @@ export default {
 
       const name = this.layerType === 'WMS' ? this.layerOptions.layerDescriptor.title : this.layerOptions.title
       this.$store.dispatch('map/addOverlay', {
+        id: !isVoid(this.result.giscube_id) && new GiscubeRef(this.result.giscube_id),
         layer: this.layer,
         layerType: this.layerType,
         name

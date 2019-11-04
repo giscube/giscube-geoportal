@@ -18,6 +18,7 @@ The link must follow this format:
      * [[c] Center](#c-center)
      * [[g] Geometry](#g-geometry)
      * [[m] Message](#m-message)
+     * [[l] Layers](#l-layers)
      * [[o] Options](#o-options)
      * [[z] Zoom level](#z-zoom-level)
   * [Types](#types)
@@ -64,6 +65,13 @@ Message to share it with.
   - Type: [String](#string)
   - Multiple: overrides
   - Example: `m=This%20is%20the%20special%20point`
+
+### [l] Layer results
+Message to share it with.
+
+  - Type: [List](#list)([Result](#result), `;`)
+  - Multiple: overrides
+  - Example: `l=c12.4,15.3;g20.8`
 
 ### [o] Options
 Option flags.
@@ -131,6 +139,20 @@ Examples:
   - `1`
   - `2`
   - `3.579`
+
+### Result
+Representation of a result. First character specifies its type. Then it's followed by its reference followed by `:` and its opacity. If `:` and/or opacity are omited, the default opacity is 1.
+
+Types:
+ - `c`: [Coordinates](#coordinates)
+ - `g`: Geoportal ID ([String](#string))
+
+Examples:
+ - `c24.5,24.3`
+ - `c24.5,24.3:0.34`
+ - `g20.1`
+ - `g20.1:0.75`
+
 
 ### String
 URL encoded string.

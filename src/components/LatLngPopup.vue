@@ -29,6 +29,7 @@ export default {
     onClick () {
       this.$store.dispatch('layout/setSidebarVisible', true)
       this.$router.push({ name: 'coords', params: { epsg: '4326', coords: this.coords } })
+      this.$emit('remove-query')
     },
     projected (epsg) {
       return formatCoords(this.latlng, epsg)
