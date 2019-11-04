@@ -5,6 +5,7 @@ import L from 'src/lib/leaflet'
 
 import LatLngPopup from './LatLngPopup'
 import ResultPanelMixin from './ResultPanelMixin'
+import CoordinatesRef from 'src/lib/refs/coordinates'
 
 function coordsRegex () {
   return /^([\w.,]+),? ([\w.,]+)$/g
@@ -103,9 +104,12 @@ export default {
     pin () {
       this.resultsLayer.removeLayer(this.coords)
       this.$store.dispatch('map/addOverlay', {
+        id: new CoordinatesRef(this.coords),
         layer: this.coords,
         name: this.coordinates
       })
+      this.coords.openPopup()
+      this.coords = null
     }
   }
 }

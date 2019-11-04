@@ -21,6 +21,12 @@ params.geometry = params.geom = params.g = {
   multi: behaviors.overrides
 }
 
+params.layers = params.l = params.results = {
+  key: 'l',
+  type: types.list(types.result, ';'),
+  multi: behaviors.overrides
+}
+
 params.message = params.m = {
   key: 'm',
   type: types.string,

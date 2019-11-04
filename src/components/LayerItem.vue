@@ -4,11 +4,12 @@
       <div class="drag-handle" style="display: flex;">
         <q-checkbox
           :value="layer.visible"
-          :label="layer.name"
           color="black"
           style="flex-grow: 1;"
           @input="$emit('toggle-layer', { overlay: layer, visible: $event })"
-        />
+        >
+          <span @click.stop="layer.id.canOpen && layer.id.canOpen() ? $store.dispatch('openReference', layer) : null">{{layer.name}}</span>
+        </q-checkbox>
         <q-btn
           flat
           round

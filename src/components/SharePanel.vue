@@ -33,7 +33,8 @@
 import { QInput, QToggle } from 'quasar'
 import Vue from 'vue'
 import L from 'src/lib/leaflet'
-import * as ShareQuery from 'src/lib/shareQuery'
+import ShareQuery from 'src/lib/shareQuery'
+import { reverse } from 'src/lib/utils'
 
 import CopyToClipboard from './CopyToClipboard'
 import BasicPopup from './BasicPopup'
@@ -61,6 +62,11 @@ export default {
     mapState () {
       return this.$store.state.map.state
     },
+    results () {
+      return this.$store.state.map.layers.overlays
+        .map(overlay => ({ ref: overlay.id, opacity: overlay.opacity }))
+        .filter(({ ref }) => ref.canOpen && ref.canOpen())
+    },
     queryStr () {
       // a return ''
       return ShareQuery.toQuery({
@@ -71,7 +77,8 @@ export default {
         geom: [
           ...this.sharedLayer.getLayers(),
           ...(this.$store.getters['map/drawnLayers']() || [])
-        ]
+        ],
+        results: this.results
       })
     },
     sharedLayer () {
@@ -79,16 +86,22 @@ export default {
     }
   },
   beforeRouteEnter (to, from, next) {
-    if (Object.keys(to.query).length > 0) {
-      next(vm => vm.applyQuery(to.query))
-    } else {
-      next()
-    }
+    next(vm => {
+      vm.$store.commit('setCurrentTool', 'share')
+
+      if (Object.keys(to.query).length > 0) {
+        vm.applyQuery(to.query)
+      }
+    })
   },
   beforeRouteUpdate (to, from, next) {
     if (Object.keys(to.query).length > 0) {
       this.applyQuery(to.query)
     }
+    next()
+  },
+  beforeRouteLeave (to, from, next) {
+    this.$store.commit('setCurrentTool', null)
     next()
   },
   methods: {
@@ -122,7 +135,9 @@ export default {
       this.sharedLayer.clearLayers()
       const center = ShareQuery.extract(query, 'c')
       const zoom = ShareQuery.extract(query, 'z')
-      map.setView(center, zoom)
+      this.$nextTick(() => { // Wait for the sidebar size to be set
+        map.setView(center, zoom)
+      })
 
       const g = ShareQuery.extract(query, 'g')
 
@@ -137,49 +152,53 @@ export default {
       }
 
       if (this.message) {
-        const popup = this.makePopup({ map, layer: this.sharedLayer })
+        const popup = this.makePopup({ map, layer: marker })
 
         if (this.options.om) {
-          if (this.sharedLayer) {
-            this.sharedLayer.getLayers()[0].openPopup()
+          if (marker) {
+            marker.openPopup()
           } else {
             map.openPopup(popup, center)
           }
         }
       }
-    },
-    makePopup ({ map, layer = [ null ] }) {
-      const Popup = Vue.extend(BasicPopup)
 
-      let result
+      const l = ShareQuery.extract(query, 'l')
+      if (l) {
+        const promises = l.map(({ ref, opacity }) => ref.addAsResult(opacity, this.$root))
 
-      layer.getLayers().map((l, i) => {
-        const popupComponent = new Popup({
-          parent: this,
-          propsData: {
-            message: this.message
+        const addAll = async () => {
+          for (let promise of reverse(promises)) {
+            const add = await promise
+            add()
           }
-        })
-
-        const popupContainer = L.popup({
-          closeOnClick: true,
-          closeOnEscapeKey: true
-        })
-        popupContainer.setContent(popupComponent.$mount().$el)
-
-        if (l) {
-          popupComponent.$on('close', () => l.closePopup())
-          l.bindPopup(popupContainer)
-        } else {
-          popupComponent.$on('close', () => popupContainer.remove())
         }
-
-        if (i === 0) {
-          result = popupContainer
+        addAll()
+      }
+    },
+    makePopup ({ map, layer }) {
+      const Popup = Vue.extend(BasicPopup)
+      const popupComponent = new Popup({
+        parent: this,
+        propsData: {
+          message: this.message
         }
       })
 
-      return result
+      const popupContainer = L.popup({
+        closeOnClick: true,
+        closeOnEscapeKey: true
+      })
+      popupContainer.setContent(popupComponent.$mount().$el)
+
+      if (layer) {
+        popupComponent.$on('close', () => layer.closePopup())
+        layer.bindPopup(popupContainer)
+      } else {
+        popupComponent.$on('close', () => popupContainer.remove())
+      }
+
+      return popupContainer
     },
     setFlag (obj, key, value) {
       if (value) {

@@ -1,5 +1,4 @@
 import Router from 'vue-router'
-import ShareQuery from 'src/lib/shareQuery'
 import CatalogPanel from 'components/CatalogPanel'
 import ContactPanel from 'components/ContactPanel'
 import CoordsPanel from 'components/CoordsPanel'
@@ -41,9 +40,7 @@ export default function ({ Vue, store }) {
     }
   ]
   const router = new Router({
-    routes: routes,
-    parseQuery: ShareQuery.fromQuery,
-    stringifyQuery: ShareQuery.toQuery
+    routes: routes
   })
 
   router.beforeEach((to, from, next) => {

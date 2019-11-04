@@ -9,7 +9,7 @@
   >
     <l-popup ref="popup">
       <q-spinner v-if="!query.component" />
-      <component v-bind:is="query.component" :results='query.results' :latlng='query.latlng'>
+      <component v-bind:is="query.component" :results='query.results' :latlng='query.latlng' @remove-query="_removeQuery">
         test
       </component>
       <div class="tools" v-if="query.component">

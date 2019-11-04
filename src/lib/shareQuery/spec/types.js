@@ -3,6 +3,7 @@ import L from 'src/lib/leaflet'
 import { fromEntries } from 'src/lib/utils'
 import { strCrc16ibm } from 'src/lib/algs/crc16ibm'
 import { fromUInt16, toUInt16 } from 'src/lib/algs/base64'
+import { CoordinatesRef, GiscubeRef } from 'src/lib/refs'
 
 import { ParseError, UnsupportedTypeError } from './errors'
 
@@ -26,10 +27,8 @@ types.basemap = {
     const config = Vue.prototype.$config
     const basemaps = config.basemaps
 
-    const defaultMap = () => config.basemaps.findIndex(bm => bm.default) || 0
-
     if (!str) {
-      return defaultMap()
+      return void 0
     }
 
     const crc = toUInt16(str.slice(0, 3))
@@ -53,7 +52,7 @@ types.basemap = {
     }
 
     // Return the index (if possible)
-    return indexValid ? index : defaultMap()
+    return indexValid ? index : void 0
   },
   toQuery (index) {
     if (typeof index !== 'number' || index < 0) {
@@ -172,15 +171,56 @@ types.number = {
     }
     return r
   },
-  toQuery (obj) {
+  toQuery (obj, { precision = 6 } = {}) {
     if (typeof obj === 'number') {
       if (Number.isInteger(obj)) {
         return obj.toString()
       } else {
-        return obj.toFixed(6)
+        return obj.toFixed(precision)
       }
     } else {
       throw new UnsupportedTypeError('number', obj)
+    }
+  }
+}
+
+types.result = {
+  fromQuery (str) {
+    if (!str || str.length < 1) {
+      return // TODO exception?
+    }
+
+    const type = str.charAt(0)
+    let [ref, opacity = '1'] = str.slice(1).split(':')
+    opacity = types.number.fromQuery(opacity)
+
+    if (type === 'c') {
+      const coords = types.coords.fromQuery(ref)
+      const marker = L.marker(coords)
+      return {
+        ref: new CoordinatesRef(marker),
+        opacity
+      }
+    } else if (type === 'g') {
+      ref = types.string.fromQuery(ref)
+      return {
+        ref: new GiscubeRef(ref),
+        opacity
+      }
+    } else {
+      // TODO exception?
+    }
+  },
+  toQuery ({ ref, opacity = 1 }) {
+    opacity = Math.max(Math.min(opacity, 1), 0) // clamp value between 0 and 1 (inclusive)
+    let o = opacity < 1 ? ':' + types.number.toQuery(opacity, { precision: 2 }) : '' // most common case uses less space
+
+    if (ref instanceof CoordinatesRef) {
+      return 'c' + types.coords.toQuery(ref.latlng) + o
+    } else if (ref instanceof GiscubeRef) {
+      return 'g' + types.string.toQuery(ref.toPlainRef()) + o
+    } else {
+      throw new UnsupportedTypeError('result', ref)
     }
   }
 }

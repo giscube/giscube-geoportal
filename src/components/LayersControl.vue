@@ -40,7 +40,7 @@
       >
         <layer-item
           v-for="layer in layers"
-          :key="layer.id"
+          :key="key(layer)"
           :layer="layer"
           :map="map"
           :showActions="showActions"
@@ -116,6 +116,10 @@ export default {
     },
     changeOpacity ({ overlay, value }) {
       overlay.setOpacity(value)
+    },
+    key (overlay) {
+      const id = overlay.id
+      return id.toPlainRef ? id.toPlainRef() : id
     }
   }
 }

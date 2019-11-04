@@ -1,3 +1,6 @@
+import GiscubeRef from 'src/lib/refs/giscube'
+import { isVoid } from 'src/lib/utils'
+
 export default class CatalogResult {
   constructor (data) {
     for (let [key, value] of Object.entries(data)) {
@@ -15,6 +18,7 @@ export default class CatalogResult {
     }
 
     return {
+      id: !isVoid(this.giscube_id) && new GiscubeRef(this.giscube_id),
       layerDescriptor: this.children[0],
       title: this.title,
       options: this.options || {},
