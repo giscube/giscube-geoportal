@@ -74,7 +74,7 @@ export function setBaseLayer (context, value) {
     if (map && layer) {
       layer.setZIndex(0)
       map.addLayer(layer)
-      map.setMaxZoom(value.maxZoom)
+      map.setMaxZoom(baseLayer.maxZoom)
     }
     context.commit('_baseLayer', baseLayer)
   }
