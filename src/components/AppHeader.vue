@@ -1,7 +1,7 @@
 <template>
   <q-header class="giscube-header">
     <q-toolbar class="giscube-toolbar">
-      <a class="giscube-header-brand cursor-pointer" v-touch-hold:2500.mouse="infoPopup"><span><img :src="brandLogo"></span><span>{{ brandText }}</span></a>
+      <a class="giscube-header-brand cursor-pointer" v-touch-hold:2500.mouse="infoPopup"><img :src="brandLogo"><span>{{ brandText }}</span></a>
 
       <header-item-holder
         v-for="(item, i) in headerTools"
@@ -135,33 +135,23 @@ export default {
   color: #0a1924;
   font-family: 'Lato', sans-serif;
 }
-
-.giscube-header-brand {
-  font-size: 20px;
-  font-weight: 300;
+a.giscube-header-brand {
+  padding: 10px 20px 10px 0px;
+  overflow: visible;
   white-space: nowrap;
-
-  height: 2em;
-  margin: 0.5em 0;
-  padding-right: 1em;
-  overflow: hidden;
-
-  display: inline-flex;
-  flex-flow: row wrap;
 }
-.giscube-header-brand > * + * { /* Lobotomized owl */
-  margin-left: 1em;
+a.giscube-header-brand img {
+  height: 40px;
+  margin-right: 6px;
+  vertical-align: top
 }
-.giscube-header-brand img {
-  display: block;
-  height: 2em;
-}
-.giscube-header-brand > span {
+a.giscube-header-brand span {
+  font-weight: 300;
+  font-size: 20px;
   display: inline-block;
-  margin-top: auto;
-  margin-bottom: auto;
+  line-height: 1em;
+  margin-top: 9px;
 }
-
 .giscube-toolbar .q-btn {
   font-weight: 300;
   padding: 6px 16px;
