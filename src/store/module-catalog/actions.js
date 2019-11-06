@@ -3,7 +3,7 @@ import axios from 'axios'
 export async function getResultById (context, id) {
   const catalog = this.$config.catalog
   const config = catalog.auth ? context.rootGetters['auth/config'] : {}
-  const url = `${catalog.base}/giscube_id/${id}`
+  const url = `${catalog.base}/geoportal/giscube_id/${id}`
 
   const response = await axios.get(url, config)
   const result = response.data.results[0]
