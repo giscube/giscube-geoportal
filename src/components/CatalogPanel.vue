@@ -9,14 +9,15 @@
             v-show="category.parent === null"
             :key="category.id"
             :label="category.name"
-            @show="categoryChange(category)"
+            @show="$store.dispatch('catalog/categoryChange', category)"
             header-class="category"
+            v-model="categoriesOpen[category.id]"
           >
             <q-expansion-item v-for="subcategory in category.subcategories"
               :key="subcategory.id"
-              @show="onShowSubcategory(subcategory)"
-              @before-hide="onHideSubcategory(subcategory)"
+              @show="$store.dispatch('catalog/onShowSubcategory', subcategory)"
               header-class="subcategory"
+              v-model="subcategoriesOpen[subcategory.id]"
             >
               <template v-slot:header>
                 <q-item-section>
@@ -60,12 +61,12 @@
 </template>
 
 <script>
-import axios from 'axios'
 import { QBtn, QExpansionItem, QIcon, QItemSection, QList, QSpinner } from 'quasar'
-import Vue from 'vue'
 
-import CatalogResult from 'src/lib/CatalogResult'
 import CatalogResultComponent from './CatalogResult.vue'
+
+import { createNamespacedHelpers } from 'vuex'
+const { mapState: mapCatalogState } = createNamespacedHelpers('catalog')
 
 export default {
   components: {
@@ -77,24 +78,24 @@ export default {
     QList,
     QSpinner
   },
-  data () {
-    return {
-      loading: false,
-      q: '',
-      subcategoriesOpen: {},
-      categories: []
-    }
+  computed: {
+    ...mapCatalogState({
+      categories: state => state.categories,
+      categoriesOpen: state => state.categoriesOpen,
+      loading: state => state.loading,
+      subcategoriesOpen: state => state.subcategoriesOpen
+    })
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
       vm.q = to.params.q
-      vm.checkCategories()
+      vm.$store.dispatch('catalog/checkCategories')
     })
   },
   beforeRouteUpdate (to, from, next) {
     let vm = this
     vm.q = to.params.q
-    vm.checkCategories()
+    vm.$store.dispatch('catalog/checkCategories')
     next()
   },
   methods: {
@@ -105,65 +106,6 @@ export default {
           const layer = result.toLayer(this.$root)
           this.$store.dispatch('map/addLayer', layer)
         })
-    },
-    checkCategories () {
-      this.loading = true
-      const catalog = this.$config.catalog
-      const config = catalog.auth ? this.$store.getters['auth/config'] : {}
-      axios.get(catalog.categories, config)
-        .then(response => {
-          Vue.set(this, 'categories', response.data)
-          this.categories.forEach(category => {
-            if (category.parent == null) {
-              category.subcategories = this.getSubcategories(category.id)
-            }
-          })
-        })
-        .catch(error => {
-          this.$except(error)
-          this.searchError = true
-        })
-        .then(() => {
-          this.loading = false
-        })
-    },
-    getSubcategories (id) {
-      return this.categories.filter(category => {
-        return category.parent === id
-      })
-    },
-    categoryChange (category) {
-      category.subcategories.forEach(subcategory => {
-        this.subcategoryChange(subcategory)
-      })
-    },
-    getSubcategoriesResults (category) {
-      const catalog = this.$config.catalog
-      const config = catalog.auth ? this.$store.getters['auth/config'] : {}
-      const url = `${catalog.search}?category_id=${category.id}`
-      axios.get(url, config)
-        .then(response => {
-          Vue.delete(category, 'loading')
-          const results = response.data.results.map(CatalogResult.create)
-          Vue.set(category, 'results', results)
-        })
-        .catch(error => {
-          Vue.delete(category, 'loading')
-          this.$except(error)
-        })
-    },
-    subcategoryChange (category) {
-      if (category.results === undefined) {
-        Vue.set(category, 'loading', true)
-        this.getSubcategoriesResults(category)
-      }
-    },
-    onShowSubcategory (subcategory) {
-      this.subcategoryChange(subcategory)
-      this.$set(this.subcategoriesOpen, subcategory.id, true)
-    },
-    onHideSubcategory (subcategory) {
-      this.$set(this.subcategoriesOpen, subcategory.id, false)
     },
     t (key) {
       return this.$t('tools.catalog.' + key)
