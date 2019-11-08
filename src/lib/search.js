@@ -55,7 +55,7 @@ export default class Search {
         params: { q }
       }
       if (search.auth) {
-        Object.assign(config, this.$context.getters['auth/config'])
+        Object.assign(config, this.$context.rootGetters['auth/config'])
       }
 
       this.promises.push(new Promise((resolve, reject) => {
