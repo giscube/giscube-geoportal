@@ -29,6 +29,9 @@ export default {
     canDownload () {
       return this.isDescriptionGeoJSON
     },
+    canPin () {
+      return !!this.layer
+    },
     coordinates () {
       if (this.result && this.result.latlng) {
         return this.result.latlng.coordinates[0].toFixed(6) + ', ' + this.result.latlng.coordinates[1].toFixed(6)
@@ -130,7 +133,9 @@ export default {
         })
     },
     show () {
-      this.resultsLayer.addLayer(this.layer)
+      if (this.layer) {
+        this.resultsLayer.addLayer(this.layer)
+      }
     },
     pin () {
       if (!this.layer) {

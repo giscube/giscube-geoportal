@@ -3,6 +3,7 @@
     <div class="catalog-result"
          @click="viewResultMain">
       <span class="catalog-result-add-to-map"
+            v-if="canBePinned"
             @click.stop="viewResult"
             ><q-icon name="layers"></q-icon> {{ $t('actions.addToMap') | capitalize }}</span>
       <span class="catalog-result-title">{{ result.title }}</span>
@@ -13,17 +14,26 @@
 
 <script>
 import { QIcon } from 'quasar'
+import { notify } from 'src/lib/notifications'
 
 export default {
   props: ['result'],
   components: {
     QIcon
   },
+  data () {
+    return {
+      canBePinned: true
+    }
+  },
   methods: {
-    viewResult () {
+    async viewResult () {
       const layer = this.result.toLayer(this.$root)
       if (layer) {
-        this.$store.dispatch('map/addLayer', layer)
+        this.canBePinned = await this.$store.dispatch('map/addLayer', layer)
+        if (!this.canBePinned) {
+          notify('Cannot pin because it doesn\'t have any geometry', { timout: 1000 })
+        }
       }
     },
     viewResultMain () {

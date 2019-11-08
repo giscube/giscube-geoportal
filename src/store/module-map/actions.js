@@ -224,21 +224,25 @@ export function enableDoubleClickZoom (context) {
   context.state.mapObject.doubleClickZoom.enable()
 }
 
-export function addLayer (context, { id, layerDescriptor, title, options, metaOptions, auth = false }) {
+export async function addLayer (context, { id, layerDescriptor, title, options, metaOptions, auth = false }) {
   const map = context.state.mapObject
   const headers = auth ? context.rootGetters['auth/headers'] : void 0
-  createExternalLayer({ layerDescriptor, title, options, map, popupComponent: FeaturePopup, metaOptions, headers })
-    .then(({ type, layer }) => {
-      map.addLayer(layer)
+  try {
+    const { type, layer } = await createExternalLayer({ layerDescriptor, title, options, map, popupComponent: FeaturePopup, metaOptions, headers })
+    if (!type || !layer) {
+      return false
+    }
+    map.addLayer(layer)
 
-      const name = type === 'WMS' ? layerDescriptor.title : title
-      context.dispatch('addOverlay', { id, layer, layerType: type, name })
-    })
-    .catch(e => {
-      if (e) {
-        except(e)
-      }
-    })
+    const name = type === 'WMS' ? layerDescriptor.title : title
+    context.dispatch('addOverlay', { id, layer, layerType: type, name })
+    return true
+  } catch (e) {
+    if (e) {
+      except(e)
+    }
+    return false
+  }
 }
 
 export function addSharedMarker (context, marker) {

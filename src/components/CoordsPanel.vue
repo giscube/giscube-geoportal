@@ -44,6 +44,9 @@ export default {
     }
   },
   computed: {
+    canPin () {
+      return !!this.coords
+    },
     coordinates () {
       return this.result && this.result.coords
     },
