@@ -9,7 +9,8 @@ export const LAYER_TEMPLATE = Object.freeze({
   },
   title: 'string',
   options: 'object',
-  auth: 'boolean'
+  auth: 'boolean',
+  share: 'boolean'
 })
 
 export const LAYER_TEMPLATE_DEFAULTS = Object.freeze({
@@ -20,5 +21,6 @@ export const LAYER_TEMPLATE_DEFAULTS = Object.freeze({
     projection: '4326'
   },
   options: {},
-  auth: false
+  auth: false,
+  share: false
 })

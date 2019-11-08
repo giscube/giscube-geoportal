@@ -6,6 +6,7 @@ import initGmaps from './gmaps'
 import normalizeImage from './normalizeImage'
 import * as notifications from './notifications'
 import Options from './options'
+import * as refs from './refs'
 import * as utils from './utils'
 import L from './leaflet'
 
@@ -18,6 +19,7 @@ export default {
   normalizeImage,
   notifications,
   Options,
+  refs,
   utils,
   L
 }
