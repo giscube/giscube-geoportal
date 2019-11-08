@@ -39,6 +39,7 @@
         />
 
         <q-btn outline no-caps
+          :disabled="!canPin"
           icon="layers"
           :label="$t('actions.pinToMap') | capitalize"
           @click="pin"
@@ -184,6 +185,9 @@ export default {
     },
     title () {
       return null
+    },
+    canPin () {
+      return false
     }
   },
   methods: {
