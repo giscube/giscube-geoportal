@@ -16,6 +16,22 @@ export default {
   props: ['feature', 'title', 'renderContents'],
   components: {
     PopupData
+  },
+  data () {
+    return {
+      query: {
+        latlng: null
+      }
+    }
+  },
+  methods: {
+    onOpen ({ target }) {
+      this.query.latlng = target.getLatLng()
+      this.$store.commit('setQuery', this.query)
+    },
+    onClose () {
+      this.$store.dispatch('removeQuery', this.query)
+    }
   }
 }
 </script>
