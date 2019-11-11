@@ -97,7 +97,7 @@ export function setOverlays (context, overlays) {
   context.dispatch('reorderOverlay')
 }
 
-export function addOverlay (context, { id, layer, layerType, name, opacity }) {
+export function addOverlay (context, { id, layer, layerType, name, opacity, share = true }) {
   const overlays = context.state.layers.overlays
   const overlaysGroup = context.state.layers._overlaysGroup
   if (id === void 0) {
@@ -113,6 +113,8 @@ export function addOverlay (context, { id, layer, layerType, name, opacity }) {
       opacity = existing.opacity
     }
 
+    existing.share = existing.share || share
+
     if (existing.layer !== layer) {
       existing.setVisible(false)
       existing.layer = layer
@@ -127,6 +129,7 @@ export function addOverlay (context, { id, layer, layerType, name, opacity }) {
       name,
       layer,
       layerType,
+      share,
       visible: false,
       setVisible (value) {
         if (typeof value !== 'boolean') {
@@ -224,7 +227,7 @@ export function enableDoubleClickZoom (context) {
   context.state.mapObject.doubleClickZoom.enable()
 }
 
-export async function addLayer (context, { id, layerDescriptor, title, options, metaOptions, auth = false }) {
+export async function addLayer (context, { id, layerDescriptor, title, options, metaOptions, auth = false, share = true }) {
   const map = context.state.mapObject
   const headers = auth ? context.rootGetters['auth/headers'] : void 0
   try {
@@ -235,7 +238,7 @@ export async function addLayer (context, { id, layerDescriptor, title, options, 
     map.addLayer(layer)
 
     const name = type === 'WMS' ? layerDescriptor.title : title
-    context.dispatch('addOverlay', { id, layer, layerType: type, name })
+    context.dispatch('addOverlay', { id, layer, layerType: type, name, share })
     return true
   } catch (e) {
     if (e) {
@@ -258,7 +261,7 @@ export function addDefaultLayers (context) {
     setTimeout(() => {
       const l = defaultsDeep(layer, LAYER_TEMPLATE_DEFAULTS)
       validate(l, LAYER_TEMPLATE)
-      context.dispatch('addLayer', layer)
+      context.dispatch('addLayer', l)
     }, 0)
   })
 }
