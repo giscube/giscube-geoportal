@@ -227,7 +227,7 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
             }
 
             this._content = new PopupContent({
-              parent,
+              parent: parent || root,
               propsData: {
                 ...(popup.propsData || {}),
                 feature: this,
@@ -250,6 +250,8 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
             this._content.$on('update-popup-size', _ => this._container.update())
 
             transform(popup.onEachPopup, { content: this._content, container: this._container })
+            this._container.on('add', (...args) => this._content.onOpen && this._content.onOpen(...args))
+            this._container.on('remove', (...args) => this._content.onClose && this._content.onClose(...args))
           }
         }
       },
