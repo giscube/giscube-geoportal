@@ -9,6 +9,7 @@ export default {
     download: 'descarrega',
     cancel: 'cancel·la',
     close: 'tanca',
+    copy: 'copia',
     delete: 'elimina',
     discard: 'descarta',
     previous: 'anterior',
