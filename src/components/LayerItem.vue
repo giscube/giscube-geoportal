@@ -6,10 +6,24 @@
           :value="layer.visible"
           color="black"
           style="flex-grow: 1;"
+          :label="layer.name"
           @input="$emit('toggle-layer', { overlay: layer, visible: $event })"
-        >
-          <span @click.stop="layer.id.canOpen && layer.id.canOpen() ? $store.dispatch('openReference', layer) : null">{{layer.name}}</span>
-        </q-checkbox>
+        />
+        <q-btn
+          flat
+          dense
+          round
+          size="small"
+          @click.stop="openLayer(layer)"
+          class="desktop-only"
+        ><q-icon name="info" size="20px" /></q-btn>
+        <q-btn
+          flat
+          round
+          icon="info"
+          @click.stop="openLayer(layer)"
+          class="desktop-hide"
+        />
         <q-btn
           flat
           round
@@ -59,6 +73,13 @@ export default {
   data () {
     return {
       panelOpen: false
+    }
+  },
+  methods: {
+    openLayer (layer) {
+      if (layer && layer.id && layer.id.canOpen && layer.id.canOpen()) {
+        this.$store.dispatch('openReference', layer)
+      }
     }
   }
 }
