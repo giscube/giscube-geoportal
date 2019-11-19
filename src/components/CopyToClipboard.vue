@@ -8,7 +8,8 @@
   >
     <template v-slot:append>
       <q-btn
-        :icon="feedback || copied > 0 ? 'fas fa-check' : 'fas fa-clipboard'"
+        :icon="feedback || copied > 0 ? 'fas fa-check' : 'fas fa-copy'"
+        :label="feedback || copied > 0 ? '' : $t('actions.copy')"
         flat
         dense
         :ripple="false"

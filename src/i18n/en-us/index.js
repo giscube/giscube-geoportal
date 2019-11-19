@@ -8,6 +8,7 @@ export default {
     dontAsk: 'don\'t ask me again',
     close: 'close',
     cancel: 'cancel',
+    copy: 'copy',
     download: 'download',
     delete: 'delete',
     discard: 'discard',
