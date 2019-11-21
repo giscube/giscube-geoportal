@@ -8,6 +8,7 @@ import * as notifications from './notifications'
 import Options from './options'
 import * as utils from './utils'
 import L from './leaflet'
+import * as refs from './refs'
 
 export default {
   DottedPath,
@@ -19,5 +20,6 @@ export default {
   notifications,
   Options,
   utils,
+  refs,
   L
 }
