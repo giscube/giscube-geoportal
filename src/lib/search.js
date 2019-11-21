@@ -75,21 +75,17 @@ export default class Search {
 
   search (q) {
     this.promises = []
-    this.results = Vue.observable([])
 
     this.setAllSearches(q)
 
-    this.promises.forEach(promise => {
+    this.results = Vue.observable(this.promises.map(() => []))
+
+    this.promises.forEach((promise, index) => {
       promise
         .then(result => {
-          // Save the result in this.results (flatten)
-          if (Array.isArray(result)) {
-            Array.prototype.push.apply(this.results, result)
-          } else {
-            this.results.push(result)
-          }
+          this.results[index] = result
         })
-        .catch(noop) // Will be propegated to the search. Not out reponsibility
+        .catch(noop) // Will be propegated to the search. Not our reponsibility
     })
 
     const search = Promise.all(this.promises).then(_ => this.results)
