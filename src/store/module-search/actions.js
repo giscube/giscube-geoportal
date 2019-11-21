@@ -39,7 +39,7 @@ export function fetch (context) {
 
   search
     .then(results => {
-      context.dispatch('finishResults', results)
+      context.dispatch('finishResults', results.flat())
     })
     .catch(error => {
       context.commit('errorFetching', true)

@@ -1,7 +1,7 @@
 import { STATES } from './constants.js'
 
 export function results (state) {
-  return state.fetchingResults || state.finalResults
+  return state.finalResults || (state.fetchingResults && state.fetchingResults.flat())
 }
 
 export function state (state) {
