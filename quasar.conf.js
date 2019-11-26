@@ -52,7 +52,8 @@ module.exports = function (ctx) {
       // analyze: true,
       // extractCSS: false,
       // using this while source maps are correctly picked up in apps using this lib:
-      devtool: 'eval',
+      devtool: 'source-map',
+      sourceMap: true,
       extendWebpack (cfg) {
         // cfg.plugins.push(new BundleAnalyzerPlugin())
 
@@ -71,12 +72,6 @@ module.exports = function (ctx) {
         htmlWebpackPlugin.options.clientVersion = Math.floor(Date.now() / 1000)
 
         if (process.env.LIB && cfg.mode === 'production') {
-          console.log('process.env.LIB', process.env.LIB)
-          console.log('CFG.entry', cfg.entry)
-          // console.log('CFG.output', cfg.output)
-          // console.log('CFG.optimization', cfg.optimization)
-          console.log('CFG.plugins', cfg.plugins)
-
           cfg.entry = {
             'giscube-geoportal': './src/lib.js'
           }
@@ -88,16 +83,13 @@ module.exports = function (ctx) {
           }
           cfg.optimization.splitChunks = undefined
           cfg.optimization.runtimeChunk = false  // set to 'single' if multiple chunks
-          console.log('CFG.externals', cfg.externals)
 
-          cfg.plugins.push(new MiniCssExtractPlugin({
-            options:
-              { filename: 'giscube-geoportal.min.css' }
-          }))
-
-          // cfg.plugins.push(new ExtractTextPlugin({
-          //   filename: 'giscube-geoportal.min.css'
-          // })
+          const miniCssExtractPlugin = new MiniCssExtractPlugin({
+            filename: 'giscube-geoportal.min.css',
+            chunkFilename: 'giscube-geoportal.min.css'
+          })
+          const index = cfg.plugins.findIndex(plugin => plugin.constructor === MiniCssExtractPlugin)
+          cfg.plugins[index] = miniCssExtractPlugin
 
           cfg.externals = [
             'leaflet',
