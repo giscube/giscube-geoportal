@@ -1,5 +1,6 @@
 *
-!/dist/lib/giscube-geoportal.css
 !/dist/lib/giscube-geoportal.min.css
+!/dist/lib/giscube-geoportal.min.css.map
 !/dist/lib/giscube-geoportal.min.js
+!/dist/lib/giscube-geoportal.min.js.map
 !package.json
