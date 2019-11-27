@@ -42,7 +42,7 @@ function except (error, { hide = false } = {}) {
       self._notify('Internal error')
     }
   } else if (isAxiosError(error)) {
-    const details = (error.response.status >= 400 && error.response.status < 500)
+    const details = error.response && (error.response.status >= 400 && error.response.status < 500)
     self._sentry(error)
     self._log(error)
 
