@@ -24,8 +24,10 @@ export default {
 <style>
 .draw-message-input {
   background-color: rgba(255, 255, 255, 0.2);
-  height: 1.2em;
+  height: 1.5em;
   margin: auto 1ch;
+  padding: 0 1ch;
   color: inherit !important;
+  border-radius: 10px;
 }
 </style>
