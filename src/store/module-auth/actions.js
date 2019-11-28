@@ -103,7 +103,7 @@ export function saveState (context) {
 }
 
 export function updateUserInfo (context) {
-  context.dispatch('dataLayer/refreshSources', void 0, { root: true })
+  context.commit('dataLayer/setInitialState', void 0, { root: true })
   if (context.state.accessToken === null) {
     return
   }
