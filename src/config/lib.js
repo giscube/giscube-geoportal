@@ -94,7 +94,12 @@ export default new Options({
       'printPage',
       '-----------',
       'printDate'
-    ]
+    ],
+
+    sidebar: {
+      min: 300,
+      steps: [30, 45, 60, 75]
+    }
   },
   locale: {
     main: 'en-us'

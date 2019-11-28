@@ -48,7 +48,7 @@ export default {
   data () {
     return {
       resizeDiff: 0,
-      widthPercentage: 30
+      widthPercentage: this.$config.layout.sidebar.steps[0]
     }
   },
   computed: {
@@ -137,9 +137,9 @@ export default {
         }
         width = this.layoutSize.width * widthPercentage / 100
         width = Math.min(this.layoutSize.width - rightMargin, width)
-        width = Math.max(300, width)
+        width = Math.max(this.$config.layout.sidebar.min, width)
       } else {
-        width = 300
+        width = this.$config.layout.sidebar.min
       }
       // this.width = Math.max(this.widthPercentage * 10, Math.min((this.widthPercentage + 10) * 100, width))
       this.width = width
@@ -152,14 +152,14 @@ export default {
         return
       }
 
-      const changed = [45, 60, 75].some(width => {
+      const changed = this.$config.layout.sidebar.steps.some(width => {
         if (this.widthPercentage < (width - 5)) {
           this.widthPercentage = width
           return true
         }
       })
       if (!changed) {
-        this.widthPercentage = 30
+        this.widthPercentage = this.$config.layout.sidebar.steps[0]
       }
       this.onResize()
     },
