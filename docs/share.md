@@ -55,9 +55,9 @@ Point to center the map to.
 ### [g] Geometry
 Geometry to be added to the map.
 
-  - Type: [List](#list)([Geometry](#geometry), `:`)
+  - Type: [List](#list)([MsgGeom](#msggeom), `:`)
   - Multiple: overrides
-  - Example: `g=m41.973,2.780:l41.973,2.780;41.973,2.6;42,2.6`
+  - Example: `g=m41.973,2.780~This%20is%20a%20point:l41.973,2.780;41.973,2.6;42,2.6`
 
 ### [m] Message
 Message to share it with.
@@ -129,6 +129,13 @@ Examples:
  - `m41.973,2.780`
  - `l41.973,2.780;41.973,2.6;42,2.6`
 
+### MsgGeom
+Geometry with an optional message (separated by `~`).
+
+Examples:
+ - `m41.973,2.780`
+ - `l41.973,2.780;41.973,2.6;42,2.6~This%20is%20a%20line`
+
 ### List (T, s)
 Representation of list of type `T` with spacer `s`. `s` should not be used by `T`.
 
@@ -155,7 +162,7 @@ Examples:
 
 
 ### String
-URL encoded string.
+URL component encoded string.
 
 Examples:
  - `foo`

@@ -8,6 +8,8 @@ import { CoordinatesRef, GiscubeRef } from 'src/lib/refs'
 import { ParseError, UnsupportedTypeError } from './errors'
 
 const truthy = v => !!v
+const regexEscape = v => v.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&') // https://stackoverflow.com/a/3561711
+const separateFirst = separator => v => v.split(new RegExp(regexEscape(separator) + '(.*)')).filter(truthy)
 
 const types = {}
 
@@ -158,6 +160,24 @@ types.geom = types.geometry = {
 }
 
 types.list = list
+
+const msgGeomSplit = separateFirst('~')
+types.msgGeom = types.msggeom = {
+  fromQuery (str) {
+    const [geom, message] = msgGeomSplit(str)
+    const result = types.geom.fromQuery(geom)
+    result.sharedMessage = message && types.string.fromQuery(message)
+    return result
+  },
+  toQuery (layer) {
+    const result = [types.geom.toQuery(layer)]
+    if (layer.sharedMessage) {
+      result.push(types.string.toQuery(layer.sharedMessage))
+    }
+    return result.join('~')
+  }
+}
+
 types.number = {
   fromQuery (str) {
     let r
