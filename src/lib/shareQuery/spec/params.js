@@ -17,7 +17,7 @@ params.center = params.c = {
 
 params.geometry = params.geom = params.g = {
   key: 'g',
-  type: types.list(types.geometry, ':'),
+  type: types.list(types.msgGeom, ':'),
   multi: behaviors.overrides
 }
 

@@ -148,7 +148,12 @@ export default {
         this.sharedLayer.addLayer(marker)
       }
       if (g) {
-        g.forEach(this.sharedLayer.addLayer.bind(this.sharedLayer))
+        g.forEach(layer => {
+          if (layer.sharedMessage) {
+            layer.bindPopup(layer.sharedMessage)
+          }
+          this.sharedLayer.addLayer(layer)
+        })
       }
 
       if (this.message) {

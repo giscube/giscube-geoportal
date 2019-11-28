@@ -49,7 +49,7 @@
             removable
             @remove="removeFromShared(layer)"
           >
-            <span v-html="layerText(layer)"></span>
+            <span v-html="layerText(layer)"></span><draw-message-input :layer="layer" />
           </q-chip>
         </div>
         <div v-for='(measure, key) in measureControl.measures' class='measure' :key="key">
@@ -59,7 +59,7 @@
             removable
             @remove="removeMeasure(measure)"
           >
-            <span v-html="measurementText(measure)"></span>
+            <span v-html="measurementText(measure)"></span><draw-message-input :layer="measureLayer(measure)" />
           </q-chip>
         </div>
       </div>
@@ -77,10 +77,12 @@ import area from '@turf/area'
 import L from 'src/lib/leaflet'
 import { createLayer } from 'src/lib/geomUtils'
 
+import DrawMessageInput from 'components/DrawMessageInput.vue'
 import MeasureResultPopup from 'components/MeasureResultPopup.vue'
 
 export default {
   components: {
+    DrawMessageInput,
     QBtn,
     QChip
   },
@@ -160,6 +162,9 @@ export default {
         result += '<sup>2</sup>'
       }
       return result
+    },
+    measureLayer (measure) {
+      return measure.layer.getLayers()[0]
     },
     addPopupToLayer (measure) {
       let PopupContent = Vue.extend(MeasureResultPopup)
