@@ -97,8 +97,9 @@ export default new Options({
     ],
 
     sidebar: {
-      min: 300,
-      steps: [30, 45, 60, 75]
+      minWidthPixels: 300,
+      defaultWidthPercentage: 30,
+      steps: [45, 60, 75]
     }
   },
   locale: {
