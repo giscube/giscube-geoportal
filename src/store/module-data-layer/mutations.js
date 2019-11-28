@@ -15,3 +15,11 @@ export function table (state, table) {
   }
   state.table = table
 }
+
+export function clearLoadingSourceErrors (state) {
+  Vue.set(state, 'loadingSourceErrors', [])
+}
+
+export function addLoadingSourceError (state, error) {
+  state.loadingSourceErrors.push(error)
+}

@@ -93,6 +93,7 @@ export default {
       editElements: 'Edita {elements}',
       editing1: 'Editant element {index} de {total}',
       editingN: 'Editant {n} elements de {total}',
+      errorsLoadingSources: 'Errors al carregar les dades',
       filterByPolygon: 'Polígon',
       filterByView: 'Mapa',
       filters: 'Filtres',

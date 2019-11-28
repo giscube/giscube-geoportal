@@ -9,7 +9,13 @@
     >
       <template v-slot:header>
         <q-item-section>
-          <q-item-label class="text-h6">{{ mainLabel }}</q-item-label>
+          <q-item-label class="text-h6">
+            {{ mainLabel }}
+            <q-badge v-if="loadingErrors > 0" color="negative" align="center">
+              {{loadingErrors}}
+              <q-icon name="error" color="white" class="q-ml-xs" />
+            </q-badge>
+          </q-item-label>
         </q-item-section>
         <q-item-section
           side
@@ -43,7 +49,8 @@
       <q-item
         v-else-if="sources.length < 1"
       >
-        <q-item-section class="text-caption">{{ $t('states.empty') | capitalize }}</q-item-section>
+        <q-item-section v-if="loadingErrors > 0" class="text-caption">{{ t('errorsLoadingSources') }}</q-item-section>
+        <q-item-section v-else class="text-caption">{{ $t('states.empty') | capitalize }}</q-item-section>
       </q-item>
       <q-list
         v-else
@@ -73,7 +80,7 @@
 </template>
 
 <script>
-import { Ripple, QBtn, QExpansionItem, QItem, QItemLabel, QItemSection, QList, QSpinner } from 'quasar'
+import { Ripple, QBadge, QBtn, QExpansionItem, QIcon, QItem, QItemLabel, QItemSection, QList, QSpinner } from 'quasar'
 import TranslationMixin from './TranslationMixin'
 
 export default {
@@ -89,8 +96,10 @@ export default {
     }
   },
   components: {
+    QBadge,
     QBtn,
     QExpansionItem,
+    QIcon,
     QItem,
     QItemLabel,
     QItemSection,
@@ -117,6 +126,9 @@ export default {
       } else {
         return this.t('title')
       }
+    },
+    loadingErrors () {
+      return this.$store.state.dataLayer.loadingSourceErrors.length
     }
   },
   watch: {
