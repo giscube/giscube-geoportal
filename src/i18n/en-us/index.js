@@ -91,6 +91,7 @@ export default {
       dialogNewGeom: 'Show form after adding an element',
       edit: 'Edit',
       editElements: 'Edit {elements}',
+      errorsLoadingSources: 'Errors while loading the data sources',
       filterByPolygon: 'Polygon',
       filterByView: 'Map',
       filters: 'Filters',

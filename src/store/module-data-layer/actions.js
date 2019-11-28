@@ -2,7 +2,6 @@ import clone from 'lodash/clone.js'
 
 import databaseLayersApi from '../../api/databaselayers.js'
 
-import except from '../../lib/except.js'
 import { throwUnhandledExceptions } from '../../lib/promiseUtils.js'
 
 export function invalidateState (context) {
@@ -12,6 +11,7 @@ export function invalidateState (context) {
 
 export function refreshSources (context) {
   const editsources = this.$config.editsources || []
+  context.commit('clearLoadingSourceErrors')
 
   const requests = []
   editsources.forEach((source, index) => {
@@ -32,7 +32,10 @@ export function refreshSources (context) {
         s.index = index
         return s
       })
-      .catch(except)
+      .catch(e => {
+        console.error(e)
+        context.commit('addLoadingSourceError', e)
+      })
     requests.push(request)
   })
   const result = new Promise((resolve, reject) => {
