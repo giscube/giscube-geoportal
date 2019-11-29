@@ -48,7 +48,7 @@ export default {
   data () {
     return {
       resizeDiff: 0,
-      widthPercentage: this.$config.layout.sidebar.defaultWidthPercentage
+      widthPercentage: this.$config.layout.sidebar.initialWidthPercentage
     }
   },
   computed: {
@@ -158,7 +158,7 @@ export default {
         }
       })
       if (!changed) {
-        this.widthPercentage = this.$config.layout.sidebar.defaultWidthPercentage
+        this.widthPercentage = Math.max(this.$config.layout.sidebar.steps[0], this.$config.layout.sidebar.minWidthPercentage)
       }
       this.onResize()
     },
@@ -182,7 +182,7 @@ export default {
         this.resized = true
       }
       const widthPercentage = (mouseX - this.resizeDiff) / this.layoutSize.width * 100
-      this.widthPercentage = Math.min(90, Math.max(this.$config.layout.sidebar.defaultWidthPercentage, widthPercentage))
+      this.widthPercentage = Math.min(90, Math.max(this.$config.layout.sidebar.minWidthPercentage, widthPercentage))
       this.onResize()
     },
     onToggleWidthMouseup (event) {
