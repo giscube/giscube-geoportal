@@ -1,24 +1,35 @@
 <template>
-  <div>
-    <div class="catalog-result"
-         @click="viewResultMain">
-      <span class="catalog-result-add-to-map"
-            v-if="canBePinned"
-            @click.stop="viewResult"
-            ><q-icon name="layers"></q-icon> {{ $t('actions.addToMap') | capitalize }}</span>
-      <span class="catalog-result-title">{{ result.title }}</span>
-      <span class="catalog-result-description">{{ result.description }}</span>
+  <div class="row no-wrap catalog-result" @click="viewResultMain">
+    <div class="col no-wrap">
+      <div class="catalog-result-title">{{ result.title }}</div>
+      <div class="catalog-result-description">{{ result.description }}</div>
     </div>
+    <q-btn
+      v-if="canBePinned"
+      flat
+      class="add-to-map"
+      style="color: initial"
+      @click.stop="viewResult"
+    >
+      <div class="add-to-map-icon">
+        <q-icon name="layers" />
+        <q-badge color="transparent" dense flat floating style="font-size: 0.6em; right: -1em">
+          <q-icon name="add" align="top" color="black" />
+        </q-badge>
+      </div>
+    </q-btn>
   </div>
 </template>
 
 <script>
-import { QIcon } from 'quasar'
+import { QBadge, QBtn, QIcon } from 'quasar'
 import { notify } from 'src/lib/notifications'
 
 export default {
   props: ['result'],
   components: {
+    QBadge,
+    QBtn,
     QIcon
   },
   data () {
@@ -62,17 +73,22 @@ export default {
     display: block;
     font-weight: bold;
   }
-  .catalog-result-add-to-map {
-    float: right;
+  .add-to-map {
+    font-size: 0.7em;
     background-color: #eee;
     border-radius: 5px;
-    padding: 5px 10px;
-    cursor: pointer;
-    margin: 0 0 0 10px;
 
     &:hover {
       background-color: #c9c9c9;
     }
+  }
+  .add-to-map-icon {
+    position: relative;
+    width: 1em;
+    height: 1em;
+    width: max-content;
+    height: max-content;
+    padding: 0.2em;
   }
 }
 
