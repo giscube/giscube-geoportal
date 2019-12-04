@@ -9,6 +9,7 @@
       ref="header"
       :brand-logo="$config.branding.header.logo"
       :brand-text="$config.branding.header.text"
+      :brand-link="$config.branding.header.link"
       @home='navHome'
       @sidebar-visibility-changed="onVisibilityChanged"
     />
