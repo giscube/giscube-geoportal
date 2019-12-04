@@ -1,7 +1,7 @@
 <template>
   <q-header class="giscube-header">
     <q-toolbar class="giscube-toolbar">
-      <a class="giscube-header-brand cursor-pointer" v-touch-hold:2500.mouse="infoPopup"><img :src="brandLogo"><span>{{ brandText }}</span></a>
+      <a class="giscube-header-brand cursor-pointer" :href="brandLink" v-touch-hold:2500.mouse="infoPopup"><img :src="brandLogo"><span>{{ brandText }}</span></a>
 
       <header-item-holder
         v-for="(item, i) in headerTools"
@@ -56,7 +56,8 @@ import HeaderItemHolder from './HeaderItemHolder'
 export default {
   props: [
     'brandLogo',
-    'brandText'
+    'brandText',
+    'brandLink'
   ],
   components: {
     HeaderItemHolder,
@@ -151,6 +152,9 @@ a.giscube-header-brand span {
   display: inline-block;
   line-height: 1em;
   margin-top: 9px;
+}
+a.giscube-header-brand {
+  color: inherit;
 }
 .giscube-toolbar .q-btn {
   font-weight: 300;

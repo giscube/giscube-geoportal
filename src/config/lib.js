@@ -37,7 +37,8 @@ export default new Options({
   branding: {
     header: {
       logo: require('assets/logo_giscube.svg'),
-      text: 'Giscube Geoportal'
+      text: 'Giscube Geoportal',
+      link: null
     }
   },
   catalog: {
