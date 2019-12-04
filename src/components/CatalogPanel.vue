@@ -28,13 +28,15 @@
                   <q-btn
                     flat
                     dense
-                    size="0.75em"
                     style="color: initial"
                     icon="layers"
-                    :label="$t('actions.addToMap') | capitalize"
                     :disable="subcategory.loading"
                     @click.stop="addAll(subcategory)"
-                  />
+                  >
+                    <q-badge color="transparent" dense flat floating style="font-size: 0.6em; right: -1em">
+                      <q-icon name="add" align="top" color="black" />
+                    </q-badge>
+                  </q-btn>
                 </q-item-section>
               </template>
 
@@ -61,7 +63,7 @@
 </template>
 
 <script>
-import { QBtn, QExpansionItem, QIcon, QItemSection, QList, QSpinner } from 'quasar'
+import { QBadge, QBtn, QExpansionItem, QIcon, QItemSection, QList, QSpinner } from 'quasar'
 
 import CatalogResultComponent from './CatalogResult.vue'
 
@@ -71,6 +73,7 @@ const { mapState: mapCatalogState } = createNamespacedHelpers('catalog')
 export default {
   components: {
     CatalogResult: CatalogResultComponent,
+    QBadge,
     QBtn,
     QExpansionItem,
     QIcon,
