@@ -93,6 +93,7 @@ module.exports = function (ctx) {
 
           cfg.externals = [
             'leaflet',
+            'leaflet-boundary-canvas',
             'quasar',
             'vue',
             'vuex',
