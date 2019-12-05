@@ -167,6 +167,17 @@ export function createExternalLayer (config) {
   return Promise.reject()
 }
 
+function setTileLayerBoundary (layer, { boundary }) {
+  if (!layer || !boundary) {
+    return layer
+  }
+  if (!L.TileLayer.BoundaryCanvas) {
+    console.warn('[Giscube Geoportal] Trying to add a boundary without the necessary package installed. Use npm i leaflet-boundary-canvas to install it.')
+    return layer
+  }
+  return L.TileLayer.BoundaryCanvas.createFromLayer(layer, { boundary, trackAttribution: true })
+}
+
 function createExternalLayerWMS ({ layerDescriptor, title, options }) {
   const defaultOptions = {
     layers: layerDescriptor.layers,
@@ -181,7 +192,7 @@ function createExternalLayerWMS ({ layerDescriptor, title, options }) {
 
   return Promise.resolve({
     type: 'WMS',
-    layer: wms
+    layer: setTileLayerBoundary(wms, options)
   })
 }
 
@@ -195,7 +206,7 @@ function createExternalLayerTMS ({ layerDescriptor, title, options }) {
   const tms = L.tileLayer(layerDescriptor.url, layerOptions)
   return Promise.resolve({
     type: 'TMS',
-    layer: tms
+    layer: setTileLayerBoundary(tms, options)
   })
 }
 

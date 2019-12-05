@@ -5,6 +5,12 @@ import 'leaflet.path.drag'
 import 'leaflet-editable'
 import './leaflet-offset'
 
+try {
+  require('leaflet-boundary-canvas')
+} catch {
+  /* Optional dependecy not installed. Do nothing */
+}
+
 // CSS
 require('../../node_modules/leaflet/dist/leaflet.css')
 require('../../node_modules/leaflet.markercluster/dist/MarkerCluster.css')
