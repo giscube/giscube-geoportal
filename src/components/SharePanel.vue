@@ -90,7 +90,7 @@ export default {
       vm.$store.commit('setCurrentTool', 'share')
 
       if (Object.keys(to.query).length > 0) {
-        vm.applyQuery(to.query)
+        vm.applyQuery(to.query, 'home')
       }
     })
   },
@@ -116,7 +116,7 @@ export default {
         }
       })
     },
-    applyQuery (query) {
+    applyQuery (query, redirectTo) {
       this.$nextTick(() => {
         this.message = ShareQuery.extract(query, 'm')
 
@@ -128,6 +128,10 @@ export default {
           })
         } else {
           this.applyMapQuery(query, map)
+        }
+
+        if (redirectTo) {
+          this.$router.replace({ name: redirectTo })
         }
       })
     },
