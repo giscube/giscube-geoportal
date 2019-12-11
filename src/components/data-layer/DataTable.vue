@@ -109,7 +109,11 @@
           </tbody>
         </table>
       </div><!-- scroller -->
-      <table-pagination :value="pagination" @input="onPaginationChange" />
+      <table-pagination
+        :disable="table.editing"
+        :value="pagination"
+        @input="onPaginationChange"
+      />
     </q-card>
   </div>
 </template>

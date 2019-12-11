@@ -1,5 +1,5 @@
 <template>
-  <div class="table-pagination q-px-sm">
+  <div class="table-pagination q-px-sm" :disabled="disable">
     <div class="row items-centred justify-end">
       <div class="row no-wrap items-centred">
         {{ t('recordsPerPage') }}
@@ -7,6 +7,7 @@
           dense
           borderless
           class="q-ml-sm"
+          :disable="disable"
           :options="options"
           :value="value.rowsPerPage"
           :display-value="value.rowsPerPage === 0 ? $q.lang.table.allRows : value.rowsPerPage"
@@ -23,7 +24,7 @@
           flat
           dense
           round
-          :disable="!hasPrev"
+          :disable="disable || !hasPrev"
           :icon="$q.iconSet.table.prevPage"
           @click="$emit('input', {
             ...value,
@@ -34,7 +35,7 @@
           flat
           dense
           round
-          :disable="!hasNext"
+          :disable="disable || !hasNext"
           :icon="$q.iconSet.table.nextPage"
           @click="$emit('input', {
             ...value,
@@ -57,6 +58,10 @@ export default {
     value: {
       type: Object,
       required: true
+    },
+    disable: {
+      type: Boolean,
+      default: false
     }
   },
   components: {
