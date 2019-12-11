@@ -54,10 +54,12 @@ export default class GiscubeRef {
 
     const name = type === 'WMS' ? layerOptions.layerDescriptor.title : layerOptions.title
     return () => {
+      const getfeatureinfoSupport = layerOptions.layerDescriptor.giscube && layerOptions.layerDescriptor.giscube.getfeatureinfo_support
       $root.$store.dispatch('map/addOverlay', {
         id: this,
         layer,
         layerType: type,
+        getfeatureinfoSupport,
         name,
         opacity
       })

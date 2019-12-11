@@ -181,6 +181,10 @@ export default {
           continue
         }
 
+        if (layer.getfeatureinfoSupport !== void 0 && !layer.getfeatureinfoSupport) {
+          continue
+        }
+
         let wmsParams = layer.layer.wmsParams
 
         var sw = this.map.getBounds().getSouthWest()
