@@ -8,12 +8,17 @@ import SearchResultPopupDialog from 'components/SearchResultPopupDialog'
 function extractResultOptions (result, $root) {
   const isGeojson = !!result.geojson
   const isAuthenticated = result.private || (result.origin && result.origin.auth)
+  const layerDescriptor = result.children && result.children.length > 0 && result.children[0]
+  const options = {
+    ...(layerDescriptor && layerDescriptor.giscube && layerDescriptor.giscube.single_image && { singleTile: true }),
+    ...result.options
+  }
 
   return {
     result,
-    layerDescriptor: result && result.children && result.children.length > 0 && result.children[0],
+    layerDescriptor,
     title: result && result.title,
-    options: (result && result.options) || {},
+    options,
     map: $root.$store.state.map.mapObject,
     popupComponent: isGeojson ? SearchResultPopup : FeaturePopup,
     dialogComponent: isGeojson ? SearchResultPopupDialog : FeaturePopupDialog,

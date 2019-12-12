@@ -72,12 +72,17 @@ export default {
 
       const isGeojson = !!this.result.geojson
       const isAuthenticated = this.result.private || (this.result.origin && this.result.origin.auth)
+      const layerDescriptor = this.result && this.result.children && this.result.children.length > 0 && this.result.children[0]
+      const options = {
+        ...(layerDescriptor && layerDescriptor.giscube && layerDescriptor.giscube.single_image && { singleTile: true }),
+        ...(this.result && this.result.options)
+      }
 
       return {
         result: this.result,
-        layerDescriptor: this.result && this.result.children && this.result.children.length > 0 && this.result.children[0],
+        layerDescriptor,
         title: this.result && this.result.title,
-        options: (this.result && this.result.options) || {},
+        options,
         map: this.map,
         popupComponent: isGeojson ? SearchResultPopup : FeaturePopup,
         dialogComponent: isGeojson ? SearchResultPopupDialog : FeaturePopupDialog,
