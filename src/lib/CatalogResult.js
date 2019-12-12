@@ -17,11 +17,17 @@ export default class CatalogResult {
       return
     }
 
+    const layerDescriptor = this.children[0]
+    const options = {
+      ...(layerDescriptor && layerDescriptor.giscube && layerDescriptor.giscube.single_image && { singleTile: true }),
+      ...this.options
+    }
+
     return {
       id: !isVoid(this.giscube_id) && new GiscubeRef(this.giscube_id),
-      layerDescriptor: this.children[0],
+      layerDescriptor,
       title: this.title,
-      options: this.options || {},
+      options,
       metaOptions: {
         root
       },
