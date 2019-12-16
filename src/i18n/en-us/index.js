@@ -118,7 +118,7 @@ export default {
     },
     draw: {
       headerName: 'Draw',
-      title: 'Draw and measue',
+      title: 'Draw and measure',
       help: 'Draw geometries on the map and measure its distances or areas.',
 
       area: 'Area',
