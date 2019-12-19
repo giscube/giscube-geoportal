@@ -1,7 +1,10 @@
 import Vue from 'vue'
 import { notifyError, notifyHttpError } from './notifications'
 
+export class ProgrammingError extends Error {}
+
 const INTERNAL_ERROR_CLASSES = [
+  ProgrammingError,
   EvalError,
   RangeError,
   ReferenceError,
@@ -22,7 +25,7 @@ function isAxiosError (error) {
   return !!(error.config && (error.config.url || error.config.baseUrl) && error.config.method)
 }
 
-function except (error, { hide = false } = {}) {
+function except (error, { hide = false } = {}, vueConfig) {
   const self = except
   if (typeof error === 'string') {
     error = new Error(error)
@@ -36,7 +39,7 @@ function except (error, { hide = false } = {}) {
     } else {
       self._sentry(error)
     }
-    self._log(error)
+    self._log(error, vueConfig)
 
     if (!hide) {
       self._notify('Internal error')
@@ -44,14 +47,14 @@ function except (error, { hide = false } = {}) {
   } else if (isAxiosError(error)) {
     const details = error.response && (error.response.status >= 400 && error.response.status < 500)
     self._sentry(error)
-    self._log(error)
+    self._log(error, vueConfig)
 
     if (!hide) {
       self._notifyHttp(error, details)
     }
   } else {
     self._sentry(error)
-    self._log(error)
+    self._log(error, vueConfig)
 
     if (!hide) {
       self._notify(error)
@@ -64,11 +67,7 @@ Object.assign(except, {
   },
 
   vue (error, vm, info) {
-    const self = except
-    self._sentry(error)
-    self._vue(error, vm, info)
-    self._log(error)
-    self._notify(error)
+    except(error, {}, [vm, info])
   },
 
   setSentry (Sentry) {
@@ -87,7 +86,12 @@ Object.assign(except, {
     }
   },
 
-  _log: console.error,
+  _log (error, vueConfig) {
+    if (vueConfig !== void 0) {
+      except._vue(error, ...vueConfig)
+    }
+    console.error(error)
+  },
   _notify () {
     if (!this.config.silent) {
       notifyError.apply(null, arguments)
