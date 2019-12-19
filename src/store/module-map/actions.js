@@ -7,8 +7,6 @@ import validate from '../../lib/validate'
 import { isVoid, enumerate, reverse, unique } from '../../lib/utils'
 import ShareQuery from '../../lib/shareQuery'
 
-import FeaturePopup from '../../components/FeaturePopup'
-
 import { LAYER_TEMPLATE, LAYER_TEMPLATE_DEFAULTS } from './constants'
 
 export function setMap (context, value) {
@@ -230,7 +228,7 @@ export async function addLayer (context, { id, layerDescriptor, title, options, 
   const map = context.state.mapObject
   const headers = auth ? context.rootGetters['auth/headers'] : void 0
   try {
-    const { type, layer } = await createExternalLayer({ layerDescriptor, title, options, map, popupComponent: FeaturePopup, metaOptions, headers })
+    const { type, layer } = await createExternalLayer({ layerDescriptor, title, options, map, metaOptions, headers })
     if (!type || !layer) {
       return false
     }

@@ -1,6 +1,8 @@
 import { Dialog } from 'quasar'
 import Vue from 'vue'
 
+import { ProgrammingError } from 'src/lib/except'
+
 export function setPrinting (context, value) {
   if (value) {
     document.documentElement.setAttribute('data-print', '')
@@ -51,6 +53,10 @@ export function createDialog (context, config) {
     close: null
   }
   Vue.observable(handlers)
+
+  if (!(config.component instanceof Object)) {
+    throw new ProgrammingError('Cannot make a dialog without a component to put in it.')
+  }
 
   const api = Dialog.create({
     noRouteDismiss: true,

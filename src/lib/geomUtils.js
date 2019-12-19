@@ -7,6 +7,9 @@ import proj4 from 'proj4'
 import Table from './table'
 import { cloneClean } from './utils'
 
+import FeaturePopup from 'components/FeaturePopup'
+import FeaturePopupDialog from 'components/FeaturePopupDialog'
+
 export class CancelError extends Error {
   constructor (layer) {
     super('Cancelled operation')
@@ -216,7 +219,7 @@ function createExternalLayerTMS ({ layerDescriptor, title, options }) {
   })
 }
 
-function createExternalLayerGeoJSON ({ layerDescriptor, title, options, map, popupComponent, dialogComponent, headers, metaOptions = {} }) {
+function createExternalLayerGeoJSON ({ layerDescriptor, title, options, map, popupComponent = FeaturePopup, dialogComponent = FeaturePopupDialog, headers, metaOptions = {} }) {
   const { root } = metaOptions
   return new Promise((resolve, reject) => {
     axios.get(layerDescriptor.url, { headers })
