@@ -151,7 +151,7 @@ export default {
       this.map.addLayer(this.layer)
 
       const name = this.layerType === 'WMS' ? this.layerOptions.layerDescriptor.title : this.layerOptions.title
-      const getfeatureinfoSupport = this.layerOptions.layerDescriptor.giscube && this.layerOptions.layerDescriptor.giscube.getfeatureinfo_support
+      const getfeatureinfoSupport = this.layerOptions.layerDescriptor && this.layerOptions.layerDescriptor.giscube && this.layerOptions.layerDescriptor.giscube.getfeatureinfo_support
       this.$store.dispatch('map/addOverlay', {
         id: !isVoid(this.result.giscube_id) && new GiscubeRef(this.result.giscube_id),
         layer: this.layer,
