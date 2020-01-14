@@ -11,7 +11,7 @@
         <q-item-section>
           <q-item-label class="text-h6">
             {{ mainLabel }}
-            <q-badge v-if="loadingErrors > 0" color="negative" align="center">
+            <q-badge v-if="loadingErrors > 0" color="negative" align="middle">
               {{loadingErrors}}
               <q-icon name="error" color="white" class="q-ml-xs" />
             </q-badge>
