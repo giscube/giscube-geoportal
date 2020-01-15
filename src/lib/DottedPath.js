@@ -1,6 +1,4 @@
-function isValid (v) {
-  return v !== null && v !== void 0
-}
+import { isVoid, set } from './utils'
 
 export default class DottedPath {
   constructor (path) {
@@ -22,13 +20,13 @@ export default class DottedPath {
     const parts = this._parts
     let r = obj
     let i = 0
-    for (; i < parts.length && isValid(r); ++i) {
+    for (; i < parts.length && !isVoid(r); ++i) {
       r = r[parts[i]]
     }
     return i < parts.length ? void 0 : r
   }
 
-  setTo (obj, value) {
+  setTo (obj, value, assign = set) {
     const parts = this._parts
     const last = parts.length - 1
     if (last < 0) {
@@ -51,7 +49,7 @@ export default class DottedPath {
       r = r[p]
     }
 
-    r[parts[last]] = value
+    assign(r, parts[last], value)
     return value
   }
 }

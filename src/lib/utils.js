@@ -8,6 +8,11 @@ export function isVoid (value) {
   return value === null || value === void 0
 }
 
+export function set (obj, key, value) {
+  obj[key] = value
+  return value
+}
+
 export function unique () {
   if (window.Symbol) {
     return Symbol('')
