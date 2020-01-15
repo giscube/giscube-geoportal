@@ -14,6 +14,7 @@
             v-model="categoriesOpen[category.id]"
           >
             <q-expansion-item v-for="subcategory in category.subcategories"
+              v-show="subcategory.results ? subcategory.results.length > 0 : false"
               :key="subcategory.id"
               @show="$store.dispatch('catalog/onShowSubcategory', subcategory)"
               header-class="subcategory"
