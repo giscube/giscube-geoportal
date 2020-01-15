@@ -16,7 +16,7 @@ export default class DateTimeField extends Field {
   }
 
   getValue (data) {
-    let value = Field.prototype.getValue.call(this, data)
+    let value = super.getValue(data)
     if (!value) {
       return value
     }
@@ -71,7 +71,7 @@ export default class DateTimeField extends Field {
 
   rules (t) {
     return [
-      ...Field.prototype.rules.call(this, t),
+      ...super.rules(t),
       value => {
         const v = this.input2val(value)
         if (!v) {
