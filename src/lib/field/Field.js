@@ -1,5 +1,6 @@
 import Vue from 'vue'
 
+import DottedPath from '../DottedPath'
 import AsyncValue from '../async/Value'
 import MultiResult from '../MultiResult'
 import { cloneClean, isCleanEqual } from '../utils.js'
@@ -19,6 +20,7 @@ export default class Field {
     })
 
     this.requiresFeatures = false
+    this.path = new DottedPath(this.name)
   }
 
   // Callback with all the fields that have been created
@@ -29,7 +31,7 @@ export default class Field {
       return value
     }
     const props = properties || (row && row.properties)
-    return props && props[this.name]
+    return this.path.extractFrom(props)
   }
 
   setValue ({ row, properties, value }) {
@@ -44,7 +46,7 @@ export default class Field {
       if (AsyncValue.is(props[this.name])) {
         props[this.name].decrementReference()
       }
-      Vue.set(props, this.name, value)
+      this.path.setTo(props, value, Vue.set)
     }
   }
 
