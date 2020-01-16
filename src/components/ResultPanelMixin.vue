@@ -1,7 +1,14 @@
 <template>
   <div class="panel result-panel fit">
     <div class="panel-content limit-parent column no-wrap">
-      <p class="panel-title">{{ title }}</p>
+      <p class="panel-title">
+        <q-btn flat dense
+          icon="keyboard_arrow_left"
+          size="md"
+          @click="$router.push({ name: 'catalog' })"
+        />
+        {{ title }}
+      </p>
 
       <div v-if="address">
         <q-icon name="home" size="1.4em" /> {{ address }}
