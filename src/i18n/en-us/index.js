@@ -37,6 +37,7 @@ export default {
     layers: 'layers',
     lat: 'latitude',
     lng: 'longitude',
+    legend: 'legend',
     message: 'message',
     metadata: 'metadata',
     opacity: 'opacity',
