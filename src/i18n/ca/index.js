@@ -37,6 +37,7 @@ export default {
     layers: 'capes',
     lat: 'latitud',
     lng: 'longitud',
+    legend: 'llegenda',
     message: 'missatge',
     metadata: 'metadades',
     opacity: 'opacitat',

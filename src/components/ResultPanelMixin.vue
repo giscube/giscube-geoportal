@@ -67,6 +67,11 @@
         </table>
       </div>
 
+      <div class="legend" v-if="result && legend">
+        <p class="panel-subtitle">{{ $t('names.legend') | capitalize }}</p>
+        <div v-html="legend"></div>
+      </div>
+
       <div class="keywords" v-if="keywords">
         <div class="panel-subtitle">{{ $t('names.keywords') | capitalize }}</div>
         <q-chip
@@ -182,6 +187,9 @@ export default {
       return null
     },
     latlng () {
+      return null
+    },
+    legend () {
       return null
     },
     metadata () {
