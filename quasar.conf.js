@@ -52,8 +52,8 @@ module.exports = function (ctx) {
       // analyze: true,
       // extractCSS: false,
       // using this while source maps are correctly picked up in apps using this lib:
-      devtool: ctx.dev ? 'eval' : 'source-map',
-      sourceMap: !ctx.dev,
+      devtool: ctx.dev ? 'cheap-module-eval-source-map' : 'source-map',
+      sourceMap: true,
       extendWebpack (cfg) {
         // cfg.plugins.push(new BundleAnalyzerPlugin())
 
