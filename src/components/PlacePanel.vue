@@ -48,6 +48,9 @@ export default {
     keywords () {
       return this.result && this.result.keywords && this.result.keywords.split(',').map(item => item.trim())
     },
+    legend () {
+      return this.result && this.result.legend
+    },
     metadata () {
       const metadata = []
       let url = this.layerOptions && this.layerOptions.layerDescriptor && this.layerOptions.layerDescriptor.url
