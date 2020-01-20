@@ -16,7 +16,7 @@
       <table class="table table-striped table-hover">
         <tbody v-if="fields">
           <tr v-for='field in fields' class='attr' :key="field.name">
-            <th>{{ field.name }}</th>
+            <th>{{ field.label | capitalize }}</th>
             <td>{{ field.popupValue(feature) }}</td>
           </tr>
         </tbody>
@@ -39,7 +39,12 @@ import ImageDialog from 'components/ImageDialog'
 const DIALOG_IMG_ATTR = 'data-dialog-img'
 
 export default {
-  props: ['feature', 'fields', 'renderContents', 'table-fallback'],
+  props: {
+    feature: Object,
+    fields: Array,
+    renderContents: Function,
+    tableFallback: Boolean
+  },
   components: {
     QResizeObserver
   },

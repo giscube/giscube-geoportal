@@ -1,8 +1,10 @@
 import DottedPath from 'src/lib/DottedPath'
 import { buildFields } from 'src/lib/field/index'
 import { makeTemplate } from 'src/lib/makeGeoJsonOptions'
+import { ForeignKey } from 'src/lib/field'
 
 import { CircleStyle, ImageStyle, MarkerStyle, PathStyle } from './geom-styles'
+import GeomPath from './GeomPath'
 
 export default class TableInfo {
   constructor (info, constFields) {
@@ -20,6 +22,7 @@ export default class TableInfo {
         this.pkField = field
       }
     })
+    this.fks = this.fields.filter(f => f instanceof ForeignKey)
     this.tableFields = this.strlist2fields(info.design.list_fields)
     this.formFields = this.strlist2fields(info.design.form_fields)
     this.logicFormFields = this.fields.filter(field => field.onUpdate || this.formFields.includes(field))
@@ -43,6 +46,7 @@ export default class TableInfo {
     // Geometry info
     this.hasGeom = !!info.geom_type
     if (this.hasGeom) {
+      this.readonlyGeom = false
       this.geomType = info.geom_type.toLowerCase()
       this.geomPath = new DottedPath(info.geom_path)
 
@@ -61,6 +65,21 @@ export default class TableInfo {
     }
 
     this.referenceLayers = info.references
+  }
+
+  setup (relatedTables) {
+    for (let table of relatedTables) {
+      const info = table.info
+      if (!this.hasGeom && info.hasGeom) {
+        this.hasGeom = true
+        this.geomPath = new GeomPath(table)
+        this.readonlyGeom = true
+
+        this.geomType = info.geomType
+        this.shapeType = info.shapeType
+        this.geomStyle = info.geomStyle
+      }
+    }
   }
 
   strlist2fields (strlist) {

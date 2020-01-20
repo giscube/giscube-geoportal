@@ -7,6 +7,7 @@ import DBFormDialog from 'components/data-layer/DBFormDialog'
 
 import Popup from './Popup'
 import PopupDialog from './PopupDialog'
+import RelatedTable from './RelatedTable'
 import Remote from './Remote'
 import * as Row from './row'
 
@@ -25,7 +26,6 @@ export default class Table {
     const getConfig = () => root.$store.getters['auth/config']
     this.remote = new Remote(source, layer, getConfig, contantFields)
     this.info = null
-
     this.rows = []
     this.selected = new Set() /// selected rows' pks
     this.selectedList = [] // Vue won't support sets (until vue 3.0). Convert it manually
@@ -141,53 +141,55 @@ export default class Table {
     })
   }
 
-  fetchInfo () {
-    return this.remote.fetchInfo()
-      .then(info => {
-        this.info = info
+  async fetchInfo () {
+    const info = await this.remote.fetchInfo()
+    this.info = info
 
-        if (info.hasGeom) {
-          this.removeLayers()
-          Object.defineProperty(this, 'layer', {
-            configurable: true,
-            enumerable: false,
-            writable: false,
-            value: L.featureGroup()
-          })
-        }
+    this.relatedTables = info.fks.map(fk => new RelatedTable(this, fk))
+    await Promise.all(this.relatedTables.map(table => table.fetchInfo()))
+    info.setup(this.relatedTables)
 
-        if (info.referenceLayers && info.referenceLayers.length > 0) {
-          const token = this.$root.$store.state.auth.accessToken
-          const refLayers = this.info.referenceLayers.map(info => {
-            const url = `${info.url}?access_token=${token}`
-            const layer = L.tileLayer.wms(url, {
-              maxZoom: 22,
-              ...(info.options || {}),
-              tileSize
-            })
-            return {
-              layer,
-              title: info.title,
-              refresh: info.refresh
-            }
-          })
-
-          Object.defineProperty(this, 'refLayers', {
-            configurable: true,
-            enumerable: false,
-            writable: false,
-            value: refLayers
-          })
-        }
-
-        if (this.map) {
-          this.addTo(this.map)
-        }
-
-        this.defaultRow = this.newRow()
-
-        return this.info
+    if (info.hasGeom) {
+      this.removeLayers()
+      Object.defineProperty(this, 'layer', {
+        configurable: true,
+        enumerable: false,
+        writable: false,
+        value: L.featureGroup()
       })
+    }
+
+    if (info.referenceLayers && info.referenceLayers.length > 0) {
+      const token = this.$root.$store.state.auth.accessToken
+      const refLayers = this.info.referenceLayers.map(info => {
+        const url = `${info.url}?access_token=${token}`
+        const layer = L.tileLayer.wms(url, {
+          maxZoom: 22,
+          ...(info.options || {}),
+          tileSize
+        })
+        return {
+          layer,
+          title: info.title,
+          refresh: info.refresh
+        }
+      })
+
+      Object.defineProperty(this, 'refLayers', {
+        configurable: true,
+        enumerable: false,
+        writable: false,
+        value: refLayers
+      })
+    }
+
+    if (this.map) {
+      this.addTo(this.map)
+    }
+
+    this.defaultRow = this.newRow()
+
+    return info
   }
 
   getSelectedBounds () {
@@ -283,9 +285,7 @@ export default class Table {
   /// Sets the new data
   setData (data) {
     if (this.rows.length === 0) {
-      const rows = Row.toRows(this, data)
-      rows.forEach(row => row.add())
-      this.rows = rows
+      this.rows = Row.toRows(this, data)
       return
     }
 
@@ -309,7 +309,6 @@ export default class Table {
         const r = this.rows.find(r => r.pk === row.pk)
         return r.merge(row)
       }
-      row.add(this.layer)
       return row
     })
 
@@ -324,8 +323,12 @@ export default class Table {
     this.updateSelectedList()
   }
 
+  addRows () {
+    this.rows.forEach(row => row.add(this.layer))
+  }
+
   startEditing () {
-    if (this.info.hasGeom && this.map) {
+    if (this.info.hasGeom && !this.info.readonlyGeom && this.map) {
       eachLayer(this.layer, l => l.enableEdit(this.map))
     }
     this.editing = true
@@ -347,9 +350,9 @@ export default class Table {
     this.uiEdit(this.visibleSelectedList)
   }
 
-  update ({ pagination, immediate, wms } = {}) {
+  async update ({ pagination, immediate, wms } = {}) {
     if (this.editing) {
-      return Promise.reject(new EditingError())
+      throw new EditingError()
     }
 
     let requestData
@@ -359,24 +362,22 @@ export default class Table {
       requestData = this.remote.debouncedRequestData.bind(this.remote)
     }
 
-    return new Promise((resolve, reject) => {
-      if (wms) {
-        this.refLayers && this.refLayers.forEach(ref => {
-          ref.refresh && ref.layer.setParams({
-            _fu: Date.now() // Force update
-          }, false)
-        })
-      }
+    if (wms) {
+      this.refLayers && this.refLayers.forEach(ref => {
+        ref.refresh && ref.layer.setParams({
+          _fu: Date.now() // Force update
+        }, false)
+      })
+    }
 
-      requestData(pagination)
-        .then(data => {
-          if (data) {
-            this.setData(data)
-            this.select(this.selectedList.filter(pk => typeof pk === 'symbol'), { added: false })
-          }
-        })
-        .then(resolve, reject)
-    })
+    const data = await requestData(pagination)
+
+    if (data) {
+      this.setData(data)
+      await Promise.all(this.relatedTables.map(table => table.update()))
+      this.addRows()
+      this.select(this.selectedList.filter(pk => typeof pk === 'symbol'), { added: false })
+    }
   }
 
   updateByMap (pagination) {
