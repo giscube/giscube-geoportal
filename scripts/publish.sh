@@ -16,8 +16,8 @@ fi
 # Update package version (if necessary)
 if ! [[ "$(git log -1 --pretty=%B)" =~ ^[0-9]+\.[0-9]+\.[0-9]+(\-beta\.[0-9]+)?$ ]]; then  # If the last commit is NOT a version commit
   while true; do
-    read -p "New prerelease? [y/n] " yn
     echo
+    read -p "New prerelease? [y/n] " yn
     case $yn in
       [Yy]* ) break;;
       [Nn]* ) exit;;
@@ -28,10 +28,10 @@ if ! [[ "$(git log -1 --pretty=%B)" =~ ^[0-9]+\.[0-9]+\.[0-9]+(\-beta\.[0-9]+)?$
   npm version prerelease --preid=beta
 
   while true; do
-    read -p "Push prerelease? [Y/n] " yn
     echo
+    read -p "Push prerelease? [Y/n] " yn
     case $yn in
-      [Yy'']* )
+      [Yy]* | '' )
         git push
         git push --tags
         break
@@ -51,8 +51,8 @@ LIB=True quasar build
 
 # Publish
 while true; do
-  read -p "Are you sure do you want to publish? [y/n] " yn
   echo
+  read -p "Are you sure do you want to publish? [y/n] " yn
   case $yn in
     [Yy]* ) break;;
     [Nn]* ) exit;;
