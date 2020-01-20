@@ -6,7 +6,9 @@
     </slot>
 
     <div class="panel-content">
-      <p v-if="state === STATES.INITIAL">{{ t('instructions') }}</p>
+      <p v-if="state === STATES.INITIAL">
+        <slot name="instructions">{{ t('instructions') }}</slot>
+      </p>
       <div v-else-if="state === STATES.HAS_QUERY">
         <p class="panel-title">{{ t('history') | capitalize }}</p>
         <p
