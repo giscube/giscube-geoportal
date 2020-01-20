@@ -10,6 +10,7 @@ import PopupDialog from './PopupDialog'
 import RelatedTable from './RelatedTable'
 import Remote from './Remote'
 import * as Row from './row'
+import RowChanges from './RowChanges'
 
 export class EditingError extends Error {
   constructor () {
@@ -397,42 +398,25 @@ export default class Table {
     })
   }
 
-  save () {
+  async save () {
     this.saving = true
     if (this.info.hasGeom && this.map) {
       eachLayer(this.layer, l => l.disableEdit(this.map))
     }
-    this.remote.save(this.toBulk())
-      .then(_ => {
-        this.editing = false
-        this.rows.forEach(row => row.resetStatus())
-        this.update({ immediate: true, wms: true })
-          .catch(Vue.prototype.$except)
-      })
-      .catch(Vue.prototype.$except)
-      .then(() => {
-        this.saving = false
-      })
-  }
 
-  /// Returns the changes done in this table in Giscube Bulk format
-  toBulk () {
-    const result = {
-      ADD: [],
-      UPDATE: [],
-      DELETE: []
+    const rowChanges = new RowChanges(this.rows)
+    this.rows = rowChanges.persistentRows
+
+    const saveJob = rowChanges.asSaveJob(this.remote)
+    try {
+      this.$root.$store.dispatch('dataLayer/asyncSave', saveJob)
+      await saveJob.asPromise()
+      this.saving = false
+      this.rows.forEach(row => row.resetStatus())
+      this.editing = false
+      await this.update({ immediate: true, wms: true })
+    } catch (e) {
+      Vue.prototype.$except(e)
     }
-    this.rows.forEach(row => {
-      if (row.status.deleted) {
-        if (!row.status.new) {
-          result.DELETE.push(row.pk)
-        }
-      } else if (row.status.new) {
-        result.ADD.push(row.repr())
-      } else if (row.status.edited) {
-        result.UPDATE.push(row.diff())
-      }
-    })
-    return result
   }
 }

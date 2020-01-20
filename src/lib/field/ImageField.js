@@ -1,13 +1,13 @@
 import axios from 'axios'
 
 import giscubeApi from '../../api/giscube.js'
-import AsyncValue from '../async/Value'
+import { AsyncJob } from '../async'
 
 import Field from './Field'
 import ImageFormWidget from './widgets/form/Image'
 import ImageTableWidget from './widgets/table/Image'
 
-export class AsyncPhoto extends AsyncValue {
+export class AsyncPhoto extends AsyncJob {
   constructor (photo, source, authHeaders) {
     const tokenSource = axios.CancelToken.source()
     const job = {
@@ -37,7 +37,7 @@ export class AsyncPhoto extends AsyncValue {
       )
     }
 
-    this.getValue()
+    this
       .then(result => {
         URL.revokeObjectURL(this.tempUrl)
         this.tempUrl = null
@@ -80,7 +80,7 @@ export default class ImageField extends Field {
 
   repr (data) {
     let value = this.getValue(data)
-    if (value instanceof AsyncValue) {
+    if (value instanceof AsyncJob) {
       value = value.done ? value.result : null
     }
     return value ? value.value || value.src : null
@@ -88,7 +88,7 @@ export default class ImageField extends Field {
 
   str (data) {
     let value = this.getValue(data)
-    if (value instanceof AsyncValue) {
+    if (value instanceof AsyncJob) {
       value = value.done ? value.result : null
     }
     return ImageField.urlFilename(value) || ''
@@ -96,7 +96,7 @@ export default class ImageField extends Field {
 
   popupValue (data) {
     const value = this.getValue(data)
-    if (value instanceof AsyncValue) {
+    if (value instanceof AsyncJob) {
       return value.done ? value.result : null
     } else {
       return value
@@ -108,7 +108,7 @@ export default class ImageField extends Field {
       return value
     }
 
-    if (value instanceof AsyncValue) {
+    if (value instanceof AsyncJob) {
       if (value.done) {
         return ImageField.getUrl(value.result)
       } else {
@@ -124,7 +124,7 @@ export default class ImageField extends Field {
       return value
     }
 
-    if (value instanceof AsyncValue) {
+    if (value instanceof AsyncJob) {
       if (value.done) {
         return ImageField.getThumbnail(value.result)
       } else {
@@ -140,7 +140,7 @@ export default class ImageField extends Field {
       return value
     }
 
-    if (AsyncValue.is(value)) {
+    if (AsyncJob.is(value)) {
       if (value.done) {
         return ImageField.getFilename(value.result)
       } else {

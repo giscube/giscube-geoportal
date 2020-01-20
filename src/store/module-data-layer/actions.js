@@ -60,6 +60,9 @@ export function verifySourcesLoaded (context) {
   }
 }
 
-export function uploadPhoto (context, asyncPhoto) {
-  context.state.uploadQueue.add(asyncPhoto).run()
+function queueJob (context, asyncJob) {
+  context.state.asyncQueue.add(asyncJob).run()
 }
+// Both use the same queue so it uses the same code to add the jobs
+export const uploadPhoto = queueJob
+export const asyncSave = queueJob

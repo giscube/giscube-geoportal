@@ -1,11 +1,11 @@
 export default class AsyncQueue {
   constructor () {
-    this.asyncValues = []
+    this.asyncJobs = []
     this.running = false
   }
 
   get runnable () {
-    return !this.running && this.asyncValues.length > 0
+    return !this.running && this.asyncJobs.length > 0
   }
 
   run () {
@@ -26,26 +26,27 @@ export default class AsyncQueue {
   async _doRun () {
     let retry
 
-    while (this.asyncValues.length > 0) {
+    while (this.asyncJobs.length > 0) {
       retry = []
-      while (this.asyncValues.length > 0) {
-        const asyncValue = this.asyncValues.shift()
-        if (!asyncValue.usable) {
+      while (this.asyncJobs.length > 0) {
+        const asyncJob = this.asyncJobs.shift()
+
+        if (!asyncJob.usable) {
           continue
         }
-        if (asyncValue.delay) {
-          retry.push(asyncValue)
+        if (asyncJob.delay) {
+          retry.push(asyncJob)
           continue
         }
 
         try {
-          await asyncValue.retrieve()
+          await asyncJob.retrieve()
         } catch (error) {
           // Another one should do it
         }
       }
       if (retry.length > 0) {
-        this.asyncValues = retry
+        this.asyncJobs = retry
         // allow other async coroutines to kick in
         await new Promise(resolve => setTimeout(resolve, 0))
       }
@@ -54,8 +55,8 @@ export default class AsyncQueue {
     this.running = false
   }
 
-  add (asyncValue) {
-    this.asyncValues.push(asyncValue)
+  add (asyncJob) {
+    this.asyncJobs.push(asyncJob)
     return this
   }
 }

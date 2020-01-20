@@ -1,8 +1,8 @@
-import AsyncQueue from 'src/lib/async/Queue'
+import { AsyncQueue } from 'src/lib/async'
 
 export default {
   sources: null,
   loadingSourceErrors: [],
   table: null,
-  uploadQueue: new AsyncQueue()
+  asyncQueue: new AsyncQueue()
 }

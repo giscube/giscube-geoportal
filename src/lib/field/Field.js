@@ -1,7 +1,7 @@
 import Vue from 'vue'
 
 import DottedPath from '../DottedPath'
-import AsyncValue from '../async/Value'
+import { AsyncJob } from '../async'
 import MultiResult from '../MultiResult'
 import { cloneClean, isCleanEqual } from '../utils.js'
 
@@ -40,10 +40,10 @@ export default class Field {
     }
     const props = properties || (row && row.properties)
     if (props) {
-      if (AsyncValue.is(value)) {
+      if (AsyncJob.is(value)) {
         value.incrementReference()
       }
-      if (AsyncValue.is(props[this.name])) {
+      if (AsyncJob.is(props[this.name])) {
         props[this.name].decrementReference()
       }
       this.path.setTo(props, value, Vue.set)
@@ -54,9 +54,9 @@ export default class Field {
     const av = this.getValue(a)
     const bv = this.getValue(b)
 
-    if (AsyncValue.is(av) !== AsyncValue.is(bv)) {
+    if (AsyncJob.is(av) !== AsyncJob.is(bv)) {
       return false
-    } else if (AsyncValue.is(av)) {
+    } else if (AsyncJob.is(av)) {
       // both are async values thus we need just need to compare if they are the same object
       return av === bv
     } else if (MultiResult.is(av) !== MultiResult.is(bv)) {
@@ -104,7 +104,7 @@ export default class Field {
   }
 
   cloneValue (value) {
-    if (AsyncValue.is(value)) {
+    if (AsyncJob.is(value)) {
       // Keep the same value
     } else {
       value = cloneClean(value)
@@ -124,7 +124,7 @@ export default class Field {
     from = from.properties || (from.row && from.row.properties)
     to = to.properties || (to.row && to.row.properties)
 
-    if (AsyncValue.is(to[this.name])) {
+    if (AsyncJob.is(to[this.name])) {
       to[this.name].decrementReference()
     }
     Vue.set(to, this.name, from[this.name])
