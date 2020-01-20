@@ -13,11 +13,8 @@ import { QBtn } from 'quasar'
 
 import MultiResult from 'src/lib/MultiResult'
 import Table from 'src/lib/table'
+import { isVoid } from 'src/lib/utils'
 import TableDialog from 'components/data-layer/TableDialog'
-
-function isEmpty (v) {
-  return v === void 0 || v === null
-}
 
 export default {
   props: ['value', 'field', 'table', 'readonly', 'disable'],
@@ -26,14 +23,14 @@ export default {
   },
   computed: {
     isVoid () {
-      return isEmpty(this.value) || isEmpty(this.value._fk)
+      return isVoid(this.value) || isVoid(this.value._fk)
     },
     isMulti () {
       return MultiResult.is(this.value)
     },
     label () {
       let label = this.field.label
-      if (!this.isVoid && !this.isMulti && !isEmpty(this.value.count)) {
+      if (!this.isVoid && !this.isMulti && !isVoid(this.value.count)) {
         label += ` (${this.value.count})`
       }
 

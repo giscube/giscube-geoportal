@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import { isVoid } from 'src/lib/utils'
 import Field from './Field'
 import TableWidget from './widgets/form/Table'
 
@@ -51,6 +52,17 @@ export default class TableField extends Field {
 
   repr (data) {
     return void 0
+  }
+
+  tableValue (data) {
+    const value = this.getValue(data)
+    if (value && !isVoid(value.count)) {
+      return value.count
+    }
+  }
+
+  popupValue (data) {
+    return this.getValue(data)
   }
 
   formWidget () {
