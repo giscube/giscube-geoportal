@@ -52,6 +52,10 @@ export default class GeoJsonRow extends Row {
   }
 
   addEditEvents () {
+    if (this.info.readonlyGeom) {
+      return
+    }
+
     eachLayer(this.layer, layer => layer.on(EDIT_EVENTS, this._geomChanged))
   }
 

@@ -11,6 +11,7 @@ import PkField from './PkField'
 import SqlChoicesField from './SqlChoicesField'
 import TableField from './TableField'
 import TimeField from './TimeField'
+import ForeignKey from './ForeignKey'
 
 export const FIELDS = {
   default: Field,
@@ -19,6 +20,7 @@ export const FIELDS = {
   choices: ChoicesField,
   date: DateField,
   datetime: DateTimeField,
+  foreignkey: ForeignKey,
   image: ImageField,
   number: NumberField,
   linkedfield: LinkedField,
@@ -110,3 +112,5 @@ export function buildFields (layerInfo, constFields = {}) {
 
   return fields
 }
+
+export { ForeignKey }

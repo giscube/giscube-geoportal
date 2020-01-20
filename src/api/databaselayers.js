@@ -23,13 +23,13 @@ export default {
   getData ({ source, layer, pagination, filter, colFilters, extraParams }, config) {
     const url = source.url + `layerserver/databaselayers/${layer.name}/data/`
     const params = {
-      page: pagination.page,
-      page_size: pagination.rowsPerPage,
+      page: pagination && pagination.page,
+      page_size: pagination && pagination.rowsPerPage,
       ...extraParams
     }
 
-    params.ordering = pagination.sortBy
-    if (pagination.descending) {
+    params.ordering = pagination && pagination.sortBy
+    if (pagination && pagination.descending) {
       params.ordering = `-${params.ordering}`
     }
 
