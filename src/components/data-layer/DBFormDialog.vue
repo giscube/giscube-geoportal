@@ -83,7 +83,7 @@
         />
         <q-space />
         <q-btn
-          :label="toCommit ? $t('actions.cancel') : $t('actions.accept')"
+          :label="toCommit ? $t('actions.cancel') : $t('actions.close')"
           @click="onCancel"
         />
         <q-btn
