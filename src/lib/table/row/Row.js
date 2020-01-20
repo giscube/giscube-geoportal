@@ -1,3 +1,5 @@
+import { merge } from 'lodash'
+import { AsyncJob } from 'src/lib/async'
 import { getGeometry } from 'src/lib/geoJson'
 import { isCleanEqual } from 'src/lib/utils'
 import MultiResult from 'src/lib/MultiResult'
@@ -42,36 +44,39 @@ export default class Row {
       }
     })
 
-    const self = this
+    const row = this
     this.status = {
       _hasBeenModified: false,
       _deleted: false,
       _edited: false,
+      get consolidated () {
+        return self.asyncJobs.size === 0
+      },
       get edited () {
-        return self._edited
+        return this._edited
       },
       set edited (value) {
-        self._edited = value
-        self._updateModified()
-        return self._edited
+        this._edited = value
+        row._updateModified()
+        return this._edited
       },
       propsEdited: false,
       geomEdited: false,
       get selected () {
-        return self.parent.selectedList.includes(self.internalPk)
+        return row.parent.selectedList.includes(row.internalPk)
       },
       set selected (value) {
-        self.parent.selectRows([self], { added: !!value })
+        row.parent.selectRows([row], { added: !!value })
       },
       new: !data
     }
 
     Object.defineProperty(this.status, 'deleted', {
       get: () => this.status._deleted,
-      set: value => {
-        this.status._deleted = value
-        self._updateModified()
-        this.applyStyle()
+      set (value) {
+        this._deleted = value
+        row._updateModified()
+        row.applyStyle()
         return value
       }
     })
@@ -82,6 +87,8 @@ export default class Row {
     }
     // updates data to contain the constFields
     this.info.propsPath.setTo(this.data, this.properties)
+
+    this.asyncJobs = new Set()
   }
 
   get geometry () {
@@ -117,6 +124,48 @@ export default class Row {
 
   async asNew () {
     return this.clone()
+  }
+
+  get fields () {
+    return this.parent.info.fields.values()
+  }
+
+  * _asyncValues () {
+    for (let field of this.fields) {
+      const value = field.getValue({ row: this })
+      if (AsyncJob.is(value)) {
+        yield value
+      }
+    }
+  }
+
+  get asyncValues () {
+    return this._asyncValues()
+  }
+
+  * _dependencies () {
+    yield * this._asyncValues()
+  }
+
+  get dependencies () {
+    return this._dependencies()
+  }
+
+  consolidateChanges () {
+    if (this.status.deleted) {
+      if (!this.status.new) {
+        return { DELETE: this.pk }
+      }
+    } else if (this.status.new || this.status.edited) {
+      if (this.status.new) {
+        this.data = this.repr()
+        return { ADD: this.data }
+      } else {
+        const diff = this.diff()
+        merge(this.data, diff)
+        return { UPDATE: diff }
+      }
+    }
   }
 
   clone () {

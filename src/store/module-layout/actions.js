@@ -54,7 +54,7 @@ export function createDialog (context, config) {
   }
   Vue.observable(handlers)
 
-  if (!(config.component instanceof Object)) {
+  if (!(config.component instanceof Object) && !config.message) {
     throw new ProgrammingError('Cannot make a dialog without a component to put in it.')
   }
 

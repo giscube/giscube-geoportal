@@ -1,5 +1,5 @@
-export default class AsyncValue {
-  constructor (job) {
+export default class AsyncJob {
+  constructor (job, dependencies = []) {
     if (typeof job.func !== 'function') {
       throw TypeError('`func` is required and must be a function')
     }
@@ -19,12 +19,14 @@ export default class AsyncValue {
     }
     this.result = this.error = undefined
     this._state = {
+      cancelled: false,
       usedBy: 0,
       done: false,
       promise: null,
       resolve: null,
       reject: null
     }
+    this.dependencies = dependencies
 
     this._state.promise = new Promise((resolve, reject) => {
       this._state.resolve = resolve
@@ -37,22 +39,35 @@ export default class AsyncValue {
   }
 
   get usable () {
-    return this._state.usedBy > 0
+    return !this._state.cancelled && this._state.usedBy > 0
   }
 
   get cancelled () {
-    return isNaN(this._state.usedBy)
+    return this._state.cancelled || isNaN(this._state.usedBy)
   }
 
   get delay () {
-    return false
+    return !this.dependencies.every(value => value.finished)
+  }
+
+  get finished () {
+    return this._state.done || this._state.cancelled
+  }
+
+  cancel () {
+    if (!this.finished) {
+      this._state.cancelled = true
+      this.job.cancel()
+    }
   }
 
   getOrThrow () {
     if (this.done) {
       return this.result
+    } else if (this.cancelled) {
+      throw new Error('AsyncJob cancelled')
     } else {
-      throw new Error('AsyncValue not ready')
+      throw new Error('AsyncJob not ready')
     }
   }
 
@@ -84,39 +99,40 @@ export default class AsyncValue {
     return status.usedBy
   }
 
-  getValue () {
-    return this._state.promise
-  }
-
-  retrieve () {
-    return new Promise((resolve, reject) => {
-      const promise = this.job.func.apply(this.job, this.job.args)
-      if (!(promise instanceof Promise)) {
-        this._state.resolve(promise)
-        resolve()
-        return
+  async retrieve () {
+    try {
+      const result = await this.job.func.apply(this.job, this.job.args)
+      this.result = result
+      this._state.done = true
+      this._state.resolve(result)
+    } catch (error) {
+      this.error = error
+      this._state.done = true
+      if (!this.cancelled) {
+        this._state.reject(error)
       }
-
-      promise
-        .then(result => {
-          this.result = result
-          this._state.done = true
-          this._state.resolve(result)
-          resolve()
-        })
-        .catch(error => {
-          this.error = error
-          this._state.done = true
-          if (!this.cancelled) {
-            this._state.reject(error)
-          }
-          throw error
-        })
-        .catch(reject) // catch absolutely all errors
-    })
+      throw error
+    }
   }
 
   static is (obj) {
-    return obj instanceof AsyncValue
+    return obj instanceof AsyncJob
+  }
+
+  // Promise-like interface functions
+  asPromise () {
+    return new Promise((resolve, reject) => this._state.promise.then(resolve, reject))
+  }
+
+  then (...args) {
+    return this._state.promise.then(...args)
+  }
+
+  catch (...args) {
+    return this._state.promise.catch(...args)
+  }
+
+  finally (...args) {
+    return this._state.promise.finally(...args)
   }
 }

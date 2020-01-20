@@ -124,7 +124,7 @@ export default {
         photoPromise.catch(this.$except)
 
         const newValue = new AsyncPhoto(photoPromise, this.remote.source, this.remote.getConfig().headers)
-        newValue.getValue().catch(this.$except)
+        newValue.catch(this.$except)
         this.$store.dispatch('dataLayer/uploadPhoto', newValue)
         this.$emit('input', newValue)
       }
