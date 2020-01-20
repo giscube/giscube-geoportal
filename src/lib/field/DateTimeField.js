@@ -22,7 +22,7 @@ export default class DateTimeField extends Field {
     }
 
     if (!this.moment.isMoment(value)) {
-      value = this.moment.utc(value, this.format)
+      value = this.moment.utc(value)
     }
     return value
   }
