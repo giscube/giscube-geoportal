@@ -8,6 +8,14 @@
       <a class="flex-icon link"
          ><q-icon name="layers" size="18px"/></a>
       <a class="flex-label link">{{ $t('names.layers') }}</a>
+      <a class="flex-icon link">
+        <q-icon
+          v-show="!collapsed"
+          flat round
+          name="close"
+          size="12px"
+        />
+      </a>
     </div>
 
     <div v-show="!collapsed">
