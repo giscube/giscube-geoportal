@@ -139,7 +139,7 @@ export default class Row {
       })
       this.info.propsPath.setTo(result, properties)
     }
-    if (this.info.hasGeom && this.status.geomEdited) {
+    if (this.info.hasGeom && !this.info.readonlyGeom && this.status.geomEdited) {
       this.info.geomPath.setTo(result, getGeometry(this.layer, this.info.geomType))
     }
     this.setPk(result, this.pk)
@@ -181,7 +181,7 @@ export default class Row {
       props[field.name] = field.repr({ properties: this.properties })
     })
     this.info.propsPath.setTo(result, props)
-    if (this.info.hasGeom) {
+    if (this.info.hasGeom && !this.info.readonlyGeom) {
       this.info.geomPath.setTo(result, getGeometry(this.layer, this.info.geomType))
     }
     this.setPk(result, this.pk)
