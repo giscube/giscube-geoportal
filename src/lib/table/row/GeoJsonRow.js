@@ -140,6 +140,7 @@ export default class GeoJsonRow extends Row {
 
   merge (other) {
     this.data = other.data
+    this.properties = other.properties
     if (!this.layer) {
       this.makeLayer()
     } else if (this.geometry) {
