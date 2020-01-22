@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="table.info.hasGeom"
     v-show="!drawing"
     class="space row justify-end items-center"
   >
