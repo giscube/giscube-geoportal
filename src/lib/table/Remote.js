@@ -189,10 +189,9 @@ export default class Remote {
     if (!layer) {
       this.filters.polygon = null
     } else {
-      const coords = layer.getLatLngs()[0]
-      const coord2str = c => `${c.lng} ${c.lat}`
-      const strCoords = coords.map(coord2str).join(', ') + ', ' + coord2str(coords[0])
-      this.filters.polygon = `POLYGON((${strCoords}))`
+      const coords = layer.getLatLngs()[0].map(c => `${c.lng},${c.lat}`)
+      const strCoords = [...coords, coords[0]].join(',')
+      this.filters.polygon = strCoords
     }
   }
 }
