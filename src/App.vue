@@ -71,8 +71,14 @@ export default {
     table () {
       return this.$store.state.dataLayer.table
     },
+    queues () {
+      return [this.$store.state.dataLayer.asyncQueue]
+    },
     dataChanged () {
       return this.table && this.table.changedCount > 0
+    },
+    queueRunning () {
+      return this.queues.some(queue => queue.running)
     },
     savingData () {
       return this.table && this.table.saving
@@ -83,7 +89,7 @@ export default {
       return process.env.NODE_ENV === 'production'
     },
     onLeave (e) {
-      if (this.savingData) {
+      if (this.savingData || this.queueRunning) {
         preventExit(e, this.$t('tools.data.quitWhileSaving'))
       } else if (this.dataChanged) {
         preventExit(e, this.$t('tools.data.quitWithChanges'))
