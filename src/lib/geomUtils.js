@@ -384,6 +384,10 @@ export function getBounds (layer) {
 }
 
 export function layersBounds (layers) {
+  if (!layers || layers.length < 1) {
+    return
+  }
+
   let bounds = new L.LatLngBounds()
 
   layers.forEach(layer => {
