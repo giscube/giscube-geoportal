@@ -51,7 +51,11 @@ export class AsyncPhoto extends AsyncJob {
 
   setPhoto (photo) {
     this.photo = photo
-    this.tempUrl = photo && !(photo instanceof Promise) && URL.createObjectURL(photo)
+    if (photo && !(photo instanceof Promise)) {
+      this.tempUrl = URL.createObjectURL(photo)
+    } else {
+      this.tempUrl = null
+    }
   }
 }
 
