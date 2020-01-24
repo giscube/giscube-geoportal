@@ -24,9 +24,10 @@ export default class AsyncQueue {
   }
 
   async _doRun () {
+    let postponed = 0
     let retry
 
-    while (this.asyncJobs.length > 0) {
+    while (this.asyncJobs.length > 0 || postponed > 0) {
       retry = []
       while (this.asyncJobs.length > 0) {
         const asyncJob = this.asyncJobs.shift()
@@ -39,16 +40,23 @@ export default class AsyncQueue {
           continue
         }
 
-        try {
-          await asyncJob.retrieve()
-        } catch (error) {
-          // Another one should do it
+        await asyncJob.work()
+        if (!asyncJob.done) {
+          postponed += 1
+          setTimeout(() => {
+            postponed -= 1
+            this.asyncJobs.push(asyncJob)
+          }, 5_000)
         }
       }
       if (retry.length > 0) {
-        this.asyncJobs = retry
+        Array.prototype.push.apply(this.asyncJobs, retry)
         // allow other async coroutines to kick in
         await new Promise(resolve => setTimeout(resolve, 0))
+      }
+
+      if (postponed > 0) {
+        await new Promise(resolve => setTimeout(resolve, 5_000))
       }
     }
 

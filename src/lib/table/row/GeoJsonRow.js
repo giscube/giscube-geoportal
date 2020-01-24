@@ -1,5 +1,5 @@
 import L from 'src/lib/leaflet'
-import { CancelError, createLayer, eachLayer, flipLatLng, makeLayerReverter } from 'src/lib/geomUtils'
+import { CancelError, createLayer, eachLayer, flipLatLng, makeLayerSnapshot, applyLayerSnapshot } from 'src/lib/geomUtils'
 
 import Tooltip from '../Tooltip'
 import Row from './Row'
@@ -27,12 +27,18 @@ export default class GeoJsonRow extends Row {
         enumerable: false,
         writable: true,
         value: new Tooltip(this)
+      },
+      consolidatedGeom: {
+        configurable: true,
+        enumerable: false,
+        writable: true,
+        value: null
       }
     })
   }
 
-  get pk () {
-    return this.data ? this.data.id : void 0
+  generatePk (data) {
+    this.pk = data && data.id
   }
 
   getEmpty () {
@@ -95,6 +101,13 @@ export default class GeoJsonRow extends Row {
     return promise
   }
 
+  consolidateChanges () {
+    super.consolidateChanges()
+    if (this.layer) {
+      this.consolidatedGeom = makeLayerSnapshot(this.layer)
+    }
+  }
+
   edit (properties) {
     super.edit(properties)
     this.applyStyle()
@@ -104,15 +117,6 @@ export default class GeoJsonRow extends Row {
     this.removeEditEvents()
     this.status.geomEdited = true
     this.status.edited = true
-
-    const revertLayer = makeLayerReverter(this.layer)
-
-    this._revertLayer = () => {
-      revertLayer()
-      this._revertLayer = null
-      this.addEditEvents()
-    }
-
     this.applyStyle({ reactiveEmulation: true })
   }
 
@@ -133,6 +137,7 @@ export default class GeoJsonRow extends Row {
     if (this.geometry) {
       this.layer = L.GeoJSON.geometryToLayer(this.geometry, this.getGeomConfig())
       this.prepareLayer()
+      this.consolidatedGeom = makeLayerSnapshot(this.layer)
     } else {
       this.layer = null
     }
@@ -206,24 +211,15 @@ export default class GeoJsonRow extends Row {
     eachLayer(this.layer, layer => layer.off(EDIT_EVENTS, this._geomChanged))
   }
 
-  resetStatus () {
-    super.resetStatus()
-    if (this._revertLayer) {
-      this._revertLayer = null
-      this.addEditEvents()
-    }
-  }
-
   revert () {
-    if (this.status.geomEdited) {
-      this.revertLayer()
-    }
+    this.revertLayer()
     super.revert()
   }
 
   revertLayer () {
-    if (this._revertLayer) {
-      this._revertLayer()
+    if (this.status.geomEdited) {
+      applyLayerSnapshot(this.layer, this.consolidatedGeom)
+      this.addEditEvents()
     }
   }
 

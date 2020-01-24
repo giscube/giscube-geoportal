@@ -1,7 +1,4 @@
-import { merge } from 'lodash'
 import { AsyncJob } from 'src/lib/async'
-import { getGeometry } from 'src/lib/geoJson'
-import { isCleanEqual } from 'src/lib/utils'
 import MultiResult from 'src/lib/MultiResult'
 
 const pkGenerator = (function () {
@@ -18,15 +15,7 @@ const pkGenerator = (function () {
 
 export default class Row {
   constructor (parent, data, constFields = {}) {
-    // Set internal components.
-    // I made them non enumerable because it's very likely to make circular dependencies
     Object.defineProperties(this, {
-      data: {
-        configurable: false,
-        enumerable: false,
-        writable: true,
-        value: data || this.getEmpty()
-      },
       parent: {
         configurable: false,
         enumerable: false,
@@ -34,7 +23,15 @@ export default class Row {
         value: parent
       }
     })
+    this.constFields = constFields
+    this.consolidatedProperties = data ? this.propertiesFromData(data) : {}
+    this.properties = null
 
+    if (this.info.hasGeom) {
+      this.geometry = data && this.geometryFromData(data)
+    }
+
+    this.generatePk(data)
     Object.defineProperties(this, {
       _internalPk: {
         configurable: false,
@@ -44,14 +41,14 @@ export default class Row {
       }
     })
 
+    this._copyProperties()
+
+    // TODO: move status logic into another class for readability
     const row = this
     this.status = {
       _hasBeenModified: false,
       _deleted: false,
       _edited: false,
-      get consolidated () {
-        return self.asyncJobs.size === 0
-      },
       get edited () {
         return this._edited
       },
@@ -80,21 +77,6 @@ export default class Row {
         return value
       }
     })
-
-    this.properties = {
-      ...this.getOriginalProperties(),
-      ...constFields
-    }
-    // updates data to contain the constFields
-    this.info.propsPath.setTo(this.data, this.properties)
-
-    this.asyncJobs = new Set()
-  }
-
-  get geometry () {
-    if (this.info.hasGeom) {
-      return this.info.geomPath.extractFrom(this.data)
-    }
   }
 
   get info () {
@@ -151,48 +133,22 @@ export default class Row {
     return this._dependencies()
   }
 
+  _copyProperties () {
+    this.properties = { ...this.consolidatedProperties }
+  }
+
   consolidateChanges () {
-    if (this.status.deleted) {
-      if (!this.status.new) {
-        return { DELETE: this.pk }
-      }
-    } else if (this.status.new || this.status.edited) {
-      if (this.status.new) {
-        this.data = this.repr()
-        return { ADD: this.data }
-      } else {
-        const diff = this.diff()
-        merge(this.data, diff)
-        return { UPDATE: diff }
-      }
+    for (let value of this.asyncValues) {
+      value.incrementReference(Infinity)
     }
+    this.consolidatedProperties = this.properties
+    this._copyProperties()
   }
 
   clone () {
     const cloned = new this.constructor(this.parent)
     cloned.properties = this.properties
     return cloned
-  }
-
-  diff () {
-    const result = this.getEmpty()
-    if (this.status.propsEdited) {
-      const orig = this.getOriginalProperties()
-      const properties = {}
-      this.parent.info.fields.forEach(field => {
-        const o = field.repr({ properties: orig })
-        const n = field.repr({ properties: this.properties })
-        if (!isCleanEqual(o, n)) {
-          properties[field.name] = n
-        }
-      })
-      this.info.propsPath.setTo(result, properties)
-    }
-    if (this.info.hasGeom && !this.info.readonlyGeom && this.status.geomEdited) {
-      this.info.geomPath.setTo(result, getGeometry(this.layer, this.info.geomType))
-    }
-    this.setPk(result, this.pk)
-    return result
   }
 
   edit (properties) {
@@ -211,35 +167,25 @@ export default class Row {
     this.status.propsEdited = true
   }
 
-  getEmpty () {
-    return {}
+  geometryFromData (data) {
+    return this.info.geomPath.extractFrom(data)
   }
 
-  getOriginalProperties () {
-    return this.info.propsPath.extractFrom(this.data)
+  getEmpty () {
+    return {}
   }
 
   merge (other) {
     return other
   }
 
-  repr () {
-    const result = this.getEmpty()
-    const props = {}
-    this.parent.info.fields.forEach(field => {
-      props[field.name] = field.repr({ properties: this.properties })
-    })
-    this.info.propsPath.setTo(result, props)
-    if (this.info.hasGeom && !this.info.readonlyGeom) {
-      this.info.geomPath.setTo(result, getGeometry(this.layer, this.info.geomType))
-    }
-    this.setPk(result, this.pk)
-    return result
+  propertiesFromData (data) {
+    return this.info.propsPath.extractFrom(data)
   }
 
   revert () {
     if (!this.status.new && this.status.propsEdited) {
-      this.properties = this.getOriginalProperties()
+      this._copyProperties()
     }
     this.resetStatus()
   }

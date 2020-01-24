@@ -1,3 +1,5 @@
+import { isVoid } from 'src/lib/utils'
+
 export default class AsyncJob {
   constructor (job, dependencies = []) {
     if (typeof job.func !== 'function') {
@@ -17,8 +19,10 @@ export default class AsyncJob {
       data: job.data,
       cancel: job.cancel || (() => {})
     }
-    this.result = this.error = undefined
+    this.result = void 0
+    this.errors = []
     this._state = {
+      _retries: isVoid(job.retries) || isNaN(job.retries) ? Infinity : job.retries,
       cancelled: false,
       usedBy: 0,
       done: false,
@@ -99,19 +103,22 @@ export default class AsyncJob {
     return status.usedBy
   }
 
-  async retrieve () {
+  async work () {
     try {
       const result = await this.job.func.apply(this.job, this.job.args)
       this.result = result
       this._state.done = true
       this._state.resolve(result)
     } catch (error) {
-      this.error = error
-      this._state.done = true
-      if (!this.cancelled) {
-        this._state.reject(error)
+      this.errors.push(error)
+      if (this._state._retries > 0) {
+        this._state._retries -= 1
+      } else {
+        this._state.done = true
+        if (!this.cancelled) {
+          this._state.reject(error)
+        }
       }
-      throw error
     }
   }
 

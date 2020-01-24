@@ -85,7 +85,11 @@ export default class ImageField extends Field {
   repr (data) {
     let value = this.getValue(data)
     if (value instanceof AsyncJob) {
-      value = value.done ? value.result : null
+      if (value.done) {
+        value = value.result
+      } else {
+        return void 0
+      }
     }
     return value ? value.value || value.src : null
   }

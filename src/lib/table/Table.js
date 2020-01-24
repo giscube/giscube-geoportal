@@ -404,7 +404,7 @@ export default class Table {
       eachLayer(this.layer, l => l.disableEdit(this.map))
     }
 
-    const rowChanges = new RowChanges(this.rows)
+    const rowChanges = new RowChanges(this.rows, this.info)
     this.rows = rowChanges.persistentRows
 
     const saveJob = rowChanges.asSaveJob(this.remote)

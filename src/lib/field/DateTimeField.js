@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import { isVoid } from 'src/lib/utils'
 
 import Field from './Field'
 import FormWidget from './widgets/form/DateTime'
@@ -46,13 +47,19 @@ export default class DateTimeField extends Field {
     return this.moment.utc(str, this.format)
   }
 
-  repr (data) {
+  dateTimeRepr (data, format) {
     const v = this.getValue(data)
-    if (v && v.isValid()) {
-      return v.format(this.format)
+    if (isVoid(v)) {
+      return v
+    } else if (v.isValid()) {
+      return v.format(format)
     } else {
-      return null
+      return void 0
     }
+  }
+
+  repr (data) {
+    return this.dateTimeRepr(data, 'YYYY-MM-DD HH:mm:ss')
   }
 
   equals (a, b) {
