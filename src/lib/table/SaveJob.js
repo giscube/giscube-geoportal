@@ -1,14 +1,16 @@
 import { AsyncJob } from 'src/lib/async'
 
 export default class SaveJob extends AsyncJob {
-  constructor (remote, rows, changes, dependencies) {
-    const func = () => remote.save(changes)
-    super({ func }, Array.from(dependencies))
-    rows.forEach(row => row.asyncJobs.add(this))
-    this.finally(() => {
-      rows.forEach(row => row.asyncJobs.delete(this))
-    })
+  constructor (remote, rowChanges) {
+    const func = () => this.saveChanges()
+    super({ func }, Array.from(rowChanges.dependencies))
 
+    this.remote = remote
+    this.rowChanges = rowChanges
     this.incrementReference()
+  }
+
+  saveChanges () {
+    return this.remote.save(this.rowChanges.repr())
   }
 }

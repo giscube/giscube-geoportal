@@ -29,19 +29,32 @@ export function eachLayer (layer, callback) {
   _eachLayer(layer)
 }
 
-export function makeLayerReverter (layer) {
+export function makeLayerSnapshot (layer) {
   if (layer.getLatLngs) {
-    const geom = cloneClean(layer.getLatLngs())
-    return layer.setLatLngs.bind(layer, geom)
+    return cloneClean(layer.getLatLngs())
   } else if (layer.getLatLng) {
-    const geom = cloneClean(layer.getLatLng())
-    return layer.setLatLng.bind(layer, geom)
+    return cloneClean(layer.getLatLng())
   } else if (layer.getLayers) {
     // For now don't support adding or removing elements
-    const reverts = layer.getLayers().map(makeLayerReverter)
-    return () => reverts.forEach(f => f())
+    return layer.getLayers().map(layer => [ layer, makeLayerSnapshot(layer) ])
   } else {
-    console.warn('Unsuported type to revert')
+    console.warn('Unsupported layer type to take a snapshot from')
+  }
+}
+
+export function applyLayerSnapshot (layer, snapshot) {
+  if (layer.getLatLngs) {
+    layer.setLatLngs(snapshot)
+  } else if (layer.getLatLng) {
+    layer.setLatLng(snapshot)
+  } else if (layer.getLayers) {
+    this.layer.clearLayers()
+    for (let [l, c] of snapshot) {
+      applyLayerSnapshot(l, c)
+      layer.addLayer(l)
+    }
+  } else {
+    console.warn('Unsupported layer type to apply a snapshot to')
   }
 }
 
