@@ -61,6 +61,7 @@ export default class Table {
     this.editing = false
     this.adding = false
     this.saving = false
+    this.updateDeferred = false
   }
 
   get fields () {
@@ -107,12 +108,7 @@ export default class Table {
     }
   }
 
-  discard () {
-    this.editing = false
-    if (this.info.hasGeom && this.map) {
-      eachLayer(this.layer, l => l.disableEdit(this.map))
-    }
-
+  _discardChanges () {
     if (this.changedCount === 0) {
       return
     }
@@ -131,6 +127,23 @@ export default class Table {
     }
     this.changedCount = 0
     this.updateSelectedList()
+  }
+
+  discard () {
+    this.editing = false
+    if (this.info.hasGeom && this.map) {
+      eachLayer(this.layer, l => l.disableEdit(this.map))
+    }
+
+    this._discardChanges()
+
+    if (this.updateDeferred) {
+      this.update()
+    }
+  }
+
+  deferUpdate () {
+    this.updateDeferred = true
   }
 
   deleteSelected () {
@@ -370,6 +383,8 @@ export default class Table {
         }, false)
       })
     }
+
+    this.updateDeferred = false
 
     const data = await requestData(pagination)
 

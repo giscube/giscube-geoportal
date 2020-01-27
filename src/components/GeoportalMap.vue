@@ -153,8 +153,12 @@ export default {
       })
     },
     _updateTable () {
-      if (this.mainTable && !this.mainTable.editing) {
-        this.mainTable.updateByMap()
+      if (this.mainTable) {
+        if (!this.mainTable.editing) {
+          this.mainTable.updateByMap()
+        } else {
+          this.mainTable.deferUpdate()
+        }
       }
     },
     _setDrawing (value) {
