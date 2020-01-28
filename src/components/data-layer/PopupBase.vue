@@ -13,19 +13,16 @@
       />
       <q-btn flat dense
         :icon="editing ? 'edit' : 'description'"
-        :disable="saving"
         @click="edit"
       />
       <q-btn flat dense
         v-show="editing && row.status.edited"
         icon="undo"
-        :disable="saving"
         @click="undoRow(row)"
       />
       <q-btn flat dense
         v-show="editing"
         icon="delete"
-        :disable="saving"
         @click="remove"
       />
     </div>
@@ -55,9 +52,6 @@ export default {
     },
     editing () {
       return this.row.parent.editing
-    },
-    saving () {
-      return this.row.parent.saving
     }
   },
   methods: {

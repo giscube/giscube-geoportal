@@ -8,13 +8,15 @@
           @close="closeTable"
         />
         <q-space />
+        <span v-if="saving">Saving your changes</span>
+        <span v-else-if="saved">Changes saved</span>
+        <q-space />
         <status-controls v-if="table && table.info" :table="table" />
       </div>
       <div class="col-auto row items-center space-items-sm" v-if="table && table.info">
         <div class="space row">
           <draw-controls
             v-if="drawing"
-            :disable="saving"
           />
           <data-edit-controls
             v-else-if="editing"
@@ -102,29 +104,38 @@ export default {
   },
   data () {
     return {
-      layersListOpen: false
+      layersListOpen: false,
+      saved: false,
+      savedTimout: null
     }
   },
   computed: {
     ...mapState({
       table: state => state.dataLayer.table,
-      drawing: state => state.map.drawing
+      drawing: state => state.map.drawing,
+      saving: state => state.dataLayer.asyncQueue.running
     }),
     editing () {
       return this.table && this.table.editing
-    },
-    saving () {
-      return this.table && this.table.saving
     },
     dataChanged () {
       return this.table && this.table.changedCount > 0
     }
   },
+  watch: {
+    saving (value, oldValue) {
+      if (oldValue && !value) {
+        this.saved = true
+        clearTimeout(this.savedTimout)
+        this.savedTimout = setTimeout(() => {
+          this.saved = false
+        }, 5000)
+      }
+    }
+  },
   methods: {
     checkLeaving () {
-      if (this.saving) {
-        return Promise.resolve(false)
-      } else if (this.dataChanged) {
+      if (this.dataChanged) {
         return new Promise(resolve => {
           this.$q.dialog({
             title: this.t('changedLeaveTitle'),
