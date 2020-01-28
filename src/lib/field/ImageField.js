@@ -91,7 +91,11 @@ export default class ImageField extends Field {
         return void 0
       }
     }
-    return value ? value.value || value.src : null
+    if (value) {
+      return value.value || value.src
+    } else {
+      return value
+    }
   }
 
   str (data) {
