@@ -27,7 +27,7 @@ export default Object.freeze({
       blank: true,
       size: null,
       decimals: 0,
-      widget: 'number'
+      widget: 'text'
     },
     {
       name: 'b',
@@ -39,7 +39,7 @@ export default Object.freeze({
       blank: true,
       size: null,
       decimals: 0,
-      widget: 'number'
+      widget: 'text'
     },
     {
       name: 'c',
@@ -51,7 +51,7 @@ export default Object.freeze({
       blank: true,
       size: null,
       decimals: 0,
-      widget: 'number'
+      widget: 'text'
     },
     {
       name: 'd',
@@ -63,7 +63,7 @@ export default Object.freeze({
       blank: true,
       size: null,
       decimals: 0,
-      widget: 'number'
+      widget: 'text'
     }
   ],
   virtual_fields: [],

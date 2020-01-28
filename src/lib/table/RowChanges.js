@@ -41,7 +41,7 @@ export default class RowChanges {
     if (row.status.deleted) {
       this.changes.delete.push(row.pk)
     } else {
-      const geom = this.info.hasGeom && !this.info.readonlyGeom && (row.status.new || row.status.geomChanged) ? getGeometry(row.layer, this.info.geomType) : void 0
+      const geom = this.info.hasGeom && !this.info.readonlyGeom && (row.status.new || row.status.geomEdited) ? getGeometry(row.layer, this.info.geomType) : void 0
       const empty = row.getEmpty()
       row.setPk(empty, row.pk)
 
