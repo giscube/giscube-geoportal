@@ -1,5 +1,6 @@
 import { AsyncJob } from 'src/lib/async'
 import MultiResult from 'src/lib/MultiResult'
+import { mergeRowsData } from './utils'
 
 const pkGenerator = (function () {
   let n = 0
@@ -24,7 +25,7 @@ export default class Row {
       }
     })
     this.constFields = constFields
-    this.consolidatedProperties = data ? this.propertiesFromData(data) : {}
+    this.serverProperties = this.consolidatedProperties = data ? this.propertiesFromData(data) : {}
     this.properties = null
 
     if (this.info.hasGeom) {
@@ -92,6 +93,7 @@ export default class Row {
     this.status.edited = false
     this.status.propsEdited = false
     this.status.geomEdited = false
+    this.status.new = false
 
     this.applyStyle()
   }
@@ -175,8 +177,21 @@ export default class Row {
     return {}
   }
 
+  _mergeProperties (other) {
+    mergeRowsData(
+      this.parent.info.fields,
+      [
+        this.serverProperties,
+        this.consolidatedProperties,
+        this.properties
+      ],
+      other.serverProperties
+    )
+  }
+
   merge (other) {
-    return other
+    this._mergeProperties(other)
+    return this
   }
 
   propertiesFromData (data) {
