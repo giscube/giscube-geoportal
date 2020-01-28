@@ -60,7 +60,6 @@ export default class Table {
 
     this.editing = false
     this.adding = false
-    this.saving = false
     this.updateDeferred = false
   }
 
@@ -370,10 +369,6 @@ export default class Table {
   }
 
   async update ({ pagination, immediate, wms } = {}) {
-    if (this.editing) {
-      throw new EditingError()
-    }
-
     let requestData
     if (immediate) {
       requestData = this.remote.requestData.bind(this.remote)
@@ -419,7 +414,6 @@ export default class Table {
   }
 
   async save () {
-    this.saving = true
     if (this.info.hasGeom && this.map) {
       eachLayer(this.layer, l => l.disableEdit(this.map))
     }
@@ -427,13 +421,13 @@ export default class Table {
     const rowChanges = new RowChanges(this.rows, this.info)
     this.rows = rowChanges.persistentRows
 
+    this.rows.forEach(row => row.resetStatus())
+    this.editing = false
+
     const saveJob = rowChanges.asSaveJob(this.remote)
+    this.$root.$store.dispatch('dataLayer/asyncSave', saveJob)
     try {
-      this.$root.$store.dispatch('dataLayer/asyncSave', saveJob)
       await saveJob.asPromise()
-      this.saving = false
-      this.rows.forEach(row => row.resetStatus())
-      this.editing = false
       await this.update({ immediate: true, wms: true })
     } catch (e) {
       Vue.prototype.$except(e)
