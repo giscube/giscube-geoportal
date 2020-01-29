@@ -1,8 +1,9 @@
 import clone from 'lodash/clone.js'
 
-import databaseLayersApi from '../../api/databaselayers.js'
+import databaseLayersApi from 'src/api/databaselayers.js'
 
-import { throwUnhandledExceptions } from '../../lib/promiseUtils.js'
+import { CancelError } from 'src/lib/geomUtils'
+import { throwUnhandledExceptions } from 'src/lib/promiseUtils.js'
 
 export function invalidateState (context) {
   context.commit('setInitialState')
@@ -50,6 +51,41 @@ export function refreshSources (context) {
       })
   })
   return throwUnhandledExceptions(result)
+}
+
+export function toggleFilterPolygon (context) {
+  if (context.state.filterPolygon) {
+    context.dispatch('setFilterPolygon', null)
+  } else {
+    context.dispatch('map/draw', 'polygon', { root: true })
+      .then(layer => {
+        context.dispatch('setFilterPolygon', layer)
+      })
+      .catch(e => {
+        if (e instanceof CancelError) {
+          const layer = e.layer
+          if (layer) {
+            context.dispatch('setFilterPolygon', layer)
+          }
+        } else {
+          this.$except(e)
+        }
+      })
+  }
+}
+
+export function setFilterPolygon (context, layer) {
+  layer.disableEdit()
+  context.commit('filterPolygon', layer)
+
+  if (layer) {
+    layer.setStyle({ opacity: 0.5 })
+    layer.addTo(context.rootState.map.mapObject)
+  }
+
+  if (context.state.table) {
+    context.state.table.remote.setPolygonFilter(layer)
+  }
 }
 
 export function verifySourcesLoaded (context) {

@@ -11,9 +11,16 @@ export function sources (state, value) {
 
 export function table (state, table) {
   if (state.table) {
-    state.table.remote.cancelRequests()
+    state.table.onRemove()
   }
   state.table = table
+}
+
+export function filterPolygon (state, layer) {
+  if (state.filterPolygon) {
+    state.filterPolygon.remove()
+  }
+  state.filterPolygon = layer
 }
 
 export function clearLoadingSourceErrors (state) {
