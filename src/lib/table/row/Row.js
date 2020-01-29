@@ -22,6 +22,12 @@ export default class Row {
         enumerable: false,
         writable: false,
         value: parent
+      },
+      _saveJobs: {
+        configurable: true,
+        enumerable: false,
+        writable: true,
+        value: []
       }
     })
     this.constFields = constFields
@@ -104,6 +110,11 @@ export default class Row {
     this.add()
   }
 
+  addSaveJob (saveJob) {
+    this._saveJobs.unshift(saveJob)
+    this._saveJobs = this._saveJobs.filter(job => !job.done)
+  }
+
   applyStyle () {}
 
   async asNew () {
@@ -128,6 +139,7 @@ export default class Row {
   }
 
   * _dependencies () {
+    yield * this._saveJobs
     yield * this._asyncValues()
   }
 
