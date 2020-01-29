@@ -41,7 +41,6 @@
 <script>
 import Vue from 'vue'
 import { QBtn, QInput } from 'quasar'
-import { CancelError } from 'src/lib/geomUtils'
 
 import TranslationMixin from './TranslationMixin'
 
@@ -82,23 +81,7 @@ export default {
   },
   methods: {
     onPolygonFilter () {
-      if (this.polygonFilter) {
-        this.table.remote.setPolygonFilter(null)
-      } else {
-        this.$store.dispatch('map/draw', 'polygon')
-          .then(layer => {
-            this.table.remote.setPolygonFilter(layer)
-          })
-          .catch(e => {
-            if (e instanceof CancelError) {
-              if (e.layer) {
-                this.table.remote.setPolygonFilter(e.layer)
-              }
-            } else {
-              this.$except(e)
-            }
-          })
-      }
+      this.$store.dispatch('dataLayer/toggleFilterPolygon')
     }
   }
 }

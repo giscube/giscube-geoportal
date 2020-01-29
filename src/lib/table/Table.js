@@ -255,6 +255,11 @@ export default class Table {
     return Row.toRow(this, data, this.remote.constFields)
   }
 
+  onRemove () {
+    this.$root.$store.dispatch('dataLayer/setFilterPolygon', null)
+    this.remote.cancelRequests()
+  }
+
   removeLayers () {
     if (!this.map) {
       return
