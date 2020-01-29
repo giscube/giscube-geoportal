@@ -8,6 +8,11 @@ export function tryToNumber (v) {
 }
 
 export const STATUS_STYLES = {
+  saving: {
+    fill: '#ad8f3e',
+    stroke: '#6b5826',
+    icon: 'hourglass_full'
+  },
   deleted: {
     fill: '#ad3e3e',
     stroke: '#6d2727',
