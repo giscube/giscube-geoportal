@@ -75,7 +75,7 @@ export default {
       return STATUS_STYLES.getByOrder(['selected'], this.status)
     },
     rightStatusStyle () {
-      return STATUS_STYLES.getByOrder(['deleted', 'new', 'edited'], this.status)
+      return STATUS_STYLES.getByOrder(['saving', 'deleted', 'new', 'edited'], this.status)
     }
   },
   methods: {

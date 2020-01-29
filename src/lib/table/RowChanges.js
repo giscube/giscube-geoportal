@@ -6,7 +6,6 @@ import SaveJob from './SaveJob'
 
 export default class RowChanges {
   constructor (rows, info) {
-    this.rows = rows
     this.persistentRows = []
     this.changedRows = []
     this.changes = {
@@ -106,7 +105,7 @@ export default class RowChanges {
 
   asSaveJob (remote) {
     const job = new SaveJob(remote, this)
-    for (let row of this.rows) {
+    for (let row of this.changedRows) {
       row.addSaveJob(job)
     }
     return job

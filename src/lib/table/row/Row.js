@@ -66,6 +66,7 @@ export default class Row {
       },
       propsEdited: false,
       geomEdited: false,
+      saving: false,
       get selected () {
         return row.parent.selectedList.includes(row.internalPk)
       },
@@ -113,6 +114,9 @@ export default class Row {
   addSaveJob (saveJob) {
     this._saveJobs.unshift(saveJob)
     this._saveJobs = this._saveJobs.filter(job => !job.done)
+
+    saveJob.finally(_ => this._updateSaved())
+    this._updateSaved()
   }
 
   applyStyle () {}
@@ -229,6 +233,16 @@ export default class Row {
         this.parent.changedCount += n ? 1 : -1
       }
     }
+  }
+
+  _updateSaved () {
+    for (let job of this._saveJobs) {
+      if (!job.done) {
+        this.status.saving = true
+        return
+      }
+    }
+    this.status.saving = false
   }
 
   add () {
