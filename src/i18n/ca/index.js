@@ -102,6 +102,7 @@ export default {
       invalidDate: 'Data invàlida',
       multipleNew: 'Afegir varis elements',
       newElement: 'Nou element',
+      qDeleteElement: 'Esteu segur d\'eliminar aquest element?',
       qDiscardChanges: 'Esteu segur de descartar tots els canvis?',
       qInvalidCommit: 'Sembla que algun valor és invalid. Voldrieu guardar igualment?',
       requiredField: 'Camp obligatori',

@@ -1,4 +1,5 @@
 import { filter, map } from 'src/lib/itertools'
+import except from 'src/lib/except'
 import L from 'src/lib/leaflet'
 import { CancelError, eachLayer, layersBounds } from 'src/lib/geomUtils'
 import { rowsInGeom } from 'src/lib/layersInGeom'
@@ -413,7 +414,7 @@ export default class Table {
   updateByMap (pagination) {
     if (this.mapDependent) {
       this.update(pagination)
-        .catch(Vue.prototype.$except)
+        .catch(except)
     }
   }
 
@@ -441,14 +442,28 @@ export default class Table {
     this.rows.forEach(row => row.resetStatus())
     this.editing = false
 
+    await this._save(rowChanges)
+    await this.update({ immediate: true, wms: true })
+      .catch(except)
+  }
+
+  async saveIndividual (row) {
+    const rowChanges = new RowChanges([row], this.info)
+    if (rowChanges.persistentRows.length === 0) {
+      this.rows = this.rows.filter(r => r !== row)
+    } else {
+      this.addTransient(row)
+      this._updateTransients()
+      row.resetStatus()
+    }
+
+    await this._save(rowChanges)
+  }
+
+  async _save (rowChanges) {
     const saveJob = rowChanges.asSaveJob(this.remote)
     this.$root.$store.dispatch('dataLayer/asyncSave', saveJob)
-    try {
-      await saveJob.asPromise()
-      await this.update({ immediate: true, wms: true })
-    } catch (e) {
-      Vue.prototype.$except(e)
-    }
+    return saveJob.asPromise().catch(except)
   }
 
   _updateTransients () {
