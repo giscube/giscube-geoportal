@@ -2,13 +2,13 @@
   <q-dialog
     ref="dialog"
     type="propt"
-    :persistent="!disable && !readonly"
+    :persistent="(!disable && !readonly) || localEdit"
     no-route-dismiss
     content-class="data-form"
     @hide="$emit('hide')"
   >
     <q-card class="data-form column no-wrap no-scroll">
-      <q-card-section v-if="currentRows.length === 1 && rowIndex >= 0" class="row">
+      <q-card-section v-if="!navDisabled" class="row">
         <!-- Back -->
         <div>
           <q-btn
@@ -66,7 +66,7 @@
           :table="table"
           :rows="currentRows"
           :disable="disable"
-          :readonly="readonly"
+          :readonly="formReadonly"
           @input="onInput"
         />
       </q-card-section>
@@ -75,13 +75,18 @@
         <q-icon name="warning" class="q-mx-sm" size="1.5em" />
         <span>{{ allDeleted ? (deleted === 1 ? t('thisDeleted') : t('allDeleted')) : t('someDeleted') }}</span>
       </q-card-section>
-      <q-card-actions>
+      <q-card-actions v-if="!localEdit">
         <q-btn
           v-show="!disable && !readonly"
           :label="$t('actions.delete')"
           @click="onDelete"
         />
         <q-space />
+        <q-btn
+          v-show="readonly && rows.length === 1"
+          :label="t('edit')"
+          @click="startLocalEdit"
+        />
         <q-btn
           :label="toCommit ? $t('actions.cancel') : $t('actions.close')"
           @click="onCancel"
@@ -90,6 +95,23 @@
           v-show="toCommit && !allDeleted"
           :label="$t('actions.apply')"
           @click="onCommit"
+        />
+      </q-card-actions>
+      <q-card-actions v-else>
+        <q-btn
+          :label="$t('actions.delete')"
+          @click="localDelete"
+        />
+        <q-space />
+        <q-btn
+          :label="hasResult ? $t('actions.discard') : $t('actions.cancel')"
+          @click="localDiscard"
+        />
+        <q-btn
+          v-if="hasResult"
+          :label="$t('actions.save')"
+          icon="save"
+          @click="localSave"
         />
       </q-card-actions>
     </q-card>
@@ -133,11 +155,18 @@ export default {
   data () {
     return {
       result: {},
-      currentRows: this.rows,
-      rowIndex: this.rows.length === 1 && this.table.rows.indexOf(this.rows[0])
+      currentRows: [...this.rows],
+      rowIndex: this.rows.length === 1 && this.table.rows.indexOf(this.rows[0]),
+      localEdit: false
     }
   },
   computed: {
+    row () {
+      return this.currentRows.length === 1 ? this.currentRows[0] : null
+    },
+    formReadonly () {
+      return this.readonly && !this.localEdit
+    },
     hasResult () {
       return Object.keys(this.result).length > 0
     },
@@ -154,6 +183,9 @@ export default {
     },
     toCommit () {
       return !this.disable && !this.readonly && (this.isNew || this.hasResult)
+    },
+    navDisabled () {
+      return this.isNew || this.localEdit || this.currentRows.length !== 1 || this.rowIndex < 0
     }
   },
   methods: {
@@ -207,7 +239,7 @@ export default {
     goto (i) {
       this.commit()
         .then(_ => {
-          this.currentRows[0].edit(this.result)
+          this.row.edit(this.result)
         })
         .catch(_ => { /* do nothing */ })
         .then(_ => {
@@ -216,6 +248,46 @@ export default {
           this.rowIndex = i
           this.result = {}
         })
+    },
+
+    startLocalEdit () {
+      this.localEdit = true
+    },
+    localSave () {
+      this.saveRow()
+      this.endLocalEdit()
+    },
+    saveRow () {
+      this.row.edit(this.result)
+      this.table.saveIndividual(this.row)
+    },
+    localDiscard () {
+      this.endLocalEdit()
+    },
+    localDelete () {
+      this.$store
+        .dispatch('layout/createDialog', {
+          message: this.t('qDeleteElement'),
+          ok: {
+            flat: true,
+            label: this.$t('yes')
+          },
+          cancel: {
+            flat: true,
+            label: this.$t('no')
+          },
+          persistent: true
+        })
+        .then(api => api.onOk(_ => {
+          this.hide()
+          this.row.status.deleted = true
+          this.saveRow()
+        }))
+    },
+    endLocalEdit () {
+      this.result = {}
+      this.localEdit = false
+      this.$refs.form.updateData()
     },
 
     // Required by Quasar's dialog API

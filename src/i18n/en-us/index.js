@@ -100,6 +100,7 @@ export default {
       invalidDate: 'Invalid date',
       multipleNew: 'Add multiple elements',
       newElement: 'New element',
+      qDeleteElement: 'Are you sure you want to delete this element?',
       qDiscardChanges: 'Are you sure you want to discard all the changes?',
       qInvalidCommit: 'Some values seem to be invalid. Would you like to save anyways?',
       requiredField: 'Required Field',
