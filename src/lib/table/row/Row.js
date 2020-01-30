@@ -1,5 +1,6 @@
 import { AsyncJob } from 'src/lib/async'
 import MultiResult from 'src/lib/MultiResult'
+import { some } from 'src/lib/itertools'
 import { mergeRowsData } from './utils'
 
 const pkGenerator = (function () {
@@ -73,7 +74,8 @@ export default class Row {
       set selected (value) {
         row.parent.selectRows([row], { added: !!value })
       },
-      new: !data
+      new: !data,
+      transient: false
     }
 
     Object.defineProperty(this.status, 'deleted', {
@@ -115,8 +117,8 @@ export default class Row {
     this._saveJobs.unshift(saveJob)
     this._saveJobs = this._saveJobs.filter(job => !job.done)
 
-    saveJob.finally(_ => this._updateSaved())
-    this._updateSaved()
+    saveJob.finally(_ => this.updateSaving())
+    this.updateSaving()
   }
 
   applyStyle () {}
@@ -235,14 +237,12 @@ export default class Row {
     }
   }
 
-  _updateSaved () {
-    for (let job of this._saveJobs) {
-      if (!job.done) {
-        this.status.saving = true
-        return
-      }
-    }
-    this.status.saving = false
+  updateSaving () {
+    this.status.saving = some(this._saveJobs, job => !job.done)
+  }
+
+  updateTransient () {
+    this.status.transient = this.parent.transients.has(this)
   }
 
   add () {

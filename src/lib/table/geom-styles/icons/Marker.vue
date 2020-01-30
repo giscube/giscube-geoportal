@@ -5,9 +5,9 @@
       width: width + 'px',
       height: anchor + 'px',
       margin: `-${anchor}px 0 0 -${width/2}px`,
-      fill,
-      color,
-      stroke: strokeColor
+      fill: computedFill,
+      color: computedColor,
+      stroke: computedStroke
     }"
   >
     <svg viewBox="0 0 155 200">
@@ -68,6 +68,15 @@ export default {
     QImg
   },
   computed: {
+    computedFill () {
+      return this.status.transient ? 'rgba(170, 170, 170, 0.7)' : this.fill
+    },
+    computedColor () {
+      return this.status.transient ? 'rgba(0, 0, 0, 0.7)' : this.color
+    },
+    computedStroke () {
+      return this.status.transient ? 'rgba(170, 170, 170, 0.7)' : this.strokeColor
+    },
     iconSize () {
       return this.width * 0.5
     },

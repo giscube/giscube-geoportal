@@ -6,7 +6,7 @@ import SaveJob from './SaveJob'
 
 export default class RowChanges {
   constructor (rows, info) {
-    this.persistentRows = []
+    this.persistentRows = new Set()
     this.changedRows = []
     this.changes = {
       add: [],
@@ -26,7 +26,7 @@ export default class RowChanges {
         if (row.status.deleted) {
           row.remove()
         } else {
-          this.persistentRows.push(row)
+          this.persistentRows.add(row)
         }
         if (row.status.new || row.status.edited || row.status.deleted) {
           this.changedRows.push(row)
