@@ -2,9 +2,10 @@ import { defaultsDeep } from 'lodash'
 
 import L from '../../lib/leaflet'
 import except from '../../lib/except'
+import { enumerate } from '../../lib/itertools'
 import { createExternalLayer, createLayer } from '../../lib/geomUtils'
 import validate from '../../lib/validate'
-import { isVoid, enumerate, reverse, unique } from '../../lib/utils'
+import { isVoid, reverse, unique } from '../../lib/utils'
 import ShareQuery from '../../lib/shareQuery'
 
 import { LAYER_TEMPLATE, LAYER_TEMPLATE_DEFAULTS } from './constants'

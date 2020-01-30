@@ -1,6 +1,8 @@
+import { filter, map } from 'src/lib/itertools'
 import L from 'src/lib/leaflet'
 import { CancelError, eachLayer, layersBounds } from 'src/lib/geomUtils'
 import { rowsInGeom } from 'src/lib/layersInGeom'
+import { split } from 'src/lib/utils'
 import Vue from 'vue'
 
 import DBFormDialog from 'components/data-layer/DBFormDialog'
@@ -28,6 +30,7 @@ export default class Table {
     this.remote = new Remote(source, layer, getConfig, contantFields)
     this.info = null
     this.rows = []
+    this.transients = new Set()
     this.selected = new Set() /// selected rows' pks
     this.selectedList = [] // Vue won't support sets (until vue 3.0). Convert it manually
     this.visibleSelectedList = []
@@ -297,20 +300,22 @@ export default class Table {
 
   /// Sets the new data
   setData (data) {
-    if (this.rows.length === 0) {
-      this.rows = Row.toRows(this, data)
-      return
-    }
-
     const currentPks = new Set(this.rows.map(row => row.pk))
+    const transientPks = new Set(filter(map(this.transients, row => row.pk), row => row !== void 0))
     const newRows = Row.toRows(this, data)
     const newPks = new Set(newRows.map(row => row.pk))
 
     // Remove the unused rows
     const toRemove = []
     for (let i = this.rows.length - 1; i >= 0; --i) {
-      if (!newPks.has(this.rows[i].pk)) {
-        toRemove.push(this.rows.splice(i, 1)[0])
+      const row = this.rows[i]
+      if (!newPks.has(row.pk)) {
+        this.rows.splice(i, 1)
+        if (row.status.saving) {
+          this.addTransient(row)
+        } else {
+          toRemove.push(row)
+        }
       }
     }
     toRemove.forEach(row => row.remove())
@@ -321,6 +326,13 @@ export default class Table {
       if (currentPks.has(row.pk)) {
         const r = this.rows.find(r => r.pk === row.pk)
         return r.merge(row)
+      } else if (transientPks.has(row.pk)) {
+        for (let r of this.transients) {
+          if (r.pk === row.pk) {
+            this.deleteTransient(r)
+            return r.merge(row)
+          }
+        }
       }
       return row
     })
@@ -333,7 +345,9 @@ export default class Table {
         this.selected.delete(row.internalPk)
       }
     })
+
     this.updateSelectedList()
+    this._updateTransients()
   }
 
   addRows () {
@@ -414,7 +428,10 @@ export default class Table {
     }
 
     const rowChanges = new RowChanges(this.rows, this.info)
-    this.rows = rowChanges.persistentRows
+    const [persistent, transients] = split(this.rows, row => rowChanges.persistentRows.has(row))
+    this.rows = persistent
+    transients.forEach(row => this.addTransient(row))
+    this._updateTransients()
 
     this.rows.forEach(row => row.resetStatus())
     this.editing = false
@@ -427,5 +444,24 @@ export default class Table {
     } catch (e) {
       Vue.prototype.$except(e)
     }
+  }
+
+  _updateTransients () {
+    this.transients.forEach(row => {
+      row.updateSaving()
+      if (!row.status.saving) {
+        this.deleteTransient(row)
+      }
+    })
+  }
+
+  addTransient (row) {
+    this.transients.add(row)
+    row.updateTransient()
+  }
+
+  deleteTransient (row) {
+    this.transients.delete(row)
+    row.updateTransient()
   }
 }

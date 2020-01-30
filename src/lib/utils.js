@@ -40,12 +40,13 @@ export function* reverse (arr) {
   }
 }
 
-export function* enumerate (ob) {
-  let i = 0
-  for (let value of ob) {
-    yield [i, value]
-    ++i
+export function split (arr, callback) {
+  const a = []
+  const b = []
+  for (let v of arr) {
+    (callback(v) ? a : b).push(v)
   }
+  return [a, b]
 }
 
 export function createEnum (elements, ordered = false) {
