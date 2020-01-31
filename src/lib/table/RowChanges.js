@@ -7,6 +7,7 @@ import SaveJob from './SaveJob'
 export default class RowChanges {
   constructor (rows, info) {
     this.persistentRows = new Set()
+    this.deletedRows = new Set()
     this.changedRows = []
     this.newRows = []
     this.changes = {
@@ -31,7 +32,9 @@ export default class RowChanges {
         }
         if (row.status.new || row.status.edited || row.status.deleted) {
           this.changedRows.push(row)
-          if (row.new) {
+          if (row.status.deleted) {
+            this.deletedRows.add(row)
+          } else if (row.status.new) {
             this.newRows.push(row)
           }
           this.consolidateChanges(row)

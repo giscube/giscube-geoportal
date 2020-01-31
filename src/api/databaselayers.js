@@ -40,7 +40,7 @@ export default {
       params.q = filter
     }
 
-    Object.keys(colFilters).forEach(key => {
+    Object.keys(colFilters || {}).forEach(key => {
       params[key] = colFilters[key]
     })
 

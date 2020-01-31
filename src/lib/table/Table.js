@@ -449,14 +449,11 @@ export default class Table {
     this.editing = false
     this.updateWmsRequested = true
     await this._save(rowChanges)
-    const promise = this.update({ immediate: true })
-      .catch(except)
-    await promise
   }
 
   async saveIndividual (row) {
     const rowChanges = new RowChanges([row], this.info)
-    if (rowChanges.persistentRows.length === 0) {
+    if (rowChanges.persistentRows.size === 0) {
       this.rows = this.rows.filter(r => r !== row)
     } else {
       this.addTransient(row)
@@ -467,7 +464,10 @@ export default class Table {
     await this._save(rowChanges)
   }
 
-  async _save (rowChanges) {
+  async _save (rowChanges, update = true) {
+    for (let row of rowChanges.deletedRows) {
+      this.remote.filters.deleted.add(row.pk)
+    }
     const saveJob = rowChanges.asSaveJob(this.remote)
     this.$root.$store.dispatch('dataLayer/asyncSave', saveJob)
     try {
@@ -476,6 +476,19 @@ export default class Table {
         const pks = map(data.ADD, entry => entry.id)
         for (let [row, pk] of zip(rowChanges.newRows, pks)) {
           row.setPk(pk)
+        }
+      }
+      for (let row of rowChanges.deletedRows) {
+        this.remote.filters.deleted.delete(row.pk)
+      }
+      if (update) {
+        const rowMap = new Map(map(rowChanges.persistentRows, row => [row.pk, row]))
+        const { data } = await this.remote.requestSpecificData(rowChanges.changedRows)
+        for (let newRow in Row.toRows(this, data)) {
+          const oldRow = rowMap.get(newRow.pk)
+          if (oldRow) {
+            oldRow.merge(newRow)
+          }
         }
       }
     } catch (e) {
