@@ -8,6 +8,7 @@ export default class RowChanges {
   constructor (rows, info) {
     this.persistentRows = new Set()
     this.changedRows = []
+    this.newRows = []
     this.changes = {
       add: [],
       update: [],
@@ -30,6 +31,9 @@ export default class RowChanges {
         }
         if (row.status.new || row.status.edited || row.status.deleted) {
           this.changedRows.push(row)
+          if (row.new) {
+            this.newRows.push(row)
+          }
           this.consolidateChanges(row)
         }
       }

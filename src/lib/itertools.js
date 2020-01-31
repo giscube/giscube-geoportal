@@ -24,6 +24,17 @@ export function* enumerate (it, start = 0) {
   }
 }
 
+export function* zip (...its) {
+  const iterators = its.map(it => it[Symbol.iterator]())
+  for (;;) {
+    const next = iterators.map(it => it.next())
+    if (some(next, result => !result.done)) {
+      break
+    }
+    yield next.map(result => result.value)
+  }
+}
+
 export function every (it, callback = _forward) {
   for (let v of it) {
     if (!callback(v)) {
