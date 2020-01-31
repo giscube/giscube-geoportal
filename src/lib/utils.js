@@ -113,6 +113,25 @@ export function escapeHtml (unsafe) {
     .replace(/'/g, '&#039;')
 }
 
+export function waitUntil (f, t = 1000) {
+  return new Promise((resolve, reject) => {
+    let done = false
+    const looper = setInterval(function () {
+      try {
+        if (f.apply(this) && !done) {
+          done = true
+          clearInterval(looper)
+          resolve()
+        }
+      } catch (e) {
+        done = true
+        clearInterval(looper)
+        reject(e)
+      }
+    }, t)
+  })
+}
+
 export const INTERNAL_PROPERTY = Object.freeze({
   configurable: true,
   enumerable: false,

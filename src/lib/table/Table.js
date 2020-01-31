@@ -65,6 +65,7 @@ export default class Table {
     this.editing = false
     this.adding = false
     this.updateDeferred = false
+    this.updateWmsRequested = false
   }
 
   get fields () {
@@ -392,11 +393,7 @@ export default class Table {
     }
 
     if (wms) {
-      this.refLayers && this.refLayers.forEach(ref => {
-        ref.refresh && ref.layer.setParams({
-          _fu: Date.now() // Force update
-        }, false)
-      })
+      this.updateWMS()
     }
 
     this.updateDeferred = false
@@ -409,6 +406,15 @@ export default class Table {
       this.addRows()
       this.select(this.selectedList.filter(pk => typeof pk === 'symbol'), { added: false })
     }
+  }
+
+  updateWMS () {
+    this.updateWmsRequested = false
+    this.refLayers && this.refLayers.forEach(ref => {
+      ref.refresh && ref.layer.setParams({
+        _fu: Date.now() // Force update
+      }, false)
+    })
   }
 
   updateByMap (pagination) {
@@ -441,10 +447,11 @@ export default class Table {
 
     this.rows.forEach(row => row.resetStatus())
     this.editing = false
-
+    this.updateWmsRequested = true
     await this._save(rowChanges)
-    await this.update({ immediate: true, wms: true })
+    const promise = this.update({ immediate: true })
       .catch(except)
+    await promise
   }
 
   async saveIndividual (row) {

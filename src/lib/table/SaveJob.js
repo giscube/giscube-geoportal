@@ -11,6 +11,9 @@ export default class SaveJob extends AsyncJob {
   }
 
   saveChanges () {
-    return this.remote.save(this.rowChanges.repr())
+    if (!this.repr) {
+      this.repr = this.rowChanges.repr()
+    }
+    return this.remote.save(this.repr)
   }
 }

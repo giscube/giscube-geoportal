@@ -37,6 +37,7 @@
     "leaflet.markercluster": "^1.4.1",
     "leaflet.path.drag": "0.0.6",
     "leaflet.wms": "^0.2.0",
+    "md5": "^2.2.1",
     "microdisseny-leaflet-measure": "git+https://github.com/Microdisseny/microdisseny-leaflet-measure.git",
     "moment": "^2.24.0",
     "node-sass": "^4.13.0",
