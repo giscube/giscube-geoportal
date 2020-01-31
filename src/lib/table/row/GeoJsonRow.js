@@ -109,6 +109,10 @@ export default class GeoJsonRow extends Row {
     }
   }
 
+  copyPk (obj, pk) {
+    obj.id = pk
+  }
+
   edit (properties) {
     super.edit(properties)
     this.applyStyle()
@@ -202,7 +206,7 @@ export default class GeoJsonRow extends Row {
     }
   }
 
-  setPk (obj, pk) {
-    obj.id = pk
+  setPk (pk) {
+    this.pk = pk
   }
 }

@@ -8,6 +8,7 @@ export default class RowChanges {
   constructor (rows, info) {
     this.persistentRows = new Set()
     this.changedRows = []
+    this.newRows = []
     this.changes = {
       add: [],
       update: [],
@@ -30,6 +31,9 @@ export default class RowChanges {
         }
         if (row.status.new || row.status.edited || row.status.deleted) {
           this.changedRows.push(row)
+          if (row.new) {
+            this.newRows.push(row)
+          }
           this.consolidateChanges(row)
         }
       }
@@ -43,7 +47,7 @@ export default class RowChanges {
     } else {
       const geom = this.info.hasGeom && !this.info.readonlyGeom && (row.status.new || row.status.geomEdited) ? getGeometry(row.layer, this.info.geomType) : void 0
       const empty = row.getEmpty()
-      row.setPk(empty, row.pk)
+      row.copyPk(empty, row.pk)
 
       if (row.status.new) {
         this.changes.add.push({ properties: row.properties, geom, empty })

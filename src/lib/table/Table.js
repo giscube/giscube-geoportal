@@ -1,4 +1,4 @@
-import { filter, map } from 'src/lib/itertools'
+import { filter, map, zip } from 'src/lib/itertools'
 import except from 'src/lib/except'
 import L from 'src/lib/leaflet'
 import { CancelError, eachLayer, layersBounds } from 'src/lib/geomUtils'
@@ -463,7 +463,17 @@ export default class Table {
   async _save (rowChanges) {
     const saveJob = rowChanges.asSaveJob(this.remote)
     this.$root.$store.dispatch('dataLayer/asyncSave', saveJob)
-    return saveJob.asPromise().catch(except)
+    try {
+      const { data } = await saveJob.asPromise()
+      if (data && data.ADD) {
+        const pks = map(data.ADD, entry => entry.id)
+        for (let [row, pk] of zip(rowChanges.newRows, pks)) {
+          row.setPk(pk)
+        }
+      }
+    } catch (e) {
+      except(e)
+    }
   }
 
   _updateTransients () {
