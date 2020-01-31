@@ -3,6 +3,8 @@ import clone from 'lodash/clone.js'
 import databaseLayersApi from '../../api/databaselayers.js'
 
 import { throwUnhandledExceptions } from '../../lib/promiseUtils.js'
+import { some } from '../../lib/itertools.js'
+import { waitUntil } from '../../lib/utils.js'
 
 export function invalidateState (context) {
   context.commit('setInitialState')
@@ -60,8 +62,25 @@ export function verifySourcesLoaded (context) {
   }
 }
 
+function _updateWMS (context) {
+  const table = context.state.table
+  if (!table.updateWmsRequested) return
+  table.updateWmsRequested = false
+  table.updateWMS()
+  const toRefresh = table.refLayers.filter(ref => ref.refresh).map(ref => ref.layer)
+  window.toRefresh = toRefresh
+  const promise = waitUntil(() => table !== context.state.table || !some(toRefresh, layer => layer.isLoading()))
+  context.commit('updateWms', promise)
+}
+
 function queueJob (context, asyncJob) {
-  context.state.asyncQueue.add(asyncJob).run()
+  context.state.asyncQueue.add(asyncJob)
+  context.state.updateWms.then(() => {
+    const promise = context.state.asyncQueue.run()
+    if (promise) {
+      promise.then(() => _updateWMS(context))
+    }
+  })
 }
 // Both use the same queue so it uses the same code to add the jobs
 export const uploadPhoto = queueJob

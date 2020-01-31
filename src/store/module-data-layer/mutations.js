@@ -23,3 +23,7 @@ export function clearLoadingSourceErrors (state) {
 export function addLoadingSourceError (state, error) {
   state.loadingSourceErrors.push(error)
 }
+
+export function updateWms (state, promise) {
+  state.updateWms = promise
+}
