@@ -25,7 +25,21 @@ function isAxiosError (error) {
   return !!(error.config && (error.config.url || error.config.baseUrl) && error.config.method)
 }
 
+const exceptDebounceSet = new Set()
+function errorShown (error) {
+  if (exceptDebounceSet.has(error)) {
+    return true
+  }
+  exceptDebounceSet.add(error)
+  setTimeout(() => exceptDebounceSet.delete(error), 10000) // 10 seconds debounce
+  return false
+}
+
 function except (error, { hide = false } = {}, vueConfig) {
+  if (errorShown(error)) {
+    return
+  }
+
   const self = except
   if (typeof error === 'string') {
     error = new Error(error)
