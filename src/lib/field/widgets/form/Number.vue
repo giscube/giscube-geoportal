@@ -3,7 +3,7 @@
     type="number"
     :readonly="readonly"
     :disable="disable"
-    :label="field.label | capitalize"
+    :label="label_"
     :clearable="field.null"
     :rules="rules"
     lazy-rules
@@ -20,12 +20,15 @@ import MultiValueMixin from '../mixins/MultiValueMixin'
 import ValidateMixin from '../mixins/ValidateMixin'
 
 export default {
-  props: ['value', 'field', 'readonly', 'disable'],
+  props: ['value', 'field', 'readonly', 'disable', 'label'],
   mixins: [MultiValueMixin, ValidateMixin],
   components: {
     ValidatedInput
   },
   computed: {
+    label_ () {
+      return this.label || this.$filter('capitalize')(this.field.label)
+    },
     max () {
       if (this.field.size === undefined || this.field.size === null) {
         return Infinity

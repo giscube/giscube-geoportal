@@ -1,14 +1,22 @@
 <template>
   <div class="panel result-panel fit">
     <div class="panel-content limit-parent column no-wrap">
-      <p class="panel-title">
-        <q-btn flat dense
-          icon="keyboard_arrow_left"
-          size="md"
-          @click="$router.push({ name: 'catalog' })"
+      <div class="row no-wrap">
+        <p class="panel-title">
+          <q-btn flat dense
+            icon="keyboard_arrow_left"
+            size="md"
+            @click="$router.push({ name: 'catalog' })"
+          />
+          {{ title }}
+        </p>
+        <q-space />
+        <q-btn
+          v-if="canAggregate"
+          icon="assessment"
+          @click.stop="gotoStatistics"
         />
-        {{ title }}
-      </p>
+      </div>
 
       <div v-if="address">
         <q-icon name="home" size="1.4em" /> {{ address }}
@@ -171,6 +179,9 @@ export default {
     address () {
       return null
     },
+    canAggregate () {
+      return false
+    },
     canDownload () {
       return false
     },
@@ -234,6 +245,7 @@ export default {
       const home = this.$config.home
       this.map.flyTo(new L.LatLng(home.center.lat, home.center.lng), home.zoom)
     },
+    gotoStatistics () {},
     download () {},
     projected (epsg) {
       return formatCoords(this.latlng, epsg)

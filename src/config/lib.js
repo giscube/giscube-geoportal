@@ -194,6 +194,11 @@ export default new Options({
       icon: 'share',
       to: 'share'
     },
+    statistics: {
+      enabled: false,
+
+      groups: []
+    },
     streetview: {
       icon: 'fas fa-street-view',
       to: 'streetview',

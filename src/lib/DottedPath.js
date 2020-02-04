@@ -4,6 +4,8 @@ export default class DottedPath {
   constructor (path) {
     if (!path) {
       this._parts = []
+    } else if (Array.isArray(path)) {
+      this._parts = [...path]
     } else {
       this._parts = path.split('.').filter(v => v.length > 0).map(v => {
         const n = parseInt(v)
@@ -51,5 +53,9 @@ export default class DottedPath {
 
     assign(r, parts[last], value)
     return value
+  }
+
+  concat (other) {
+    return new DottedPath([...this._parts, ...other._parts])
   }
 }

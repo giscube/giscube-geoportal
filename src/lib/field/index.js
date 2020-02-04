@@ -113,4 +113,4 @@ export function buildFields (layerInfo, constFields = {}) {
   return fields
 }
 
-export { ForeignKey }
+export { Field, ForeignKey }

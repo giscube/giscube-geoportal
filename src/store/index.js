@@ -7,6 +7,7 @@ import dataLayer from './module-data-layer'
 import layout from './module-layout'
 import map from './module-map'
 import search from './module-search'
+import statistics from './module-statistics'
 import root from './module-root'
 
 Vue.use(Vuex)
@@ -18,6 +19,7 @@ const modules = {
   layout,
   map,
   search,
+  statistics,
   root
 }
 

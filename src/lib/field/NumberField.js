@@ -17,4 +17,13 @@ export default class NumberField extends Field {
   search (value) {
     return [ this.name, value ]
   }
+
+  filter (data, filter) {
+    if (!filter) {
+      return true
+    }
+    filter = parseInt(filter, 10)
+    const value = this.getValue(data)
+    return !Number.isNaN(filter) && value === filter
+  }
 }

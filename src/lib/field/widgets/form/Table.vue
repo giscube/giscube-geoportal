@@ -3,7 +3,7 @@
     class="full-width q-mb-sm"
     icon-right="keyboard_arrow_right"
     :disable="isVoid || isMulti"
-    :label="label | capitalize"
+    :label="label_"
     @click="openTableDialog"
   />
 </template>
@@ -17,7 +17,7 @@ import { isVoid } from 'src/lib/utils'
 import TableDialog from 'components/data-layer/TableDialog'
 
 export default {
-  props: ['value', 'field', 'table', 'readonly', 'disable'],
+  props: ['value', 'field', 'table', 'readonly', 'disable', 'label'],
   components: {
     QBtn
   },
@@ -28,8 +28,8 @@ export default {
     isMulti () {
       return MultiResult.is(this.value)
     },
-    label () {
-      let label = this.field.label
+    label_ () {
+      let label = this.label || this.$filter('capitalize')(this.field.label)
       if (!this.isVoid && !this.isMulti && !isVoid(this.value.count)) {
         label += ` (${this.value.count})`
       }

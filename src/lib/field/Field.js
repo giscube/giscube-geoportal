@@ -3,9 +3,10 @@ import Vue from 'vue'
 import DottedPath from '../DottedPath'
 import { AsyncJob } from '../async'
 import MultiResult from '../MultiResult'
-import { cloneClean, isCleanEqual } from '../utils.js'
+import { cloneClean, isCleanEqual, isVoid, regexEscape } from '../utils.js'
 
-import DefaultWidget from './widgets/form/Default'
+import DefaultFormWidget from './widgets/form/Default'
+import DefaultFilterComponent from './components/filter/Default'
 
 export default class Field {
   constructor (info) {
@@ -26,12 +27,11 @@ export default class Field {
   // Callback with all the fields that have been created
   // onFieldsCreated (fields) {}
 
-  getValue ({ row, properties, value }) {
+  getValue ({ row, properties, from, value }) {
     if (value !== void 0) {
       return value
     }
-    const props = properties || (row && row.properties)
-    return this.path.extractFrom(props)
+    return this.path.extractFrom(from || properties || (row && row.properties) || void 0)
   }
 
   setValue ({ row, properties, value }) {
@@ -158,7 +158,7 @@ export default class Field {
   }
 
   formWidget () {
-    return DefaultWidget
+    return DefaultFormWidget
   }
 
   search (value) {
@@ -192,8 +192,64 @@ export default class Field {
     return true
   }
 
+  _compareValue (va, vb) {
+    if (Number.isFinite(va) && Number.isFinite(vb)) {
+      return vb - va
+    }
+
+    const toString = this.constructor.toString
+    return toString(va).localeCompare(toString(vb))
+  }
+
+  compare (a, b, descending, voidsPosition) {
+    const desc = descending ? -1 : 1
+    const compareVoid = voidsPosition !== 'first' ? -1 : 1
+
+    const va = this.getValue(b)
+    const vb = this.getValue(a)
+
+    {
+      const isAEmpty = isVoid(va) || va === ''
+      const isBEmpty = isVoid(vb) || vb === ''
+
+      if (isAEmpty && isBEmpty) {
+        return 0
+      } else if (isAEmpty) {
+        return compareVoid
+      } else if (isBEmpty) {
+        return -compareVoid
+      }
+    }
+
+    return desc * this._compareValue(va, vb)
+  }
+
+  filter (data, filter) {
+    const v = this.getValue(data)
+    const sv = this.constructor.toString(v)
+
+    let result = true
+    if (filter) {
+      const regex = new RegExp(regexEscape(filter), 'i')
+      result = regex.test(sv)
+    }
+    return result
+  }
+
+  colFilter (data, filter) {
+    return this.filter(data, filter)
+  }
+
+  filterWidget () {
+    return this.formWidget()
+  }
+
+  filterComponent () {
+    return DefaultFilterComponent
+  }
+
   static toString (value) {
-    if (value === undefined || value === null) {
+    if (isVoid(value)) {
       return ''
     } else {
       return value.toString()

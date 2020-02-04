@@ -1,6 +1,7 @@
 import { isVoid } from 'src/lib/utils'
 import Field from './Field'
 import TableWidget from './widgets/form/Table'
+import DefaultFormWidget from './widgets/form/Default'
 
 export default class TableField extends Field {
   constructor (info) {
@@ -60,5 +61,9 @@ export default class TableField extends Field {
 
   formWidget () {
     return TableWidget
+  }
+
+  filterWidget () {
+    return DefaultFormWidget
   }
 }

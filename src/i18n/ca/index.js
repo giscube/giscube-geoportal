@@ -26,6 +26,15 @@ export default {
     value = value.toString()
     return value.charAt(0).toUpperCase() + value.slice(1)
   },
+  cmp: {
+    equals: 'igual que',
+    from: 'de',
+    lessEqual: 'més petit o igual que',
+    less: 'més petit que',
+    moreEqual: 'més gran o igual que',
+    more: 'més gran que',
+    to: 'a'
+  },
   messages: {
     badPopupConfig: 'Error al llegir la configuració'
   },
@@ -174,6 +183,16 @@ export default {
       options: '@:names.options',
       openMessage: 'Obrir @:names.message',
       markerAtCenter: 'Marcador al centre'
+    },
+    statistics: {
+      columnCount: 'Compte',
+      columnColor: 'Color',
+      groupBy: 'Agrupar per',
+      palette: 'Paleta',
+      tabData: 'Dades',
+      tabResults: 'Temàtic',
+      title: 'Estadístiques',
+      titleFor: '@:tools.statistics.title per {layerName}'
     },
     streetview: {
       headerName: 'Street View',

@@ -10,7 +10,7 @@
     <q-field
       :readonly="readonly"
       :disable="disable"
-      :label="field.label | capitalize"
+      :label="label_"
       :stack-label="!!filename"
       :hint="hint"
     >
@@ -68,7 +68,7 @@ import normalizeImage from 'src/lib/normalizeImage'
 import ImageDialog from 'components/ImageDialog'
 
 export default {
-  props: ['table', 'value', 'field', 'readonly', 'disable'],
+  props: ['table', 'value', 'field', 'readonly', 'disable', 'label'],
   mixins: [MultiValueMixin, ValidateMixin],
   components: {
     QField,
@@ -76,6 +76,9 @@ export default {
     QImg
   },
   computed: {
+    label_ () {
+      return this.label || this.$filter('capitalize')(this.field.label)
+    },
     values () {
       if (this.isMulti) {
         return Array.from(this.value.values).filter(v => v)
