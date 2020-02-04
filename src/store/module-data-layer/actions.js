@@ -75,7 +75,9 @@ export function toggleFilterPolygon (context) {
 }
 
 export function setFilterPolygon (context, layer) {
-  layer.disableEdit()
+  if (layer) {
+    layer.disableEdit()
+  }
   context.commit('filterPolygon', layer)
 
   if (layer) {
