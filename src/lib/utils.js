@@ -4,8 +4,24 @@ export function noop () {
   // No operation. Does nothing
 }
 
+export function wait (n) {
+  return new Promise(resolve => setTimeout(resolve, n))
+}
+
+export function delay () {
+  return wait(0)
+}
+
 export function isVoid (value) {
   return value === null || value === void 0
+}
+
+export function xor (a, b) {
+  return !a !== !b
+}
+
+export function xnor (a, b) {
+  return !a === !b
 }
 
 export function set (obj, key, value) {
@@ -47,6 +63,11 @@ export function split (arr, callback) {
     (callback(v) ? a : b).push(v)
   }
   return [a, b]
+}
+
+export function regexEscape (v) {
+  // https://stackoverflow.com/a/3561711
+  return v.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&')
 }
 
 export function createEnum (elements, ordered = false) {

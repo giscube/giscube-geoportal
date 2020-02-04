@@ -415,3 +415,16 @@ export function formatCoords ({ lat, lng }, epsg) {
   const format = epsg.format ? epsg.format : defaultFormat
   return format(proj4('EPSG:4326', epsg.code, [lng, lat]))
 }
+
+export function makeReactiveTooltip (Component, componentConfig = {}, tooltipConfig = {}) {
+  const tooltip = L.tooltip({
+    direction: 'center',
+    permanent: true,
+    opacity: 1,
+    ...tooltipConfig
+  })
+  const TooltipComponent = Vue.extend(Component)
+  const component = new TooltipComponent(componentConfig)
+  tooltip.setContent(component.$mount().$el)
+  return tooltip
+}

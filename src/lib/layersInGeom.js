@@ -1,5 +1,7 @@
 import L from './leaflet.js'
 import pointInPolygon from 'point-in-polygon'
+import { map, filter } from './itertools'
+import { xor } from './utils'
 
 function somePoint (layer, callback) {
   if (layer instanceof L.LayerGroup) {
@@ -31,4 +33,54 @@ export function rowsInGeom (rows, geom) {
   const bounds = geom.getBounds()
 
   return rows.filter(row => row.layer && contains(row.layer, latLngs, bounds))
+}
+
+function containsWithHoles (point, polygon) {
+  for (let i = 0; i < polygon.length; ++i) {
+    const inRing = pointInPolygon(point, polygon[i])
+    if (xor(i === 0, inRing)) {
+      return false
+    }
+  }
+  return true
+}
+
+export function groupPointsByPolygons (points, polygons) {
+  const result = new Map(
+    map(
+      filter(
+        polygons,
+        layer => layer instanceof L.Polygon
+      ),
+      layer => [layer, []]
+    )
+  )
+
+  // Precomputed transformations
+  const rawPolygons = new Map(
+    map(
+      result.keys(),
+      polygon => ([
+        polygon,
+        polygon.getLatLngs().map(ring => ring.map(toRaw))
+      ])
+    )
+  )
+
+  for (let layer of points) {
+    if (layer.getLatLng) {
+      layer = layer.getLatLng()
+    }
+    if (!(layer instanceof L.LatLng)) {
+      continue
+    }
+    for (let polygon of result.keys()) {
+      if (containsWithHoles(toRaw(layer), rawPolygons.get(polygon))) {
+        result.get(polygon).push(layer)
+        break
+      }
+    }
+  }
+
+  return result
 }

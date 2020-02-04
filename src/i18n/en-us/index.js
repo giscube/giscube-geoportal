@@ -26,6 +26,15 @@ export default {
     value = value.toString()
     return value.charAt(0).toUpperCase() + value.slice(1)
   },
+  cmp: {
+    equals: 'equals to',
+    from: 'from',
+    lessEqual: 'less than or equal to',
+    less: 'less than',
+    moreEqual: 'more than or equal to',
+    more: 'more than',
+    to: 'to'
+  },
   messages: {
     badPopupConfig: 'This popup is improperly configured'
   },
@@ -172,6 +181,16 @@ export default {
       options: '@:names.options',
       openMessage: 'Open @:names.message',
       markerAtCenter: 'Marker at the center'
+    },
+    statistics: {
+      columnCount: 'Count',
+      columnColor: 'Color',
+      groupBy: 'Group by',
+      palette: 'Palette',
+      tabData: 'Data',
+      tabResults: 'Results',
+      title: 'Statistics',
+      titleFor: '@:tools.statistics.title for {layerName}'
     },
     streetview: {
       headerName: 'Street View',

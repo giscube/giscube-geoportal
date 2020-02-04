@@ -23,7 +23,7 @@ export default {
     const request = axios.get(url, conf)
     return throwUnhandledExceptions(request)
   },
-  getData ({ source, layer, pagination, filter, colFilters, extraParams }, config) {
+  getData ({ source, layer, pagination, filter, colFilters = {}, extraParams }, config) {
     const url = source.url + `layerserver/databaselayers/${layer.name}/data/`
     const params = {
       page: pagination && pagination.page,
