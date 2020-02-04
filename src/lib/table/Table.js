@@ -490,6 +490,7 @@ export default class Table {
             oldRow.merge(newRow)
           }
         }
+        this.changedCount = 0
       }
     } catch (e) {
       except(e)
