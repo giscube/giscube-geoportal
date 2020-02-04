@@ -484,7 +484,7 @@ export default class Table {
       if (update) {
         const rowMap = new Map(map(rowChanges.persistentRows, row => [row.pk, row]))
         const { data } = await this.remote.requestSpecificData(rowChanges.changedRows)
-        for (let newRow in Row.toRows(this, data)) {
+        for (let newRow of Row.toRows(this, data)) {
           const oldRow = rowMap.get(newRow.pk)
           if (oldRow) {
             oldRow.merge(newRow)

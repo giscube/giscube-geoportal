@@ -151,8 +151,9 @@ export default class GeoJsonRow extends Row {
   merge (other) {
     this._mergeProperties(other)
     if (!this.geometry || !this.layer || !other.geometry) {
+      this.remove()
       this.geometry = other.geometry
-      this.makeLayer()
+      this.add()
     } else {
       const otherLayer = L.GeoJSON.geometryToLayer(other.geometry, this.getGeomConfig())
       const otherGeomSnapshot = makeLayerSnapshot(otherLayer)
@@ -186,7 +187,7 @@ export default class GeoJsonRow extends Row {
     if (this.layer) {
       this.parent.layer.removeLayer(this.layer)
       this.layer.remove()
-      delete this.layer
+      this.layer = void 0
     }
   }
 
