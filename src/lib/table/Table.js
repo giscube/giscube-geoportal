@@ -468,10 +468,12 @@ export default class Table {
     for (let row of rowChanges.deletedRows) {
       this.remote.filters.deleted.add(row.pk)
     }
-    const saveJob = rowChanges.asSaveJob(this.remote)
+    const saveJob = rowChanges.asSaveJob(this.remote, response => this._postSave(rowChanges, response, update))
     this.$root.$store.dispatch('dataLayer/asyncSave', saveJob)
+  }
+
+  async _postSave (rowChanges, { data }, update) {
     try {
-      const { data } = await saveJob.asPromise()
       if (data && data.ADD) {
         const pks = map(data.ADD, entry => entry.id)
         for (let [row, pk] of zip(rowChanges.newRows, pks)) {

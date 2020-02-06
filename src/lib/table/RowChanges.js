@@ -49,11 +49,9 @@ export default class RowChanges {
       this.changes.delete.push(row.pk)
     } else {
       const geom = this.info.hasGeom && !this.info.readonlyGeom && (row.status.new || row.status.geomEdited) ? getGeometry(row.layer, this.info.geomType) : void 0
-      const empty = row.getEmpty()
-      row.copyPk(empty, row.pk)
 
       if (row.status.new) {
-        this.changes.add.push({ properties: row.properties, geom, empty })
+        this.changes.add.push({ row, properties: row.properties, geom })
       } else {
         const properties = {}
         for (let field of this.info.fields) {
@@ -63,7 +61,7 @@ export default class RowChanges {
             field.setValue({ properties, value: field.getValue(new_) })
           }
         }
-        this.changes.update.push({ properties, geom, empty })
+        this.changes.update.push({ row, properties, geom })
       }
     }
 
@@ -77,7 +75,10 @@ export default class RowChanges {
 
   _rowRepr (rows) {
     const reprs = []
-    for (let { properties, geom, empty } of rows) {
+    for (let { row, properties, geom } of rows) {
+      const repr = row.getEmpty()
+      row.copyPk(repr, row.pk)
+
       const props = {}
       for (let field of this.info.fields) {
         if (!field.constant && !field.readonly && !field.virtual) {
@@ -92,7 +93,6 @@ export default class RowChanges {
         }
       }
 
-      const repr = empty
       this.info.propsPath.setTo(repr, props)
       if (this.info.hasGeom && !this.info.readonlyGeom) {
         this.info.geomPath.setTo(repr, geom)
@@ -110,8 +110,8 @@ export default class RowChanges {
     }
   }
 
-  asSaveJob (remote) {
-    const job = new SaveJob(remote, this)
+  asSaveJob (remote, postSave) {
+    const job = new SaveJob(remote, this, postSave)
     for (let row of this.changedRows) {
       row.addSaveJob(job)
     }
