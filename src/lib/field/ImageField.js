@@ -104,11 +104,7 @@ export default class ImageField extends Field {
 
   popupValue (data) {
     const value = this.getValue(data)
-    if (value instanceof AsyncJob) {
-      return value.done ? value.result : null
-    } else {
-      return value
-    }
+    return ImageField.getUrlsDict(value)
   }
 
   static getUrl (value) {
@@ -156,6 +152,28 @@ export default class ImageField extends Field {
       }
     } else {
       return ImageField.urlFilename(value.src)
+    }
+  }
+
+  static getUrlsDict (value) {
+    if (!value) {
+      return {}
+    }
+
+    if (value instanceof AsyncJob) {
+      if (value.done) {
+        return ImageField.getUrlsDict(value.result)
+      } else {
+        return {
+          src: value.tempUrl,
+          thumbnail: value.tempUrl
+        }
+      }
+    } else {
+      return {
+        src: value.src,
+        thumbnail: value.thumbnail
+      }
     }
   }
 
