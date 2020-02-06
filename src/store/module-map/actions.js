@@ -83,7 +83,7 @@ export function setBaseLayer (context, value) {
 export function setDefaultBaseLayer (context) {
   let selected = ShareQuery.extract(this.$router.currentRoute.query, 'b')
   if (selected === void 0) {
-    selected = this.$config.basemaps.findIndex(basemap => basemap.selected)
+    selected = this.$config.basemaps.findIndex(basemap => basemap.default)
   }
 
   if (!selected || selected < 0) {
