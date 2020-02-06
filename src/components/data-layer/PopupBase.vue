@@ -16,7 +16,7 @@
         @click="edit"
       />
       <q-btn flat dense
-        v-show="editing && row.status.edited"
+        v-show="editing && row.status.edited && !row.status.new"
         icon="undo"
         @click="undoRow(row)"
       />
