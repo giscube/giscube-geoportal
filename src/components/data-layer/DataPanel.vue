@@ -8,8 +8,8 @@
           @close="closeTable"
         />
         <q-space />
-        <span v-if="saving">Saving your changes</span>
-        <span v-else-if="saved">Changes saved</span>
+        <span v-if="saving">{{ t('savingChanges') }}</span>
+        <span v-else-if="saved">{{ t('changesSaved') }}</span>
         <q-space />
         <status-controls v-if="table && table.info" :table="table" />
       </div>
