@@ -35,7 +35,7 @@ export default class Field {
   }
 
   setValue ({ row, properties, value }) {
-    if (this.virtual) {
+    if (this.virtual && !this.hasCacheValue) {
       throw new Error('Cannot set value of virtual field')
     }
     const props = properties || (row && row.properties)

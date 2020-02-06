@@ -40,9 +40,7 @@ export default class Remote {
 
     this.filters = {
       bbox: null,
-      columns: {
-        ...constFields
-      },
+      columns: {},
       general: null,
       polygon: null,
       deleted: new Set()
@@ -126,7 +124,7 @@ export default class Remote {
       layer: this.layer,
       pagination,
       filter: this.filters.general,
-      colFilters
+      colFilters: { ...colFilters, ...this.constFields }
     }
 
     if (this.info.hasGeom) {

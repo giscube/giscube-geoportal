@@ -1,6 +1,6 @@
 function getChangedFields (fields, a, b) {
   return fields
-    .filter(field => !field.constant && !field.virtual && !field.equals({ properties: a }, { properties: b }))
+    .filter(field => !field.constant && (!field.virtual || field.hasCacheValue) && !field.equals({ properties: a }, { properties: b }))
     .map(field => field.name)
 }
 
