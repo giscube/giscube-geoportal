@@ -1,4 +1,4 @@
-import { filter, map, zip } from 'src/lib/itertools'
+import { filter, map } from 'src/lib/itertools'
 import except from 'src/lib/except'
 import L from 'src/lib/leaflet'
 import { CancelError, eachLayer, layersBounds } from 'src/lib/geomUtils'
@@ -14,6 +14,7 @@ import RelatedTable from './RelatedTable'
 import Remote from './Remote'
 import * as Row from './row'
 import RowChanges from './RowChanges'
+import SaveJob from './SaveJob'
 
 export class EditingError extends Error {
   constructor () {
@@ -448,7 +449,8 @@ export default class Table {
     this.rows.forEach(row => row.resetStatus())
     this.editing = false
     this.updateWmsRequested = true
-    await this._save(rowChanges)
+    this._save(rowChanges)
+    this.changedCount = 0
   }
 
   async saveIndividual (row) {
@@ -461,42 +463,14 @@ export default class Table {
       row.resetStatus()
     }
 
-    await this._save(rowChanges)
+    this._save(rowChanges)
   }
 
-  async _save (rowChanges, update = true) {
+  _save (rowChanges) {
     for (let row of rowChanges.deletedRows) {
       this.remote.filters.deleted.add(row.pk)
     }
-    const saveJob = rowChanges.asSaveJob(this.remote, response => this._postSave(rowChanges, response, update))
-    this.$root.$store.dispatch('dataLayer/asyncSave', saveJob)
-  }
-
-  async _postSave (rowChanges, { data }, update) {
-    try {
-      if (data && data.ADD) {
-        const pks = map(data.ADD, entry => entry.id)
-        for (let [row, pk] of zip(rowChanges.newRows, pks)) {
-          row.setPk(pk)
-        }
-      }
-      for (let row of rowChanges.deletedRows) {
-        this.remote.filters.deleted.delete(row.pk)
-      }
-      if (update) {
-        const rowMap = new Map(map(rowChanges.persistentRows, row => [row.pk, row]))
-        const { data } = await this.remote.requestSpecificData(rowChanges.changedRows)
-        for (let newRow of Row.toRows(this, data)) {
-          const oldRow = rowMap.get(newRow.pk)
-          if (oldRow) {
-            oldRow.merge(newRow)
-          }
-        }
-        this.changedCount = 0
-      }
-    } catch (e) {
-      except(e)
-    }
+    this.$root.$store.dispatch('dataLayer/asyncSave', new SaveJob(this, rowChanges))
   }
 
   _updateTransients () {

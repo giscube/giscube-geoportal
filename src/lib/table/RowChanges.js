@@ -2,8 +2,6 @@ import { AsyncJob } from 'src/lib/async'
 import except from 'src/lib/except'
 import { getGeometry } from 'src/lib/geoJson'
 
-import SaveJob from './SaveJob'
-
 export default class RowChanges {
   constructor (rows, info) {
     this.persistentRows = new Set()
@@ -108,13 +106,5 @@ export default class RowChanges {
       UPDATE: this._rowRepr(this.changes.update),
       DELETE: this.changes.delete
     }
-  }
-
-  asSaveJob (remote, postSave) {
-    const job = new SaveJob(remote, this, postSave)
-    for (let row of this.changedRows) {
-      row.addSaveJob(job)
-    }
-    return job
   }
 }
