@@ -49,16 +49,9 @@ export default class RowChanges {
       const geom = this.info.hasGeom && !this.info.readonlyGeom && (row.status.new || row.status.geomEdited) ? getGeometry(row.layer, this.info.geomType) : void 0
 
       if (row.status.new) {
-        this.changes.add.push({ row, properties: row.properties, geom })
+        this.changes.add.push({ row, properties: { ...row.properties }, geom })
       } else {
-        const properties = {}
-        for (let field of this.info.fields) {
-          const new_ = { properties: row.properties }
-          const old = { properties: row.consolidatedProperties }
-          if (!field.virtual && !field.constant && !field.equals(new_, old)) {
-            field.setValue({ properties, value: field.getValue(new_) })
-          }
-        }
+        const properties = RowChanges.propertiesDiff(this.info.fields, row.properties, row.consolidatedProperties)
         this.changes.update.push({ row, properties, geom })
       }
     }
@@ -69,6 +62,19 @@ export default class RowChanges {
     }
 
     row.consolidateChanges()
+  }
+
+  static propertiesDiff (fields, n, o) {
+    const new_ = { properties: n }
+    const old = { properties: o }
+
+    const properties = {}
+    for (let field of fields) {
+      if (!field.virtual && !field.constant && !field.equals(new_, old)) {
+        field.setValue({ properties, value: field.getValue(new_) })
+      }
+    }
+    return properties
   }
 
   _rowRepr (rows) {
