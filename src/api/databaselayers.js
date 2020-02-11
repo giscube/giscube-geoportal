@@ -78,7 +78,7 @@ export default {
 
     conf.headers = {
       ...conf.headers,
-      // 'X-Bulk-Hash': request.hash,
+      'X-Bulk-Hash': request.hash,
       'Content-Type': 'application/json'
     }
 
