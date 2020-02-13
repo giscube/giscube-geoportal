@@ -2,7 +2,6 @@ import { createLayerFromConfig } from 'src/lib/geomUtils'
 
 import FeaturePopup from 'components/FeaturePopup'
 import FeaturePopupDialog from 'components/FeaturePopupDialog'
-import SearchResultPopup from 'components/SearchResultPopup'
 import SearchResultPopupDialog from 'components/SearchResultPopupDialog'
 
 function extractResultOptions (result, $root) {
@@ -20,7 +19,7 @@ function extractResultOptions (result, $root) {
     title: result && result.title,
     options,
     map: $root.$store.state.map.mapObject,
-    popupComponent: isGeojson ? SearchResultPopup : FeaturePopup,
+    popupComponent: isGeojson ? this.$config.tools.search.searchResultPopup : FeaturePopup,
     dialogComponent: isGeojson ? SearchResultPopupDialog : FeaturePopupDialog,
     metaOptions: {
       root: $root
