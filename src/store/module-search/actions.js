@@ -1,7 +1,5 @@
 import { createGeoJSONLayer } from 'src/lib/geomUtils'
 
-import SearchResultPopup from 'components/SearchResultPopup'
-
 export function invalidateState (context) {
   context.commit('setInitialState')
 }
@@ -80,7 +78,7 @@ export function select (context, { result, replace = false }) {
 
 export function showResultLayer (context, result) {
   if (!result.layer) {
-    result.layer = createGeoJSONLayer({ result, popupComponent: SearchResultPopup })
+    result.layer = createGeoJSONLayer({ result, popupComponent: this.$config.tools.search.searchResultPopup })
   }
   context.state.resultsLayer.addLayer(result.layer)
 }

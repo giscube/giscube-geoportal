@@ -6,7 +6,10 @@
   >
     <q-card class="column q-pa-md">
       <q-card-section>
-        <search-result-popup :feature="feature" />
+        <component
+          :is="this.$config.search.searchResultPopup"
+          :feature="feature"
+        />
       </q-card-section>
       <q-card-actions align="right">
         <q-btn :label="$t('actions.close')" @click="onClose" />
@@ -17,12 +20,10 @@
 
 <script>
 import { QBtn, QCard, QCardActions, QCardSection, QDialog } from 'quasar'
-import SearchResultPopup from './SearchResultPopup'
 
 export default {
   props: ['feature'],
   components: {
-    SearchResultPopup,
     QBtn,
     QCard,
     QCardActions,

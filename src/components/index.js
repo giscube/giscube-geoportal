@@ -10,7 +10,6 @@ import QueryOnClick from './QueryOnClick'
 import ResultPanelMixin from './ResultPanelMixin'
 import SearchBar from './SearchBar'
 import SearchResult from './SearchResult'
-import SearchResultPopup from './SearchResultPopup'
 import SearchResultPopupDialog from './SearchResultPopupDialog'
 import Sidebar from './Sidebar'
 import ValidatedInput from './ValidatedInput'
@@ -28,7 +27,6 @@ export default {
   ResultPanelMixin,
   SearchBar,
   SearchResult,
-  SearchResultPopup,
   SearchResultPopupDialog,
   Sidebar,
   ValidatedInput
