@@ -186,6 +186,7 @@ export default new Options({
     search: {
       icon: 'search',
       to: 'search',
+      searchResultPopup: require('components/SearchResultPopup.vue').default,
 
       historyLength: 5
     },
