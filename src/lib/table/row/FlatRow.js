@@ -5,7 +5,14 @@ export default class FlatRow extends Row {
     this.pk = this.info.pkField.getValue({ row: this })
   }
 
-  setPk (obj, pk) {
+  setPk (pk) {
+    this.pk = pk
+    this.copyPk(this.serverProperties, pk)
+    this.copyPk(this.consolidatedProperties, pk)
+    this.copyPk(this.properties, pk)
+  }
+
+  copyPk (obj, pk) {
     this.info.pkField.setValue({ properties: obj, value: pk })
   }
 }

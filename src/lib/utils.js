@@ -40,12 +40,13 @@ export function* reverse (arr) {
   }
 }
 
-export function* enumerate (ob) {
-  let i = 0
-  for (let value of ob) {
-    yield [i, value]
-    ++i
+export function split (arr, callback) {
+  const a = []
+  const b = []
+  for (let v of arr) {
+    (callback(v) ? a : b).push(v)
   }
+  return [a, b]
 }
 
 export function createEnum (elements, ordered = false) {
@@ -110,6 +111,25 @@ export function escapeHtml (unsafe) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;')
+}
+
+export function waitUntil (f, t = 1000) {
+  return new Promise((resolve, reject) => {
+    let done = false
+    const looper = setInterval(function () {
+      try {
+        if (f.apply(this) && !done) {
+          done = true
+          clearInterval(looper)
+          resolve()
+        }
+      } catch (e) {
+        done = true
+        clearInterval(looper)
+        reject(e)
+      }
+    }, t)
+  })
 }
 
 export const INTERNAL_PROPERTY = Object.freeze({
