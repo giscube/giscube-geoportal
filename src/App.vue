@@ -79,9 +79,6 @@ export default {
     },
     queueRunning () {
       return this.queues.some(queue => queue.running)
-    },
-    savingData () {
-      return this.table && this.table.saving
     }
   },
   methods: {
@@ -89,7 +86,7 @@ export default {
       return process.env.NODE_ENV === 'production'
     },
     onLeave (e) {
-      if (this.savingData || this.queueRunning) {
+      if (this.queueRunning) {
         preventExit(e, this.$t('tools.data.quitWhileSaving'))
       } else if (this.dataChanged) {
         preventExit(e, this.$t('tools.data.quitWithChanges'))

@@ -41,12 +41,14 @@ export default class AsyncQueue {
         }
 
         await asyncJob.work()
-        if (!asyncJob.done) {
+        if (asyncJob.postponed) {
           postponed += 1
           setTimeout(() => {
             postponed -= 1
             this.asyncJobs.push(asyncJob)
           }, 5_000)
+        } else if (!asyncJob.done) {
+          retry.push(asyncJob)
         }
       }
       if (retry.length > 0) {

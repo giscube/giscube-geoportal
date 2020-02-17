@@ -16,7 +16,7 @@
           />
           <q-btn
             :label="$t('actions.close')"
-            :disable="editing || saving"
+            :disable="editing"
             @click="hide"
           />
         </div>
@@ -93,9 +93,6 @@ export default {
     editing () {
       return this.table && this.table.editing
     },
-    saving () {
-      return this.table && this.table.saving
-    },
     changed () {
       return this.table && this.table.rows.some(row => row.status.new || row.status.edited || row.status.deleted)
     }
@@ -110,7 +107,7 @@ export default {
       }
     },
     close () {
-      const closable = !this.editing && !this.saving
+      const closable = !this.editing
       if (closable) {
         this.hide()
       }

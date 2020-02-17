@@ -6,7 +6,6 @@
     <q-btn-group>
       <q-btn
         :label="t('newElement')"
-        :disable="saving"
         @click="newRow()"
       />
       <q-btn
@@ -21,7 +20,6 @@
       v-show="table.visibleSelectedList.length > 0"
       split
       :label="t('editElements', { elements: elementsT })"
-      :disable="saving"
       @click="table.uiEditSelected()"
     >
       <q-list>
@@ -88,9 +86,6 @@ export default {
   computed: {
     editing () {
       return this.table.editing
-    },
-    saving () {
-      return this.table.saving
     },
     map () {
       return this.$store.state.map.mapObject

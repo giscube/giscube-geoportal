@@ -1,5 +1,7 @@
 import { AsyncJob } from 'src/lib/async'
 import MultiResult from 'src/lib/MultiResult'
+import { some } from 'src/lib/itertools'
+import { mergeRowsData } from './utils'
 
 const pkGenerator = (function () {
   let n = 0
@@ -21,10 +23,16 @@ export default class Row {
         enumerable: false,
         writable: false,
         value: parent
+      },
+      _saveJobs: {
+        configurable: true,
+        enumerable: false,
+        writable: true,
+        value: []
       }
     })
     this.constFields = constFields
-    this.consolidatedProperties = data ? this.propertiesFromData(data) : {}
+    this.serverProperties = this.consolidatedProperties = data ? this.propertiesFromData(data) : {}
     this.properties = null
 
     if (this.info.hasGeom) {
@@ -59,13 +67,15 @@ export default class Row {
       },
       propsEdited: false,
       geomEdited: false,
+      saving: false,
       get selected () {
         return row.parent.selectedList.includes(row.internalPk)
       },
       set selected (value) {
         row.parent.selectRows([row], { added: !!value })
       },
-      new: !data
+      new: !data,
+      transient: false
     }
 
     Object.defineProperty(this.status, 'deleted', {
@@ -92,6 +102,7 @@ export default class Row {
     this.status.edited = false
     this.status.propsEdited = false
     this.status.geomEdited = false
+    this.status.new = false
 
     this.applyStyle()
   }
@@ -100,6 +111,14 @@ export default class Row {
     this.status._hasBeenModified = false
     this._updateModified()
     this.add()
+  }
+
+  addSaveJob (saveJob) {
+    this._saveJobs.unshift(saveJob)
+    this._saveJobs = this._saveJobs.filter(job => !job.done)
+
+    saveJob.finally(_ => this.updateSaving())
+    this.updateSaving()
   }
 
   applyStyle () {}
@@ -126,6 +145,7 @@ export default class Row {
   }
 
   * _dependencies () {
+    yield * this._saveJobs
     yield * this._asyncValues()
   }
 
@@ -175,8 +195,21 @@ export default class Row {
     return {}
   }
 
+  _mergeProperties (other) {
+    mergeRowsData(
+      this.parent.info.fields,
+      [
+        this.serverProperties,
+        this.consolidatedProperties,
+        this.properties
+      ],
+      other.serverProperties
+    )
+  }
+
   merge (other) {
-    return other
+    this._mergeProperties(other)
+    return this
   }
 
   propertiesFromData (data) {
@@ -202,6 +235,14 @@ export default class Row {
         this.parent.changedCount += n ? 1 : -1
       }
     }
+  }
+
+  updateSaving () {
+    this.status.saving = some(this._saveJobs, job => !job.done)
+  }
+
+  updateTransient () {
+    this.status.transient = this.parent.transients.has(this)
   }
 
   add () {

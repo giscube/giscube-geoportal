@@ -1,5 +1,6 @@
 import L from 'src/lib/leaflet'
-import { CancelError, createLayer, eachLayer, flipLatLng, makeLayerSnapshot, applyLayerSnapshot } from 'src/lib/geomUtils'
+import { CancelError, createLayer, eachLayer, makeLayerSnapshot, applyLayerSnapshot } from 'src/lib/geomUtils'
+import { isCleanEqual } from 'src/lib/utils'
 
 import Tooltip from '../Tooltip'
 import Row from './Row'
@@ -108,6 +109,10 @@ export default class GeoJsonRow extends Row {
     }
   }
 
+  copyPk (obj, pk) {
+    obj.id = pk
+  }
+
   edit (properties) {
     super.edit(properties)
     this.applyStyle()
@@ -144,42 +149,21 @@ export default class GeoJsonRow extends Row {
   }
 
   merge (other) {
-    this.data = other.data
-    this.properties = other.properties
-    if (!this.layer) {
-      this.makeLayer()
-    } else if (this.geometry) {
-      const coords = flipLatLng(this.geometry.coordinates)
-      if (this.layer.setLatLng) {
-        this.layer.setLatLng(coords)
-      } else if (this.layer.setLatLngs) {
-        this.layer.setLatLngs(coords)
-      } else {
-        const layers = this.layer.getLayers()
+    this._mergeProperties(other)
+    if (!this.geometry || !this.layer || !other.geometry) {
+      this.remove()
+      this.geometry = other.geometry
+      this.add()
+    } else {
+      const otherLayer = L.GeoJSON.geometryToLayer(other.geometry, this.getGeomConfig())
+      const otherGeomSnapshot = makeLayerSnapshot(otherLayer)
 
-        const a = layers.length
-        const b = coords.length
-        let i = 0
-        for (; i < a && i < b; ++i) {
-          if (layers[i].setLatLng) {
-            layers[i].setLatLng(coords[i])
-          } else if (layers[i].setLatLngs) {
-            layers[i].setLatLngs(coords[i])
-          }
+      if (!isCleanEqual(this.consolidatedGeom, otherGeomSnapshot)) {
+        this.consolidatedGeom = otherGeomSnapshot
+        if (!this.status.geomEdited) {
+          applyLayerSnapshot(this.layer, this.consolidatedGeom)
         }
-        if (a > b) {
-          for (; i < a; ++i) {
-            this.layer.removeLayer(layers[i])
-            layers[i].remove()
-          }
-        } else if (a < b) {
-          const feature = {
-            type: this.geometry.type,
-            coordinates: this.geometry.coordinates.slice(i)
-          }
-          const group = L.GeoJSON.geometryToLayer(feature, this.getGeomConfig())
-          group.getLayers().forEach(layer => layer.addTo(this.layer))
-        }
+        this.geometry = other.geometry
       }
     }
     return this
@@ -203,7 +187,7 @@ export default class GeoJsonRow extends Row {
     if (this.layer) {
       this.parent.layer.removeLayer(this.layer)
       this.layer.remove()
-      delete this.layer
+      this.layer = void 0
     }
   }
 
@@ -223,7 +207,7 @@ export default class GeoJsonRow extends Row {
     }
   }
 
-  setPk (obj, pk) {
-    obj.id = pk
+  setPk (pk) {
+    this.pk = pk
   }
 }

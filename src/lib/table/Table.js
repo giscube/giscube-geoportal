@@ -1,6 +1,9 @@
+import { filter, map } from 'src/lib/itertools'
+import except from 'src/lib/except'
 import L from 'src/lib/leaflet'
 import { CancelError, eachLayer, layersBounds } from 'src/lib/geomUtils'
 import { rowsInGeom } from 'src/lib/layersInGeom'
+import { split } from 'src/lib/utils'
 import Vue from 'vue'
 
 import DBFormDialog from 'components/data-layer/DBFormDialog'
@@ -11,6 +14,7 @@ import RelatedTable from './RelatedTable'
 import Remote from './Remote'
 import * as Row from './row'
 import RowChanges from './RowChanges'
+import SaveJob from './SaveJob'
 
 export class EditingError extends Error {
   constructor () {
@@ -28,6 +32,7 @@ export default class Table {
     this.remote = new Remote(source, layer, getConfig, contantFields)
     this.info = null
     this.rows = []
+    this.transients = new Set()
     this.selected = new Set() /// selected rows' pks
     this.selectedList = [] // Vue won't support sets (until vue 3.0). Convert it manually
     this.visibleSelectedList = []
@@ -60,8 +65,8 @@ export default class Table {
 
     this.editing = false
     this.adding = false
-    this.saving = false
     this.updateDeferred = false
+    this.updateWmsRequested = false
   }
 
   get fields () {
@@ -303,20 +308,22 @@ export default class Table {
 
   /// Sets the new data
   setData (data) {
-    if (this.rows.length === 0) {
-      this.rows = Row.toRows(this, data)
-      return
-    }
-
     const currentPks = new Set(this.rows.map(row => row.pk))
+    const transientPks = new Set(filter(map(this.transients, row => row.pk), row => row !== void 0))
     const newRows = Row.toRows(this, data)
     const newPks = new Set(newRows.map(row => row.pk))
 
     // Remove the unused rows
     const toRemove = []
     for (let i = this.rows.length - 1; i >= 0; --i) {
-      if (!newPks.has(this.rows[i].pk)) {
-        toRemove.push(this.rows.splice(i, 1)[0])
+      const row = this.rows[i]
+      if (!newPks.has(row.pk)) {
+        this.rows.splice(i, 1)
+        if (row.status.saving) {
+          this.addTransient(row)
+        } else {
+          toRemove.push(row)
+        }
       }
     }
     toRemove.forEach(row => row.remove())
@@ -327,6 +334,13 @@ export default class Table {
       if (currentPks.has(row.pk)) {
         const r = this.rows.find(r => r.pk === row.pk)
         return r.merge(row)
+      } else if (transientPks.has(row.pk)) {
+        for (let r of this.transients) {
+          if (r.pk === row.pk) {
+            this.deleteTransient(r)
+            return r.merge(row)
+          }
+        }
       }
       return row
     })
@@ -339,7 +353,9 @@ export default class Table {
         this.selected.delete(row.internalPk)
       }
     })
+
     this.updateSelectedList()
+    this._updateTransients()
   }
 
   addRows () {
@@ -370,10 +386,6 @@ export default class Table {
   }
 
   async update ({ pagination, immediate, wms } = {}) {
-    if (this.editing) {
-      throw new EditingError()
-    }
-
     let requestData
     if (immediate) {
       requestData = this.remote.requestData.bind(this.remote)
@@ -382,11 +394,7 @@ export default class Table {
     }
 
     if (wms) {
-      this.refLayers && this.refLayers.forEach(ref => {
-        ref.refresh && ref.layer.setParams({
-          _fu: Date.now() // Force update
-        }, false)
-      })
+      this.updateWMS()
     }
 
     this.updateDeferred = false
@@ -401,10 +409,19 @@ export default class Table {
     }
   }
 
+  updateWMS () {
+    this.updateWmsRequested = false
+    this.refLayers && this.refLayers.forEach(ref => {
+      ref.refresh && ref.layer.setParams({
+        _fu: Date.now() // Force update
+      }, false)
+    })
+  }
+
   updateByMap (pagination) {
     if (this.mapDependent) {
       this.update(pagination)
-        .catch(Vue.prototype.$except)
+        .catch(except)
     }
   }
 
@@ -419,24 +436,59 @@ export default class Table {
   }
 
   async save () {
-    this.saving = true
     if (this.info.hasGeom && this.map) {
       eachLayer(this.layer, l => l.disableEdit(this.map))
     }
 
     const rowChanges = new RowChanges(this.rows, this.info)
-    this.rows = rowChanges.persistentRows
+    const [persistent, transients] = split(this.rows, row => rowChanges.persistentRows.has(row))
+    this.rows = persistent
+    transients.forEach(row => this.addTransient(row))
+    this._updateTransients()
 
-    const saveJob = rowChanges.asSaveJob(this.remote)
-    try {
-      this.$root.$store.dispatch('dataLayer/asyncSave', saveJob)
-      await saveJob.asPromise()
-      this.saving = false
-      this.rows.forEach(row => row.resetStatus())
-      this.editing = false
-      await this.update({ immediate: true, wms: true })
-    } catch (e) {
-      Vue.prototype.$except(e)
+    this.rows.forEach(row => row.resetStatus())
+    this.editing = false
+    this.updateWmsRequested = true
+    this._save(rowChanges)
+    this.changedCount = 0
+  }
+
+  async saveIndividual (row) {
+    const rowChanges = new RowChanges([row], this.info)
+    if (rowChanges.persistentRows.size === 0) {
+      this.rows = this.rows.filter(r => r !== row)
+    } else {
+      this.addTransient(row)
+      this._updateTransients()
+      row.resetStatus()
     }
+
+    this._save(rowChanges)
+  }
+
+  _save (rowChanges) {
+    for (let row of rowChanges.deletedRows) {
+      this.remote.filters.deleted.add(row.pk)
+    }
+    this.$root.$store.dispatch('dataLayer/asyncSave', new SaveJob(this, rowChanges))
+  }
+
+  _updateTransients () {
+    this.transients.forEach(row => {
+      row.updateSaving()
+      if (!row.status.saving) {
+        this.deleteTransient(row)
+      }
+    })
+  }
+
+  addTransient (row) {
+    this.transients.add(row)
+    row.updateTransient()
+  }
+
+  deleteTransient (row) {
+    this.transients.delete(row)
+    row.updateTransient()
   }
 }

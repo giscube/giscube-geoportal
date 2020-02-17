@@ -1,6 +1,7 @@
 import { CancelToken, isCancel } from 'axios'
 import Vue from 'vue'
 import databaseLayersApi from 'src/api/databaselayers'
+import { map, join } from 'src/lib/itertools'
 import { INTERNAL_PROPERTY, isCleanEqual, fromEntries } from 'src/lib/utils'
 import { promisedDebounce } from 'src/lib/FuturePromise'
 import TableInfo from './TableInfo'
@@ -39,11 +40,10 @@ export default class Remote {
 
     this.filters = {
       bbox: null,
-      columns: {
-        ...constFields
-      },
+      columns: {},
       general: null,
-      polygon: null
+      polygon: null,
+      deleted: new Set()
     }
     this.pagination = {
       rowsPerPage: 20,
@@ -58,7 +58,7 @@ export default class Remote {
     Object.defineProperties(this, {
       _debouncedRequestData: {
         ...INTERNAL_PROPERTY,
-        value: promisedDebounce(() => this.requestData(this.pagination, this.getConfig()), 500)
+        value: promisedDebounce(() => this.requestData(this.pagination), 500)
       },
       getConfig: {
         ...INTERNAL_PROPERTY,
@@ -124,14 +124,15 @@ export default class Remote {
       layer: this.layer,
       pagination,
       filter: this.filters.general,
-      colFilters
+      colFilters: { ...colFilters, ...this.constFields }
     }
 
     if (this.info.hasGeom) {
       const bbox = this.filters.bbox && this.filters.bbox().join(',')
       args['extraParams'] = {
         in_bbox: bbox || void 0,
-        intersects: this.filters.polygon || void 0
+        intersects: this.filters.polygon || void 0,
+        [this.info.pkField.name + '__in!']: join(this.filters.deleted)
       }
     }
 
@@ -179,6 +180,17 @@ export default class Remote {
           }
         })
     })
+  }
+
+  requestSpecificData (rows) {
+    const args = {
+      source: this.source,
+      layer: this.layer,
+      extraParams: {
+        [this.info.pkField.name + '__in']: join(map(rows, row => row.pk))
+      }
+    }
+    return databaseLayersApi.getData(args, this.getConfig())
   }
 
   save (bulk) {
