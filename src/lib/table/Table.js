@@ -232,6 +232,7 @@ export default class Table {
     createGeom = createGeom && this.info.hasGeom && !this.info.readonlyGeom
     editMultiple = editMultiple && createGeom
     try {
+      const newRows = []
       do {
         let row
         if (createGeom) {
@@ -239,6 +240,7 @@ export default class Table {
         } else {
           row = this.defaultRow.clone()
         }
+        newRows.push(row)
         this.rows.push(row)
         row.addNew()
 
@@ -246,7 +248,7 @@ export default class Table {
           row.status.selected = true
         }
         if (dialogForNew) {
-          await row.uiEdit()
+          await row.uiEdit(newRows)
         }
 
         // Disable eslint because when looping we stop when an exception is thrown
@@ -403,13 +405,14 @@ export default class Table {
     this.editing = true
   }
 
-  uiEdit (rows) {
+  uiEdit (rows, rowSet) {
     return new Promise(async resolve => {
       const api = await this.$root.$store.dispatch('layout/createDialog', {
         root: this.$root,
         component: DBFormDialog,
         table: this,
         rows,
+        rowSet: rowSet || this.rows,
         readonly: !this.editing
       })
       api.onDismiss(() => resolve())

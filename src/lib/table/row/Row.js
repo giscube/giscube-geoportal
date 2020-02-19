@@ -234,8 +234,8 @@ export default class Row {
     this.resetStatus()
   }
 
-  uiEdit () {
-    return this.parent.uiEdit([this])
+  uiEdit (...args) {
+    return this.parent.uiEdit([this], ...args)
   }
 
   _updateModified () {
