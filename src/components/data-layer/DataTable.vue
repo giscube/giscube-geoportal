@@ -1,5 +1,5 @@
 <template>
-  <div class="column no-wrap" style="min-height: 175px">
+  <div class="column no-wrap" style="min-height: 300px">
     <q-card class="full-width limit-parent column no-wrap">
       <q-resize-observer @resize="onResize" debounce="200" />
       <div

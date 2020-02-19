@@ -1,48 +1,46 @@
 <template>
-  <div class="data-panel panel fit">
-    <div class="panel-content fit column no-wrap">
-      <div class="col-auto row items-center justify-end">
-        <layers-list
-          v-model="layersListOpen"
-          :disable="editing"
-          @close="closeTable"
+  <div class="data-panel panel-content fit column no-wrap">
+    <div class="row items-center justify-end">
+      <layers-list
+        v-model="layersListOpen"
+        :disable="editing"
+        @close="closeTable"
+      />
+      <q-space />
+      <span v-if="saving">{{ t('savingChanges') }}</span>
+      <span v-else-if="saved">{{ t('changesSaved') }}</span>
+      <q-space />
+      <status-controls v-if="table && table.info" :table="table" />
+    </div>
+    <div class="row items-center space-items-sm" v-if="table && table.info">
+      <div class="space row">
+        <draw-controls
+          v-if="drawing"
         />
-        <q-space />
-        <span v-if="saving">{{ t('savingChanges') }}</span>
-        <span v-else-if="saved">{{ t('changesSaved') }}</span>
-        <q-space />
-        <status-controls v-if="table && table.info" :table="table" />
-      </div>
-      <div class="col-auto row items-center space-items-sm" v-if="table && table.info">
-        <div class="space row">
-          <draw-controls
-            v-if="drawing"
-          />
-          <data-edit-controls
-            v-else-if="editing"
-            :table="table"
-            allow-geom
-          />
-          <data-filter
-            v-else
-            :table="table"
-            allow-geom
-          />
-        </div>
-        <zoom-controls
+        <data-edit-controls
+          v-else-if="editing"
           :table="table"
+          allow-geom
         />
-        <selection-controls
+        <data-filter
+          v-else
           :table="table"
           allow-geom
         />
       </div>
-      <data-table
-        class="col full-width limit-parent"
-        v-if="table && table.info"
+      <zoom-controls
         :table="table"
       />
+      <selection-controls
+        :table="table"
+        allow-geom
+      />
     </div>
+    <data-table
+      class="col full-width limit-parent"
+      v-if="table && table.info"
+      :table="table"
+    />
   </div>
 </template>
 
@@ -214,7 +212,7 @@ export default {
 </script>
 
 <style lang="stylus">
-.data-panel > .panel-content > :not(:last-child)
+.data-panel.panel-content > :not(:last-child)
   margin-bottom: $spaces.md.y
 
 </style>
