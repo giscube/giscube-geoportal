@@ -135,6 +135,7 @@ export default class SaveJob extends AsyncJob {
 
     for (;;) {
       const api = await this.$root.$store.dispatch('layout/createDialog', {
+        root: this.$root,
         component: FixRowsDialog,
         toFix,
         table: this.table

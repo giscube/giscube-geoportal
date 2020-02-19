@@ -125,6 +125,7 @@ export default {
     askUpdate () {
       return new Promise(resolve => {
         this.$store.dispatch('layout/createDialog', {
+          root: this,
           component: BooleanDialog,
           title: this.$t('actions.askUpdateTitle'),
           msg: this.$t('actions.askUpdate'),

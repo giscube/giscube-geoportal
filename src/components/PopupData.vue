@@ -90,6 +90,7 @@ export default {
       const { target } = event
       if (target.hasAttribute(DIALOG_IMG_ATTR)) {
         this.$store.dispatch('layout/createDialog', {
+          root: this,
           component: ImageDialog,
           src: target.getAttribute(DIALOG_IMG_ATTR)
         })

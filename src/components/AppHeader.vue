@@ -115,6 +115,7 @@ export default {
     },
     infoPopup () {
       this.$store.dispatch('layout/createDialog', {
+        root: this,
         title: 'Development information',
         message: `Geoportal version: ${VERSION}`
       })

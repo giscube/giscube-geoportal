@@ -115,6 +115,7 @@ export default {
     },
     undoSelected () {
       this.$store.dispatch('layout/createDialog', {
+        root: this,
         message: this.$t('tools.data.undoConfirmN', { elements: this.elementsT }),
         ok: {
           flat: true,
