@@ -29,14 +29,11 @@
                   <q-btn
                     flat
                     dense
-                    style="color: initial"
-                    icon="layers"
+                    style="color: initial; font-size: 1.8em"
                     :disable="subcategory.loading"
                     @click.stop="addAll(subcategory)"
                   >
-                    <q-badge color="transparent" dense flat floating style="font-size: 0.6em; right: -1em">
-                      <q-icon name="add" align="top" color="black" />
-                    </q-badge>
+                    <add-layer-icon />
                   </q-btn>
                 </q-item-section>
               </template>
@@ -64,8 +61,9 @@
 </template>
 
 <script>
-import { QBadge, QBtn, QExpansionItem, QIcon, QItemSection, QList, QSpinner } from 'quasar'
+import { QBtn, QExpansionItem, QIcon, QItemSection, QList, QSpinner } from 'quasar'
 
+import AddLayerIcon from './AddLayerIcon'
 import CatalogResultComponent from './CatalogResult.vue'
 
 import { createNamespacedHelpers } from 'vuex'
@@ -73,8 +71,8 @@ const { mapState: mapCatalogState } = createNamespacedHelpers('catalog')
 
 export default {
   components: {
+    AddLayerIcon,
     CatalogResult: CatalogResultComponent,
-    QBadge,
     QBtn,
     QExpansionItem,
     QIcon,
