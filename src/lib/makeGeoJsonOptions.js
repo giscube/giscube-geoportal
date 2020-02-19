@@ -261,6 +261,7 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
         get () {
           return () => {
             root.$store.dispatch('layout/createDialog', {
+              root,
               ...(popup.propsData || {}),
               feature: this,
               renderContents,

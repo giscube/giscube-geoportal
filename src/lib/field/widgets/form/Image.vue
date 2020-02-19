@@ -131,6 +131,7 @@ export default {
     },
     showImage (src) {
       this.$store.dispatch('layout/createDialog', {
+        root: this,
         component: ImageDialog,
         src
       })

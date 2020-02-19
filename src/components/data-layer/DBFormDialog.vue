@@ -219,6 +219,7 @@ export default {
       } else {
         return new Promise(resolve => {
           this.$store.dispatch('layout/createDialog', {
+            root: this,
             message: this.t('qInvalidCommit'),
             ok: {
               flat: true,

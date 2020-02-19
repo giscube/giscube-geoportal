@@ -14,6 +14,7 @@ export default class Popup {
 
   open (latlng, row) {
     this.$root.$store.dispatch('layout/createDialog', {
+      root: this.$root,
       component: Dialog,
       row
     })
