@@ -8,54 +8,25 @@
     @hide="$emit('hide')"
   >
     <q-card class="data-form column no-wrap no-scroll">
-      <q-card-section v-if="!navDisabled" class="row">
-        <!-- Back -->
-        <div>
-          <q-btn
-            :disable="rowIndex === 0"
-            flat
-            dense
-            icon="mdi-chevron-double-left"
-            @click="goto(0)"
-          />
-          <q-btn
-            :disable="rowIndex === 0"
-            flat
-            dense
-            icon="mdi-chevron-left"
-            @click="goto(rowIndex - 1)"
-          />
-        </div>
-        <!-- Current -->
-        <span class="col q-ma-sm text-center">{{
+      <q-card-section v-if="!navDisabled">
+        <list-selector
+          :value="rowIndex"
+          :length="rowSet.length"
+          @input="goto"
+        >
+        {{
           t('editing1', {
             index: rowIndex + 1, // start at 1
-            total: table.rows.length
+            total: rowSet.length
           })
-        }}</span>
-        <!-- Forward -->
-        <div>
-          <q-btn
-            :disable="rowIndex >= table.rows.length - 1"
-            flat
-            dense
-            icon="mdi-chevron-right"
-            @click="goto(rowIndex + 1)"
-          />
-          <q-btn
-            :disable="rowIndex >= table.rows.length - 1"
-            flat
-            dense
-            icon="mdi-chevron-double-right"
-            @click="goto(table.rows.length - 1)"
-          />
-        </div>
+        }}
+        </list-selector>
       </q-card-section>
       <q-card-section v-else-if="currentRows.length > 1" class="row">
         <span>{{
           t('editingN', {
             n: currentRows.length,
-            total: table.rows.length
+            total: rowSet.length
           })
         }}</span>
       </q-card-section>
@@ -123,6 +94,7 @@ import { QBtn, QCard, QCardActions, QCardSection, QDialog, QIcon, QSpace } from 
 import Vue from 'vue'
 
 import DataForm from './DataForm'
+import ListSelector from './ListSelector'
 import TranslationMixin from './TranslationMixin'
 
 export default {
@@ -132,6 +104,10 @@ export default {
     rows: {
       type: Array,
       required: true
+    },
+    rowSet: {
+      type: Array,
+      required: false
     },
     disable: {
       type: Boolean,
@@ -144,6 +120,7 @@ export default {
   },
   components: {
     DataForm,
+    ListSelector,
     QBtn,
     QCard,
     QCardActions,
@@ -156,7 +133,7 @@ export default {
     return {
       result: {},
       currentRows: [...this.rows],
-      rowIndex: this.rows.length === 1 && this.table.rows.indexOf(this.rows[0]),
+      rowIndex: this.rows.length === 1 && this.rowSet.indexOf(this.rows[0]),
       localEdit: false
     }
   },
@@ -185,7 +162,7 @@ export default {
       return !this.disable && !this.readonly && (this.isNew || this.hasResult)
     },
     navDisabled () {
-      return this.isNew || this.localEdit || this.currentRows.length !== 1 || this.rowIndex < 0
+      return this.localEdit || this.rowSet.length <= 0 || this.currentRows.length !== 1 || this.rowIndex < 0
     }
   },
   methods: {
@@ -245,7 +222,7 @@ export default {
         .catch(_ => { /* do nothing */ })
         .then(_ => {
           Vue.set(this.currentRows, 'length', 0)
-          this.currentRows.push(this.table.rows[i])
+          this.currentRows.push(this.rowSet[i])
           this.rowIndex = i
           this.result = {}
         })
