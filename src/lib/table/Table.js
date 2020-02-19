@@ -181,7 +181,7 @@ export default class Table {
     if (info.referenceLayers && info.referenceLayers.length > 0) {
       const token = this.$root.$store.state.auth.accessToken
       const refLayers = this.info.referenceLayers.map(info => {
-        const url = `${info.url}?access_token=${token}`
+        const url = info.auth === 'token' ? `${info.url}?access_token=${token}` : info.url
         const layer = L.tileLayer.wms(url, {
           maxZoom: 22,
           ...(info.options || {}),
