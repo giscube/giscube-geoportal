@@ -128,6 +128,7 @@ export default {
       help: 'Dibuixar geometries sobre el mapa, mesurar-ne les distàncies i àrees.',
 
       area: 'Àrea',
+      drawMulti: 'Dibuixa múltiples geometries',
       explanation: 'Escolliu tipus de geometria, i seguidament cliqueu el mapa. Podeu fer doble clic per acabar de dibuixar.',
       marker: 'Punt',
       path: 'Línia',

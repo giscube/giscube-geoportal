@@ -41,6 +41,8 @@
         >{{ t('stop') }}</q-btn>
       </div>
 
+      <q-checkbox v-model="multi" :label="t('drawMulti')" />
+
       <div class='q-mt-md'>
         <div v-for='(layer, key) in sharedLayers' class='measure' :key="'shared-' + key">
           <q-chip
@@ -69,7 +71,7 @@
 
 <script>
 import { saveAs } from 'file-saver'
-import { QBtn, QChip } from 'quasar'
+import { QBtn, QCheckbox, QChip } from 'quasar'
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import length from '@turf/length'
@@ -84,14 +86,14 @@ export default {
   components: {
     DrawMessageInput,
     QBtn,
+    QCheckbox,
     QChip
   },
   data () {
     return {
-      q: '',
-      measureType: 'Path',
+      multi: false,
       measuring: false,
-      single: true,
+      measureArea: null,
       sharedLayers: []
     }
   },
@@ -115,16 +117,6 @@ export default {
       handler: 'updateSharedLayers',
       immediate: true
     }
-  },
-  beforeRouteEnter (to, from, next) {
-    next(vm => {
-      vm.q = to.params.q
-    })
-  },
-  beforeRouteUpdate (to, from, next) {
-    let vm = this
-    vm.q = to.params.q
-    next()
   },
   destroyed () {
     this.stopMeasuring()
@@ -178,11 +170,14 @@ export default {
       }
     },
     finishedpath () {
-      if (this.single) {
+      if (this.multi) {
+        requestAnimationFrame(() => this.startMeasuring(this.measureArea))
+      } else {
         this.stopMapMeasuring()
       }
     },
     startMeasuring (measureArea) {
+      this.measureArea = measureArea
       if (!this.map) {
         this.$except('Measure control is missing the map property')
         return
@@ -213,6 +208,9 @@ export default {
       this.$store.dispatch('map/addSharedMarker', marker)
       this.updateSharedLayers()
       this.stopMeasuring()
+      if (this.multi) {
+        requestAnimationFrame(() => this.addMarker())
+      }
     },
     stopMapMeasuring () {
       this.$store.dispatch('map/stopDrawing')
@@ -227,7 +225,7 @@ export default {
       }
       this.measuring = false
       this.map.off('measure:measurestop', this.stopMeasuring)
-      this.map.off('measure:finishedpath', this.stopMeasuring)
+      this.map.off('measure:finishedpath', this.finishedpath)
       // FIXME: hardcoded 300ms value from QueryOnClick, get from config
       setTimeout(() => {
         this.$store.commit('setCurrentTool', null)
