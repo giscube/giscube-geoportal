@@ -8,12 +8,16 @@ export function clearResultLayer (context) {
   context.state.resultsLayer.clearLayers()
 }
 
-export function search (context, { query, forceRefresh = false, auto }) {
+export async function search (context, { query, forceRefresh = false, auto }) {
   if (auto !== void 0) {
     context.commit('auto', auto)
   }
   if (!forceRefresh && query === context.state.query) {
-    context.state.auto !== false && context.dispatch('uniqueSelection')
+    const autoSelect = context.state.auto !== false && await context.dispatch('uniqueSelection')
+    if (!autoSelect) {
+      context.dispatch('ensureEngine')
+      context.state.engine.showResultLayers()
+    }
     return
   }
 
@@ -24,13 +28,16 @@ export function search (context, { query, forceRefresh = false, auto }) {
   }
 }
 
-export function fetch (context) {
-  context.dispatch('clearResultLayer')
-
+export function ensureEngine (context) {
   if (!context.state.engine) {
     const Engine = this.$config.searchEngine
     context.commit('engine', new Engine(this, context))
   }
+}
+
+export function fetch (context) {
+  context.dispatch('clearResultLayer')
+  context.dispatch('ensureEngine')
 
   const search = context.state.engine.search(context.state.query)
   context.commit('fetchingResults', search.results)
@@ -54,7 +61,9 @@ export function uniqueSelection (context) {
   const finalResults = context.state.finalResults
   if (finalResults && finalResults.length === 1) {
     context.dispatch('select', { result: finalResults[0], replace: true })
+    return true
   }
+  return false
 }
 
 export function select (context, { result, replace = false }) {
