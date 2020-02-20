@@ -358,6 +358,34 @@ export default class Table {
     this._updateTransients()
   }
 
+  async fillPage () {
+    const pagination = this.remote.pagination
+    const isLastPage = pagination.page >= Math.ceil(pagination.rowsNumber / pagination.rowsPerPage)
+    if (!isLastPage) {
+      const newRows = Row.toRows(this, await this.remote.requestData())
+      const currentPks = new Set(this.rows.map(row => row.pk))
+      const transients = new Map(map(filter(this.transients, row => row.pk !== void 0), row => [row.pk, row]))
+
+      let toFill = pagination.rowsPerPage - this.rows.length
+      for (let i = 0; toFill > 0 && i < newRows.length; ++i) {
+        const row = newRows[i]
+        if (!currentPks.has(row.pk)) {
+          const transient = transients.get(row.pk)
+          if (transient) {
+            this.deleteTransient(transient)
+            this.rows.push(transient.merge(row))
+          } else {
+            this.rows.push(row)
+          }
+          --toFill
+        }
+      }
+
+      this._updateTransients()
+      this.addRows()
+    }
+  }
+
   addRows () {
     this.rows.forEach(row => row.add(this.layer))
   }
