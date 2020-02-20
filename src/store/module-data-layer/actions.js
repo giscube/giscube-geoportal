@@ -109,15 +109,20 @@ function _updateWMS (context) {
   context.commit('updateWms', promise)
 }
 
-function queueJob (context, asyncJob) {
+async function queueJob (context, asyncJob) {
   context.state.asyncQueue.add(asyncJob)
-  context.state.updateWms.then(() => {
-    const promise = context.state.asyncQueue.run()
-    if (promise) {
-      promise.then(() => _updateWMS(context))
-    }
-  })
+  await context.state.updateWms
+  return context.state.asyncQueue.run()
 }
-// Both use the same queue so it uses the same code to add the jobs
+
+export async function asyncSave (context, asyncJob) {
+  const first = !context.state.asyncQueue.running
+  const queuePromise = queueJob(context, asyncJob)
+  if (first && queuePromise) {
+    await queuePromise
+    await context.state.table.fillPage()
+    _updateWMS(context)
+  }
+}
+
 export const uploadPhoto = queueJob
-export const asyncSave = queueJob
