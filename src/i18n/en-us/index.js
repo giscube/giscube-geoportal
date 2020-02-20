@@ -126,6 +126,7 @@ export default {
       help: 'Draw geometries on the map and measure its distances or areas.',
 
       area: 'Area',
+      drawMulti: 'Draw multiple geometries',
       explanation: 'Please select geometry type, then click on the map. Double-click to finish drawing.',
       marker: 'Point',
       path: 'Path',
