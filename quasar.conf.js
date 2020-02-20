@@ -101,6 +101,17 @@ module.exports = function (ctx) {
           ]
         }
 
+        // Add polyfills (to the first entry we find)
+        {
+          const polyfills = [
+            // List of polyfills to apply
+            'fast-text-encoding'
+          ]
+
+          const [ entryName, entrySources ] = Object.entries(cfg.entry)[0]
+          cfg.entry[entryName] = polyfills.concat(entrySources)
+        }
+
         cfg.module.rules.push({
           enforce: 'pre',
           test: /\.(js|vue)$/,
