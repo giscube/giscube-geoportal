@@ -2,6 +2,7 @@ import DottedPath from 'src/lib/DottedPath'
 import { buildFields } from 'src/lib/field/index'
 import { makeTemplate } from 'src/lib/makeGeoJsonOptions'
 import { ForeignKey } from 'src/lib/field'
+import { isVoid } from 'src/lib/utils'
 
 import { CircleStyle, ImageStyle, MarkerStyle, PathStyle } from './geom-styles'
 import GeomPath from './GeomPath'
@@ -44,7 +45,13 @@ export default class TableInfo {
     this.propsPath = new DottedPath(info.attributes_path)
 
     // Geometry info
-    this.hasGeom = !!info.geom_type
+    this.hasGeom = (
+      // Only consider that it has geometry if all the necessary values exist
+      info.geom_type &&
+      !isVoid(info.geom_path) &&
+      info.style && !isVoid(info.style.shapetype) &&
+      info.design && !isVoid(info.design.popup) && !isVoid(info.design.tooltip)
+    )
     if (this.hasGeom) {
       this.readonlyGeom = false
       this.geomType = info.geom_type.toLowerCase()
