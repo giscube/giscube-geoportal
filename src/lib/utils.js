@@ -113,6 +113,30 @@ export function escapeHtml (unsafe) {
     .replace(/'/g, '&#039;')
 }
 
+function defineValue (obj, n, value) {
+  return Object.defineProperty(obj, n, {
+    enumerable: true,
+    configurable: true,
+    writable: true,
+    value
+  })
+}
+export function delayPropertyDefinition (obj, n, callback) {
+  Object.defineProperty(obj, n, {
+    enumerable: true,
+    configurable: true,
+    get () {
+      const value = callback()
+      defineValue(obj, n, value)
+      return value
+    },
+    set (value) {
+      defineValue(obj, n, value)
+      return value
+    }
+  })
+}
+
 export function waitUntil (f, t = 1000) {
   return new Promise((resolve, reject) => {
     let done = false
