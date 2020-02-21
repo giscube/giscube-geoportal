@@ -1,6 +1,7 @@
 import { AsyncJob } from 'src/lib/async'
 import MultiResult from 'src/lib/MultiResult'
 import { some } from 'src/lib/itertools'
+import { delayPropertyDefinition } from 'src/lib/utils'
 import { mergeRowsData } from './utils'
 
 const pkGenerator = (function () {
@@ -24,6 +25,12 @@ export default class Row {
         writable: false,
         value: parent
       },
+      data: {
+        configurable: false,
+        enumerable: false,
+        writable: false,
+        value: data
+      },
       _saveJobs: {
         configurable: true,
         enumerable: false,
@@ -35,9 +42,7 @@ export default class Row {
     this.serverProperties = this.consolidatedProperties = data ? this.propertiesFromData(data) : {}
     this.properties = null
 
-    if (this.info.hasGeom) {
-      this.geometry = data && this.geometryFromData(data)
-    }
+    this.defineGeometry(data)
 
     this.generatePk(data)
     Object.defineProperties(this, {
@@ -171,6 +176,20 @@ export default class Row {
     return cloned
   }
 
+  defineGeometry (data) {
+    if (data && this.info.hasGeom) {
+      if (this.info.ownData) {
+        this.geometry = this.info.geomPath.extractFrom(data)
+      } else {
+        delayPropertyDefinition(
+          this,
+          'geometry',
+          () => this.info.geomPath.extractFrom(data)
+        )
+      }
+    }
+  }
+
   edit (properties) {
     const props = {}
     Object.keys(properties).forEach(key => {
@@ -185,10 +204,6 @@ export default class Row {
     }
     this.status.edited = true
     this.status.propsEdited = true
-  }
-
-  geometryFromData (data) {
-    return this.info.geomPath.extractFrom(data)
   }
 
   getEmpty () {
