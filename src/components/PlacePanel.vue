@@ -125,14 +125,6 @@ export default {
 
           this.show()
           if (type === 'GeoJSON') {
-            const visibleBBox = this.$store.getters['map/bbox']() // => map/bounds
-            const paddedVisibleBBox = visibleBBox.pad(-this.$config.layout.mapZoomPadding)
-            const pos = layer.getBounds ? layer.getBounds() : layer.getLatLng()
-            const visible = paddedVisibleBBox.contains(pos)
-
-            if (!visible) {
-              this.zoom()
-            }
             this.layer.openPopup()
           }
         })
