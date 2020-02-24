@@ -178,15 +178,11 @@ export default class Row {
 
   defineGeometry (data) {
     if (data && this.info.hasGeom) {
-      if (this.info.ownData) {
-        this.geometry = this.info.geomPath.extractFrom(data)
-      } else {
-        delayPropertyDefinition(
-          this,
-          'geometry',
-          () => this.info.geomPath.extractFrom(data)
-        )
-      }
+      delayPropertyDefinition(
+        this,
+        'geometry',
+        () => this.info.geomPath.extractFrom(data)
+      )
     }
   }
 
