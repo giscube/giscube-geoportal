@@ -227,12 +227,18 @@ export default class Table {
     }
   }
 
-  async makeRows ({ map, editMultiple, dialogForNew, selectNews }) {
+  async makeRows ({ map, editMultiple, dialogForNew, selectNews, createGeom }) {
     this.adding = true
-    editMultiple = editMultiple && this.info.hasGeom
+    createGeom = createGeom && this.info.hasGeom && !this.info.readonlyGeom
+    editMultiple = editMultiple && createGeom
     try {
       do {
-        const row = await this.defaultRow.asNew({ map })
+        let row
+        if (createGeom) {
+          row = await this.defaultRow.asNew({ map })
+        } else {
+          row = this.defaultRow.clone()
+        }
         this.rows.push(row)
         row.addNew()
 

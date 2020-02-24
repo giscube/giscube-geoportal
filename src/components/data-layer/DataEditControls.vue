@@ -50,6 +50,7 @@
       :editMultiple.sync="editMultiple"
       :dialogForNew.sync="dialogForNew"
       :selectNews.sync="selectNews"
+      allow-geom
     />
   </div>
 </template>
@@ -62,7 +63,13 @@ import DefaultsDialog from './DefaultsDialog'
 
 export default {
   mixins: [TranslationMixin],
-  props: ['table'],
+  props: {
+    table: Object,
+    allowGeom: {
+      type: Boolean,
+      default: false
+    }
+  },
   components: {
     DefaultsDialog,
     QBtn,
@@ -103,7 +110,8 @@ export default {
         map: this.map,
         editMultiple: this.editMultiple,
         dialogForNew: this.dialogForNew,
-        selectNews: this.selectNews
+        selectNews: this.selectNews,
+        createGeom: this.allowGeom
       })
         .catch(this.$except)
     },
