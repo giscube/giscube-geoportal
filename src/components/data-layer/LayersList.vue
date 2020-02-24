@@ -81,6 +81,7 @@
 
 <script>
 import { Ripple, QBadge, QBtn, QExpansionItem, QIcon, QItem, QItemLabel, QItemSection, QList, QSpinner } from 'quasar'
+import { isPart } from 'src/lib/utils'
 import TranslationMixin from './TranslationMixin'
 
 export default {
@@ -145,14 +146,19 @@ export default {
     },
     onSelectItem ({ source, layer }) {
       this.$emit('input', false)
+
+      const route = {
+        name: 'data',
+        params: {
+          sourceName: source.name,
+          layerName: layer.name
+        }
+      }
+      if (isPart(this.$route, route)) {
+        return
+      }
       this.$nextTick(_ => {
-        this.$router.push({
-          name: 'data',
-          params: {
-            sourceName: source.name,
-            layerName: layer.name
-          }
-        })
+        this.$router.push(route)
       })
     }
   }

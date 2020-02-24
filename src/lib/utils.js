@@ -182,3 +182,16 @@ export const INTERNAL_PROPERTY = Object.freeze({
   enumerable: false,
   writable: false
 })
+
+export function isPart (object, part) {
+  return Object.entries(part).every(([key, value]) => {
+    const objectValue = object[key]
+    if (isVoid(value)) {
+      return isVoid(object[key])
+    } else if (typeof value === 'object') {
+      return typeof value === 'object' && isPart(objectValue, value)
+    } else {
+      return objectValue === value
+    }
+  })
+}
