@@ -14,6 +14,7 @@
 
 <script>
 import { formatCoords } from 'src/lib/geomUtils'
+import { isPart } from 'src/lib/utils'
 
 export default {
   props: ['latlng'],
@@ -28,7 +29,10 @@ export default {
   methods: {
     onClick () {
       this.$store.dispatch('layout/setSidebarVisible', true)
-      this.$router.push({ name: 'coords', params: { epsg: '4326', coords: this.coords } })
+      const route = { name: 'coords', params: { epsg: '4326', coords: this.coords } }
+      if (!isPart(this.$route, route)) {
+        this.$router.push(route)
+      }
       this.$emit('remove-query')
     },
     projected (epsg) {
