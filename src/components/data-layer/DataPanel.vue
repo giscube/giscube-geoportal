@@ -21,10 +21,12 @@
           <data-edit-controls
             v-else-if="editing"
             :table="table"
+            allow-geom
           />
           <data-filter
             v-else
             :table="table"
+            allow-geom
           />
         </div>
         <zoom-controls
@@ -32,6 +34,7 @@
         />
         <selection-controls
           :table="table"
+          allow-geom
         />
       </div>
       <data-table

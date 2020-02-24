@@ -15,7 +15,7 @@
     </div>
     <div>
       <q-btn
-        v-if="table.info.hasGeom"
+        v-if="allowGeom && table.info.hasGeom"
         outline
         no-caps
         color="primary"
@@ -25,7 +25,7 @@
         @click="mapFilter = !mapFilter"
       />
       <q-btn
-        v-if="table.info.hasGeom"
+        v-if="allowGeom && table.info.hasGeom"
         outline
         no-caps
         color="primary"
@@ -46,7 +46,13 @@ import TranslationMixin from './TranslationMixin'
 
 export default {
   mixins: [TranslationMixin],
-  props: ['table'],
+  props: {
+    table: Object,
+    allowGeom: {
+      type: Boolean,
+      default: false
+    }
+  },
   components: {
     QBtn,
     QInput
