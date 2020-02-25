@@ -40,7 +40,6 @@ export default class SaveJob extends AsyncJob {
     try {
       response = await this.table.remote.save(this.repr)
     } catch (e) {
-      this.repr = null
       if (!e.response) {
         console.error(e)
         throw e
@@ -49,6 +48,7 @@ export default class SaveJob extends AsyncJob {
       const status = e.response.status
       if (status === 400) {
         console.warn('[SaveJob] User error')
+        this.repr = null
         this.fixing = true
         try {
           await this.fixChanges(e.response.data)
