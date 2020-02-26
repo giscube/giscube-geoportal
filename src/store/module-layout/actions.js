@@ -46,7 +46,7 @@ export function pushLengthState (context) {
   this.$router.push({
     ...this.$router.currentRoute,
     hash: l > 0 ? `#${l}` : ''
-  }).except(noop)
+  }).catch(noop)
 }
 
 export function createDialog (context, config) {
