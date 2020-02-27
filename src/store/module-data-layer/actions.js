@@ -104,6 +104,9 @@ function _updateWMS (context) {
   const table = context.state.table
   if (!table.updateWmsRequested) return
   table.updateWMS()
+  if (!table.refLayers) {
+    return
+  }
   const toRefresh = table.refLayers.filter(ref => ref.refresh).map(ref => ref.layer)
   const promise = waitUntil(() => table !== context.state.table || !some(toRefresh, layer => layer.isLoading()))
   context.commit('updateWms', promise)
