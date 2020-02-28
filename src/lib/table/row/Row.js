@@ -103,12 +103,13 @@ export default class Row {
   }
 
   resetStatus () {
-    this.status.deleted = false
-    this.status.edited = false
+    this.status._deleted = false
+    this.status._edited = false
     this.status.propsEdited = false
     this.status.geomEdited = false
     this.status.new = false
 
+    this._updateModified()
     this.applyStyle()
   }
 
