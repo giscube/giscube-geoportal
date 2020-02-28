@@ -45,13 +45,13 @@ export default class SaveJob extends AsyncJob {
         throw e
       }
 
-      const status = e.response.status
-      if (status === 400) {
+      const { status, data } = e.response
+      if (status === 400 && data && typeof data === 'object') {
         console.warn('[SaveJob] User error')
         this.repr = null
         this.fixing = true
         try {
-          await this.fixChanges(e.response.data)
+          await this.fixChanges(data)
         } catch (e) {
           console.log(e)
           throw e
