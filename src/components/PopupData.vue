@@ -48,8 +48,49 @@ export default {
   components: {
     QResizeObserver
   },
+  data () {
+    return {
+      result: ''
+    }
+  },
   computed: {
-    result () {
+    resultIsError () {
+      return this.result instanceof Error
+    }
+  },
+  mounted () {
+    this.$nextTick(_ => this.onResize())
+  },
+  updated () {
+    this.$nextTick(_ => this.onResize())
+  },
+  watch: {
+    'feature': {
+      handler () {
+        this.computeResult()
+      },
+      deep: true,
+      immediate: true
+    }
+  },
+  methods: {
+    onResize () {
+      this.$parent.$emit('update-popup-size')
+    },
+    onClick (event) {
+      const { target } = event
+      if (target.hasAttribute(DIALOG_IMG_ATTR)) {
+        this.$store.dispatch('layout/createDialog', {
+          root: this,
+          component: ImageDialog,
+          src: target.getAttribute(DIALOG_IMG_ATTR)
+        })
+      }
+    },
+    computeResult () {
+      this.result = this._computeResult()
+    },
+    _computeResult () {
       try {
         if (!this.renderContents) {
           return false
@@ -70,30 +111,6 @@ export default {
         error = new Error(error)
         this.$except(error, { hide: true })
         return error
-      }
-    },
-    resultIsError () {
-      return this.result instanceof Error
-    }
-  },
-  mounted () {
-    this.$nextTick(_ => this.onResize())
-  },
-  updated () {
-    this.$nextTick(_ => this.onResize())
-  },
-  methods: {
-    onResize () {
-      this.$parent.$emit('update-popup-size')
-    },
-    onClick (event) {
-      const { target } = event
-      if (target.hasAttribute(DIALOG_IMG_ATTR)) {
-        this.$store.dispatch('layout/createDialog', {
-          root: this,
-          component: ImageDialog,
-          src: target.getAttribute(DIALOG_IMG_ATTR)
-        })
       }
     }
   }
