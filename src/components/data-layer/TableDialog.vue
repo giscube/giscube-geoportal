@@ -92,9 +92,6 @@ export default {
   computed: {
     editing () {
       return this.table && this.table.editing
-    },
-    changed () {
-      return this.table && this.table.rows.some(row => row.status.new || row.status.edited || row.status.deleted)
     }
   },
   methods: {
