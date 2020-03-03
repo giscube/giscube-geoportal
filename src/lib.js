@@ -18,6 +18,7 @@ import ShareQuery from 'src/lib/shareQuery'
 import QueryOnClick from 'components/QueryOnClick'
 import LayersControl from 'components/LayersControl'
 import HelpPanel from 'components/HelpPanel'
+import StatisticsPanel from 'components/statistics/Panel'
 import StreetViewPanel from 'components/StreetViewPanel'
 import geoportalBoot from './boot'
 import store from './store/index.js'
@@ -53,6 +54,7 @@ export {
   QueryOnClick,
   LayersControl,
   HelpPanel,
+  StatisticsPanel,
   StreetViewPanel,
   boot,
   store,
