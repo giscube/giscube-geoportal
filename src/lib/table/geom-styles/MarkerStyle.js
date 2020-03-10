@@ -17,7 +17,7 @@ class MarkerStyle extends GeomStyle {
   fromInfo (info) {
     return {
       type: info.icon_type === 'img' ? 'img' : 'preset',
-      fill: info.marker_color,
+      fill: info.fill_color || info.marker_color,
       icon: info.icon,
       color: info.icon_color,
       size: toNumber(info.size)
