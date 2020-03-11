@@ -1,8 +1,14 @@
+import L from 'src/lib/leaflet'
 import { AsyncJob } from 'src/lib/async'
 import MultiResult from 'src/lib/MultiResult'
 import { some } from 'src/lib/itertools'
-import { delayPropertyDefinition } from 'src/lib/utils'
+import { CancelError, createLayer, eachLayer, makeLayerSnapshot, applyLayerSnapshot } from 'src/lib/geomUtils'
+import { delayPropertyDefinition, isCleanEqual } from 'src/lib/utils'
 import { mergeRowsData } from './utils'
+
+import Tooltip from '../Tooltip'
+
+const EDIT_EVENTS = 'editable:dragstart editable:drawing:start editable:vertex:click editable:editing'
 
 const pkGenerator = (function () {
   let n = 0
@@ -92,6 +98,34 @@ export default class Row {
         return value
       }
     })
+
+    if (parent.info.hasGeom) {
+      Object.defineProperties(this, {
+        _geomChanged: {
+          configurable: false,
+          enumerable: false,
+          writable: false,
+          value: this.geomChanged.bind(this)
+        },
+        layer: {
+          configurable: true,
+          enumerable: false,
+          writable: true
+        },
+        tooltip: {
+          configurable: true,
+          enumerable: false,
+          writable: true,
+          value: new Tooltip(this)
+        },
+        consolidatedGeom: {
+          configurable: true,
+          enumerable: false,
+          writable: true,
+          value: null
+        }
+      })
+    }
   }
 
   get info () {
@@ -127,14 +161,49 @@ export default class Row {
     this.updateSaving()
   }
 
-  applyStyle () {}
+  asNew () {
+    if (this.info.hasGeom) {
+      const promise = this._asNew.apply(this, arguments)
+      this.parent.$root.$store.dispatch('layout/showMapWhile', promise)
+      return promise
+    } else {
+      return this.clone()
+    }
+  }
 
-  async asNew () {
-    return this.clone()
+  async _asNew ({ map }) {
+    const config = {
+      bubblingMouseEvents: false
+    }
+    if (this.info.shapeType === 'circle') {
+      config.markerClass = L.CircleMarker
+    }
+    let layer
+    try {
+      layer = await createLayer({ map, type: this.info.geomType, config })
+    } catch (e) {
+      if (e instanceof CancelError && e.layer) {
+        layer = e.layer
+      } else {
+        throw e
+      }
+    }
+    const cloned = this.clone()
+    cloned.layer = layer
+    cloned.prepareLayer()
+    return cloned
+  }
+
+  prepareLayer () {
+    if (this.info.hasGeom) {
+      this.applyStyle()
+      this.layer.on('click', this.openPopup.bind(this))
+      this.addEditEvents()
+    }
   }
 
   get fields () {
-    return this.parent.info.fields.values()
+    return this.info.fields.values()
   }
 
   * _asyncValues () {
@@ -169,10 +238,14 @@ export default class Row {
     }
     this.consolidatedProperties = this.properties
     this._copyProperties()
+
+    if (this.info.hasGeom && !this.info.readonlyGeom && this.layer) {
+      this.consolidatedGeom = makeLayerSnapshot(this.layer)
+    }
   }
 
   clone () {
-    const cloned = new this.constructor(this.parent)
+    const cloned = new this.constructor(this.parent, void 0, this.constFields)
     cloned.properties = this.properties
     return cloned
   }
@@ -201,6 +274,7 @@ export default class Row {
     }
     this.status.edited = true
     this.status.propsEdited = true
+    this.applyStyle()
   }
 
   getEmpty () {
@@ -209,7 +283,7 @@ export default class Row {
 
   _mergeProperties (other) {
     mergeRowsData(
-      this.parent.info.fields,
+      this.info.fields,
       [
         this.serverProperties,
         this.consolidatedProperties,
@@ -221,6 +295,27 @@ export default class Row {
 
   merge (other) {
     this._mergeProperties(other)
+    if (!this.info.hasGeom) {
+      return this
+    }
+
+    // Merge geom
+    if (!this.geometry || !this.layer || !other.geometry) {
+      this.remove()
+      this.geometry = other.geometry
+      this.add()
+    } else {
+      const otherLayer = L.GeoJSON.geometryToLayer(other.geometry, this.getGeomConfig())
+      const otherGeomSnapshot = makeLayerSnapshot(otherLayer)
+
+      if (!isCleanEqual(this.consolidatedGeom, otherGeomSnapshot)) {
+        this.consolidatedGeom = otherGeomSnapshot
+        if (!this.status.geomEdited) {
+          applyLayerSnapshot(this.layer, this.consolidatedGeom)
+        }
+        this.geometry = other.geometry
+      }
+    }
     return this
   }
 
@@ -229,6 +324,11 @@ export default class Row {
   }
 
   revert () {
+    if (this.status.geomEdited) {
+      applyLayerSnapshot(this.layer, this.consolidatedGeom)
+      this.addEditEvents()
+    }
+
     if (!this.status.new && this.status.propsEdited) {
       this._copyProperties()
     }
@@ -258,10 +358,92 @@ export default class Row {
   }
 
   add () {
-    // do nothing
+    if (!this.info.hasGeom) {
+      return
+    }
+
+    if (this.layer === void 0) {
+      this.makeLayer()
+    }
+    if (this.layer) {
+      this.layer.addTo(this.parent.layer)
+    }
   }
 
   remove () {
-    // do nothing
+    if (this.info.hasGeom && this.layer) {
+      this.parent.layer.removeLayer(this.layer)
+      this.layer.remove()
+      this.layer = void 0
+    }
+  }
+
+  addEditEvents () {
+    if (!this.info.hasGeom || this.info.readonlyGeom) {
+      return
+    }
+
+    eachLayer(this.layer, layer => layer.on(EDIT_EVENTS, this._geomChanged))
+  }
+
+  applyStyle ({ reactiveEmulation = false } = {}) {
+    if (!this.info.hasGeom) {
+      return
+    }
+
+    if (!(reactiveEmulation && this.info.geomStyle.reactive)) {
+      this.info.geomStyle.apply(this)
+    }
+    this.tooltip.apply()
+  }
+
+  geomChanged () {
+    this.removeEditEvents()
+    this.status.geomEdited = true
+    this.status.edited = true
+    this.applyStyle({ reactiveEmulation: true })
+  }
+
+  removeEditEvents () {
+    eachLayer(this.layer, layer => layer.off(EDIT_EVENTS, this._geomChanged))
+  }
+
+  makeLayer () {
+    if (this.geometry) {
+      this.layer = L.GeoJSON.geometryToLayer(this.geometry, this.getGeomConfig())
+      this.prepareLayer()
+      this.consolidatedGeom = makeLayerSnapshot(this.layer)
+    } else {
+      this.layer = null
+    }
+  }
+
+  getGeomConfig () {
+    if (!this.info.hasGeom) {
+      return
+    }
+
+    const config = {
+      style: {
+        bubblingMouseEvents: false
+      }
+    }
+    if (this.info.shapeType === 'circle') {
+      config.pointToLayer = (_, latlng) => L.circleMarker(latlng)
+    }
+
+    return config
+  }
+
+  openPopup ({ latlng }) {
+    if (!this.info.hasGeom || !this.layer) {
+      return
+    }
+
+    if (this.layer instanceof L.Marker || this.layer instanceof L.CircleMarker) {
+      this.parent.popup.open(this.layer.getLatLng(), this)
+    } else {
+      this.parent.popup.open(latlng, this)
+    }
   }
 }

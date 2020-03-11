@@ -43,6 +43,7 @@ export default class TableInfo {
 
     this.rowsPath = new DottedPath(info.objects_path)
     this.propsPath = new DottedPath(info.attributes_path)
+    this.rowType = isVoid(info.geom_path) ? 'flat' : 'geojson'
 
     // Geometry info
     this.hasGeom = (

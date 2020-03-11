@@ -2,8 +2,13 @@ import Row from './Row'
 import FlatRow from './FlatRow'
 import GeoJsonRow from './GeoJsonRow'
 
+const ROW_TYPES = {
+  'geojson': GeoJsonRow,
+  'flat': FlatRow
+}
+
 export function toRow (parent, rowData, constFields) {
-  const Class = parent.info.hasGeom ? GeoJsonRow : FlatRow
+  const Class = ROW_TYPES[parent.info.rowType]
   return new Class(parent, rowData, constFields)
 }
 
