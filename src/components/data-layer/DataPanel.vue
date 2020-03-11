@@ -7,9 +7,6 @@
         @close="closeTable"
       />
       <q-space />
-      <span v-if="saving">{{ t('savingChanges') }}</span>
-      <span v-else-if="saved">{{ t('changesSaved') }}</span>
-      <q-space />
       <status-controls v-if="table && table.info" :table="table" />
     </div>
     <div class="row items-center space-items-sm" v-if="table && table.info">
@@ -48,6 +45,7 @@
 import { QSpace } from 'quasar'
 import { mapState } from 'vuex'
 import { isCleanEqual } from 'src/lib/utils'
+import Table from 'src/lib/table'
 
 import TranslationMixin from './TranslationMixin'
 import DataEditControls from './DataEditControls'
@@ -55,11 +53,10 @@ import DataFilter from './DataFilter'
 import DataTable from './DataTable'
 import DrawControls from './DrawControls'
 import LayersList from './LayersList'
+import SaveFeedback from './SaveFeedback'
 import SelectionControls from './SelectionControls'
 import StatusControls from './StatusControls'
 import ZoomControls from './ZoomControls'
-
-import Table from 'src/lib/table'
 
 export default {
   mixins: [TranslationMixin],
@@ -103,10 +100,12 @@ export default {
       next(false)
     }
   },
+  created () {
+    this.saveFeedback = new SaveFeedback(this)
+  },
   data () {
     return {
       layersListOpen: false,
-      saved: false,
       savedTimout: null
     }
   },
@@ -124,14 +123,8 @@ export default {
     }
   },
   watch: {
-    saving (value, oldValue) {
-      if (oldValue && !value) {
-        this.saved = true
-        clearTimeout(this.savedTimout)
-        this.savedTimout = setTimeout(() => {
-          this.saved = false
-        }, 5000)
-      }
+    saving (...args) {
+      this.saveFeedback.handler(...args)
     }
   },
   methods: {
