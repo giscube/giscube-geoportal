@@ -48,7 +48,7 @@ export default {
         [this.field.layerFk]: this.value._fk
       }
 
-      const table = new Table(source, layer, root, constFields)
+      const table = new Table(source, layer, root, constFields, false)
       this.$store.dispatch('layout/createDialog', {
         component: TableDialog,
         root,

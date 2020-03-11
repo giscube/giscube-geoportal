@@ -27,7 +27,7 @@ export class EditingError extends Error {
 const tileSize = 256
 
 export default class Table {
-  constructor (source, layer, root, contantFields) {
+  constructor (source, layer, root, contantFields, loadRelated = true) {
     const getConfig = () => root.$store.getters['auth/config']
     this.remote = new Remote(source, layer, getConfig, contantFields)
     this.info = null
@@ -37,6 +37,7 @@ export default class Table {
     this.selectedList = [] // Vue won't support sets (until vue 3.0). Convert it manually
     this.visibleSelectedList = []
     this.changedCount = 0
+    this.loadRelated = loadRelated
 
     this.defaultRow = null
 
@@ -164,9 +165,13 @@ export default class Table {
     const info = await this.remote.fetchInfo()
     this.info = info
 
-    this.relatedTables = info.fks.map(fk => new RelatedTable(this, fk))
-    await Promise.all(this.relatedTables.map(table => table.fetchInfo()))
-    info.setup(this.relatedTables)
+    if (this.loadRelated) {
+      this.relatedTables = info.fks.map(fk => new RelatedTable(this, fk))
+      await Promise.all(this.relatedTables.map(table => table.fetchInfo()))
+      info.setup(this.relatedTables)
+    } else {
+      this.relatedTables = []
+    }
 
     if (info.hasGeom) {
       this.removeLayers()
