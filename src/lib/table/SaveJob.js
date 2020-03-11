@@ -147,9 +147,6 @@ export default class SaveJob extends AsyncJob {
       })
       if (done) {
         for (let { row, originalProperties } of toFix) {
-          for (let key in originalProperties) {
-            originalProperties[key] = void 0
-          }
           const newProperties = RowChanges.propertiesDiff(this.table.info.fields, row.properties, row.serverProperties)
           Object.assign(originalProperties, newProperties)
         }
