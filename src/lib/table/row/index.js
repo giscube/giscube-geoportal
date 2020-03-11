@@ -7,9 +7,9 @@ export function toRow (parent, rowData, constFields) {
   return new Class(parent, rowData, constFields)
 }
 
-export function toRows (parent, data) {
+export function toRows (parent, data, constFields) {
   const rows = parent.info.rowsPath.extractFrom(data)
-  return rows.map(row => toRow(parent, row))
+  return rows.map(row => toRow(parent, row, constFields))
 }
 
 export {
