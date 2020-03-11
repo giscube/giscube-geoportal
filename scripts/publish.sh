@@ -8,7 +8,7 @@ cd "$(dirname "$0")/.."
 
 # Check that there's nothing to commit (based on https://stackoverflow.com/questions/5143795/how-can-i-check-in-a-bash-script-if-my-local-git-repository-has-changes)
 git update-index -q --refresh
-if [ ! -z $(git diff-index --name-only @ --) ]; then
+if [ -n "$(git diff-index --name-only @ --)" ]; then
   echo "There are uncommited changes. Aborting"
   exit
 fi
