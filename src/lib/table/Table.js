@@ -243,7 +243,7 @@ export default class Table {
         if (createGeom) {
           row = await this.defaultRow.asNew({ map })
         } else {
-          row = this.defaultRow.clone()
+          row = this.defaultRow.asNew()
         }
         newRows.push(row)
         this.rows.push(row)
