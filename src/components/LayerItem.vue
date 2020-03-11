@@ -109,14 +109,8 @@ export default {
     left: 10px;
     top: 10px;
   }
-  .q-checkbox__label {
+  .q-checkbox__label, .q-btn {
     font-size: 12px;
-  }
-  .q-btn--round {
-    height: 38px;
-    min-height: 38px;
-    width: 38px;
-    min-width: 38px;
   }
 }
 </style>
