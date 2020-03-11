@@ -159,7 +159,6 @@ a.giscube-header-brand {
 }
 .giscube-toolbar .q-btn {
   font-weight: 300;
-  padding: 6px 16px;
   font-size: .9em;
 }
 .giscube-toolbar .q-btn i {
