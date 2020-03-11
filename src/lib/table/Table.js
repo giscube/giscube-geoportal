@@ -321,16 +321,16 @@ export default class Table {
 
   /// Sets the new data
   setData (data) {
-    const currentPks = new Set(this.rows.map(row => row.pk))
-    const transientPks = new Set(filter(map(this.transients, row => row.pk), row => row !== void 0))
-    const newRows = Row.toRows(this, data)
-    const newPks = new Set(newRows.map(row => row.pk))
+    const currentPks = new Set(this.rows.map(row => row.internalPk))
+    const transientPks = new Set(filter(map(this.transients, row => row.internalPk), pk => pk !== void 0))
+    const newRows = Row.toRows(this, data, this.remote.constFields)
+    const newPks = new Set(newRows.map(row => row.internalPk))
 
     // Remove the unused rows
     const toRemove = []
     for (let i = this.rows.length - 1; i >= 0; --i) {
       const row = this.rows[i]
-      if (!newPks.has(row.pk)) {
+      if (!newPks.has(row.internalPk)) {
         this.rows.splice(i, 1)
         if (row.status.saving) {
           this.addTransient(row)
@@ -344,12 +344,12 @@ export default class Table {
     // intelligently merge the two row groups, adding only the required
     // keep new order (which might have changed)
     const rows = newRows.map(row => {
-      if (currentPks.has(row.pk)) {
-        const r = this.rows.find(r => r.pk === row.pk)
+      if (currentPks.has(row.internalPk)) {
+        const r = this.rows.find(r => r.internalPk === row.internalPk)
         return r.merge(row)
-      } else if (transientPks.has(row.pk)) {
+      } else if (transientPks.has(row.internalPk)) {
         for (let r of this.transients) {
-          if (r.pk === row.pk) {
+          if (r.internalPk === row.internalPk) {
             this.deleteTransient(r)
             return r.merge(row)
           }
@@ -375,15 +375,15 @@ export default class Table {
     const pagination = this.remote.pagination
     const isLastPage = pagination.page >= Math.ceil(pagination.rowsNumber / pagination.rowsPerPage)
     if (!isLastPage) {
-      const newRows = Row.toRows(this, await this.remote.requestData())
-      const currentPks = new Set(this.rows.map(row => row.pk))
-      const transients = new Map(map(filter(this.transients, row => row.pk !== void 0), row => [row.pk, row]))
+      const newRows = Row.toRows(this, await this.remote.requestData(), this.remote.constFields)
+      const currentPks = new Set(this.rows.map(row => row.internalPk))
+      const transients = new Map(map(filter(this.transients, row => row.internalPk !== void 0), row => [row.internalPk, row]))
 
       let toFill = pagination.rowsPerPage - this.rows.length
       for (let i = 0; toFill > 0 && i < newRows.length; ++i) {
         const row = newRows[i]
-        if (!currentPks.has(row.pk)) {
-          const transient = transients.get(row.pk)
+        if (!currentPks.has(row.internalPk)) {
+          const transient = transients.get(row.internalPk)
           if (transient) {
             this.deleteTransient(transient)
             this.rows.push(transient.merge(row))
