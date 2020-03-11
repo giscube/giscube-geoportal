@@ -97,6 +97,10 @@ export default class RowChanges {
         }
       }
 
+      if (row.constFields) {
+        Object.assign(props, row.constFields)
+      }
+
       this.info.propsPath.setTo(repr, props)
       if (this.info.hasGeom && !this.info.readonlyGeom) {
         this.info.geomPath.setTo(repr, geom)
