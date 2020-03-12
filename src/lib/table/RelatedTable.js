@@ -1,5 +1,6 @@
-import { toRows } from './row'
+import { isVoid } from 'src/lib/utils'
 
+import { toRows } from './row'
 import RelatedRemote from './RelatedRemote'
 
 export default class RelatedTable {
@@ -28,6 +29,10 @@ export default class RelatedTable {
     )
 
     const data = await this.remote.requestData(ids)
+    if (isVoid(data)) {
+      // Cancelled
+      return
+    }
     for (let row of toRows(this, data)) {
       const pk = row.pk
       if (!ids.has(pk)) {
