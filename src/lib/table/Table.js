@@ -514,8 +514,10 @@ export default class Table {
 
   _save (rowChanges) {
     for (let row of rowChanges.deletedRows) {
+      this.selected.delete(row.pk)
       this.remote.filters.deleted.add(row.pk)
     }
+    this.updateSelectedList()
     this.$root.$store.dispatch('dataLayer/asyncSave', new SaveJob(this, rowChanges))
   }
 
