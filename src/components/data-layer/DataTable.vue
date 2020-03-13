@@ -79,6 +79,7 @@
               :key="row.internalPk"
               :class="{
                 deleted: row.status.deleted,
+                new: row.status.new,
                 selected: row.status.selected
               }"
               @click.stop="select(row, !row.status.selected)"
@@ -310,6 +311,13 @@ export default {
       padding: 0 !important
       line-height: 0 !important
       border: none !important
+
+    tr.new
+      background-color $green-5
+      &.selected
+        background-color $green-4
+      &.new:hover
+        background-color $green-3
 
     tr.deleted
       background-color $red-5
