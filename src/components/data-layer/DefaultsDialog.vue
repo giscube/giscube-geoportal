@@ -81,7 +81,7 @@ export default {
   },
   computed: {
     geomBased () {
-      return this.allowGeom && this.table.hasGeom && !this.table.readonlyGeom
+      return this.allowGeom && this.table.info.hasGeom && !this.table.info.readonlyGeom
     }
   },
   methods: {
