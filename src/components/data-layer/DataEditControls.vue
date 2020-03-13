@@ -47,9 +47,9 @@
       ref="defaultDialog"
       :table="table"
       :row="defaultRow"
-      :editMultiple.sync="editMultiple"
-      :dialogForNew.sync="dialogForNew"
-      :selectNews.sync="selectNews"
+      :editMultiple.sync="defaultRowOptions.editMultiple"
+      :dialogForNew.sync="defaultRowOptions.dialogForNew"
+      :selectNews.sync="defaultRowOptions.selectNews"
       allow-geom
     />
   </div>
@@ -85,9 +85,6 @@ export default {
   },
   data () {
     return {
-      editMultiple: false,
-      dialogForNew: true,
-      selectNews: false
     }
   },
   computed: {
@@ -102,15 +99,18 @@ export default {
     },
     defaultRow () {
       return this.table.defaultRow
+    },
+    defaultRowOptions () {
+      return this.table.defaultRowOptions
     }
   },
   methods: {
     newRow () {
       this.table.makeRows({
         map: this.map,
-        editMultiple: this.editMultiple,
-        dialogForNew: this.dialogForNew,
-        selectNews: this.selectNews,
+        editMultiple: this.defaultRowOptions.editMultiple,
+        dialogForNew: this.defaultRowOptions.dialogForNew,
+        selectNews: this.defaultRowOptions.selectNews,
         createGeom: this.allowGeom
       })
         .catch(this.$except)
