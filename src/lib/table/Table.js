@@ -40,6 +40,11 @@ export default class Table {
     this.loadRelated = loadRelated
 
     this.defaultRow = null
+    this.defaultRowOptions = {
+      editMultiple: false,
+      dialogForNew: true,
+      selectNews: false
+    }
 
     Object.defineProperties(this, {
       map: {
