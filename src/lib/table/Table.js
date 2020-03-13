@@ -137,7 +137,8 @@ export default class Table {
 
   discard () {
     this.editing = false
-    if (this.info.hasGeom && this.map) {
+    if (this.info.hasGeom && !this.info.readonlyGeom && this.map) {
+      this.rows.forEach(row => row.removeEditEvents())
       eachLayer(this.layer, l => l.disableEdit(this.map))
     }
 
@@ -405,6 +406,7 @@ export default class Table {
 
   startEditing () {
     if (this.info.hasGeom && !this.info.readonlyGeom && this.map) {
+      this.rows.forEach(row => row.addEditEvents())
       eachLayer(this.layer, l => l.enableEdit(this.map))
     }
     this.editing = true
@@ -479,7 +481,8 @@ export default class Table {
   }
 
   async save () {
-    if (this.info.hasGeom && this.map) {
+    if (this.info.hasGeom && !this.info.readonlyGeom && this.map) {
+      this.rows.forEach(row => row.removeEditEvents())
       eachLayer(this.layer, l => l.disableEdit(this.map))
     }
 
