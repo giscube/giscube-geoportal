@@ -82,7 +82,7 @@ export default {
   },
   created () {
     this.onMapMove = debounce(this.updateMapPosition, 100)
-    this.updateTable = this._updateTable.bind(this)
+    this.updateTable = debounce(this._updateTable.bind(this), 100)
     this.startDrawing = this._setDrawing.bind(this, true)
     this.endDrawing = this._setDrawing.bind(this, false)
   },
