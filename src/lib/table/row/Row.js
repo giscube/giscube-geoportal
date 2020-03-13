@@ -198,7 +198,6 @@ export default class Row {
     if (this.info.hasGeom) {
       this.applyStyle()
       this.layer.on('click', this.openPopup.bind(this))
-      this.addEditEvents()
     }
   }
 
@@ -326,7 +325,6 @@ export default class Row {
   revert () {
     if (this.status.geomEdited) {
       applyLayerSnapshot(this.layer, this.consolidatedGeom)
-      this.addEditEvents()
     }
 
     if (!this.status.new && this.status.propsEdited) {
@@ -398,13 +396,19 @@ export default class Row {
   }
 
   geomChanged () {
-    this.removeEditEvents()
+    if (this.status.geomEdited) {
+      return
+    }
     this.status.geomEdited = true
     this.status.edited = true
     this.applyStyle({ reactiveEmulation: true })
   }
 
   removeEditEvents () {
+    if (!this.info.hasGeom || this.info.readonlyGeom) {
+      return
+    }
+
     eachLayer(this.layer, layer => layer.off(EDIT_EVENTS, this._geomChanged))
   }
 
