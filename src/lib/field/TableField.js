@@ -66,4 +66,8 @@ export default class TableField extends Field {
   filterWidget () {
     return DefaultFormWidget
   }
+
+  search (value) {
+    return [ this.name, value ]
+  }
 }
