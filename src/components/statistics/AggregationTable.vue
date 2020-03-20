@@ -22,7 +22,6 @@ export default {
   components: {
     QTable
   },
-  props: ['colorPalette'],
   data () {
     return {
       table: null,

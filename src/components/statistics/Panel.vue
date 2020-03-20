@@ -35,7 +35,7 @@
             :scheme.sync="paletteScheme"
             :groups.sync="paletteGroups"
           />
-          <aggregation-table :color-palette="palette" class="q-mt-md"/>
+          <aggregation-table class="q-mt-md"/>
         </div>
 
         <div v-show="tab === 'data'" debounce="10" class="column no-wrap limit-parent">
