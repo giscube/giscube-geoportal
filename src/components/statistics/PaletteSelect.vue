@@ -1,7 +1,7 @@
 <template>
-  <div class="row no-wrap">
+  <div class="row q-gutter-md">
     <q-select
-      class="fit q-mr-md"
+      class="col-grow"
       :value="scheme"
       @input="$emit('update:scheme', $event)"
       :options="options"
