@@ -14,7 +14,7 @@
         <q-tab name="data" :label="t('tabData')" />
       </q-tabs>
 
-        <div v-show="tab === 'results'" class="column no-wrap">
+        <div v-show="tab === 'results'" class="column no-wrap limit-parent">
           <file-select
             class="q-mb-md"
             :value="byOption"
@@ -35,7 +35,7 @@
             :scheme.sync="paletteScheme"
             :groups.sync="paletteGroups"
           />
-          <aggregation-table class="q-mt-md"/>
+          <aggregation-table class="q-mt-md" style="min-height: 150px" />
         </div>
 
         <div v-show="tab === 'data'" debounce="10" class="column no-wrap limit-parent">
