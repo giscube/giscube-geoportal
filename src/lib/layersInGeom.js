@@ -35,11 +35,13 @@ export function rowsInGeom (rows, geom) {
   return rows.filter(row => row.layer && contains(row.layer, latLngs, bounds))
 }
 
-function containsWithHoles (point, polygon) {
-  for (let i = 0; i < polygon.length; ++i) {
-    const inRing = pointInPolygon(point, polygon[i])
-    if (xor(i === 0, inRing)) {
-      return false
+function containsWithHoles (point, multipolygon) {
+  for (let polygon of multipolygon) {
+    for (let i = 0; i < polygon.length; ++i) {
+      const inRing = pointInPolygon(point, polygon[i])
+      if (xor(i === 0, inRing)) {
+        return false
+      }
     }
   }
   return true
@@ -60,10 +62,12 @@ export function groupPointsByPolygons (points, polygons) {
   const rawPolygons = new Map(
     map(
       result.keys(),
-      polygon => ([
-        polygon,
-        polygon.getLatLngs().map(ring => ring.map(toRaw))
-      ])
+      polygon => {
+        const p = polygon.getLatLngs()
+        const multiPolygon = L.LineUtil.isFlat(p) ? [p] : p
+        const rawPolygon = multiPolygon.map(polygon => polygon.map(ring => ring.map(toRaw)))
+        return [polygon, rawPolygon]
+      }
     )
   )
 
@@ -74,8 +78,10 @@ export function groupPointsByPolygons (points, polygons) {
     if (!(layer instanceof L.LatLng)) {
       continue
     }
+    const rawLayer = toRaw(layer)
     for (let polygon of result.keys()) {
-      if (containsWithHoles(toRaw(layer), rawPolygons.get(polygon))) {
+      const rawPolygon = rawPolygons.get(polygon)
+      if (containsWithHoles(rawLayer, rawPolygon)) {
         result.get(polygon).push(layer)
         break
       }
