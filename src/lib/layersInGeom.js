@@ -64,7 +64,7 @@ export function groupPointsByPolygons (points, polygons) {
       result.keys(),
       polygon => {
         const p = polygon.getLatLngs()
-        const multiPolygon = L.LineUtil.isFlat(p) ? [p] : p
+        const multiPolygon = (p.length > 0 && L.LineUtil.isFlat(p[0])) ? [p] : p
         const rawPolygon = multiPolygon.map(polygon => polygon.map(ring => ring.map(toRaw)))
         return [polygon, rawPolygon]
       }
