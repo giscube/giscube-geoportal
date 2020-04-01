@@ -11,6 +11,7 @@ import DataPanel from 'components/data-layer/DataPanel'
 import Sidebar from 'components/Sidebar'
 import DrawPanel from 'components/DrawPanel'
 import PlacePanel from 'components/PlacePanel'
+import PlacePanelStrategy from 'components/PlacePanelStrategy'
 import SearchBar from 'components/SearchBar'
 import SearchPanel from 'components/SearchPanel'
 import SharePanel from 'components/SharePanel'
@@ -47,6 +48,7 @@ export {
   Sidebar,
   DrawPanel,
   PlacePanel,
+  PlacePanelStrategy,
   SearchBar,
   SearchPanel,
   SharePanel,
