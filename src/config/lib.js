@@ -97,6 +97,14 @@ export default new Options({
       'printDate'
     ],
 
+    placePanel: {
+      defaultComponent: require('components/PlacePanel.vue').default,
+      strategyField: 'content_type',
+      strategyOptions: {
+        // 'example_value': require('components/PlacePanelBasedComponent.vue').default
+      }
+    },
+
     sidebar: {
       initialWidthPercentage: 30,
       minWidthPixels: 300,

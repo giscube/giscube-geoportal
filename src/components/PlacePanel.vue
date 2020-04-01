@@ -107,13 +107,16 @@ export default {
       return this.result && this.result.title
     }
   },
+  mounted () {
+    this.applyParameters(this.$route.params)
+  },
   methods: {
     applyParameters (params) {
       if (this.result && params.q === this.title) {
         this.applyResult()
       } else {
         // redirect
-        return true
+        this.$router.replace({ name: 'search', params: this.$route.params })
       }
     },
     applyResult () {

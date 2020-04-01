@@ -61,6 +61,8 @@
         />
       </div>
 
+      <slot name="after-tools"></slot>
+
       <div class="metadata" v-if="result && metadata && metadata.length > 0">
         <p class="panel-subtitle">{{ $t('names.metadata') | capitalize }}</p>
         <table>
@@ -124,7 +126,6 @@ import L from '../lib/leaflet'
 import { QChip, QBtn, QIcon, QSpace } from 'quasar'
 import { mapState } from 'vuex'
 import { formatCoords } from 'src/lib/geomUtils'
-import { isCleanEqual } from 'src/lib/utils'
 
 import DataFilter from './data-layer/DataFilter'
 import DataTable from './data-layer/DataTable'
@@ -139,33 +140,6 @@ export default {
     QBtn,
     QIcon,
     QSpace
-  },
-  beforeRouteEnter (to, from, next) {
-    next(vm => {
-      vm.$store.dispatch('search/clearResultLayer')
-      const redirect = vm.applyParameters(to.params)
-      if (redirect) {
-        vm.$router.replace({ name: 'search', params: to.params })
-      }
-    })
-  },
-  beforeRouteUpdate (to, from, next) {
-    if (isCleanEqual(from.params, to.params)) {
-      next()
-      return
-    }
-
-    this.$store.dispatch('search/clearResultLayer')
-    const redirect = this.applyParameters(to.params)
-    if (redirect) {
-      next({ name: 'search', params: to.params })
-    } else {
-      next()
-    }
-  },
-  beforeRouteLeave (to, from, next) {
-    this.$store.dispatch('search/clearResultLayer')
-    next()
   },
   computed: {
     ...mapState({
