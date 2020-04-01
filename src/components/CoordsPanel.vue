@@ -63,6 +63,9 @@ export default {
       return this.$t('names.coords')
     }
   },
+  mounted () {
+    this.applyParameters(this.$route.params)
+  },
   methods: {
     applyParameters (params) {
       if (params.coords !== this.query) {

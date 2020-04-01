@@ -49,7 +49,12 @@ export default {
     next(vm => vm.$store.dispatch('search/search', { query: to.params.q }))
   },
   beforeRouteUpdate (to, from, next) {
+    this.$store.dispatch('search/clearResultLayer')
     this.$store.dispatch('search/search', { query: to.params.q })
+    next()
+  },
+  beforeRouteLeave (to, from, next) {
+    this.$store.dispatch('search/clearResultLayer')
     next()
   },
   computed: {
