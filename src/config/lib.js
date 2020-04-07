@@ -98,10 +98,10 @@ export default new Options({
     ],
 
     placePanel: {
-      defaultComponent: require('components/PlacePanel.vue').default,
+      defaultComponent: () => require('components/PlacePanel.vue').default,
       strategyField: 'content_type',
       strategyOptions: {
-        // 'example_value': require('components/PlacePanelBasedComponent.vue').default
+        // 'example_value': () => require('components/PlacePanelBasedComponent.vue').default
       }
     },
 
