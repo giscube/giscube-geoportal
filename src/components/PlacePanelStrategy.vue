@@ -12,8 +12,8 @@ export default {
     placePanelComponent () {
       const config = this.$config.layout.placePanel
       const strategyValue = get(this.result, config.strategyField)
-      const component = config.strategyOptions[strategyValue]
-      return component || config.defaultComponent
+      const component = config.strategyOptions[strategyValue] || config.defaultComponent
+      return component()
     },
     ...mapState({
       result: state => state.search.result
