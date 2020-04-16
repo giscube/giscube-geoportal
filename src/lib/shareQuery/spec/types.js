@@ -139,6 +139,20 @@ types.geom = types.geometry = {
       return L.polyline(coords)
     } else if (type === 'p') {
       return L.polygon(coords)
+    } else if (type === 'c') {
+      let coordsList = str.substring(1).split('~')[0].split(',')
+      if (coordsList.length === 3) {
+        return L.circle(coords[0], { radius: coordsList[2] })
+      } else {
+        return L.circle(coords[0], { radius: 20 })
+      }
+    } else if (type === 'k') {
+      let coordsList = str.substring(1).split('~')[0].split(',')
+      if (coordsList.length === 3) {
+        return L.circleMarker(coords[0], { radius: coordsList[2] })
+      } else {
+        return L.circleMarker(coords[0], { radius: 20 })
+      }
     } else {
       // TODO exception?
     }
@@ -150,6 +164,12 @@ types.geom = types.geometry = {
     } else if (obj instanceof L.Polyline) {
       const latlngs = obj.getLatLngs().map(c => [c.lat, c.lng])
       return 'l' + geomCoordsList.toQuery(latlngs)
+    } else if (obj instanceof L.Circle) {
+      const radius = obj.getRadius()
+      return 'c' + geomCoordsList.toQuery([obj.getLatLng()]) + ',' + radius
+    } else if (obj instanceof L.CircleMarker) {
+      const radius = obj.getRadius()
+      return 'k' + geomCoordsList.toQuery([obj.getLatLng()]) + ',' + radius
     } else if (obj.getLatLng) {
       return 'm' + geomCoordsList.toQuery([obj.getLatLng()])
     } else {
