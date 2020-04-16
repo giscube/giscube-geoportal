@@ -2,6 +2,7 @@ export default {
   methods: {
     undoRow (row) {
       this.$store.dispatch('layout/createDialog', {
+        root: this,
         message: this.$t('tools.data.undoConfirm'),
         ok: {
           flat: true,

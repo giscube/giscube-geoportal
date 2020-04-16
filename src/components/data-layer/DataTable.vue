@@ -1,5 +1,5 @@
 <template>
-  <div class="column no-wrap" style="min-height: 175px">
+  <div class="column no-wrap" style="min-height: 300px">
     <q-card class="full-width limit-parent column no-wrap">
       <q-resize-observer @resize="onResize" debounce="200" />
       <div
@@ -79,6 +79,7 @@
               :key="row.internalPk"
               :class="{
                 deleted: row.status.deleted,
+                new: row.status.new,
                 selected: row.status.selected
               }"
               @click.stop="select(row, !row.status.selected)"
@@ -310,6 +311,13 @@ export default {
       padding: 0 !important
       line-height: 0 !important
       border: none !important
+
+    tr.new
+      background-color $green-5
+      &.selected
+        background-color $green-4
+      &.new:hover
+        background-color $green-3
 
     tr.deleted
       background-color $red-5

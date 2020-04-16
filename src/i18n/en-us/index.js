@@ -26,6 +26,15 @@ export default {
     value = value.toString()
     return value.charAt(0).toUpperCase() + value.slice(1)
   },
+  cmp: {
+    equals: 'equals to',
+    from: 'from',
+    lessEqual: 'less than or equal to',
+    less: 'less than',
+    moreEqual: 'more than or equal to',
+    more: 'more than',
+    to: 'to'
+  },
   messages: {
     badPopupConfig: 'This popup is improperly configured'
   },
@@ -85,6 +94,7 @@ export default {
       allDeleted: 'All the selected elements have been marked as deleted.',
       changedLeaveTitle: 'Changing tool with changes',
       changedLeaveMsg: 'You can come back later to save it or continue editing it',
+      changesSaved: 'Changes saved',
       colFilter: 'Filter for "{label}"',
       defaultProperties: 'Default properties of the new elements',
       deleteElements: 'Delete {elements}',
@@ -100,15 +110,17 @@ export default {
       invalidDate: 'Invalid date',
       multipleNew: 'Add multiple elements',
       newElement: 'New element',
+      qDeleteElement: 'Are you sure you want to delete this element?',
       qDiscardChanges: 'Are you sure you want to discard all the changes?',
       qInvalidCommit: 'Some values seem to be invalid. Would you like to save anyways?',
       requiredField: 'Required Field',
       recordsPerPage: 'Page size:',
-      stopDrawing: 'Stop drawing elements',
+      savingChanges: 'Saving changes',
       selectByPolygon: 'Polygon',
       selectNews: 'Select created elements',
       selection: 'Selection',
       someDeleted: 'Some of the selected elements have been marked as deleted.',
+      stopDrawing: 'Stop drawing elements',
       thisDeleted: 'This element has been marked as deleted.',
       undoConfirm: 'Are you sure you want to undo the changes in this element?',
       undoConfirmN: 'Are you sure you want to undo the changes in {elements}?',
@@ -123,6 +135,7 @@ export default {
       help: 'Draw geometries on the map and measure its distances or areas.',
 
       area: 'Area',
+      drawMulti: 'Draw multiple geometries',
       explanation: 'Please select geometry type, then click on the map. Double-click to finish drawing.',
       marker: 'Point',
       path: 'Path',
@@ -168,6 +181,16 @@ export default {
       options: '@:names.options',
       openMessage: 'Open @:names.message',
       markerAtCenter: 'Marker at the center'
+    },
+    statistics: {
+      columnCount: 'Count',
+      columnColor: 'Color',
+      groupBy: 'Group by',
+      palette: 'Palette',
+      tabData: 'Data',
+      tabResults: 'Results',
+      title: 'Statistics',
+      titleFor: '@:tools.statistics.title for {layerName}'
     },
     streetview: {
       headerName: 'Street View',

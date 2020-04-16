@@ -94,4 +94,12 @@ export default class Search {
 
     return search
   }
+
+  showResultLayers () {
+    for (let result of this.results.flat()) {
+      if (result.layer) {
+        this.showLayer(result)
+      }
+    }
+  }
 }

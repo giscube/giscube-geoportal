@@ -6,7 +6,6 @@
     <q-btn-group>
       <q-btn
         :label="t('newElement')"
-        :disable="saving"
         @click="newRow()"
       />
       <q-btn
@@ -21,7 +20,6 @@
       v-show="table.visibleSelectedList.length > 0"
       split
       :label="t('editElements', { elements: elementsT })"
-      :disable="saving"
       @click="table.uiEditSelected()"
     >
       <q-list>
@@ -49,9 +47,10 @@
       ref="defaultDialog"
       :table="table"
       :row="defaultRow"
-      :editMultiple.sync="editMultiple"
-      :dialogForNew.sync="dialogForNew"
-      :selectNews.sync="selectNews"
+      :editMultiple.sync="defaultRowOptions.editMultiple"
+      :dialogForNew.sync="defaultRowOptions.dialogForNew"
+      :selectNews.sync="defaultRowOptions.selectNews"
+      allow-geom
     />
   </div>
 </template>
@@ -64,7 +63,13 @@ import DefaultsDialog from './DefaultsDialog'
 
 export default {
   mixins: [TranslationMixin],
-  props: ['table'],
+  props: {
+    table: Object,
+    allowGeom: {
+      type: Boolean,
+      default: false
+    }
+  },
   components: {
     DefaultsDialog,
     QBtn,
@@ -80,17 +85,11 @@ export default {
   },
   data () {
     return {
-      editMultiple: false,
-      dialogForNew: true,
-      selectNews: false
     }
   },
   computed: {
     editing () {
       return this.table.editing
-    },
-    saving () {
-      return this.table.saving
     },
     map () {
       return this.$store.state.map.mapObject
@@ -100,15 +99,19 @@ export default {
     },
     defaultRow () {
       return this.table.defaultRow
+    },
+    defaultRowOptions () {
+      return this.table.defaultRowOptions
     }
   },
   methods: {
     newRow () {
       this.table.makeRows({
         map: this.map,
-        editMultiple: this.editMultiple,
-        dialogForNew: this.dialogForNew,
-        selectNews: this.selectNews
+        editMultiple: this.defaultRowOptions.editMultiple,
+        dialogForNew: this.defaultRowOptions.dialogForNew,
+        selectNews: this.defaultRowOptions.selectNews,
+        createGeom: this.allowGeom
       })
         .catch(this.$except)
     },
@@ -120,6 +123,7 @@ export default {
     },
     undoSelected () {
       this.$store.dispatch('layout/createDialog', {
+        root: this,
         message: this.$t('tools.data.undoConfirmN', { elements: this.elementsT }),
         ok: {
           flat: true,

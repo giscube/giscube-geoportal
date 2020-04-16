@@ -45,14 +45,13 @@ export default class RelatedRemote {
           await Vue.nextTick()
           if (this._cancelFetch !== cancel) {
             resolve()
-            return
           } else if (isCancel(response)) {
             this.fetching = false
             resolve()
+          } else {
+            this.fetching = false
+            resolve(response.data)
           }
-
-          this.fetching = false
-          resolve(response.data)
         })
         .catch(error => {
           if (isCancel(error)) {

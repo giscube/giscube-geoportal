@@ -6,7 +6,6 @@
       dense
       size="sm"
       :icon="editing ? 'edit' : 'description'"
-      :disable="saving"
       @click="row.uiEdit()"
     />
     <q-btn
@@ -15,7 +14,7 @@
       dense
       size="sm"
       icon="undo"
-      :disable="!edited || saving || isNew"
+      :disable="!edited || isNew"
       @click="undoRow(row)"
     />
   </div>
@@ -48,9 +47,6 @@ export default {
     },
     isNew () {
       return this.row.status.new
-    },
-    saving () {
-      return this.row.parent.saving
     }
   }
 }

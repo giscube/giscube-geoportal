@@ -24,6 +24,7 @@ export default class AsyncJob {
     this._state = {
       _retries: isVoid(job.retries) || isNaN(job.retries) ? Infinity : job.retries,
       cancelled: false,
+      postponed: false,
       usedBy: 0,
       done: false,
       promise: null,
@@ -56,6 +57,10 @@ export default class AsyncJob {
 
   get finished () {
     return this._state.done || this._state.cancelled
+  }
+
+  get postponed () {
+    return this._state.postponed
   }
 
   cancel () {
@@ -104,14 +109,18 @@ export default class AsyncJob {
   }
 
   async work () {
+    this._state.postponed = false
     try {
       const result = await this.job.func.apply(this.job, this.job.args)
-      this.result = result
-      this._state.done = true
-      this._state.resolve(result)
+      if (result !== AsyncJob.retry) {
+        this.result = result
+        this._state.done = true
+        this._state.resolve(result)
+      }
     } catch (error) {
       this.errors.push(error)
       if (this._state._retries > 0) {
+        this._state.postponed = true
         this._state._retries -= 1
       } else {
         this._state.done = true
@@ -143,3 +152,5 @@ export default class AsyncJob {
     return this._state.promise.finally(...args)
   }
 }
+
+AsyncJob.retry = Symbol('AsyncJob retry')

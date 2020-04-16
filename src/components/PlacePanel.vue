@@ -5,7 +5,7 @@ import FeaturePopup from './FeaturePopup'
 import FeaturePopupDialog from './FeaturePopupDialog'
 import SearchResultPopupDialog from './SearchResultPopupDialog'
 import { createLayerFromConfig } from '../lib/geomUtils'
-import { isVoid } from '../lib/utils'
+import { delay, isVoid } from '../lib/utils'
 import GiscubeRef from '../lib/refs/giscube'
 
 export default {
@@ -24,6 +24,9 @@ export default {
     },
     address () {
       return this.properties.address
+    },
+    canAggregate () {
+      return this.$config.tools.statistics.enabled && (!!this.table_ || this.isDescriptionGeoJSON)
     },
     canDownload () {
       return this.isDescriptionGeoJSON
@@ -104,13 +107,16 @@ export default {
       return this.result && this.result.title
     }
   },
+  mounted () {
+    this.applyParameters(this.$route.params)
+  },
   methods: {
     applyParameters (params) {
       if (this.result && params.q === this.title) {
         this.applyResult()
       } else {
         // redirect
-        return true
+        this.$router.replace({ name: 'search', params: this.$route.params })
       }
     },
     applyResult () {
@@ -122,14 +128,6 @@ export default {
 
           this.show()
           if (type === 'GeoJSON') {
-            const visibleBBox = this.$store.getters['map/bbox']() // => map/bounds
-            const paddedVisibleBBox = visibleBBox.pad(-this.$config.layout.mapZoomPadding)
-            const pos = layer.getBounds ? layer.getBounds() : layer.getLatLng()
-            const visible = paddedVisibleBBox.contains(pos)
-
-            if (!visible) {
-              this.zoom()
-            }
             this.layer.openPopup()
           }
         })
@@ -162,8 +160,22 @@ export default {
         name
       })
     },
+    async gotoStatistics () {
+      if (this.canAggregate) {
+        if (this.table_) {
+          const { source, layer } = this.table_.remote
+          await delay()
+          this.$store.dispatch('statistics/setFields', this.table_.info.tableFields)
+          this.$store.dispatch('statistics/loadData', { source, layer, title: this.title })
+        } else {
+          await delay()
+          this.$store.dispatch('statistics/setAggregated', { layers: this.layer, title: this.title })
+        }
+        this.$router.push({ name: 'statistics' })
+      }
+    },
     download () {
-      if (this.isDescriptionGeoJSON) {
+      if (this.canDownload) {
         this.$axios.get(this.layerOptions.layerDescriptor.url, {
           headers: this.layerOptions.headers,
           responseType: 'blob'

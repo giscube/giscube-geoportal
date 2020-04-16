@@ -3,7 +3,7 @@
     <q-field
       :readonly="readonly"
       :disable="disable"
-      :label="field.label | capitalize"
+      :label="label_"
       :stack-label="valid(current) || showDialog"
       :value="current"
       :clearable="field.null"
@@ -91,7 +91,7 @@ import MultiResult from '../../../MultiResult.js'
 import ValidateMixin from '../mixins/ValidateMixin'
 
 export default {
-  props: ['value', 'field', 'readonly', 'disable'],
+  props: ['value', 'field', 'readonly', 'disable', 'label'],
   mixins: [ValidateMixin],
   components: {
     QBtn,
@@ -113,6 +113,9 @@ export default {
     }
   },
   computed: {
+    label_ () {
+      return this.label || this.$filter('capitalize')(this.field.label)
+    },
     current () {
       if (MultiResult.is(this.value)) {
         return null

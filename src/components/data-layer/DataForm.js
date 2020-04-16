@@ -25,11 +25,14 @@ export default {
   },
   watch: {
     rows () {
-      this.callbacks = []
-      this.aggregatedProperties = this.aggregateProperties()
+      this.updateData()
     }
   },
   methods: {
+    updateData () {
+      this.callbacks = []
+      this.aggregatedProperties = this.aggregateProperties()
+    },
     aggregateProperties () {
       let fields = this.table.info.logicFormFields
       if (!this.rows) {

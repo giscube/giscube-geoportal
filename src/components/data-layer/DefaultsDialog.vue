@@ -18,7 +18,7 @@
           class="q-mb-md"
         />
         <q-checkbox
-          v-show="table.info.hasGeom"
+          v-show="geomBased"
           :value="editMultiple"
           @input="$emit('update:editMultiple', $event)"
           :label="t('multipleNew')"
@@ -26,7 +26,7 @@
         <q-checkbox
           :value="dialogForNew"
           @input="$emit('update:dialogForNew', $event)"
-          :label="table.info.hasGeom ? t('dialogNewGeom') : t('dialogNew')"
+          :label="geomBased ? t('dialogNewGeom') : t('dialogNew')"
         />
         <q-checkbox
           :value="selectNews"
@@ -50,6 +50,10 @@ export default {
   mixins: [TranslationMixin],
   props: {
     table: null,
+    allowGeom: {
+      type: Boolean,
+      default: false
+    },
     row: {
       type: Object,
       required: true
@@ -74,6 +78,11 @@ export default {
     QCardSection,
     QCheckbox,
     QDialog
+  },
+  computed: {
+    geomBased () {
+      return this.allowGeom && this.table.info.hasGeom && !this.table.info.readonlyGeom
+    }
   },
   methods: {
     // Required by Quasar's dialog API

@@ -115,6 +115,7 @@ export default {
     },
     infoPopup () {
       this.$store.dispatch('layout/createDialog', {
+        root: this,
         title: 'Development information',
         message: `Geoportal version: ${VERSION}`
       })
@@ -158,13 +159,12 @@ a.giscube-header-brand {
 }
 .giscube-toolbar .q-btn {
   font-weight: 300;
-  padding: 6px 16px;
   font-size: .9em;
 }
 .giscube-toolbar .q-btn i {
   font-size: 20px;
 }
-@media (max-width: 991px) {
+@media (max-width: 1460px) {
   a.giscube-header-brand img {
     height: 34px;
   }
@@ -172,12 +172,11 @@ a.giscube-header-brand {
     font-size: 16px;
   }
   .giscube-toolbar .q-btn {
-    padding: 4px 14px;
     font-size: .8em;
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1330px) {
   a.giscube-header-brand img {
     height: 30px;
   }
@@ -185,7 +184,6 @@ a.giscube-header-brand {
     font-size: 14px;
   }
   .giscube-toolbar .q-btn {
-    padding: 2px 10px;
     font-size: .7em;
   }
 }

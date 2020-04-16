@@ -1,43 +1,43 @@
 <template>
-  <div class="data-panel panel fit">
-    <div class="panel-content fit column no-wrap">
-      <div class="col-auto row items-center justify-end">
-        <layers-list
-          v-model="layersListOpen"
-          :disable="editing"
-          @close="closeTable"
+  <div class="data-panel panel-content fit column no-wrap">
+    <div class="row items-center justify-end">
+      <layers-list
+        v-model="layersListOpen"
+        :disable="editing"
+        @close="closeTable"
+      />
+      <q-space />
+      <status-controls v-if="table && table.info" :table="table" />
+    </div>
+    <div class="row items-center space-items-sm" v-if="table && table.info">
+      <div class="space row">
+        <draw-controls
+          v-if="drawing"
         />
-        <q-space />
-        <status-controls v-if="table && table.info" :table="table" />
-      </div>
-      <div class="col-auto row items-center space-items-sm" v-if="table && table.info">
-        <div class="space row">
-          <draw-controls
-            v-if="drawing"
-            :disable="saving"
-          />
-          <data-edit-controls
-            v-else-if="editing"
-            :table="table"
-          />
-          <data-filter
-            v-else
-            :table="table"
-          />
-        </div>
-        <zoom-controls
+        <data-edit-controls
+          v-else-if="editing"
           :table="table"
+          allow-geom
         />
-        <selection-controls
+        <data-filter
+          v-else
           :table="table"
+          allow-geom
         />
       </div>
-      <data-table
-        class="col full-width limit-parent"
-        v-if="table && table.info"
+      <zoom-controls
         :table="table"
       />
+      <selection-controls
+        :table="table"
+        allow-geom
+      />
     </div>
+    <data-table
+      class="col full-width limit-parent"
+      v-if="table && table.info"
+      :table="table"
+    />
   </div>
 </template>
 
@@ -45,6 +45,7 @@
 import { QSpace } from 'quasar'
 import { mapState } from 'vuex'
 import { isCleanEqual } from 'src/lib/utils'
+import Table from 'src/lib/table'
 
 import TranslationMixin from './TranslationMixin'
 import DataEditControls from './DataEditControls'
@@ -52,11 +53,10 @@ import DataFilter from './DataFilter'
 import DataTable from './DataTable'
 import DrawControls from './DrawControls'
 import LayersList from './LayersList'
+import SaveFeedback from './SaveFeedback'
 import SelectionControls from './SelectionControls'
 import StatusControls from './StatusControls'
 import ZoomControls from './ZoomControls'
-
-import Table from 'src/lib/table'
 
 export default {
   mixins: [TranslationMixin],
@@ -100,31 +100,36 @@ export default {
       next(false)
     }
   },
+  created () {
+    this.saveFeedback = new SaveFeedback(this)
+  },
   data () {
     return {
-      layersListOpen: false
+      layersListOpen: false,
+      savedTimout: null
     }
   },
   computed: {
     ...mapState({
       table: state => state.dataLayer.table,
-      drawing: state => state.map.drawing
+      drawing: state => state.map.drawing,
+      saving: state => state.dataLayer.asyncQueue.running
     }),
     editing () {
       return this.table && this.table.editing
-    },
-    saving () {
-      return this.table && this.table.saving
     },
     dataChanged () {
       return this.table && this.table.changedCount > 0
     }
   },
+  watch: {
+    saving (...args) {
+      this.saveFeedback.handler(...args)
+    }
+  },
   methods: {
     checkLeaving () {
-      if (this.saving) {
-        return Promise.resolve(false)
-      } else if (this.dataChanged) {
+      if (this.dataChanged) {
         return new Promise(resolve => {
           this.$q.dialog({
             title: this.t('changedLeaveTitle'),
@@ -200,7 +205,7 @@ export default {
 </script>
 
 <style lang="stylus">
-.data-panel > .panel-content > :not(:last-child)
+.data-panel.panel-content > :not(:last-child)
   margin-bottom: $spaces.md.y
 
 </style>

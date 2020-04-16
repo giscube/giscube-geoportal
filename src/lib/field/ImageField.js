@@ -2,10 +2,12 @@ import axios from 'axios'
 
 import giscubeApi from '../../api/giscube.js'
 import { AsyncJob } from '../async'
+import { regexEscape } from '../utils.js'
 
 import Field from './Field'
 import ImageFormWidget from './widgets/form/Image'
 import ImageTableWidget from './widgets/table/Image'
+import DefaultFormWidget from './widgets/form/Default'
 
 export class AsyncPhoto extends AsyncJob {
   constructor (photo, source, authHeaders) {
@@ -82,6 +84,10 @@ export default class ImageField extends Field {
     return ImageFormWidget
   }
 
+  filterWidget () {
+    return DefaultFormWidget
+  }
+
   repr (data) {
     let value = this.getValue(data)
     if (value instanceof AsyncJob) {
@@ -91,7 +97,11 @@ export default class ImageField extends Field {
         return void 0
       }
     }
-    return value ? value.value || value.src : null
+    if (value) {
+      return value.value || value.src
+    } else {
+      return value
+    }
   }
 
   str (data) {
@@ -105,6 +115,18 @@ export default class ImageField extends Field {
   popupValue (data) {
     const value = this.getValue(data)
     return ImageField.getUrlsDict(value)
+  }
+
+  filter (data, filter) {
+    const v = this.getValue(data)
+    const filename = ImageField.getFilename(v)
+
+    let result = true
+    if (filter) {
+      const regex = new RegExp(regexEscape(filter), 'i')
+      result = regex.test(filename)
+    }
+    return result
   }
 
   static getUrl (value) {

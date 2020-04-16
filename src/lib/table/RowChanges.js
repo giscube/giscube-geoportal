@@ -2,12 +2,12 @@ import { AsyncJob } from 'src/lib/async'
 import except from 'src/lib/except'
 import { getGeometry } from 'src/lib/geoJson'
 
-import SaveJob from './SaveJob'
-
 export default class RowChanges {
   constructor (rows, info) {
-    this.persistentRows = []
+    this.persistentRows = new Set()
+    this.deletedRows = new Set()
     this.changedRows = []
+    this.newRows = []
     this.changes = {
       add: [],
       update: [],
@@ -26,10 +26,15 @@ export default class RowChanges {
         if (row.status.deleted) {
           row.remove()
         } else {
-          this.persistentRows.push(row)
+          this.persistentRows.add(row)
         }
         if (row.status.new || row.status.edited || row.status.deleted) {
           this.changedRows.push(row)
+          if (row.status.deleted) {
+            this.deletedRows.add(row)
+          } else if (row.status.new) {
+            this.newRows.push(row)
+          }
           this.consolidateChanges(row)
         }
       }
@@ -41,22 +46,13 @@ export default class RowChanges {
     if (row.status.deleted) {
       this.changes.delete.push(row.pk)
     } else {
-      const geom = this.info.hasGeom && !this.info.readonlyGeom && (row.status.new || row.status.geomChanged) ? getGeometry(row.layer, this.info.geomType) : void 0
-      const empty = row.getEmpty()
-      row.setPk(empty, row.pk)
+      const geom = this.info.hasGeom && !this.info.readonlyGeom && (row.status.new || row.status.geomEdited) ? getGeometry(row.layer, this.info.geomType) : void 0
 
       if (row.status.new) {
-        this.changes.add.push({ properties: row.properties, geom, empty })
+        this.changes.add.push({ row, properties: { ...row.properties }, geom })
       } else {
-        const properties = {}
-        for (let field of this.info.fields) {
-          const new_ = { properties: row.properties }
-          const old = { properties: row.consolidatedProperties }
-          if (!field.virtual && !field.constant && !field.equals(new_, old)) {
-            field.setValue({ properties, value: field.getValue(new_) })
-          }
-        }
-        this.changes.update.push({ properties, geom, empty })
+        const properties = RowChanges.propertiesDiff(this.info.fields, row.properties, row.consolidatedProperties)
+        this.changes.update.push({ row, properties, geom })
       }
     }
 
@@ -68,9 +64,25 @@ export default class RowChanges {
     row.consolidateChanges()
   }
 
+  static propertiesDiff (fields, n, o) {
+    const new_ = { properties: n }
+    const old = { properties: o }
+
+    const properties = {}
+    for (let field of fields) {
+      if (!field.virtual && !field.constant && !field.equals(new_, old)) {
+        field.setValue({ properties, value: field.getValue(new_) })
+      }
+    }
+    return properties
+  }
+
   _rowRepr (rows) {
     const reprs = []
-    for (let { properties, geom, empty } of rows) {
+    for (let { row, properties, geom } of rows) {
+      const repr = row.getEmpty()
+      row.copyPk(repr, row.pk)
+
       const props = {}
       for (let field of this.info.fields) {
         if (!field.constant && !field.readonly && !field.virtual) {
@@ -85,7 +97,10 @@ export default class RowChanges {
         }
       }
 
-      const repr = empty
+      if (row.constFields) {
+        Object.assign(props, row.constFields)
+      }
+
       this.info.propsPath.setTo(repr, props)
       if (this.info.hasGeom && !this.info.readonlyGeom) {
         this.info.geomPath.setTo(repr, geom)
@@ -101,9 +116,5 @@ export default class RowChanges {
       UPDATE: this._rowRepr(this.changes.update),
       DELETE: this.changes.delete
     }
-  }
-
-  asSaveJob (remote) {
-    return new SaveJob(remote, this)
   }
 }

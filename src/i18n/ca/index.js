@@ -26,6 +26,15 @@ export default {
     value = value.toString()
     return value.charAt(0).toUpperCase() + value.slice(1)
   },
+  cmp: {
+    equals: 'igual que',
+    from: 'de',
+    lessEqual: 'més petit o igual que',
+    less: 'més petit que',
+    moreEqual: 'més gran o igual que',
+    more: 'més gran que',
+    to: 'a'
+  },
   messages: {
     badPopupConfig: 'Error al llegir la configuració'
   },
@@ -85,6 +94,7 @@ export default {
       allDeleted: 'Tots els elements seleccionats estan marcats per ser eliminats.',
       changedLeaveTitle: 'Marxant sense guardar',
       changedLeaveMsg: 'Podeu tornar més tard per guardar-ho o continuar editant',
+      changesSaved: 'Canvis guardats',
       colFilter: 'Filtrar per "{label}"',
       defaultProperties: 'Propietats per defecte dels nous elements',
       deleteElements: 'Elimina {elements}',
@@ -102,15 +112,17 @@ export default {
       invalidDate: 'Data invàlida',
       multipleNew: 'Afegir varis elements',
       newElement: 'Nou element',
+      qDeleteElement: 'Esteu segur d\'eliminar aquest element?',
       qDiscardChanges: 'Esteu segur de descartar tots els canvis?',
       qInvalidCommit: 'Sembla que algun valor és invalid. Voldrieu guardar igualment?',
       requiredField: 'Camp obligatori',
       recordsPerPage: 'Mida de la pàgina:',
-      stopDrawing: 'Deixar de dibuixar elements',
+      savingChanges: 'Guardant els canvis',
       selectByPolygon: 'Polígon',
       selectNews: 'Seleccionar els nous elements creats',
       selection: 'Selecció',
       someDeleted: 'Alguns dels elements seleccionats estan marcats per ser eliminats.',
+      stopDrawing: 'Deixar de dibuixar elements',
       thisDeleted: 'Aquest element està marcat per ser eliminat.',
       undoConfirm: 'Segur que voleu desfer els canvis d\'aquest element?',
       undoConfirmN: 'Segur que voleu desfer els canvis de {elements}?',
@@ -125,6 +137,7 @@ export default {
       help: 'Dibuixar geometries sobre el mapa, mesurar-ne les distàncies i àrees.',
 
       area: 'Àrea',
+      drawMulti: 'Dibuixa múltiples geometries',
       explanation: 'Escolliu tipus de geometria, i seguidament cliqueu el mapa. Podeu fer doble clic per acabar de dibuixar.',
       marker: 'Punt',
       path: 'Línia',
@@ -170,6 +183,16 @@ export default {
       options: '@:names.options',
       openMessage: 'Obrir @:names.message',
       markerAtCenter: 'Marcador al centre'
+    },
+    statistics: {
+      columnCount: 'Compte',
+      columnColor: 'Color',
+      groupBy: 'Agrupar per',
+      palette: 'Paleta',
+      tabData: 'Dades',
+      tabResults: 'Temàtic',
+      title: 'Estadístiques',
+      titleFor: '@:tools.statistics.title per {layerName}'
     },
     streetview: {
       headerName: 'Street View',

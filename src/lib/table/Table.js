@@ -1,6 +1,9 @@
+import { filter, map } from 'src/lib/itertools'
+import except from 'src/lib/except'
 import L from 'src/lib/leaflet'
 import { CancelError, eachLayer, layersBounds } from 'src/lib/geomUtils'
 import { rowsInGeom } from 'src/lib/layersInGeom'
+import { split } from 'src/lib/utils'
 import Vue from 'vue'
 
 import DBFormDialog from 'components/data-layer/DBFormDialog'
@@ -11,6 +14,7 @@ import RelatedTable from './RelatedTable'
 import Remote from './Remote'
 import * as Row from './row'
 import RowChanges from './RowChanges'
+import SaveJob from './SaveJob'
 
 export class EditingError extends Error {
   constructor () {
@@ -23,17 +27,24 @@ export class EditingError extends Error {
 const tileSize = 256
 
 export default class Table {
-  constructor (source, layer, root, contantFields) {
+  constructor (source, layer, root, contantFields, loadRelated = true) {
     const getConfig = () => root.$store.getters['auth/config']
     this.remote = new Remote(source, layer, getConfig, contantFields)
     this.info = null
     this.rows = []
+    this.transients = new Set()
     this.selected = new Set() /// selected rows' pks
     this.selectedList = [] // Vue won't support sets (until vue 3.0). Convert it manually
     this.visibleSelectedList = []
     this.changedCount = 0
+    this.loadRelated = loadRelated
 
     this.defaultRow = null
+    this.defaultRowOptions = {
+      editMultiple: false,
+      dialogForNew: true,
+      selectNews: false
+    }
 
     Object.defineProperties(this, {
       map: {
@@ -60,8 +71,8 @@ export default class Table {
 
     this.editing = false
     this.adding = false
-    this.saving = false
     this.updateDeferred = false
+    this.updateWmsRequested = false
   }
 
   get fields () {
@@ -131,7 +142,8 @@ export default class Table {
 
   discard () {
     this.editing = false
-    if (this.info.hasGeom && this.map) {
+    if (this.info.hasGeom && !this.info.readonlyGeom && this.map) {
+      this.rows.forEach(row => row.removeEditEvents())
       eachLayer(this.layer, l => l.disableEdit(this.map))
     }
 
@@ -159,9 +171,13 @@ export default class Table {
     const info = await this.remote.fetchInfo()
     this.info = info
 
-    this.relatedTables = info.fks.map(fk => new RelatedTable(this, fk))
-    await Promise.all(this.relatedTables.map(table => table.fetchInfo()))
-    info.setup(this.relatedTables)
+    if (this.loadRelated) {
+      this.relatedTables = info.fks.map(fk => new RelatedTable(this, fk))
+      await Promise.all(this.relatedTables.map(table => table.fetchInfo()))
+      info.setup(this.relatedTables)
+    } else {
+      this.relatedTables = []
+    }
 
     if (info.hasGeom) {
       this.removeLayers()
@@ -176,7 +192,7 @@ export default class Table {
     if (info.referenceLayers && info.referenceLayers.length > 0) {
       const token = this.$root.$store.state.auth.accessToken
       const refLayers = this.info.referenceLayers.map(info => {
-        const url = `${info.url}?access_token=${token}`
+        const url = info.auth === 'token' ? `${info.url}?access_token=${token}` : info.url
         const layer = L.tileLayer.wms(url, {
           maxZoom: 22,
           ...(info.options || {}),
@@ -222,12 +238,20 @@ export default class Table {
     }
   }
 
-  async makeRows ({ map, editMultiple, dialogForNew, selectNews }) {
+  async makeRows ({ map, editMultiple, dialogForNew, selectNews, createGeom }) {
     this.adding = true
-    editMultiple = editMultiple && this.info.hasGeom
+    createGeom = createGeom && this.info.hasGeom && !this.info.readonlyGeom
+    editMultiple = editMultiple && createGeom
     try {
+      const newRows = []
       do {
-        const row = await this.defaultRow.asNew({ map })
+        let row
+        if (createGeom) {
+          row = await this.defaultRow.asNew({ map })
+        } else {
+          row = this.defaultRow.asNew()
+        }
+        newRows.push(row)
         this.rows.push(row)
         row.addNew()
 
@@ -235,7 +259,7 @@ export default class Table {
           row.status.selected = true
         }
         if (dialogForNew) {
-          await row.uiEdit()
+          await row.uiEdit(newRows)
         }
 
         // Disable eslint because when looping we stop when an exception is thrown
@@ -303,20 +327,22 @@ export default class Table {
 
   /// Sets the new data
   setData (data) {
-    if (this.rows.length === 0) {
-      this.rows = Row.toRows(this, data)
-      return
-    }
-
-    const currentPks = new Set(this.rows.map(row => row.pk))
-    const newRows = Row.toRows(this, data)
-    const newPks = new Set(newRows.map(row => row.pk))
+    const currentPks = new Set(this.rows.map(row => row.internalPk))
+    const transientPks = new Set(filter(map(this.transients, row => row.internalPk), pk => pk !== void 0))
+    const newRows = Row.toRows(this, data, this.remote.constFields)
+    const newPks = new Set(newRows.map(row => row.internalPk))
 
     // Remove the unused rows
     const toRemove = []
     for (let i = this.rows.length - 1; i >= 0; --i) {
-      if (!newPks.has(this.rows[i].pk)) {
-        toRemove.push(this.rows.splice(i, 1)[0])
+      const row = this.rows[i]
+      if (!newPks.has(row.internalPk)) {
+        this.rows.splice(i, 1)
+        if (row.status.saving) {
+          this.addTransient(row)
+        } else {
+          toRemove.push(row)
+        }
       }
     }
     toRemove.forEach(row => row.remove())
@@ -324,9 +350,16 @@ export default class Table {
     // intelligently merge the two row groups, adding only the required
     // keep new order (which might have changed)
     const rows = newRows.map(row => {
-      if (currentPks.has(row.pk)) {
-        const r = this.rows.find(r => r.pk === row.pk)
+      if (currentPks.has(row.internalPk)) {
+        const r = this.rows.find(r => r.internalPk === row.internalPk)
         return r.merge(row)
+      } else if (transientPks.has(row.internalPk)) {
+        for (let r of this.transients) {
+          if (r.internalPk === row.internalPk) {
+            this.deleteTransient(r)
+            return r.merge(row)
+          }
+        }
       }
       return row
     })
@@ -339,7 +372,37 @@ export default class Table {
         this.selected.delete(row.internalPk)
       }
     })
+
     this.updateSelectedList()
+    this._updateTransients()
+  }
+
+  async fillPage () {
+    const pagination = this.remote.pagination
+    const isLastPage = pagination.page >= Math.ceil(pagination.rowsNumber / pagination.rowsPerPage)
+    if (!isLastPage) {
+      const newRows = Row.toRows(this, await this.remote.requestData(), this.remote.constFields)
+      const currentPks = new Set(this.rows.map(row => row.internalPk))
+      const transients = new Map(map(filter(this.transients, row => row.internalPk !== void 0), row => [row.internalPk, row]))
+
+      let toFill = pagination.rowsPerPage - this.rows.length
+      for (let i = 0; toFill > 0 && i < newRows.length; ++i) {
+        const row = newRows[i]
+        if (!currentPks.has(row.internalPk)) {
+          const transient = transients.get(row.internalPk)
+          if (transient) {
+            this.deleteTransient(transient)
+            this.rows.push(transient.merge(row))
+          } else {
+            this.rows.push(row)
+          }
+          --toFill
+        }
+      }
+
+      this._updateTransients()
+      this.addRows()
+    }
   }
 
   addRows () {
@@ -348,17 +411,20 @@ export default class Table {
 
   startEditing () {
     if (this.info.hasGeom && !this.info.readonlyGeom && this.map) {
+      this.rows.forEach(row => row.addEditEvents())
       eachLayer(this.layer, l => l.enableEdit(this.map))
     }
     this.editing = true
   }
 
-  uiEdit (rows) {
+  uiEdit (rows, rowSet) {
     return new Promise(async resolve => {
       const api = await this.$root.$store.dispatch('layout/createDialog', {
+        root: this.$root,
         component: DBFormDialog,
         table: this,
         rows,
+        rowSet: rowSet || this.rows,
         readonly: !this.editing
       })
       api.onDismiss(() => resolve())
@@ -370,10 +436,6 @@ export default class Table {
   }
 
   async update ({ pagination, immediate, wms } = {}) {
-    if (this.editing) {
-      throw new EditingError()
-    }
-
     let requestData
     if (immediate) {
       requestData = this.remote.requestData.bind(this.remote)
@@ -382,11 +444,7 @@ export default class Table {
     }
 
     if (wms) {
-      this.refLayers && this.refLayers.forEach(ref => {
-        ref.refresh && ref.layer.setParams({
-          _fu: Date.now() // Force update
-        }, false)
-      })
+      this.updateWMS()
     }
 
     this.updateDeferred = false
@@ -401,10 +459,19 @@ export default class Table {
     }
   }
 
+  updateWMS () {
+    this.updateWmsRequested = false
+    this.refLayers && this.refLayers.forEach(ref => {
+      ref.refresh && ref.layer.setParams({
+        _fu: Date.now() // Force update
+      }, false)
+    })
+  }
+
   updateByMap (pagination) {
     if (this.mapDependent) {
       this.update(pagination)
-        .catch(Vue.prototype.$except)
+        .catch(except)
     }
   }
 
@@ -419,24 +486,62 @@ export default class Table {
   }
 
   async save () {
-    this.saving = true
-    if (this.info.hasGeom && this.map) {
+    if (this.info.hasGeom && !this.info.readonlyGeom && this.map) {
+      this.rows.forEach(row => row.removeEditEvents())
       eachLayer(this.layer, l => l.disableEdit(this.map))
     }
 
     const rowChanges = new RowChanges(this.rows, this.info)
-    this.rows = rowChanges.persistentRows
+    const [persistent, transients] = split(this.rows, row => rowChanges.persistentRows.has(row))
+    this.rows = persistent
+    transients.forEach(row => this.addTransient(row))
+    this._updateTransients()
 
-    const saveJob = rowChanges.asSaveJob(this.remote)
-    try {
-      this.$root.$store.dispatch('dataLayer/asyncSave', saveJob)
-      await saveJob.asPromise()
-      this.saving = false
-      this.rows.forEach(row => row.resetStatus())
-      this.editing = false
-      await this.update({ immediate: true, wms: true })
-    } catch (e) {
-      Vue.prototype.$except(e)
+    this.rows.forEach(row => row.resetStatus())
+    this.editing = false
+    this.updateWmsRequested = true
+    this._save(rowChanges)
+    this.changedCount = 0
+  }
+
+  async saveIndividual (row) {
+    const rowChanges = new RowChanges([row], this.info)
+    if (rowChanges.persistentRows.size === 0) {
+      this.rows = this.rows.filter(r => r !== row)
+    } else {
+      this.addTransient(row)
+      this._updateTransients()
+      row.resetStatus()
     }
+
+    this._save(rowChanges)
+  }
+
+  _save (rowChanges) {
+    for (let row of rowChanges.deletedRows) {
+      this.selected.delete(row.pk)
+      this.remote.filters.deleted.add(row.pk)
+    }
+    this.updateSelectedList()
+    this.$root.$store.dispatch('dataLayer/asyncSave', new SaveJob(this, rowChanges))
+  }
+
+  _updateTransients () {
+    this.transients.forEach(row => {
+      row.updateSaving()
+      if (!row.status.saving) {
+        this.deleteTransient(row)
+      }
+    })
+  }
+
+  addTransient (row) {
+    this.transients.add(row)
+    row.updateTransient()
+  }
+
+  deleteTransient (row) {
+    this.transients.delete(row)
+    row.updateTransient()
   }
 }

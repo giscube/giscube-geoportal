@@ -1,14 +1,22 @@
 <template>
   <div class="panel result-panel fit">
     <div class="panel-content limit-parent column no-wrap">
-      <p class="panel-title">
-        <q-btn flat dense
-          icon="keyboard_arrow_left"
-          size="md"
-          @click="$router.push({ name: 'catalog' })"
+      <div class="row no-wrap">
+        <p class="panel-title">
+          <q-btn flat dense
+            icon="keyboard_arrow_left"
+            size="md"
+            @click="$router.push({ name: 'catalog' })"
+          />
+          {{ title }}
+        </p>
+        <q-space />
+        <q-btn
+          v-if="canAggregate"
+          icon="assessment"
+          @click.stop="gotoStatistics"
         />
-        {{ title }}
-      </p>
+      </div>
 
       <div v-if="address">
         <q-icon name="home" size="1.4em" /> {{ address }}
@@ -52,6 +60,8 @@
           @click="pin"
         />
       </div>
+
+      <slot name="after-tools"></slot>
 
       <div class="metadata" v-if="result && metadata && metadata.length > 0">
         <p class="panel-subtitle">{{ $t('names.metadata') | capitalize }}</p>
@@ -116,7 +126,6 @@ import L from '../lib/leaflet'
 import { QChip, QBtn, QIcon, QSpace } from 'quasar'
 import { mapState } from 'vuex'
 import { formatCoords } from 'src/lib/geomUtils'
-import { isCleanEqual } from 'src/lib/utils'
 
 import DataFilter from './data-layer/DataFilter'
 import DataTable from './data-layer/DataTable'
@@ -132,33 +141,6 @@ export default {
     QIcon,
     QSpace
   },
-  beforeRouteEnter (to, from, next) {
-    next(vm => {
-      vm.$store.dispatch('search/clearResultLayer')
-      const redirect = vm.applyParameters(to.params)
-      if (redirect) {
-        vm.$router.replace({ name: 'search', params: to.params })
-      }
-    })
-  },
-  beforeRouteUpdate (to, from, next) {
-    if (isCleanEqual(from.params, to.params)) {
-      next()
-      return
-    }
-
-    this.$store.dispatch('search/clearResultLayer')
-    const redirect = this.applyParameters(to.params)
-    if (redirect) {
-      next({ name: 'search', params: to.params })
-    } else {
-      next()
-    }
-  },
-  beforeRouteLeave (to, from, next) {
-    this.$store.dispatch('search/clearResultLayer')
-    next()
-  },
   computed: {
     ...mapState({
       map: state => state.map.mapObject,
@@ -170,6 +152,9 @@ export default {
     // To override
     address () {
       return null
+    },
+    canAggregate () {
+      return false
     },
     canDownload () {
       return false
@@ -234,6 +219,7 @@ export default {
       const home = this.$config.home
       this.map.flyTo(new L.LatLng(home.center.lat, home.center.lng), home.zoom)
     },
+    gotoStatistics () {},
     download () {},
     projected (epsg) {
       return formatCoords(this.latlng, epsg)

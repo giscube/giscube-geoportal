@@ -2,6 +2,7 @@ import { Dialog } from 'quasar'
 import Vue from 'vue'
 
 import { ProgrammingError } from 'src/lib/except'
+import { noop } from 'src/lib/utils'
 
 export function setPrinting (context, value) {
   if (value) {
@@ -45,7 +46,7 @@ export function pushLengthState (context) {
   this.$router.push({
     ...this.$router.currentRoute,
     hash: l > 0 ? `#${l}` : ''
-  })
+  }).catch(noop)
 }
 
 export function createDialog (context, config) {

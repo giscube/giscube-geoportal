@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import L from 'src/lib/leaflet'
-import { fromEntries } from 'src/lib/utils'
+import { fromEntries, regexEscape } from 'src/lib/utils'
 import { strCrc16ibm } from 'src/lib/algs/crc16ibm'
 import { fromUInt16, toUInt16 } from 'src/lib/algs/base64'
 import { CoordinatesRef, GiscubeRef } from 'src/lib/refs'
@@ -8,7 +8,6 @@ import { CoordinatesRef, GiscubeRef } from 'src/lib/refs'
 import { ParseError, UnsupportedTypeError } from './errors'
 
 const truthy = v => !!v
-const regexEscape = v => v.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&') // https://stackoverflow.com/a/3561711
 const separateFirst = separator => v => v.split(new RegExp(regexEscape(separator) + '(.*)')).filter(truthy)
 
 const types = {}

@@ -2,60 +2,31 @@
   <q-dialog
     ref="dialog"
     type="propt"
-    :persistent="!disable && !readonly"
+    :persistent="(!disable && !readonly) || localEdit"
     no-route-dismiss
     content-class="data-form"
     @hide="$emit('hide')"
   >
     <q-card class="data-form column no-wrap no-scroll">
-      <q-card-section v-if="currentRows.length === 1 && rowIndex >= 0" class="row">
-        <!-- Back -->
-        <div>
-          <q-btn
-            :disable="rowIndex === 0"
-            flat
-            dense
-            icon="mdi-chevron-double-left"
-            @click="goto(0)"
-          />
-          <q-btn
-            :disable="rowIndex === 0"
-            flat
-            dense
-            icon="mdi-chevron-left"
-            @click="goto(rowIndex - 1)"
-          />
-        </div>
-        <!-- Current -->
-        <span class="col q-ma-sm text-center">{{
+      <q-card-section v-if="!navDisabled">
+        <list-selector
+          :value="rowIndex"
+          :length="rowSet.length"
+          @input="goto"
+        >
+        {{
           t('editing1', {
             index: rowIndex + 1, // start at 1
-            total: table.rows.length
+            total: rowSet.length
           })
-        }}</span>
-        <!-- Forward -->
-        <div>
-          <q-btn
-            :disable="rowIndex >= table.rows.length - 1"
-            flat
-            dense
-            icon="mdi-chevron-right"
-            @click="goto(rowIndex + 1)"
-          />
-          <q-btn
-            :disable="rowIndex >= table.rows.length - 1"
-            flat
-            dense
-            icon="mdi-chevron-double-right"
-            @click="goto(table.rows.length - 1)"
-          />
-        </div>
+        }}
+        </list-selector>
       </q-card-section>
       <q-card-section v-else-if="currentRows.length > 1" class="row">
         <span>{{
           t('editingN', {
             n: currentRows.length,
-            total: table.rows.length
+            total: rowSet.length
           })
         }}</span>
       </q-card-section>
@@ -66,7 +37,7 @@
           :table="table"
           :rows="currentRows"
           :disable="disable"
-          :readonly="readonly"
+          :readonly="formReadonly"
           @input="onInput"
         />
       </q-card-section>
@@ -75,13 +46,18 @@
         <q-icon name="warning" class="q-mx-sm" size="1.5em" />
         <span>{{ allDeleted ? (deleted === 1 ? t('thisDeleted') : t('allDeleted')) : t('someDeleted') }}</span>
       </q-card-section>
-      <q-card-actions>
+      <q-card-actions v-if="!localEdit">
         <q-btn
           v-show="!disable && !readonly"
           :label="$t('actions.delete')"
           @click="onDelete"
         />
         <q-space />
+        <q-btn
+          v-show="readonly && rows.length === 1"
+          :label="t('edit')"
+          @click="startLocalEdit"
+        />
         <q-btn
           :label="toCommit ? $t('actions.cancel') : $t('actions.close')"
           @click="onCancel"
@@ -90,6 +66,23 @@
           v-show="toCommit && !allDeleted"
           :label="$t('actions.apply')"
           @click="onCommit"
+        />
+      </q-card-actions>
+      <q-card-actions v-else>
+        <q-btn
+          :label="$t('actions.delete')"
+          @click="localDelete"
+        />
+        <q-space />
+        <q-btn
+          :label="hasResult ? $t('actions.discard') : $t('actions.cancel')"
+          @click="localDiscard"
+        />
+        <q-btn
+          v-if="hasResult"
+          :label="$t('actions.save')"
+          icon="save"
+          @click="localSave"
         />
       </q-card-actions>
     </q-card>
@@ -101,6 +94,7 @@ import { QBtn, QCard, QCardActions, QCardSection, QDialog, QIcon, QSpace } from 
 import Vue from 'vue'
 
 import DataForm from './DataForm'
+import ListSelector from './ListSelector'
 import TranslationMixin from './TranslationMixin'
 
 export default {
@@ -110,6 +104,10 @@ export default {
     rows: {
       type: Array,
       required: true
+    },
+    rowSet: {
+      type: Array,
+      required: false
     },
     disable: {
       type: Boolean,
@@ -122,6 +120,7 @@ export default {
   },
   components: {
     DataForm,
+    ListSelector,
     QBtn,
     QCard,
     QCardActions,
@@ -133,11 +132,18 @@ export default {
   data () {
     return {
       result: {},
-      currentRows: this.rows,
-      rowIndex: this.rows.length === 1 && this.table.rows.indexOf(this.rows[0])
+      currentRows: [...this.rows],
+      rowIndex: this.rows.length === 1 && this.rowSet.indexOf(this.rows[0]),
+      localEdit: false
     }
   },
   computed: {
+    row () {
+      return this.currentRows.length === 1 ? this.currentRows[0] : null
+    },
+    formReadonly () {
+      return this.readonly && !this.localEdit
+    },
     hasResult () {
       return Object.keys(this.result).length > 0
     },
@@ -154,6 +160,9 @@ export default {
     },
     toCommit () {
       return !this.disable && !this.readonly && (this.isNew || this.hasResult)
+    },
+    navDisabled () {
+      return this.localEdit || this.rowSet.length <= 0 || this.currentRows.length !== 1 || this.rowIndex < 0
     }
   },
   methods: {
@@ -187,6 +196,7 @@ export default {
       } else {
         return new Promise(resolve => {
           this.$store.dispatch('layout/createDialog', {
+            root: this,
             message: this.t('qInvalidCommit'),
             ok: {
               flat: true,
@@ -207,15 +217,55 @@ export default {
     goto (i) {
       this.commit()
         .then(_ => {
-          this.currentRows[0].edit(this.result)
+          this.row.edit(this.result)
         })
         .catch(_ => { /* do nothing */ })
         .then(_ => {
           Vue.set(this.currentRows, 'length', 0)
-          this.currentRows.push(this.table.rows[i])
+          this.currentRows.push(this.rowSet[i])
           this.rowIndex = i
           this.result = {}
         })
+    },
+
+    startLocalEdit () {
+      this.localEdit = true
+    },
+    localSave () {
+      this.saveRow()
+      this.endLocalEdit()
+    },
+    saveRow () {
+      this.row.edit(this.result)
+      this.table.saveIndividual(this.row)
+    },
+    localDiscard () {
+      this.endLocalEdit()
+    },
+    localDelete () {
+      this.$store
+        .dispatch('layout/createDialog', {
+          message: this.t('qDeleteElement'),
+          ok: {
+            flat: true,
+            label: this.$t('yes')
+          },
+          cancel: {
+            flat: true,
+            label: this.$t('no')
+          },
+          persistent: true
+        })
+        .then(api => api.onOk(_ => {
+          this.hide()
+          this.row.status.deleted = true
+          this.saveRow()
+        }))
+    },
+    endLocalEdit () {
+      this.result = {}
+      this.localEdit = false
+      this.$refs.form.updateData()
     },
 
     // Required by Quasar's dialog API

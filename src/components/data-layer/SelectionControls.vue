@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="table.info.hasGeom"
+    v-if="allowGeom && table.info.hasGeom"
     v-show="!drawing"
     class="space row justify-end items-center"
   >
@@ -21,7 +21,13 @@ import TranslationMixin from './TranslationMixin'
 
 export default {
   mixins: [TranslationMixin],
-  props: ['table'],
+  props: {
+    table: Object,
+    allowGeom: {
+      type: Boolean,
+      default: false
+    }
+  },
   components: {
     QBtn
   },

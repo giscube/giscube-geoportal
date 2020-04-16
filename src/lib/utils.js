@@ -4,8 +4,24 @@ export function noop () {
   // No operation. Does nothing
 }
 
+export function wait (n) {
+  return new Promise(resolve => setTimeout(resolve, n))
+}
+
+export function delay () {
+  return wait(0)
+}
+
 export function isVoid (value) {
   return value === null || value === void 0
+}
+
+export function xor (a, b) {
+  return !a !== !b
+}
+
+export function xnor (a, b) {
+  return !a === !b
 }
 
 export function set (obj, key, value) {
@@ -40,12 +56,18 @@ export function* reverse (arr) {
   }
 }
 
-export function* enumerate (ob) {
-  let i = 0
-  for (let value of ob) {
-    yield [i, value]
-    ++i
+export function split (arr, callback) {
+  const a = []
+  const b = []
+  for (let v of arr) {
+    (callback(v) ? a : b).push(v)
   }
+  return [a, b]
+}
+
+export function regexEscape (v) {
+  // https://stackoverflow.com/a/3561711
+  return v.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&')
 }
 
 export function createEnum (elements, ordered = false) {
@@ -112,8 +134,64 @@ export function escapeHtml (unsafe) {
     .replace(/'/g, '&#039;')
 }
 
+function defineValue (obj, n, value) {
+  return Object.defineProperty(obj, n, {
+    enumerable: true,
+    configurable: true,
+    writable: true,
+    value
+  })
+}
+export function delayPropertyDefinition (obj, n, callback) {
+  Object.defineProperty(obj, n, {
+    enumerable: true,
+    configurable: true,
+    get () {
+      const value = callback()
+      defineValue(obj, n, value)
+      return value
+    },
+    set (value) {
+      defineValue(obj, n, value)
+      return value
+    }
+  })
+}
+
+export function waitUntil (f, t = 1000) {
+  return new Promise((resolve, reject) => {
+    let done = false
+    const looper = setInterval(function () {
+      try {
+        if (f.apply(this) && !done) {
+          done = true
+          clearInterval(looper)
+          resolve()
+        }
+      } catch (e) {
+        done = true
+        clearInterval(looper)
+        reject(e)
+      }
+    }, t)
+  })
+}
+
 export const INTERNAL_PROPERTY = Object.freeze({
   configurable: true,
   enumerable: false,
   writable: false
 })
+
+export function isPart (object, part) {
+  return Object.entries(part).every(([key, value]) => {
+    const objectValue = object[key]
+    if (isVoid(value)) {
+      return isVoid(object[key])
+    } else if (typeof value === 'object') {
+      return typeof value === 'object' && isPart(objectValue, value)
+    } else {
+      return objectValue === value
+    }
+  })
+}

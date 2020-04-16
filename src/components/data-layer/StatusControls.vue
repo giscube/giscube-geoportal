@@ -9,14 +9,12 @@
       v-show="table && table.editing"
     >
       <q-btn
-        v-show="!working"
         :label="dataChanged ? $t('actions.discard') : $t('actions.cancel')"
         @click="discard"
       />
       <q-btn
         v-if="dataChanged"
         :label="$t('actions.save')"
-        :loading="working"
         icon="save"
         @click="save"
       />
@@ -41,9 +39,6 @@ export default {
     },
     dataChanged () {
       return this.table && this.table.changedCount > 0
-    },
-    working () {
-      return this.table.saving
     }
   },
   methods: {

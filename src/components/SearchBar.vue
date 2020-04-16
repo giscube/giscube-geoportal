@@ -53,7 +53,9 @@ export default {
     onSearch () {
       if (this.q) {
         this.$store.dispatch('search/search', { query: this.q, forceRefresh: true })
-        this.$router.push({ name: 'search', params: { q: this.q } })
+        if (this.$route.params.q !== this.q) {
+          this.$router.push({ name: 'search', params: { q: this.q } })
+        }
       }
     },
     onSearchType (event) {

@@ -1,5 +1,8 @@
 import axios from 'axios'
+import md5 from 'md5'
 import { throwUnhandledExceptions } from '../lib/promiseUtils.js'
+
+const requestCache = new WeakMap()
 
 export default {
   getLayerInfo (editSource, layer, config) {
@@ -20,7 +23,7 @@ export default {
     const request = axios.get(url, conf)
     return throwUnhandledExceptions(request)
   },
-  getData ({ source, layer, pagination, filter, colFilters, extraParams }, config) {
+  getData ({ source, layer, pagination, filter, colFilters = {}, extraParams }, config) {
     const url = source.url + `layerserver/databaselayers/${layer.name}/data/`
     const params = {
       page: pagination && pagination.page,
@@ -37,7 +40,7 @@ export default {
       params.q = filter
     }
 
-    Object.keys(colFilters).forEach(key => {
+    Object.keys(colFilters || {}).forEach(key => {
       params[key] = colFilters[key]
     })
 
@@ -54,11 +57,31 @@ export default {
       return Promise.resolve()
     }
     const url = target.source.url + `layerserver/databaselayers/${target.layer.name}/bulk/`
+
+    let request = requestCache.get(changes)
+    if (!request) {
+      request = {}
+      const changesRequest = {
+        ...changes,
+        _META: { time: Date.now() }
+      }
+      request.body = JSON.stringify(changesRequest)
+      request.hash = md5(request.body)
+      requestCache.set(changes, request)
+    }
+
     const conf = {
       timeout: 10000,
+      headers: {},
       ...config
     }
-    const request = axios.post(url, changes, conf)
-    return throwUnhandledExceptions(request)
+
+    conf.headers = {
+      ...conf.headers,
+      'X-Bulk-Hash': request.hash,
+      'Content-Type': 'application/json'
+    }
+
+    return throwUnhandledExceptions(axios.post(url, request.body, conf))
   }
 }

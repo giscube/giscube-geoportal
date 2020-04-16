@@ -1,11 +1,12 @@
-import Vue from 'vue'
 import { isVoid } from 'src/lib/utils'
 import Field from './Field'
 import TableWidget from './widgets/form/Table'
+import DefaultFormWidget from './widgets/form/Default'
 
 export default class TableField extends Field {
   constructor (info) {
     info.virtual = true
+    info.hasCacheValue = true
 
     const options = info.widget_options
     delete info.widget_options
@@ -31,13 +32,6 @@ export default class TableField extends Field {
     const value = super.getValue(data) || {}
     value._fk = this.uniqueField.getValue(data)
     return value
-  }
-
-  setValue ({ row, properties, value }) {
-    const props = properties || (row && row.properties)
-    if (props) {
-      Vue.set(props, this.name, value)
-    }
   }
 
   aggregate (rows) {
@@ -67,5 +61,13 @@ export default class TableField extends Field {
 
   formWidget () {
     return TableWidget
+  }
+
+  filterWidget () {
+    return DefaultFormWidget
+  }
+
+  search (value) {
+    return [ this.name, value ]
   }
 }

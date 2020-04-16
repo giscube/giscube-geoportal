@@ -3,7 +3,9 @@ import clone from 'lodash/clone.js'
 import databaseLayersApi from 'src/api/databaselayers.js'
 
 import { CancelError } from 'src/lib/geomUtils'
-import { throwUnhandledExceptions } from 'src/lib/promiseUtils.js'
+import { throwUnhandledExceptions } from '../../lib/promiseUtils.js'
+import { some } from '../../lib/itertools.js'
+import { waitUntil } from '../../lib/utils.js'
 
 export function invalidateState (context) {
   context.commit('setInitialState')
@@ -98,9 +100,32 @@ export function verifySourcesLoaded (context) {
   }
 }
 
-function queueJob (context, asyncJob) {
-  context.state.asyncQueue.add(asyncJob).run()
+function _updateWMS (context) {
+  const table = context.state.table
+  if (!table.updateWmsRequested) return
+  table.updateWMS()
+  if (!table.refLayers) {
+    return
+  }
+  const toRefresh = table.refLayers.filter(ref => ref.refresh).map(ref => ref.layer)
+  const promise = waitUntil(() => table !== context.state.table || !some(toRefresh, layer => layer.isLoading()))
+  context.commit('updateWms', promise)
 }
-// Both use the same queue so it uses the same code to add the jobs
+
+async function queueJob (context, asyncJob) {
+  context.state.asyncQueue.add(asyncJob)
+  await context.state.updateWms
+  return context.state.asyncQueue.run()
+}
+
+export async function asyncSave (context, asyncJob) {
+  const first = !context.state.asyncQueue.running
+  const queuePromise = queueJob(context, asyncJob)
+  if (first && queuePromise) {
+    await queuePromise
+    await context.state.table.fillPage()
+    _updateWMS(context)
+  }
+}
+
 export const uploadPhoto = queueJob
-export const asyncSave = queueJob

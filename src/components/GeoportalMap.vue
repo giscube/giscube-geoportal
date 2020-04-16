@@ -20,6 +20,7 @@ import { QPage } from 'quasar'
 import { debounce } from 'lodash'
 import L from '../lib/leaflet'
 import { LMap, LGeoJson } from 'vue2-leaflet'
+import { mapState } from 'vuex'
 
 import LayersControl from 'components/LayersControl.vue'
 require('microdisseny-leaflet-measure')
@@ -53,6 +54,7 @@ export default {
         return this.$store.dispatch('map/setMap', value)
       }
     },
+    ...mapState('map', ['mapGroup']),
     editLayerGeojson () {
       return this.$store.state.dataLayer.geojson
     },
@@ -80,7 +82,7 @@ export default {
   },
   created () {
     this.onMapMove = debounce(this.updateMapPosition, 100)
-    this.updateTable = this._updateTable.bind(this)
+    this.updateTable = debounce(this._updateTable.bind(this), 100)
     this.startDrawing = this._setDrawing.bind(this, true)
     this.endDrawing = this._setDrawing.bind(this, false)
   },
@@ -134,6 +136,7 @@ export default {
 
       this.addControls()
       this.$store.dispatch('map/setDefaultBaseLayer')
+      this.map.addLayer(this.mapGroup)
       if (this.mainTable) {
         this.mainTable.addTo(this.map)
       }

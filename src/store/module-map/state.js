@@ -2,6 +2,7 @@ import L from 'src/lib/leaflet'
 
 export default {
   mapObject: null,
+  mapGroup: L.layerGroup(),
   state: {
     center: void 0,
     zoom: void 0

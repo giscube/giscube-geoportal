@@ -11,6 +11,7 @@ import DataPanel from 'components/data-layer/DataPanel'
 import Sidebar from 'components/Sidebar'
 import DrawPanel from 'components/DrawPanel'
 import PlacePanel from 'components/PlacePanel'
+import PlacePanelStrategy from 'components/PlacePanelStrategy'
 import SearchBar from 'components/SearchBar'
 import SearchPanel from 'components/SearchPanel'
 import SharePanel from 'components/SharePanel'
@@ -18,6 +19,7 @@ import ShareQuery from 'src/lib/shareQuery'
 import QueryOnClick from 'components/QueryOnClick'
 import LayersControl from 'components/LayersControl'
 import HelpPanel from 'components/HelpPanel'
+import StatisticsPanel from 'components/statistics/Panel'
 import StreetViewPanel from 'components/StreetViewPanel'
 import geoportalBoot from './boot'
 import store from './store/index.js'
@@ -46,6 +48,7 @@ export {
   Sidebar,
   DrawPanel,
   PlacePanel,
+  PlacePanelStrategy,
   SearchBar,
   SearchPanel,
   SharePanel,
@@ -53,6 +56,7 @@ export {
   QueryOnClick,
   LayersControl,
   HelpPanel,
+  StatisticsPanel,
   StreetViewPanel,
   boot,
   store,
