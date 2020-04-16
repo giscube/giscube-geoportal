@@ -136,6 +136,11 @@ export default {
         const lat = this.$n(latlng.lat, { maximumFractionDigits: 6, minimumFractionDigits: 6 })
         const lng = this.$n(latlng.lng, { maximumFractionDigits: 6, minimumFractionDigits: 6 })
         return lat + ' ' + lng
+      } else if (layer instanceof L.CircleMarker || layer instanceof L.Circle) {
+        const latlng = layer.getLatLng()
+        const lat = this.$n(latlng.lat, { maximumFractionDigits: 6, minimumFractionDigits: 6 })
+        const lng = this.$n(latlng.lng, { maximumFractionDigits: 6, minimumFractionDigits: 6 })
+        return lat + ' ' + lng + ' r' + layer.getRadius()
       } else if (layer instanceof L.Polygon) {
         const value = this.$n(Math.round(area(layer.toGeoJSON(), { units: 'meters' })))
         return value + ' ' + this.$t('units.meters') + '<sup>2</sup>'
