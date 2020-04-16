@@ -10,7 +10,8 @@ function somePoint (layer, callback) {
     return layer.getLatLngs()[0].some(callback)
   } else if (layer instanceof L.Polyline) {
     return layer.getLatLngs().some(callback)
-  } else if (layer instanceof L.Marker || layer instanceof L.CircleMarker) {
+  } else if (layer instanceof L.Marker || layer instanceof L.CircleMarker ||
+      layer instanceof L.Circle) {
     return callback(layer.getLatLng())
   } else if (layer instanceof L.LatLng) {
     return callback(layer)
