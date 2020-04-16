@@ -124,10 +124,14 @@ Types:
  - `m`: Marker
  - `l`: Line
  - `p`: Polygon
+ - `c`: Circle (with radius)
+ - `k`: CircleMarker (with radius)
 
 Examples:
  - `m41.973,2.780`
  - `l41.973,2.780;41.973,2.6;42,2.6`
+ - `c41.973,2.780` or `c41.973,2.780,20` (third component is the circle radius and it is optional)
+ - `k41.973,2.780` or `k41.973,2.780,20` (third component is the circle marker radius and it is optional)
 
 ### MsgGeom
 Geometry with an optional message (separated by `~`).
