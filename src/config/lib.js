@@ -163,6 +163,9 @@ export default new Options({
         this.$q.fullscreen.toggle()
       }
     },
+    google: {
+      apiKey: ''
+    },
     help: {
       icon: 'help',
       to: 'help'
@@ -209,8 +212,7 @@ export default new Options({
     },
     streetview: {
       icon: 'fas fa-street-view',
-      to: 'streetview',
-      apiKey: ''
+      to: 'streetview'
     }
   }
 })

@@ -13,6 +13,9 @@ export default base.merge({
       url: 'https://www.giscube.org/apps/giscube-admin/'
     }
   ],
+  google: {
+    apiKey: 'AIzaSyDp_TZ0MTqUi18tC2qk_ifhXziqoJj-ntU' // giscube.org only ;)
+  },
   searches: [
     {
       name: 'geoportal',
@@ -25,10 +28,6 @@ export default base.merge({
       is_geojson: true,
       url: 'https://www.giscube.org/apps/indexer/search/'
     }
-  ],
-  tools: {
-    streetview: {
-      apiKey: 'AIzaSyDp_TZ0MTqUi18tC2qk_ifhXziqoJj-ntU' // giscube.org only ;)
-    }
-  }
+  ]
+  // tools: {}
 })

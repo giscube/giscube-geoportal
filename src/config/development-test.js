@@ -19,6 +19,9 @@ export default base.merge({
       url: 'https://localhost:8000/apps/giscube-admin/'
     }
   ],
+  google: {
+    apiKey: 'AIzaSyA-T7DgvIL7-hohqVZosujoiLPfgQWFAPw' // http://localhost:8080/* http://localhost:8081/*
+  },
   home: {
     zoom: 15,
     center: {
@@ -42,10 +45,5 @@ export default base.merge({
       url: 'https://localhost:8000/apps/giscube-admin/geoportal/search/',
       auth: true
     }
-  ],
-  tools: {
-    streetview: {
-      apiKey: 'AIzaSyA-T7DgvIL7-hohqVZosujoiLPfgQWFAPw' // http://localhost:8080/* http://localhost:8081/*
-    }
-  }
+  ]
 })
