@@ -6,7 +6,7 @@
           <q-btn flat dense
             icon="keyboard_arrow_left"
             size="md"
-            @click="$router.push({ name: 'catalog' })"
+            @click="$router.go(-1)"
           />
           {{ title }}
         </p>
