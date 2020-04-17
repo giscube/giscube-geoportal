@@ -6,6 +6,12 @@ import 'leaflet-editable'
 import './leaflet-offset'
 
 try {
+  require('leaflet.gridlayer.googlemutant')
+} catch {
+  /* Optional dependecy not installed. Do nothing */
+}
+
+try {
   require('leaflet-boundary-canvas')
 } catch {
   /* Optional dependecy not installed. Do nothing */

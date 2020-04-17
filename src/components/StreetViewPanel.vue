@@ -135,7 +135,7 @@ export default {
         return
       }
 
-      await gmapsInit(this.$config.tools.streetview.apiKey)
+      await gmapsInit(this.$config.google.apiKey)
 
       if (!(window.google && window.google.maps)) {
         // Google maps api not ready yet
