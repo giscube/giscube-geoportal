@@ -7,6 +7,7 @@ import { createExternalLayer, createLayer } from '../../lib/geomUtils'
 import validate from '../../lib/validate'
 import { isVoid, reverse, unique } from '../../lib/utils'
 import ShareQuery from '../../lib/shareQuery'
+import gmapsInit from '../../lib/gmaps'
 
 import { LAYER_TEMPLATE, LAYER_TEMPLATE_DEFAULTS } from './constants'
 
@@ -39,13 +40,28 @@ export function invalidateSize (context) {
   context.state.mapObject.invalidateSize()
 }
 
-function _makeBaseLayer (baseLayer) {
+function _makeBaseLayer (baseLayer, self) {
   if (!baseLayer.layer) {
     let layer
     if (baseLayer.type === 'tilelayer') {
       layer = L.tileLayer(baseLayer.url, baseLayer)
     } else if (baseLayer.type === 'wms') {
       layer = L.tileLayer.wms(baseLayer.url, baseLayer)
+    } else if (baseLayer.type === 'googleMutant') {
+      if (!L.gridLayer.googleMutant) {
+        console.warn('[Giscube Geoportal] Trying to add googleMutant layer without the necessary package installed. Use npm i leaflet.gridlayer.googlemutant to install it.')
+      } else {
+        gmapsInit(self.$config.google.apiKey)
+          .then(
+            layer = L.gridLayer.googleMutant(baseLayer.options)
+          )
+          .catch(
+            // Google maps api not ready yet, try later
+            setTimeout(function () {
+              _makeBaseLayer(baseLayer)
+            }, 500)
+          )
+      }
     } else {
       console.warn(`Unsupported base layer type: ${baseLayer.type}`)
     }
@@ -69,7 +85,7 @@ export function setBaseLayer (context, value) {
   const baseLayer = this.$config.basemaps[value]
   if (baseLayer) {
     const map = context.state.mapObject
-    const layer = _makeBaseLayer(baseLayer)
+    const layer = _makeBaseLayer(baseLayer, this)
     if (map && layer) {
       layer.setZIndex(0)
       map.addLayer(layer)

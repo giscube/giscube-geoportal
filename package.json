@@ -67,7 +67,8 @@
     "webpack-bundle-analyzer": "^3.3.2"
   },
   "optionalDependencies": {
-    "leaflet-boundary-canvas": "^1.0.0"
+    "leaflet-boundary-canvas": "^1.0.0",
+    "leaflet.gridlayer.googlemutant": "^0.9.0"
   },
   "engines": {
     "node": ">= 8.9.0",
