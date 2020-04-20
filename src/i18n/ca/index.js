@@ -12,6 +12,7 @@ export default {
     copy: 'copia',
     delete: 'elimina',
     discard: 'descarta',
+    explore: 'explora',
     previous: 'anterior',
     pinToMap: 'fixa al mapa',
     print: 'imprimeix',

@@ -4,6 +4,7 @@ import except from './except'
 import i18n from './i18n'
 import moment from './moment'
 import proj4 from './proj4'
+import clipboard from './clipboard'
 
 function setup (conf = {}) {
   return async function () {
@@ -16,6 +17,7 @@ function setup (conf = {}) {
     await moment.apply(this, arguments)
     await proj4.apply(this, arguments)
     await except.apply(this, arguments)
+    await clipboard.apply(this, arguments)
   }
 }
 

@@ -58,13 +58,15 @@ export default {
       let url = this.layerOptions && this.layerOptions.layerDescriptor && this.layerOptions.layerDescriptor.url
       if (url) {
         let text = url
-        if (this.layerOptions.layerDescriptor.type && this.layerOptions.layerDescriptor.type.toLowerCase() === 'wms') {
+        let type = this.layerOptions.layerDescriptor.type
+        if (type && type.toLowerCase() === 'wms') {
           url += '?service=WMS&request=GetCapabilities'
         }
         metadata.push({
           name: 'URL',
           text: text,
-          href: url
+          href: url,
+          type: type
         })
       }
 

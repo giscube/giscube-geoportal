@@ -12,6 +12,7 @@ export default {
     download: 'download',
     delete: 'delete',
     discard: 'discard',
+    explore: 'explore',
     previous: 'previous',
     pinToMap: 'pin to map',
     print: 'print',
