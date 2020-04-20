@@ -12,6 +12,7 @@ export default {
     copy: 'copia',
     delete: 'elimina',
     discard: 'descarta',
+    explore: 'explora',
     previous: 'anterior',
     pinToMap: 'fixa al mapa',
     print: 'imprimeix',
@@ -50,7 +51,8 @@ export default {
     message: 'missatge',
     metadata: 'metadades',
     opacity: 'opacitat',
-    options: 'opcions'
+    options: 'opcions',
+    type: 'tipus'
   },
   states: {
     empty: 'buit',
