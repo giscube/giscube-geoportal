@@ -39,7 +39,7 @@
         {{ description }}
       </div>
 
-      <div class="row justify-end space-items-sm">
+      <div class="row space-items-sm">
         <q-btn outline no-caps
           v-show="canDownload"
           icon="save_alt"
@@ -65,16 +65,46 @@
 
       <div class="metadata" v-if="result && metadata && metadata.length > 0">
         <p class="panel-subtitle">{{ $t('names.metadata') | capitalize }}</p>
-        <table>
-          <tr
-            v-for="(datum, i) in metadata"
-            :key="'metadata-' + i"
-          >
-            <td>{{ datum.name }}</td>
-            <td v-if="datum.href"><a :href="datum.href" target="_blank">{{ datum.text }}</a></td>
-            <td v-else>{{ datum.text }}</td>
-          </tr>
-        </table>
+        <div
+          v-for="(datum, i) in metadata"
+          :key="'metadata-' + i"
+        >
+          <table>
+            <tr v-show="datum.type">
+              <td>{{ $t('names.type') | capitalize }}</td>
+              <td>{{ datum.type }}</td><br>
+            </tr>
+            <tr>
+              <td>{{ datum.name }}</td>
+              <td v-if="datum.href">
+                <a :href="datum.href" target="_blank">{{ datum.text }}</a>
+              </td>
+              <td v-else>{{ datum.text }}</td>
+            </tr>
+          </table>
+
+          <div class="row q-pt-sm space-items-sm">
+            <q-btn outline no-caps
+              v-clipboard:copy="datum.text"
+              v-clipboard:success="doCopy"
+              :icon="copied ? 'fas fa-check' : 'fas fa-copy'"
+              :label="$t('actions.copy') + ' URL' | capitalize"
+              :color="copied ? 'green' : void 0"
+            />
+            <q-btn outline no-caps
+              v-if="datum.type.toLowerCase() === 'geojson'"
+              icon="search"
+              :label="$t('actions.explore') | capitalize"
+              @click="open(datum.text)"
+            />
+            <q-btn outline no-caps
+              v-else-if="datum.type.toLowerCase() === 'wms'"
+              icon="search"
+              :label="$t('actions.explore') | capitalize"
+              @click="open(datum.href)"
+            />
+          </div>
+        </div>
       </div>
 
       <div class="legend" v-if="result && legend">
@@ -90,6 +120,7 @@
           clickable
           square
           @click="searchKeyword(keyword)"
+          v-show="keyword !== ''"
         >
           {{ keyword }}
         </q-chip>
@@ -100,13 +131,9 @@
         class="col column no-wrap"
       >
         <div class="row items-center space-items-sm" v-if="table && table.info">
-          <data-filter
-            :table="table"
-          />
+          <data-filter :table="table" />
           <q-space />
-          <selection-controls
-            :table="table"
-          />
+          <selection-controls :table="table" />
         </div>
         <div class="full-width col q-mt-sm">
           <data-table
@@ -140,6 +167,11 @@ export default {
     QBtn,
     QIcon,
     QSpace
+  },
+  data () {
+    return {
+      copied: false
+    }
   },
   computed: {
     ...mapState({
@@ -191,6 +223,18 @@ export default {
     }
   },
   methods: {
+    doCopy () {
+      this.copied = true
+    },
+    download () {},
+    gotoStatistics () {},
+    open (url) {
+      window.open(url)
+    },
+    pin () {},
+    projected (epsg) {
+      return formatCoords(this.latlng, epsg)
+    },
     searchKeyword (keyword) {
       this.$store.dispatch('search/search', { query: keyword, auto: false })
       this.$router.push({
@@ -198,7 +242,6 @@ export default {
         params: { q: keyword }
       })
     },
-    pin () {},
     zoom () {
       const maxZoom = this.$config.layout.mapMaxFlyZoom
       const pointZoom = this.$config.layout.mapPointZoom
@@ -218,11 +261,6 @@ export default {
       // If we can't zoom, go to home view
       const home = this.$config.home
       this.map.flyTo(new L.LatLng(home.center.lat, home.center.lng), home.zoom)
-    },
-    gotoStatistics () {},
-    download () {},
-    projected (epsg) {
-      return formatCoords(this.latlng, epsg)
     }
   }
 }

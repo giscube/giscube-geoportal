@@ -12,6 +12,7 @@ export default {
     download: 'download',
     delete: 'delete',
     discard: 'discard',
+    explore: 'explore',
     previous: 'previous',
     pinToMap: 'pin to map',
     print: 'print',
@@ -50,7 +51,8 @@ export default {
     message: 'message',
     metadata: 'metadata',
     opacity: 'opacity',
-    options: 'options'
+    options: 'options',
+    type: 'type'
   },
   states: {
     empty: 'empty',
