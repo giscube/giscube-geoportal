@@ -51,7 +51,8 @@ export default {
     message: 'message',
     metadata: 'metadata',
     opacity: 'opacity',
-    options: 'options'
+    options: 'options',
+    type: 'type'
   },
   states: {
     empty: 'empty',

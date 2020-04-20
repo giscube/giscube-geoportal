@@ -51,7 +51,8 @@ export default {
     message: 'missatge',
     metadata: 'metadades',
     opacity: 'opacitat',
-    options: 'opcions'
+    options: 'opcions',
+    type: 'tipus'
   },
   states: {
     empty: 'buit',

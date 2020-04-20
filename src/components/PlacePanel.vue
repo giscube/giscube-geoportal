@@ -58,7 +58,7 @@ export default {
       let url = this.layerOptions && this.layerOptions.layerDescriptor && this.layerOptions.layerDescriptor.url
       if (url) {
         let text = url
-        let type = this.layerOptions.layerDescriptor.type
+        const type = this.layerOptions.layerDescriptor.type
         if (type && type.toLowerCase() === 'wms') {
           url += '?service=WMS&request=GetCapabilities'
         }

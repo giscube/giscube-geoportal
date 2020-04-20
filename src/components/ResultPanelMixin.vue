@@ -71,7 +71,7 @@
         >
           <table>
             <tr v-show="datum.type">
-              <td>Tipus</td>
+              <td>{{ $t('names.type') | capitalize }}</td>
               <td>{{ datum.type }}</td><br>
             </tr>
             <tr>
@@ -108,7 +108,7 @@
       </div>
 
       <div class="legend" v-if="result && legend">
-        <p class="panel-subtitle">{+{ $t('names.legend') | capitalize }}</p>
+        <p class="panel-subtitle">{{ $t('names.legend') | capitalize }}</p>
         <div v-html="legend"></div>
       </div>
 
