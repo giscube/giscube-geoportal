@@ -30,13 +30,18 @@
       </ul>
 
       <ul v-show="!baseLayerSelected || baseLayerSelect">
-        <li v-for="(layer, i) in baseLayers" :key="layer.id"
-            class="flex-nowrap-start link"
-            @click="setBaseLayer(i)">
-          <a class="flex-icon option gray"
-             ><q-icon color="grey" size="2em" name="keyboard_arrow_right" /></a>
-          <a class="flex-label link">{{ layer.name }}</a>
-        </li>
+        <q-scroll-area
+         :style="{ 'height': baseLayers.length > 7 ? '308px' : `${44*baseLayers.length}px` }"
+         :visible="true"
+        >
+          <li v-for="(layer, i) in baseLayers" :key="layer.id"
+              class="flex-nowrap-start link"
+              @click="setBaseLayer(i)">
+            <a class="flex-icon option gray"
+              ><q-icon color="grey" size="2em" name="keyboard_arrow_right" /></a>
+            <a class="flex-label link">{{ layer.name }}</a>
+          </li>
+        </q-scroll-area>
       </ul>
 
       <div v-show="layers.length > 0" class="sep"></div>
@@ -62,7 +67,7 @@
 </template>
 
 <script>
-import { QIcon } from 'quasar'
+import { QIcon, QScrollArea } from 'quasar'
 import { mapState } from 'vuex'
 
 import L from '../lib/leaflet'
@@ -74,7 +79,8 @@ export default {
   components: {
     draggable,
     LayerItem,
-    QIcon
+    QIcon,
+    QScrollArea
   },
   data () {
     return {
