@@ -48,7 +48,7 @@ export function applyLayerSnapshot (layer, snapshot) {
   } else if (layer.getLatLng) {
     layer.setLatLng(snapshot)
   } else if (layer.getLayers) {
-    this.layer.clearLayers()
+    layer.clearLayers()
     for (let [l, c] of snapshot) {
       applyLayerSnapshot(l, c)
       layer.addLayer(l)
