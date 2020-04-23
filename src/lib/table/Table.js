@@ -347,7 +347,7 @@ export default class Table {
     }
     toRemove.forEach(row => row.remove())
 
-    // intelligently merge the two row groups, adding only the required
+    // merge the two row groups, adding only the required
     // keep new order (which might have changed)
     const rows = newRows.map(row => {
       if (currentPks.has(row.internalPk)) {
