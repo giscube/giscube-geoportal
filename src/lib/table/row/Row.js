@@ -313,6 +313,7 @@ export default class Row {
           applyLayerSnapshot(this.layer, this.consolidatedGeom)
         }
         this.geometry = other.geometry
+        this.applyStyle()
       }
     }
     return this
