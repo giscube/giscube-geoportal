@@ -160,32 +160,11 @@ export default {
         center = mapInfo.visibleBounds.getCenter()
       }
 
-      let icon = L.icon({
-        iconUrl: '',
-        shadowUrl: '',
-        iconSize: [40, 40],
-        shadowSize: [50, 64],
-        iconAnchor: [20, 35],
-        shadowAnchor: [4, 62],
-        popupAnchor: [-3, -76],
-        className: 'street-view-marker'
-      })
-      icon.createIcon = function (oldIcon) {
-        let div = (oldIcon && oldIcon.tagName === 'DIV') ? oldIcon : document.createElement('div')
-
-        div.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M192 64c0-35.346 28.654-64 64-64s64 28.654 64 64c0 35.346-28.654 64-64 64s-64-28.654-64-64zm112 80h-11.36c-22.711 10.443-49.59 10.894-73.28 0H208c-26.51 0-48 21.49-48 48v104c0 13.255 10.745 24 24 24h16v104c0 13.255 10.745 24 24 24h64c13.255 0 24-10.745 24-24V320h16c13.255 0 24-10.745 24-24V192c0-26.51-21.49-48-48-48zm85.642 189.152a72.503 72.503 0 0 1-29.01 27.009C391.133 365.251 480 385.854 480 416c0 46.304-167.656 64-224 64-70.303 0-224-20.859-224-64 0-30.123 88.361-50.665 119.367-55.839a72.516 72.516 0 0 1-29.01-27.009C74.959 343.395 0 367.599 0 416c0 77.111 178.658 96 256 96 77.249 0 256-18.865 256-96 0-48.403-74.967-72.606-122.358-82.848z"/></svg>'
-
-        this._setIconStyles(div, 'icon')
-
-        return div
+      if (!this.marker) {
+        this.setupMarker(center)
       }
 
-      this.marker = L.marker(center, {
-        draggable: true,
-        icon: icon
-      })
       this.marker.addTo(this.map)
-      this.marker.on('dragend', this.markerDragEnd)
 
       this.panorama = new window.google.maps.StreetViewPanorama(
         document.getElementById('street-view-panel-street-view'), {
@@ -245,6 +224,33 @@ export default {
       } else {
         this.streetViewError = this.$t('tools.streetview.noDataError')
       }
+    },
+    setupMarker (center) {
+      let icon = L.icon({
+        iconUrl: '',
+        shadowUrl: '',
+        iconSize: [40, 40],
+        shadowSize: [50, 64],
+        iconAnchor: [20, 35],
+        shadowAnchor: [4, 62],
+        popupAnchor: [-3, -76],
+        className: 'street-view-marker'
+      })
+      icon.createIcon = function (oldIcon) {
+        let div = (oldIcon && oldIcon.tagName === 'DIV') ? oldIcon : document.createElement('div')
+
+        div.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M192 64c0-35.346 28.654-64 64-64s64 28.654 64 64c0 35.346-28.654 64-64 64s-64-28.654-64-64zm112 80h-11.36c-22.711 10.443-49.59 10.894-73.28 0H208c-26.51 0-48 21.49-48 48v104c0 13.255 10.745 24 24 24h16v104c0 13.255 10.745 24 24 24h64c13.255 0 24-10.745 24-24V320h16c13.255 0 24-10.745 24-24V192c0-26.51-21.49-48-48-48zm85.642 189.152a72.503 72.503 0 0 1-29.01 27.009C391.133 365.251 480 385.854 480 416c0 46.304-167.656 64-224 64-70.303 0-224-20.859-224-64 0-30.123 88.361-50.665 119.367-55.839a72.516 72.516 0 0 1-29.01-27.009C74.959 343.395 0 367.599 0 416c0 77.111 178.658 96 256 96 77.249 0 256-18.865 256-96 0-48.403-74.967-72.606-122.358-82.848z"/></svg>'
+
+        this._setIconStyles(div, 'icon')
+
+        return div
+      }
+
+      this.marker = L.marker(center, {
+        draggable: true,
+        icon: icon
+      })
+      this.marker.on('dragend', this.markerDragEnd)
     }
   }
 }
