@@ -15,7 +15,7 @@ const initPromise = new Promise((resolve, reject) => {
   rejectInitPromise = reject
 })
 
-export default function init (API_KEY) {
+export default function gmapsInit (API_KEY) {
   // If Google Maps already is initialized
   // the `initPromise` should be resolved
   // eventually.
