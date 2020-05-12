@@ -184,7 +184,8 @@ export default {
       message: '@:names.message',
       options: '@:names.options',
       openMessage: 'Obrir @:names.message',
-      markerAtCenter: 'Marcador al centre'
+      markerAtCenter: 'Marcador al centre',
+      simpleView: 'Vista simple'
     },
     statistics: {
       columnCount: 'Compte',

@@ -4,8 +4,8 @@ export function leftDrawerSize (state, value) {
   state.leftDrawerSize = value
 }
 
-export function sidebarVisible (state, value) {
-  state.sidebarVisible = value
+export function sidebarOpen (state, value) {
+  state.sidebarOpen = value
 }
 
 export function size (state, value) {
@@ -40,5 +40,16 @@ export function removeDialog (state, obj) {
     // i is the last element (-1 if empty)
     // i + 1 is the length that it should have
     Vue.set(dialogs, 'length', i + 1)
+  }
+}
+
+export function setLayout (state, value) {
+  if (value === 'simple') {
+    state.headerVisible = false
+    state.sidebarVisible = false
+    state.sidebarOpen = false
+  } else {
+    state.headerVisible = true
+    state.sidebarVisible = true
   }
 }

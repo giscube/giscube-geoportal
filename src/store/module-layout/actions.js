@@ -20,23 +20,23 @@ export function setLeftDrawerSize (context, value) {
   context.dispatch('map/invalidateOffset', void 0, { root: true })
 }
 
-export function setSidebarVisible (context, value) {
-  context.commit('sidebarVisible', value)
+export function setSidebarOpen (context, value) {
+  context.commit('sidebarOpen', value)
   context.dispatch('setMapLeft')
   context.dispatch('map/invalidateOffset', void 0, { root: true })
 }
 
 export function setMapLeft (context) {
-  const hasLeft = !context.getters.drawersFullOverlay && context.state.sidebarVisible
+  const hasLeft = !context.getters.drawersFullOverlay && context.state.sidebarOpen
   const size = hasLeft ? `${context.state.leftDrawerSize + 5}px` : '0px'
   document.documentElement.style.setProperty('--map-left', size)
 }
 
 export function showMapWhile (context, promise) {
-  if (context.getters.drawersFullOverlay && context.state.sidebarVisible) {
-    context.dispatch('setSidebarVisible', false)
+  if (context.getters.drawersFullOverlay && context.state.sidebarOpen) {
+    context.dispatch('setSidebarOpen', false)
     promise.then(() => {}, () => {}).then(_ => {
-      context.dispatch('setSidebarVisible', true)
+      context.dispatch('setSidebarOpen', true)
     })
   }
 }

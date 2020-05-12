@@ -6,6 +6,7 @@
   >
     <!-- AppHeader -->
     <component :is="$config.layout.header"
+      v-if="$store.state.layout.headerVisible"
       ref="header"
       :brand-logo="$config.branding.header.logo"
       :brand-text="$config.branding.header.text"
@@ -15,6 +16,7 @@
     />
 
     <Sidebar ref="sidebar"
+      v-show="$store.state.layout.sidebarVisible"
       class="sidebar-left"
     />
 
@@ -52,7 +54,7 @@ export default {
     this.$nextTick(() => {
       const { width, height } = this.$refs.layout
       this.$store.commit('layout/size', { width, height })
-      this.$store.dispatch('layout/setSidebarVisible', true)
+      this.$store.dispatch('layout/setSidebarOpen', true)
     })
   },
   computed: mapState({
@@ -65,7 +67,7 @@ export default {
       this.onVisibilityChanged(true)
     },
     onVisibilityChanged (visible) {
-      this.$store.dispatch('layout/setSidebarVisible', visible)
+      this.$store.dispatch('layout/setSidebarOpen', visible)
     }
   }
 }

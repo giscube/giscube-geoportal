@@ -4,8 +4,8 @@ export function drawersFullOverlay (state) {
 
 export function leftDrawerVisibleSize (state, getters) {
   const sidebarOverlaying = getters['drawersFullOverlay']
-  const sidebarVisible = state.sidebarVisible
-  return (!sidebarOverlaying && sidebarVisible) ? state.leftDrawerSize : 0
+  const sidebarOpen = state.sidebarOpen
+  return (!sidebarOverlaying && sidebarOpen) ? state.leftDrawerSize : 0
 }
 
 export function hiddenMap (state, getters) {
