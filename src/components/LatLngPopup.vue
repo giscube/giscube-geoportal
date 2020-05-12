@@ -28,7 +28,7 @@ export default {
   },
   methods: {
     onClick () {
-      this.$store.dispatch('layout/setSidebarVisible', true)
+      this.$store.dispatch('layout/setSidebarOpen', true)
       const route = { name: 'coords', params: { epsg: '4326', coords: this.coords } }
       if (!isPart(this.$route, route)) {
         this.$router.push(route)
