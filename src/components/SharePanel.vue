@@ -19,10 +19,17 @@
           :value="!!options.om"
           @input="setFlag(options, 'om', $event)"
         />
+        <br>
         <q-toggle
           :label="t('markerAtCenter')"
           :value="!!options.mc"
           @input="setFlag(options, 'mc', $event)"
+        />
+        <br>
+        <q-toggle
+          :label="t('simpleView')"
+          :value="layout === 'simple'"
+           @input="layout = $event ? 'simple' : null"
         />
       </div>
     </div>
@@ -49,10 +56,10 @@ export default {
     const l = window.location
     const urlBase = l.origin + l.pathname + '#/share/'
     return {
-      urlBase,
-
+      layout: null,
+      message: '',
       options: {},
-      message: ''
+      urlBase
     }
   },
   computed: {
@@ -74,6 +81,7 @@ export default {
         basemap: this.$store.getters['map/baseMapIndex'],
         ...this.mapState,
         message: this.message,
+        layout: this.layout,
         geom: [
           ...this.sharedLayer.getLayers(),
           ...(this.$store.getters['map/drawnLayers']() || [])
@@ -119,6 +127,11 @@ export default {
     applyQuery (query, redirectTo) {
       this.$nextTick(() => {
         this.message = ShareQuery.extract(query, 'm')
+
+        const layout = ShareQuery.extract(query, 'la')
+        if (layout) {
+          this.$store.commit('layout/setLayout', layout)
+        }
 
         const map = this.$store.state.map.mapObject
         if (!map) {

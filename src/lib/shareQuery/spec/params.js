@@ -38,6 +38,13 @@ params.options = params.o = {
   type: types.flags(['mc', 'om']),
   multi: behaviors.merges
 }
+
+params.layout = params.la = {
+  key: 'la',
+  type: types.string,
+  multi: behaviors.overrides
+}
+
 params.zoom = params.z = {
   key: 'z',
   type: types.number,

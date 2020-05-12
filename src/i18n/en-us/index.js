@@ -182,7 +182,8 @@ export default {
       message: '@:names.message',
       options: '@:names.options',
       openMessage: 'Open @:names.message',
-      markerAtCenter: 'Marker at the center'
+      markerAtCenter: 'Marker at the center',
+      simpleView: 'Simple view'
     },
     statistics: {
       columnCount: 'Count',

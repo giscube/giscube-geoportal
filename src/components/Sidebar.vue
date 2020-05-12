@@ -1,7 +1,7 @@
 <template>
   <q-drawer
     ref="drawer"
-    v-model="sidebarVisible"
+    v-model="sidebarOpen"
     side="left"
     content-class="left-drawer"
     elevated
@@ -16,11 +16,11 @@
     <a @click.prevent="onToggleClick"
        class="sidebar-close"
        ><q-icon
-        :name="sidebarVisible ? 'arrow_left' : 'arrow_right'"
+        :name="sidebarOpen ? 'arrow_left' : 'arrow_right'"
         color="white"
         size="35px"
         /></a>
-    <a v-if="sidebarVisible"
+    <a v-if="sidebarOpen"
        @click.prevent="onToggleWidthClick"
        @mousedown="onToggleWidthMousedown"
        @touchstart="onToggleWidthMousedown"
@@ -64,12 +64,12 @@ export default {
         this.$store.dispatch('layout/setLeftDrawerSize', newValue)
       }
     },
-    sidebarVisible: {
+    sidebarOpen: {
       get: function () {
-        return this.$store.state.layout.sidebarVisible
+        return this.$store.state.layout.sidebarOpen
       },
       set: function (newValue) {
-        this.$store.dispatch('layout/setSidebarVisible', newValue)
+        this.$store.dispatch('layout/setSidebarOpen', newValue)
       }
     }
   },
@@ -144,7 +144,7 @@ export default {
       this.width = width
     },
     onToggleClick () {
-      this.$store.dispatch('layout/setSidebarVisible', !this.sidebarVisible)
+      this.$store.dispatch('layout/setSidebarOpen', !this.sidebarOpen)
     },
     onToggleWidthClick () {
       if (this.resized) {
