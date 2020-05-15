@@ -6,6 +6,17 @@ import { toCoords } from 'components/CoordsPanel'
 import except from './except'
 import { noop } from './utils'
 
+/**
+ * @babel/polyfill@^7.4.0 is supposed to include "flat", but that doesn't work of us -
+ * presumably because transitive dependencies still include babel 6 and the
+ * corresponding babel-polyfill package. So we include this "manual" polyfill for now.
+ *
+ * https://github.com/babel/babel/issues/9749
+ */
+function flat (arrays) {
+  return [].concat.apply([], arrays)
+}
+
 export default class Search {
   constructor (store, context) {
     this.$config = store.$config
@@ -96,7 +107,7 @@ export default class Search {
   }
 
   showResultLayers () {
-    for (let result of this.results.flat()) {
+    for (let result of flat(this.results)) {
       if (result.layer) {
         this.showLayer(result)
       }
