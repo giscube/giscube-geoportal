@@ -226,7 +226,7 @@ aside.q-drawer--left {
   background-color: transparent;
 }
 .left-drawer {
-  background-color: #eeeeeeeb;
+  background-color: rgba(238, 238, 238, 0.9);
 
 }
 
