@@ -53,6 +53,10 @@ export default class GiscubeRef {
   async addAsResult (opacity, $root) {
     const result = await $root.$store.dispatch('catalog/getResultById', this.plainRef)
 
+    if (!result) {
+      return () => {}
+    }
+
     const layerOptions = extractResultOptions(result, $root)
     const { type, layer } = await createLayerFromConfig(layerOptions) // TODO save table
 
