@@ -103,11 +103,11 @@ export function makeTemplate (t) {
     return null
   }
   try {
-    return template(t, {
-      escape: /{([\s\S]+?)}/g,
-      interpolate: null,
-      evaluate: null
-    })
+    const options = {}
+    if (!t.includes('<%-')) {
+      options.escape = /{([\s\S]+?)}/g
+    }
+    return template(t, options)
   } catch (e) {
     return _ => { throw e }
   }
