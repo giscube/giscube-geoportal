@@ -35,6 +35,7 @@
 <script>
 import { QResizeObserver } from 'quasar'
 import ImageDialog from 'components/ImageDialog'
+import lodash from 'lodash'
 
 const DIALOG_IMG_ATTR = 'data-dialog-img'
 
@@ -101,7 +102,7 @@ export default {
           })
           return this.renderContents(values)
         } else {
-          return this.renderContents({ ...this.feature.properties, obj: this.feature })
+          return this.renderContents({ ...this.feature.properties, obj: this.feature, _: lodash })
         }
       } catch (e) {
         let error = 'Bad popup template\'s configuration'
