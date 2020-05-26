@@ -87,6 +87,8 @@ export default {
 
 <style lang="scss">
 .layer-item {
+  padding: 4px;
+
   .desktop-only {
     color: transparent;
   }
