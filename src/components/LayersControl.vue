@@ -46,22 +46,28 @@
 
       <div v-show="layers.length > 0" class="sep"></div>
 
-      <draggable
-        v-model="layers"
-        tag="ul"
-        handle=".drag-handle"
+      <q-scroll-area
+        :style="{ 'height': layers.length > 7 ? '259px' : `${44*layers.length}px`, 'width': '300px' }"
+        :visible="true"
       >
-        <layer-item
-          v-for="layer in layers"
-          :key="key(layer)"
-          :layer="layer"
-          :map="map"
-          :showActions="showActions"
-          @remove-layer="removeLayer"
-          @toggle-layer="toggleLayer"
-          @change-opacity="changeOpacity"
-        />
-      </draggable>
+        <component
+          :is="layersComponent"
+          v-model="layers"
+          tag="ul"
+          handle=".drag-handle"
+        >
+          <layer-item
+            v-for="layer in layers"
+            :key="key(layer)"
+            :layer="layer"
+            :map="map"
+            :showActions="showActions"
+            @remove-layer="removeLayer"
+            @toggle-layer="toggleLayer"
+            @change-opacity="changeOpacity"
+          />
+        </component>
+      </q-scroll-area>
     </div>
   </div>
 </template>
@@ -106,6 +112,9 @@ export default {
       set (value) {
         this.$store.dispatch('map/setOverlays', value)
       }
+    },
+    layersComponent () {
+      return this.$q.platform.is.mobile ? 'ul' : draggable
     }
   },
   mounted () {
