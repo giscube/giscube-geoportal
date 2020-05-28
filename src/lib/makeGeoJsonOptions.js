@@ -144,7 +144,7 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
   } else if (isMarker) {
     const base = {
       icon_type: style.icon_type === 'img' ? 'img' : 'preset',
-      marker_color: style.marker_color || 'blue',
+      fill_color: style.fill_color || style.marker_color || 'blue',
       icon: style.icon || 'fas fa-circle',
       icon_color: style.icon_color || 'white',
       size: style.size || 34
@@ -152,7 +152,7 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
     rules = makeRules(styleRules, base, style => {
       return {
         type: style.icon_type,
-        fill: style.marker_color,
+        fill: style.fill_color,
         icon: style.icon,
         color: style.icon_color,
         size: style.size
