@@ -47,7 +47,7 @@
       <div v-show="layers.length > 0" class="sep"></div>
 
       <q-scroll-area
-        :style="{ 'height': layers.length > 7 ? '259px' : `${44*layers.length}px`, 'width': '300px' }"
+        :style="{ 'height': layersHeight, 'width': '300px' }"
         :visible="true"
       >
         <component
@@ -65,6 +65,7 @@
             @remove-layer="removeLayer"
             @toggle-layer="toggleLayer"
             @change-opacity="changeOpacity"
+            @panel-open="panelOpen"
           />
         </component>
       </q-scroll-area>
@@ -94,7 +95,8 @@ export default {
       collapsed: this.$q.screen.lt.md,
       showActions: false,
       layerLastId: 0,
-      lastZIndex: 0
+      lastZIndex: 0,
+      opacityOpenCount: 0
     }
   },
   computed: {
@@ -112,6 +114,10 @@ export default {
       set (value) {
         this.$store.dispatch('map/setOverlays', value)
       }
+    },
+    layersHeight () {
+      let height = 36 * this.layers.length + 73 * this.opacityOpenCount
+      return height < 259 ? height + 'px' : '265px'
     },
     layersComponent () {
       return this.$q.platform.is.mobile ? 'ul' : draggable
@@ -131,7 +137,10 @@ export default {
       L.DomEvent.disableClickPropagation(this.$el)
       return this.$el
     },
-    removeLayer (overlay) {
+    removeLayer ({ overlay, isOpen }) {
+      if (isOpen) {
+        this.opacityOpenCount -= 1
+      }
       this.$store.dispatch('map/removeOverlay', overlay)
     },
     toggleLayer ({ overlay, visible }) {
@@ -139,6 +148,13 @@ export default {
     },
     changeOpacity ({ overlay, value }) {
       overlay.setOpacity(value)
+    },
+    panelOpen (isOpen) {
+      if (isOpen) {
+        this.opacityOpenCount += 1
+      } else {
+        this.opacityOpenCount -= 1
+      }
     },
     key (overlay) {
       const id = overlay.id

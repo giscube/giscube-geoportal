@@ -27,21 +27,21 @@
         <q-btn
           flat
           round
-          @click="$emit('remove-layer', layer)"
+          @click="$emit('remove-layer', { overlay: layer, isOpen: panelOpen })"
           class="desktop-only"
         ><q-icon name="delete" size="20px" /></q-btn>
         <q-btn
           flat
           round
           icon="delete"
-          @click="$emit('remove-layer', layer)"
+          @click="$emit('remove-layer', { overlay: layer, isOpen: panelOpen })"
           class="desktop-hide"
         />
         <q-btn
           flat
           round
           icon="keyboard_arrow_down"
-          @click="panelOpen = !panelOpen"
+          @click="panelClick"
         />
       </div>
 
@@ -76,6 +76,10 @@ export default {
     }
   },
   methods: {
+    panelClick () {
+      this.panelOpen = !this.panelOpen
+      this.$emit('panel-open', this.panelOpen)
+    },
     openLayer (layer) {
       if (layer && layer.id && layer.id.canOpen && layer.id.canOpen()) {
         this.$store.dispatch('openReference', layer)
@@ -87,8 +91,6 @@ export default {
 
 <style lang="scss">
 .layer-item {
-  padding: 4px;
-
   .desktop-only {
     color: transparent;
   }
