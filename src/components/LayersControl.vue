@@ -1,6 +1,7 @@
 <template>
   <div @click.prevent.stop=""
        @dblclick.prevent.stop=""
+       id="giscube-layers-control"
        class="giscube-layers-control leaflet-control"
        :class="{'showActions': showActions}">
 
@@ -127,6 +128,8 @@ export default {
     this.mapObject = new L.Control()
     this.mapObject.onAdd = this.onAdd
     this.mapObject.addTo(this.map)
+    const elem = L.DomUtil.get('giscube-layers-control')
+    L.DomEvent.on(elem, 'mousewheel', L.DomEvent.stopPropagation)
   },
   methods: {
     setBaseLayer (i) {
@@ -172,6 +175,7 @@ export default {
   box-shadow: 0 4px 8px rgba(0,0,0,.3);
   max-width: 300px;
   line-height: 1em;
+  z-index: 1000;
 
   .flex-nowrap-start {
     display: flex;
