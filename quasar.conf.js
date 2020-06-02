@@ -20,6 +20,7 @@ module.exports = function (ctx) {
       'material-icons',
       'ionicons-v4',
       'fontawesome-v5',
+      'line-awesome',
       'mdi-v3'
       // 'eva-icons'
     ],
