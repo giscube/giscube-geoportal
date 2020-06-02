@@ -126,7 +126,7 @@ export default new Options({
   },
   tools: {
     auth: {
-      icon: 'ion-person',
+      icon: 'las la-user',
       to: 'auth',
       headerComponent: require('components/AuthHeaderItem.js').default
     },
@@ -137,19 +137,19 @@ export default new Options({
       }
     },
     catalog: {
-      icon: 'ion-compass',
+      icon: 'las la-compass',
       to: 'catalog'
     },
     contact: {
-      icon: 'email',
+      icon: 'las la-envelope',
       to: 'contact'
     },
     data: {
-      icon: 'edit',
+      icon: 'las la-pencil-alt',
       to: 'data'
     },
     draw: {
-      icon: 'mdi-ruler',
+      icon: 'las la-ruler-horizontal',
       to: 'draw'
     },
     fullscreen: {
@@ -167,16 +167,16 @@ export default new Options({
       apiKey: ''
     },
     help: {
-      icon: 'help',
+      icon: 'las la-question-circle',
       to: 'help'
     },
     home: {
-      icon: 'home',
+      icon: 'las la-home',
       to: 'home',
       emit: 'home'
     },
     print: {
-      icon: 'print',
+      icon: 'las la-print',
       action () {
         this.$store.dispatch('layout/setPrinting', true)
       }
@@ -186,7 +186,7 @@ export default new Options({
       print: true
     },
     printPage: {
-      icon: 'print',
+      icon: 'las la-print',
       action () {
         this.$nextTick(() => {
           window.print()
@@ -195,7 +195,7 @@ export default new Options({
       }
     },
     search: {
-      icon: 'search',
+      icon: 'las la-search',
       to: 'search',
       searchResultPopup: require('components/SearchResultPopup.vue').default,
 
@@ -211,7 +211,7 @@ export default new Options({
       groups: []
     },
     streetview: {
-      icon: 'fas fa-street-view',
+      icon: 'las la-street-view',
       to: 'streetview'
     }
   }
