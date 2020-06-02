@@ -147,8 +147,8 @@ export default {
       stop: 'Parar de dibuixar'
     },
     fullscreen: {
-      headerName: 'Pantalla complerta',
-      help: 'Canvia vista a pantalla complerta.'
+      headerName: 'Pantalla completa',
+      help: 'Canvia vista a pantalla completa.'
     },
     help: {
       headerName: 'Ajuda',
