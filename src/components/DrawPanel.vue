@@ -41,7 +41,17 @@
         >{{ t('stop') }}</q-btn>
       </div>
 
-      <q-checkbox v-model="multi" :label="t('drawMulti')" />
+      <div class="q-pt-md">
+        <q-item tag="label" v-ripple class="q-pl-xs">
+          <q-item-section avatar>
+            <q-checkbox v-model="multi"/>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>{{ t('drawMulti') }}</q-item-label>
+            <q-item-label caption>{{ t('drawMultiCaption') }}</q-item-label>
+          </q-item-section>
+        </q-item>
+      </div>
 
       <div class='q-mt-md'>
         <div v-for='(layer, key) in sharedLayers' class='measure' :key="'shared-' + key">
@@ -71,7 +81,7 @@
 
 <script>
 import { saveAs } from 'file-saver'
-import { QBtn, QCheckbox, QChip } from 'quasar'
+import { QBtn, QCheckbox, QChip, QItem, QItemLabel, QItemSection } from 'quasar'
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import length from '@turf/length'
@@ -87,7 +97,10 @@ export default {
     DrawMessageInput,
     QBtn,
     QCheckbox,
-    QChip
+    QChip,
+    QItem,
+    QItemLabel,
+    QItemSection
   },
   data () {
     return {
