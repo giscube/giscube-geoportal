@@ -5,6 +5,7 @@ import AuthPanel from 'components/AuthPanel'
 import GeoportalMap from 'components/GeoportalMap'
 import GiscubeLayout from 'layouts/GiscubeLayout'
 import CatalogPanel from 'components/CatalogPanel'
+import CatalogTreePanel from 'components/CatalogTreePanel'
 import CatalogResult from 'components/CatalogResult'
 import CoordsPanel from 'components/CoordsPanel'
 import DataPanel from 'components/data-layer/DataPanel'
@@ -40,6 +41,7 @@ export {
   AppFooter,
   AuthPanel,
   CatalogPanel,
+  CatalogTreePanel,
   CatalogResult,
   CoordsPanel,
   DataPanel,

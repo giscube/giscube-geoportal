@@ -84,6 +84,14 @@ export default {
 
       noItems: 'No s\'han trobat element en aquesta categoria'
     },
+    catalogTree: {
+      headerName: 'Catàleg',
+      title: 'Catàleg',
+      help: 'Veure els conjunts de dades organitzats per categories.',
+      filter: 'Filtre',
+
+      noItems: 'No s\'han trobat element en aquesta categoria'
+    },
     contact: {
       headerName: 'Contacte',
       help: 'Dades de contacte per si trobeu algun error o problema.'

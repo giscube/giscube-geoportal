@@ -1,5 +1,6 @@
 import Router from 'vue-router'
-import CatalogPanel from 'components/CatalogPanel'
+// import CatalogPanel from 'components/CatalogPanel'
+import CatalogTreePanel from 'components/CatalogTreePanel'
 import ContactPanel from 'components/ContactPanel'
 import CoordsPanel from 'components/CoordsPanel'
 import HelpPanel from 'components/HelpPanel'
@@ -22,7 +23,7 @@ export default function ({ Vue, store }) {
       component: require('layouts/GiscubeLayout.vue').default,
       children: [
         { path: 'auth/', name: 'auth', component: AuthPanel },
-        { path: 'catalog/:q?', component: CatalogPanel, name: 'catalog' },
+        { path: 'catalog/:q?', component: CatalogTreePanel, name: 'catalog' },
         { path: 'contact/', component: ContactPanel, name: 'contact' },
         { path: 'coords/:epsg/:coords', component: CoordsPanel, name: 'coords' },
         { path: 'data/:sourceName?/:layerName?/', component: DataPanel, name: 'data' },

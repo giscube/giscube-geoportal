@@ -84,6 +84,14 @@ export default {
 
       noItems: 'No items found in this subcategory'
     },
+    catalogTree: {
+      headerName: 'Catalog',
+      title: 'Catalog',
+      help: 'View data organized in categories.',
+      filter: 'Filter',
+
+      noItems: 'No items found in this subcategory'
+    },
     contact: {
       headerName: 'Contact',
       help: 'Contact to report to if you find any error or problem.'
