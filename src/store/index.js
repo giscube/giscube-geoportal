@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 
 import auth from './module-auth'
 import catalog from './module-catalog'
+import catalogTree from './module-catalog-tree'
 import dataLayer from './module-data-layer'
 import layout from './module-layout'
 import map from './module-map'
@@ -15,6 +16,7 @@ Vue.use(Vuex)
 const modules = {
   auth,
   catalog,
+  catalogTree,
   dataLayer,
   layout,
   map,
