@@ -299,6 +299,8 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
         enumerable: false,
         get () {
           return layer => {
+            layer.options.interactive = design.interactive
+
             if (isImage || isMarker) {
               layer.setIcon(this._icon)
             }
