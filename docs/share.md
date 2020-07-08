@@ -73,6 +73,16 @@ Message to share it with.
   - Multiple: overrides
   - Example: `l=c12.4,15.3;g20.8`
 
+### [la] Layout
+Layout configuration.
+
+  - Type: [String](#string)
+  - Multiple: overrides
+  - Example: `la=simple`
+
+List of flags:
+  - `simple`: Sidebar hidden and without header (used to embed the geoportal in an iframe in other websites)
+
 ### [o] Options
 Option flags.
 
