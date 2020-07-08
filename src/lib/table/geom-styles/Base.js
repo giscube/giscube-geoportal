@@ -91,10 +91,16 @@ export default class GeomStyle {
 
   generate (row) {
     const result = {}
-    const conformingRule = this.rules.find(rule => rule.check(row))
+    const conformingRules = this.rules.filter(rule => rule.check(row))
     Object.keys(this.defaultStyle).forEach(key => {
-      const func = (conformingRule && conformingRule.style[key]) || this.baseStyle[key]
+      const func = this.baseStyle[key]
       result[key] = func ? func(row) : this.defaultStyle[key]
+
+      conformingRules.forEach(conformingRule => {
+        if (conformingRule.style[key]) {
+          result[key] = conformingRule.style[key](row)
+        }
+      })
     })
     return result
   }
