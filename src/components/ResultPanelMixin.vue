@@ -40,25 +40,40 @@
       </div>
 
       <div class="row space-items-sm">
-        <q-btn outline no-caps
-          v-show="canDownload"
-          icon="save_alt"
-          :label="$t('actions.download') | capitalize"
-          @click="download"
-        />
+        <q-btn-group flat>
+          <q-btn no-caps
+            v-show="canDownload"
+            icon="save_alt"
+            @click="download"
+          >
+            <q-tooltip>
+              {{$t('actions.download') | capitalize}}
+            </q-tooltip>
+          </q-btn>
 
-        <q-btn outline no-caps
-          icon="zoom_in"
-          :label="$t('actions.zoomToData') | capitalize"
-          @click="zoom"
-        />
+          <q-btn no-caps icon="zoom_in" @click="zoom">
+            <q-tooltip>
+              {{$t('actions.zoomToData') | capitalize}}
+            </q-tooltip>
+          </q-btn>
 
-        <q-btn outline no-caps
-          :disabled="!canPin"
-          icon="layers"
-          :label="$t('actions.pinToMap') | capitalize"
-          @click="pin"
-        />
+          <q-btn no-caps
+            :disabled="!supportsTooltip"
+            icon="las la-tag"
+            @click="toggleTooltip"
+          >
+            <q-tooltip>
+              {{$t('actions.tooltip') | capitalize}}
+            </q-tooltip>
+          </q-btn>
+
+          <q-btn no-caps
+            :disabled="!canPin"
+            icon="layers"
+            :label="$t('actions.pinToMap') | capitalize"
+            @click="pin"
+          />
+        </q-btn-group>
       </div>
 
       <slot name="after-tools"></slot>
@@ -150,7 +165,7 @@
 
 <script>
 import L from '../lib/leaflet'
-import { QChip, QBtn, QIcon, QSpace } from 'quasar'
+import { QChip, QBtn, QBtnGroup, QIcon, QSpace, QTooltip } from 'quasar'
 import { mapState } from 'vuex'
 import { formatCoords } from 'src/lib/geomUtils'
 
@@ -165,12 +180,15 @@ export default {
     SelectionControls,
     QChip,
     QBtn,
+    QBtnGroup,
     QIcon,
-    QSpace
+    QSpace,
+    QTooltip
   },
   data () {
     return {
-      copied: false
+      copied: false,
+      isTooltipEnabled: false
     }
   },
   computed: {
@@ -220,6 +238,11 @@ export default {
     },
     canPin () {
       return false
+    },
+
+    supportsTooltip () {
+      const layers = this.layer && this.layer.getLayers && this.layer.getLayers()
+      return layers && layers.length > 0 && layers[0].getTooltip
     }
   },
   methods: {
@@ -240,6 +263,17 @@ export default {
       this.$router.push({
         name: 'search',
         params: { q: keyword }
+      })
+    },
+    toggleTooltip () {
+      this.isTooltipEnabled = !this.isTooltipEnabled
+      this.layer.eachLayer(layer => {
+        if (layer.getTooltip) {
+          const tooltip = layer.getTooltip()
+          layer.unbindTooltip().bindTooltip(tooltip, {
+            permanent: this.isTooltipEnabled
+          })
+        }
       })
     },
     zoom () {

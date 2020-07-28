@@ -19,6 +19,7 @@ export default {
     next: 'següent',
     save: 'guarda',
     search: 'cerca',
+    tooltip: 'mostrar/amagar etiquetes',
     zoom: 'fes zoom',
     zoomToData: 'fes zoom a les dades',
     zoomToSelection: 'fes zoom a la selecció'
