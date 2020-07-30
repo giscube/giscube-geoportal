@@ -83,7 +83,18 @@
           {{ t('authenticatedAs') }} <span class="username">{{ $store.state.auth.username }}</span>
 
           <div class="buttons q-mt-md">
-            <q-btn outline no-caps
+            <q-btn
+              v-if="adminUrl && isStaff"
+              flat
+              no-caps
+              icon="settings"
+              type="a"
+              :href="adminUrl"
+              target="_blank"
+              :label="t('adminUrl')"
+              style="margin-right: 10px"
+            />
+            <q-btn flat no-caps
                icon="exit_to_app"
                :label="t('logOut')"
                @click="logout"
@@ -98,6 +109,7 @@
 
 <script>
 import axios from 'axios'
+import { get } from 'lodash'
 import { QBtn, QForm, QInput } from 'quasar'
 import qs from 'qs'
 
@@ -122,6 +134,12 @@ export default {
     }
   },
   computed: {
+    adminUrl () {
+      return get(this.$store.state.auth.profile, 'admin_url')
+    },
+    isStaff () {
+      return get(this.$store.state.auth.profile, 'is_staff')
+    },
     oauthType () {
       if (this.$config.oauth && this.$config.oauth.type) {
         return this.$config.oauth.type
