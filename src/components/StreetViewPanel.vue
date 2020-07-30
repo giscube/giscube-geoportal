@@ -6,8 +6,11 @@
         <q-btn
           flat
           @click="center"
+          icon="room"
         >
-          {{ t('centerMap') }}
+          <q-tooltip>
+            {{ t('centerMap') }}
+          </q-tooltip>
         </q-btn>
       </div>
 
@@ -35,7 +38,7 @@
 </template>
 
 <script>
-import { QBtn, QIcon, QSpinner } from 'quasar'
+import { QBtn, QIcon, QSpinner, QTooltip } from 'quasar'
 import debounce from 'lodash/debounce.js'
 import { mapState } from 'vuex'
 
@@ -47,7 +50,8 @@ export default {
   components: {
     QBtn,
     QIcon,
-    QSpinner
+    QSpinner,
+    QTooltip
   },
   computed: mapState({
     map: state => state.map.mapObject,
