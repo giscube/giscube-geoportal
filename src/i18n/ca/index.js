@@ -66,6 +66,7 @@ export default {
       title: 'Autenticació d\'usuari',
       help: 'Inicieu sessió amb les vostres credencials.',
 
+      adminUrl: 'Administrar',
       authenticatedAs: 'Autenticat com a usuari',
       closeWindow: 'Tancar finestra',
       invalidCredentials: 'L\'usuari i/o la contrasenya no són vàlids',

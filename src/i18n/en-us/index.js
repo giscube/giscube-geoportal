@@ -66,6 +66,7 @@ export default {
       title: 'User authentication',
       help: 'Log in using your credentials.',
 
+      adminUrl: 'Manage',
       authenticatedAs: 'Authenticated as user',
       closeWindow: 'Close window',
       invalidCredentials: 'Invalid credentials',

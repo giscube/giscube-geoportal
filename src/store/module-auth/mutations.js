@@ -10,3 +10,7 @@ export function setAccessToken (state, value) {
 export function setUsername (state, value) {
   state.username = value
 }
+
+export function setProfile (state, value) {
+  state.profile = value
+}
