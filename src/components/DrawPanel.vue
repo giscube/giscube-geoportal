@@ -6,39 +6,51 @@
       <p>{{ t('explanation') }}</p>
 
       <div class="row space-items-md">
-        <q-btn
-          outline
-          icon="place"
-          v-show="!measuring"
-          @click="addMarker"
-          :label="t('marker')"
-        />
-        <q-btn
-          outline
-          icon="timeline"
-          v-show="!measuring"
-          @click="startMeasuring(false)"
-          :label="t('path')"
-        />
-        <q-btn
-          outline
-          icon="fas fa-draw-polygon"
-          v-show="!measuring"
-          @click="startMeasuring(true)"
-          :label="t('area')"
-        />
-        <q-btn
-          outline
-          icon="save_alt"
-          v-show="!measuring"
-          @click="downloadGeoJSON"
-          :label="t('save')"
-        />
+        <q-btn-group class="no-shadow">
+          <q-btn
+            icon="place"
+            v-show="!measuring"
+            @click="addMarker"
+          >
+            <q-tooltip>
+              {{ t('marker') }}
+            </q-tooltip>
+          </q-btn>
+          <q-btn
+            icon="timeline"
+            v-show="!measuring"
+            @click="startMeasuring(false)"
+          >
+            <q-tooltip>
+              {{ t('path') }}
+            </q-tooltip>
+          </q-btn>
+          <q-btn
+            icon="fas fa-draw-polygon"
+            v-show="!measuring"
+            @click="startMeasuring(true)"
+          >
+            <q-tooltip>
+              {{ t('area') }}
+            </q-tooltip>
+          </q-btn>
+          <q-btn
+            icon="save_alt"
+            v-show="!measuring"
+            @click="downloadGeoJSON"
+          >
+            <q-tooltip>
+              {{ t('save') }}
+            </q-tooltip>
+          </q-btn>
+        </q-btn-group>
         <q-btn
           outline
           v-show="measuring"
           @click="stopMapMeasuring"
-        >{{ t('stop') }}</q-btn>
+        >
+          {{ t('stop') }}
+        </q-btn>
       </div>
 
       <div class="q-pt-md">
@@ -81,7 +93,7 @@
 
 <script>
 import { saveAs } from 'file-saver'
-import { QBtn, QCheckbox, QChip, QItem, QItemLabel, QItemSection } from 'quasar'
+import { QBtn, QBtnGroup, QCheckbox, QChip, QItem, QItemLabel, QItemSection, QTooltip } from 'quasar'
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import length from '@turf/length'
@@ -96,11 +108,13 @@ export default {
   components: {
     DrawMessageInput,
     QBtn,
+    QBtnGroup,
     QCheckbox,
     QChip,
     QItem,
     QItemLabel,
-    QItemSection
+    QItemSection,
+    QTooltip
   },
   data () {
     return {
