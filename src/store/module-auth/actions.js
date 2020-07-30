@@ -18,6 +18,7 @@ export function credentialsLogin (context, { username, password }) {
         context.commit('setAccessToken', response.data.access_token)
         context.commit('setUsername', username)
         context.dispatch('saveState')
+        context.dispatch('updateUserInfo')
         resolve()
       })
       .catch(error => {
@@ -38,9 +39,7 @@ export function loadState (context) {
   context.commit('setAccessToken', accessToken)
   context.commit('setUsername', username)
 
-  if (!username) {
-    context.dispatch('updateUserInfo')
-  }
+  context.dispatch('updateUserInfo')
 }
 
 function localStorageSave (key, value) {
@@ -123,6 +122,7 @@ export function updateUserInfo (context) {
   axios.get(apiUrl, requestConfig)
     .then(response => {
       context.commit('setUsername', response.data.username)
+      context.commit('setProfile', response.data)
     })
     .catch(error => {
       if (error.request && error.request.status >= 300 && (error.request.status < 400 || error.request.status === 401 || error.request.status === 403)) {
