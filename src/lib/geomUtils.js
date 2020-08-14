@@ -239,6 +239,7 @@ function createExternalLayerGeoJSON ({ layerDescriptor, title, options, map, pop
       .then(response => {
         response.data.metadata.styleRules = response.data.metadata.style_rules
         delete response.data.metadata.style_rules
+        response.data.metadata.style.shapetype = response.data.metadata.shapetype || ''
         response.data.metadata.design = response.data.metadata.design || {}
 
         const options = makeGeoJsonOptions(response.data.metadata, {
