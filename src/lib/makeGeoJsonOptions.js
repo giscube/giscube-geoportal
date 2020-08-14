@@ -162,12 +162,12 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
     rules = makeRules(styleRules, style, style => {
       return {
         bubblingMouseEvents: false,
-        weight: style.stroke_width,
-        color: style.stroke_color,
+        weight: style.stroke_width || 1,
+        color: style.stroke_color || '#ffbc40',
         opacity: style.stroke_opacity !== void 0 ? style.stroke_opacity : 1,
-        fillColor: style.fill_color,
-        fillOpacity: style.fill_opacity,
-        radius: style.shape_radius
+        fillColor: style.fill_color || '#ffa500',
+        fillOpacity: style.fill_opacity || 0.75,
+        radius: style.shape_radius || 10
       }
     })
   }
