@@ -461,7 +461,11 @@ export default class Table {
   async _updateData (data) {
     if (data) {
       this.setData(data)
-      await Promise.all(this.relatedTables.map(table => table.update()))
+
+      if (this.relatedTables.length > 0) {
+        await Promise.all(this.relatedTables.map(table => table.update()))
+      }
+
       this.addRows()
       this.select(this.selectedList.filter(pk => typeof pk === 'symbol'), { added: false })
     }
