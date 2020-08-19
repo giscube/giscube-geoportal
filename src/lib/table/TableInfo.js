@@ -54,7 +54,8 @@ export default class TableInfo {
       info.design && !isVoid(info.design.popup) && !isVoid(info.design.tooltip)
     )
     if (this.hasGeom) {
-      this.readonlyGeom = false
+      this.geomField = info.fields.find(field => field.name === info.geom_field)
+      this.readonlyGeom = this.geomField.readonly
       this.geomType = info.geom_type.toLowerCase()
       this.geomPath = new DottedPath(info.geom_path)
 
