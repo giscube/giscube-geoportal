@@ -3,7 +3,6 @@ import Vue from 'vue'
 import databaseLayersApi from 'src/api/databaselayers'
 import { map, join } from 'src/lib/itertools'
 import { INTERNAL_PROPERTY, isCleanEqual, fromEntries } from 'src/lib/utils'
-import { promisedDebounce } from 'src/lib/FuturePromise'
 import TableInfo from './TableInfo'
 
 export const pageSizes = [
@@ -56,10 +55,6 @@ export default class Remote {
 
     // internals
     Object.defineProperties(this, {
-      _debouncedRequestData: {
-        ...INTERNAL_PROPERTY,
-        value: promisedDebounce(() => this.requestData(this.pagination), 500)
-      },
       getConfig: {
         ...INTERNAL_PROPERTY,
         value: getConfig
@@ -75,13 +70,6 @@ export default class Remote {
     if (this._cancelFetch) {
       this._cancelFetch()
     }
-  }
-
-  debouncedRequestData (pagination) {
-    if (pagination) {
-      this.pagination = pagination
-    }
-    return this._debouncedRequestData()
   }
 
   fetchInfo () {

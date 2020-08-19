@@ -5,6 +5,7 @@ import { CancelError, eachLayer, layersBounds } from 'src/lib/geomUtils'
 import { rowsInGeom } from 'src/lib/layersInGeom'
 import { split } from 'src/lib/utils'
 import Vue from 'vue'
+import debounce from 'lodash/debounce.js'
 
 import DBFormDialog from 'components/data-layer/DBFormDialog'
 
@@ -436,21 +437,28 @@ export default class Table {
   }
 
   async update ({ pagination, immediate, wms } = {}) {
-    let requestData
-    if (immediate) {
-      requestData = this.remote.requestData.bind(this.remote)
-    } else {
-      requestData = this.remote.debouncedRequestData.bind(this.remote)
-    }
-
     if (wms) {
       this.updateWMS()
     }
 
     this.updateDeferred = false
 
-    const data = await requestData(pagination)
+    const requestData = this.remote.requestData.bind(this.remote)
+    if (immediate) {
+      const data = await requestData(pagination)
+      this._updateData(data)
+    } else {
+      if (!this._debouncedRequestData) {
+        this._debouncedRequestData = debounce(async (pagination) => {
+          const data = await requestData(pagination)
+          this._updateData(data)
+        }, 500)
+      }
+      this._debouncedRequestData(pagination)
+    }
+  }
 
+  async _updateData (data) {
     if (data) {
       this.setData(data)
       await Promise.all(this.relatedTables.map(table => table.update()))
