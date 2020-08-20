@@ -39,6 +39,8 @@
         {{ description }}
       </div>
 
+      <slot name="before-tools"></slot>
+
       <div class="row space-items-sm">
         <q-btn-group flat>
           <q-btn no-caps
