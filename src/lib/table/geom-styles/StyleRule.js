@@ -37,6 +37,19 @@ function conformsStringRule (obj, op, value) {
   }
 }
 
+function conformsBooleanRule (obj, op, value) {
+  value = ['true', 't', '1', true].includes(value)
+  switch (op) {
+    case '=':
+      return obj === value
+    case '!=':
+      return obj !== value
+    default:
+      console.warn('Unsupported boolean operand: ' + op)
+      return false
+  }
+}
+
 function conformsRule (obj, op, value) {
   const type = typeof obj
 
@@ -46,6 +59,8 @@ function conformsRule (obj, op, value) {
     return conformsStringRule(obj, op, value)
   } else if (type === 'number') {
     return conformsNumberRule(obj, op, parseFloat(value))
+  } else if (type === 'boolean') {
+    return conformsBooleanRule(obj, op, value)
   } else {
     console.warn('Unsupported obj type: ' + type)
     return false
