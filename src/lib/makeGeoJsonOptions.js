@@ -2,6 +2,7 @@ import Vue from 'vue'
 import { Platform } from 'quasar'
 import defaults from 'lodash/defaults.js'
 import omitBy from 'lodash/omitBy.js'
+import forOwn from 'lodash/forOwn.js'
 import template from 'lodash/template.js'
 import L from './leaflet'
 import IconsGenerator from './table/geom-styles/icons/IconsGenerator'
@@ -366,7 +367,13 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
   const result = {
     onEachFeature (feature, layer) {
       prepareFeature(feature)
-      feature.assignLayer(layer)
+      if ('_layers' in layer) {
+        forOwn(layer._layers, innerLayer => {
+          feature.assignLayer(innerLayer)
+        })
+      } else {
+        feature.assignLayer(layer)
+      }
     }
   }
 
