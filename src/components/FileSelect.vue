@@ -15,6 +15,7 @@
       :label="label"
     >
       <template slot="append">
+        <slot name="addBtn"/>
         <q-btn
           flat
           icon="attach_file"

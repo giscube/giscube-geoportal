@@ -1,22 +1,60 @@
 <template>
   <div class="panel result-panel fit">
     <div class="panel-content limit-parent column no-wrap">
-      <div class="row no-wrap">
-        <p class="panel-title">
-          <q-btn flat dense
-            icon="keyboard_arrow_left"
-            size="md"
-            @click="$router.go(-1)"
-          />
-          {{ title }}
-        </p>
-        <q-space />
-        <q-btn
-          v-if="canAggregate"
-          icon="assessment"
-          @click.stop="gotoStatistics"
+      <div class="panel-title space">
+        <q-btn flat dense
+          icon="keyboard_arrow_left"
+          size="md"
+          @click="$router.go(-1)"
         />
+        {{ title }}
       </div>
+      <div class="">
+        <q-btn-group class="no-shadow">
+          <q-btn-dropdown flat icon="save_alt">
+            <q-list>
+              <q-item clickable v-close-popup @click="downloadLayer('geojson')">
+                <q-item-section style="width: 140px">
+                  <q-item-label>{{$t('actions.download') | capitalize}} GeoJSON</q-item-label>
+                </q-item-section>
+              </q-item>
+
+              <q-item clickable v-close-popup @click="downloadLayer('dxf')">
+                <q-item-section>
+                  <q-item-label>{{$t('actions.download') | capitalize}} DXF</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
+
+          <q-btn
+            icon="zoom_in"
+            @click="zoom"
+          >
+            <q-tooltip>
+              {{$t('actions.zoomToData') | capitalize}}
+            </q-tooltip>
+          </q-btn>
+
+          <q-btn no-caps
+            :disabled="!supportsTooltip"
+            icon="las la-tag"
+            @click="toggleTooltip"
+          >
+            <q-tooltip>
+              {{$t('actions.tooltip') | capitalize}}
+            </q-tooltip>
+          </q-btn>
+
+          <q-btn
+            :disabled="!canPin"
+            icon="layers"
+            :label="$t('actions.pinToMap') | capitalize"
+            @click="pin"
+          />
+        </q-btn-group>
+      </div>
+      <q-space />
 
       <div v-if="address">
         <q-icon name="home" size="1.4em" /> {{ address }}
@@ -35,171 +73,164 @@
         <q-icon name="place" size="1.4em" /> GPS: {{ coordinates }}
       </div>
 
-      <div v-if="description" class="description">
-        {{ description }}
-      </div>
-
-      <slot name="before-tools"></slot>
-
-      <div class="row space-items-sm">
-        <q-btn-group flat>
-          <q-btn no-caps
-            v-show="canDownload"
-            icon="save_alt"
-            @click="download"
-          >
-            <q-tooltip>
-              {{$t('actions.download') | capitalize}}
-            </q-tooltip>
-          </q-btn>
-
-          <q-btn no-caps icon="zoom_in" @click="zoom">
-            <q-tooltip>
-              {{$t('actions.zoomToData') | capitalize}}
-            </q-tooltip>
-          </q-btn>
-
-          <q-btn no-caps
-            :disabled="!supportsTooltip"
-            icon="las la-tag"
-            @click="toggleTooltip"
-          >
-            <q-tooltip>
-              {{$t('actions.tooltip') | capitalize}}
-            </q-tooltip>
-          </q-btn>
-
-          <q-btn no-caps
-            :disabled="!canPin"
-            icon="layers"
-            :label="$t('actions.pinToMap') | capitalize"
-            @click="pin"
-          />
-        </q-btn-group>
-      </div>
-
-      <slot name="after-tools"></slot>
-
-      <div class="metadata" v-if="result && metadata && metadata.length > 0">
-        <p class="panel-subtitle">{{ $t('names.metadata') | capitalize }}</p>
-        <div
-          v-for="(datum, i) in metadata"
-          :key="'metadata-' + i"
-        >
-          <table>
-            <tr v-show="datum.type">
-              <td>{{ $t('names.type') | capitalize }}</td>
-              <td>{{ datum.type }}</td><br>
-            </tr>
-            <tr>
-              <td>{{ datum.name }}</td>
-              <td v-if="datum.href">
-                <a :href="datum.href" target="_blank">{{ datum.text }}</a>
-              </td>
-              <td v-else>{{ datum.text }}</td>
-            </tr>
-          </table>
-
-          <div class="row q-pt-sm space-items-sm">
-            <q-btn outline no-caps
-              v-clipboard:copy="datum.text"
-              v-clipboard:success="doCopy"
-              :icon="copied ? 'fas fa-check' : 'fas fa-copy'"
-              :label="$t('actions.copy') + ' URL' | capitalize"
-              :color="copied ? 'green' : void 0"
-            />
-            <q-btn outline no-caps
-              v-if="datum.type.toLowerCase() === 'geojson'"
-              icon="search"
-              :label="$t('actions.explore') | capitalize"
-              @click="open(datum.text)"
-            />
-            <q-btn outline no-caps
-              v-else-if="datum.type.toLowerCase() === 'wms'"
-              icon="search"
-              :label="$t('actions.explore') | capitalize"
-              @click="open(datum.href)"
-            />
-          </div>
-        </div>
-      </div>
-
-      <div class="legend" v-if="result && legend">
-        <p class="panel-subtitle">{{ $t('names.legend') | capitalize }}</p>
-        <div v-html="legend"></div>
-      </div>
-
-      <div class="keywords" v-if="keywords">
-        <div class="panel-subtitle">{{ $t('names.keywords') | capitalize }}</div>
-        <q-chip
-          v-for="keyword in keywords"
-          :key="keyword"
-          clickable
-          square
-          @click="searchKeyword(keyword)"
-          v-show="keyword !== ''"
-        >
-          {{ keyword }}
-        </q-chip>
-      </div>
-
-      <div
-        v-if="table"
-        class="col column no-wrap"
+      <q-tabs
+        v-else
+        v-model="tab"
+        dense
+        active-color="primary"
+        indicator-color="primary"
+        align="justify"
       >
-        <div class="row items-center space-items-sm" v-if="table && table.info">
-          <data-filter :table="table" />
-          <q-space />
-          <selection-controls :table="table" />
-        </div>
-        <div class="full-width col q-mt-sm">
-          <data-table
-            class="limit-parent"
-            v-if="table.info"
-            :table="table"
-          />
-        </div>
+        <q-tab v-if="isInfo" name="info" :label="'Info'" />
+        <q-tab v-if="isData" name="data" :label="$t('names.data')"/>
+        <q-tab v-if="statisticsEnabled && canAggregate" name="statistics" :label="$t('names.statistics')"/>
+        <q-tab name="metadata" :label="$t('names.metadata')" v-if="result && layerDescriptor && layerDescriptor.length > 0"/>
+        <q-tab v-if="!isDescriptionGeoJSON && !table" name="utilities" :label="$t('names.utilities')" />
+      </q-tabs>
+
+      <!-- Tab Info -->
+      <div v-show="tab === 'info'" class="column no-wrap limit-parent">
+        <slot name="info-tab">
+          <info-tab :description="description" :result="result" :legend="legend" :keywords="keywords" />
+        </slot>
       </div>
 
+      <!-- Tab Data -->
+      <div v-show="tab === 'data'" debounce="10" class="column no-wrap limit-parent">
+        <slot name="data-tab">
+          <div
+            v-if="table"
+            class="col column no-wrap"
+          >
+            <div class="row items-center space-items-sm" v-if="table && table.info">
+              <data-filter :table="table" />
+              <q-space />
+              <selection-controls :table="table" />
+            </div>
+            <div class="full-width col q-mt-sm">
+              <data-layer-table
+                class="limit-parent"
+                v-if="table.info"
+                :table="table"
+              />
+            </div>
+          </div>
+          <data-table
+            v-else
+            :value="aggregatedData"
+            @filtered="setAggregated"
+          />
+        </slot>
+      </div>
+
+      <!-- Tab Statistics -->
+      <div v-show="tab === 'statistics'" class="column no-wrap limit-parent">
+        <slot name="statistics-tab">
+          <statistics-tab />
+        </slot>
+      </div>
+
+      <!-- Tab Metadata -->
+      <div v-show="tab === 'metadata'" class="column no-wrap limit-parent">
+        <slot name="metadata-tab">
+          <metadata-tab
+            :metadata="metadata"
+            :layerDescriptor="layerDescriptor"
+          />
+        </slot>
+      </div>
+
+      <!-- Tab Utilities -->
+      <div v-if="tab === 'utilities'" class="column no-wrap limit-parent">
+        <slot name="utilities-tab">
+          <utilities-tab
+            :layer="layer"
+          />
+        </slot>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import L from '../lib/leaflet'
-import { QChip, QBtn, QBtnGroup, QIcon, QSpace, QTooltip } from 'quasar'
-import { mapState } from 'vuex'
 import { formatCoords } from 'src/lib/geomUtils'
+import { ClosePopup, QBtn, QBtnDropdown, QBtnGroup, QIcon, QItem, QItemSection, QItemLabel, QList, QSpace, QTab, QTabs, QTooltip } from 'quasar'
+import L from 'src/lib/leaflet'
+import { convertGeoJsonToDXF, downloadDXF } from 'src/lib/fileutils'
+import { mapState } from 'vuex'
+import { saveAs } from 'file-saver'
 
 import DataFilter from './data-layer/DataFilter'
-import DataTable from './data-layer/DataTable'
+import DataLayerTable from './data-layer/DataTable'
 import SelectionControls from './data-layer/SelectionControls'
+
+import DataTable from './statistics/DataTable'
+
+import InfoTab from './result-tabs/InfoTab'
+import MetadataTab from './result-tabs/MetadataTab'
+import StatisticsTab from './result-tabs/StatisticsTab'
+import UtilitiesTab from './result-tabs/UtilitiesTab'
 
 export default {
   components: {
     DataFilter,
-    DataTable,
+    DataLayerTable,
     SelectionControls,
-    QChip,
+    DataTable,
+    InfoTab,
+    MetadataTab,
+    StatisticsTab,
+    UtilitiesTab,
     QBtn,
+    QBtnDropdown,
     QBtnGroup,
     QIcon,
+    QItem,
+    QItemSection,
+    QItemLabel,
+    QList,
     QSpace,
+    QTab,
+    QTabs,
     QTooltip
   },
   data () {
     return {
-      copied: false,
-      isTooltipEnabled: false
+      tab: 'info'
     }
+  },
+  beforeDestroy () {
+    if (this.overlay) {
+      this.overlay.layer.options = this.layer.options
+      this.overlay.layer.options.filter = this.$store.state.statistics.filter
+      this.overlay.layer.options.colFilters = this.$store.state.statistics.colFilters
+      this.overlay.layer.options.filterPolygon = this.$store.state.statistics.filterPolygon
+      this.overlay.aggregatedData = this.aggregatedData
+      this.overlay.statsOption = this.byOption
+    }
+    this.$store.dispatch('statistics/clearStats')
   },
   computed: {
     ...mapState({
-      map: state => state.map.mapObject,
       query: state => state.search.query,
+      map: state => state.map.mapObject,
       result: state => state.search.result,
       resultsLayer: state => state.search.resultsLayer
     }),
+    ...mapState('statistics', ['aggregated', 'aggregatedData', 'aggregatedTitle', 'byOption']),
+    supportsTooltip () {
+      const layers = this.layer && this.layer.getLayers && this.layer.getLayers()
+      return layers && layers.length > 0 && layers[0].getTooltip
+    },
+    isData () {
+      return this.canAggregate || this.table
+    },
+    isInfo () {
+      return (this.description || this.legend || this.keywords)
+    },
+    statisticsEnabled () {
+      return this.$config.tools.statistics.enabled
+    },
 
     // To override
     address () {
@@ -226,10 +257,16 @@ export default {
     latlng () {
       return null
     },
+    layerDescriptor () {
+      return null
+    },
     legend () {
       return null
     },
     metadata () {
+      return null
+    },
+    overlay () {
       return null
     },
     table () {
@@ -240,40 +277,78 @@ export default {
     },
     canPin () {
       return false
+    }
+  },
+  directives: {
+    ClosePopup
+  },
+  watch: {
+    aggregated: function (aggregatedLayers) {
+      if (this.layer && this.layer.clearLayers && this.layer.clearLayers()) {
+        this.layer.clearLayers()
+        aggregatedLayers.forEach(layer => {
+          this.layer.addLayer(layer)
+        })
+      }
+      if (this.overlay) {
+        this.pin()
+      }
     },
-
-    supportsTooltip () {
-      const layers = this.layer && this.layer.getLayers && this.layer.getLayers()
-      return layers && layers.length > 0 && layers[0].getTooltip
+    layer: function (layer) {
+      if (this.canAggregate) {
+        this.$store.commit('statistics/filter', layer.options.filter || '')
+        this.$store.commit('statistics/colFilters', layer.options.colFilters || {})
+        this.$store.dispatch('statistics/setFilterPolygon', layer.options.filterPolygon)
+        if (this.overlay.aggregatedData) {
+          this.$store.commit('statistics/aggregatedData', this.overlay.aggregatedData)
+        } else if (!this.table_) {
+          this.$store.dispatch('statistics/setAggregated', { layers: layer, title: this.title })
+        }
+      }
+    },
+    table: function (table) {
+      if (table && !this.isInfo) {
+        this.tab = 'data'
+      }
     }
   },
   methods: {
-    doCopy () {
-      this.copied = true
-    },
-    download () {},
-    gotoStatistics () {},
-    open (url) {
-      window.open(url)
+    downloadLayer (fileType) {
+      if (this.canDownload) {
+        this.$axios.get(this.layerOptions.layerDescriptor.url, {
+          headers: this.layerOptions.headers,
+          responseType: 'json'
+        })
+          .then(result => {
+            const data = result.data
+            data.features = this.aggregated.map((layer) => { return layer.feature })
+            if (fileType === 'geojson') {
+              const dataBlob = new Blob([JSON.stringify(data)], { type: 'application/json' })
+              saveAs(dataBlob, 'result.geojson')
+            } else if (fileType === 'dxf') {
+              const dataDXF = convertGeoJsonToDXF(data)
+              downloadDXF(dataDXF)
+            }
+          })
+      }
     },
     pin () {},
     projected (epsg) {
       return formatCoords(this.latlng, epsg)
     },
-    searchKeyword (keyword) {
-      this.$store.dispatch('search/search', { query: keyword, auto: false })
-      this.$router.push({
-        name: 'search',
-        params: { q: keyword }
+    setAggregated (data) {
+      requestAnimationFrame(() => {
+        this.$store.commit('statistics/aggregated', data)
+        this.$store.dispatch('statistics/aggregate')
       })
     },
     toggleTooltip () {
-      this.isTooltipEnabled = !this.isTooltipEnabled
-      this.layer.eachLayer(layer => {
-        if (layer.getTooltip) {
-          const tooltip = layer.getTooltip()
-          layer.unbindTooltip().bindTooltip(tooltip, {
-            permanent: this.isTooltipEnabled
+      this.isTooltip = !this.isTooltip
+      this.layer.eachLayer((l) => {
+        if (l.getTooltip()) {
+          var tooltip = l.getTooltip()
+          l.unbindTooltip().bindTooltip(tooltip, {
+            permanent: this.isTooltip
           })
         }
       })
