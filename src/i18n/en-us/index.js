@@ -6,6 +6,7 @@ export default {
     askUpdate: 'Would you like to load the latest version?',
     askUpdateTitle: 'New version available',
     dontAsk: 'don\'t ask me again',
+    clip: 'clip',
     close: 'close',
     cancel: 'cancel',
     copy: 'copy',
@@ -40,10 +41,24 @@ export default {
   messages: {
     badPopupConfig: 'This popup is improperly configured'
   },
+  metadata: {
+    date: 'date',
+    summary: 'summary',
+    category: 'category',
+    language: 'language',
+    information: 'information',
+    provider_web: 'provider\'s web',
+    provider_name: 'provider\'s name',
+    provider_email: 'provider\'s mail'
+  },
   names: {
     actions: 'actions',
     coords: 'coordinates',
+    data: 'data',
+    description: 'description',
     element: 'no elements | {count} element | {count} elements',
+    horizontally: 'horizontally',
+    info: 'info',
     keywords: 'keywords',
     layers: 'layers',
     lat: 'latitude',
@@ -53,7 +68,10 @@ export default {
     metadata: 'metadata',
     opacity: 'opacity',
     options: 'options',
-    type: 'type'
+    statistics: 'statistics',
+    type: 'type',
+    utilities: 'utilities',
+    vertically: 'vertically'
   },
   states: {
     empty: 'empty',

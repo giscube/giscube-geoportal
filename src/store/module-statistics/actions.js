@@ -1,6 +1,6 @@
 import axios from 'axios'
 import databaseLayersApi from 'src/api/databaselayers'
-import { makeReactiveTooltip } from 'src/lib/geomUtils'
+import { CancelError, makeReactiveTooltip } from 'src/lib/geomUtils'
 import { Field } from 'src/lib/field'
 import { jsonFileToObject } from 'src/lib/fileutils'
 import { map } from 'src/lib/itertools'
@@ -23,6 +23,20 @@ async function getByOption (option) {
   return data
 }
 
+export function clearFilters ({ commit }) {
+  commit('filter', '')
+  commit('colFilters', {})
+  commit('filterPolygon', null)
+}
+
+export function clearStats ({ commit, dispatch }) {
+  dispatch('clearFilters')
+  commit('aggregatedData', null)
+  commit('byOption', null)
+  commit('by', null)
+  dispatch('aggregate')
+}
+
 export async function selectBy ({ state, commit, dispatch, rootState }, { option, tooltip = {} } = {}) {
   commit('byOption', option)
 
@@ -30,7 +44,7 @@ export async function selectBy ({ state, commit, dispatch, rootState }, { option
   const by = L.geoJSON(geoJSON)
   by.setStyle({
     color: DEFAULT_COLOR,
-    weight: 2,
+    weight: 1,
     fillOpacity: 0.9
   })
 
@@ -78,6 +92,39 @@ export function setFields ({ commit }, fields) {
     return field
   })
   commit('aggregatedFields', fields)
+}
+
+export function toggleFilterPolygon (context) {
+  if (context.state.filterPolygon) {
+    context.dispatch('setFilterPolygon', null)
+  } else {
+    context.dispatch('map/draw', 'polygon', { root: true })
+      .then(layerPolygon => {
+        context.dispatch('setFilterPolygon', layerPolygon)
+      })
+      .catch(e => {
+        if (e instanceof CancelError) {
+          const layerPolygon = e.layer
+          if (layerPolygon) {
+            context.dispatch('setFilterPolygon', layerPolygon)
+          }
+        } else {
+          this.$except(e)
+        }
+      })
+  }
+}
+
+export function setFilterPolygon (context, layerPolygon) {
+  if (layerPolygon) {
+    layerPolygon.disableEdit()
+  }
+  context.commit('filterPolygon', layerPolygon)
+
+  if (layerPolygon) {
+    layerPolygon.setStyle({ opacity: 0.5 })
+    layerPolygon.addTo(context.rootState.map.mapObject)
+  }
 }
 
 export async function loadData ({ state, commit, dispatch, rootGetters }, { source, layer, title }) {
@@ -204,7 +251,7 @@ export function calculateColors ({ state, commit }) {
     const color = palette[index]
 
     colorMap.set(layer, color)
-    layer.setStyle({ color })
+    layer.setStyle({ fillColor: color })
   }
 
   commit('colorMap', colorMap)

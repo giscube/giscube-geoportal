@@ -14,12 +14,31 @@ export function aggregatedFields (state, value) {
   state.aggregatedFields = value
 }
 
+export function filter (state, value) {
+  state.filter = value
+}
+
+export function colFilters (state, value) {
+  state.colFilters = value
+}
+
+export function filterPolygon (state, layer) {
+  if (state.filterPolygon) {
+    state.filterPolygon.remove()
+  }
+  state.filterPolygon = layer
+}
+
 export function byOption (state, value) {
   state.byOption = value
 }
 
 export function by (state, value) {
-  state.by = value.getLayers()
+  if (value && value.getLayers) {
+    state.by = value.getLayers()
+  } else {
+    state.by = value
+  }
   if (state.byLayer) {
     state.byLayer.remove()
   }

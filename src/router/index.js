@@ -12,7 +12,6 @@ import SearchPanel from 'components/SearchPanel'
 import SharePanel from 'components/SharePanel'
 import StreetViewPanel from 'components/StreetViewPanel'
 import DataPanel from 'components/data-layer/DataPanel'
-import StatisticsPanel from 'components/statistics/Panel'
 
 export default function ({ Vue, store }) {
   Vue.use(Router)
@@ -27,7 +26,6 @@ export default function ({ Vue, store }) {
         { path: 'contact/', component: ContactPanel, name: 'contact' },
         { path: 'coords/:epsg/:coords', component: CoordsPanel, name: 'coords' },
         { path: 'data/:sourceName?/:layerName?/', component: DataPanel, name: 'data' },
-        { path: 'statistics/', component: StatisticsPanel, name: 'statistics' },
         { path: 'geoportal/:q/', redirect: { name: 'place' } },
         { path: 'help/', component: HelpPanel, name: 'help' },
         { path: 'home/', component: HomePanel, name: 'home' },

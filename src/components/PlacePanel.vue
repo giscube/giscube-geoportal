@@ -3,10 +3,12 @@ import { saveAs } from 'file-saver'
 import ResultPanelMixin from './ResultPanelMixin'
 import FeaturePopup from './FeaturePopup'
 import FeaturePopupDialog from './FeaturePopupDialog'
+import PolygonTooltip from './statistics/PolygonTooltip'
 import SearchResultPopupDialog from './SearchResultPopupDialog'
 import { createLayerFromConfig } from '../lib/geomUtils'
 import { delay, isVoid } from '../lib/utils'
 import GiscubeRef from '../lib/refs/giscube'
+import { mapState } from 'vuex'
 
 export default {
   mixins: [ResultPanelMixin],
@@ -18,6 +20,10 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      overlays: state => state.map.layers.overlays
+    }),
+
     isDescriptionGeoJSON () {
       const type = this.layerOptions && this.layerOptions.layerDescriptor && this.layerOptions.layerDescriptor.type
       return this.layerOptions ? type && type.toLowerCase() === 'geojson' : false
@@ -26,7 +32,7 @@ export default {
       return this.properties.address
     },
     canAggregate () {
-      return this.$config.tools.statistics.enabled && (!!this.table_ || this.isDescriptionGeoJSON)
+      return (!!this.table_ || this.isDescriptionGeoJSON)
     },
     canDownload () {
       return this.isDescriptionGeoJSON
@@ -50,11 +56,8 @@ export default {
     keywords () {
       return this.result && this.result.keywords && this.result.keywords.split(',').map(item => item.trim())
     },
-    legend () {
-      return this.result && this.result.legend
-    },
-    metadata () {
-      const metadata = []
+    layerDescriptor () {
+      const layerDescriptor = []
       let url = this.layerOptions && this.layerOptions.layerDescriptor && this.layerOptions.layerDescriptor.url
       if (url) {
         let text = url
@@ -62,7 +65,7 @@ export default {
         if (type && type.toLowerCase() === 'wms') {
           url += '?service=WMS&request=GetCapabilities'
         }
-        metadata.push({
+        layerDescriptor.push({
           name: 'URL',
           text: text,
           href: url,
@@ -70,7 +73,7 @@ export default {
         })
       }
 
-      return metadata
+      return layerDescriptor
     },
     layerOptions () {
       if (!this.result) {
@@ -99,6 +102,23 @@ export default {
         headers: isAuthenticated ? this.$store.getters['auth/headers'] : void 0
       }
     },
+    legend () {
+      return this.result && this.result.legend
+    },
+    metadata () {
+      if (this.result && this.result.metadata) {
+        for (let prop in this.result.metadata) {
+          if (this.result.metadata[prop]) {
+            return this.result.metadata
+          }
+        }
+      }
+      return null
+    },
+    overlay () {
+      const overlay = this.overlays.filter(overlay => { return this.result && this.result.giscube_id === overlay.id.plainRef })
+      return overlay && overlay.length > 0 && overlay[0]
+    },
     properties () {
       return (this.result && this.result.geojson && this.result.geojson.properties) || {}
     },
@@ -111,6 +131,7 @@ export default {
   },
   mounted () {
     this.applyParameters(this.$route.params)
+    this.isInfo ? this.tab = 'info' : this.isData ? this.tab = 'data' : this.tab = 'metadata'
   },
   methods: {
     applyParameters (params) {
@@ -124,11 +145,18 @@ export default {
     applyResult () {
       createLayerFromConfig(this.layerOptions)
         .then(({ type, layer, table }) => {
-          this.layer = layer
           this.layerType = type
           this.table_ = table
+          if (this.overlay) {
+            this.layer = this.overlay.layer
+            if (this.overlay.statsOption) {
+              this.setBy(this.overlay.statsOption)
+            }
+          } else {
+            this.layer = layer
+            this.show()
+          }
 
-          this.show()
           if (type === 'GeoJSON') {
             this.layer.openPopup()
           }
@@ -162,19 +190,11 @@ export default {
         name
       })
     },
-    async gotoStatistics () {
-      if (this.canAggregate) {
-        if (this.table_) {
-          const { source, layer } = this.table_.remote
-          await delay()
-          this.$store.dispatch('statistics/setFields', this.table_.info.tableFields)
-          this.$store.dispatch('statistics/loadData', { source, layer, title: this.title })
-        } else {
-          await delay()
-          this.$store.dispatch('statistics/setAggregated', { layers: this.layer, title: this.title })
-        }
-        this.$router.push({ name: 'statistics' })
-      }
+    async setBy (option) {
+      const tooltip = { parent: this, Component: PolygonTooltip }
+      this.$store.dispatch('statistics/selectBy', { option, tooltip })
+      await delay()
+      this.$store.dispatch('statistics/aggregate')
     },
     download () {
       if (this.canDownload) {

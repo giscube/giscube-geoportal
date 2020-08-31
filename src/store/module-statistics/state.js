@@ -5,6 +5,9 @@ export default {
   aggregatedData: null,
   aggregatedTitle: null,
   aggregatedFields: [],
+  filter: '',
+  colFilters: {},
+  filterPolygon: null,
   processes: {
     loading: {
       current: 0,

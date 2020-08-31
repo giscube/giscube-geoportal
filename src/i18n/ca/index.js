@@ -8,6 +8,7 @@ export default {
     dontAsk: 'no m\'ho preguntis més',
     download: 'descarrega',
     cancel: 'cancel·la',
+    clip: 'retalla',
     close: 'tanca',
     copy: 'copia',
     delete: 'elimina',
@@ -40,11 +41,25 @@ export default {
   messages: {
     badPopupConfig: 'Error al llegir la configuració'
   },
+  metadata: {
+    date: 'data',
+    summary: 'resum',
+    category: 'categoria',
+    language: 'idioma',
+    information: 'informació',
+    provider_web: 'web del proveïdor',
+    provider_name: 'nom del proveïdor',
+    provider_email: 'mail del proveïdor'
+  },
   names: {
     actions: 'accions',
     coords: 'coordenades',
+    data: 'dades',
+    description: 'descripció',
     element: 'cap element | {count} element | {count} elements',
-    keywords: 'paraules clau',
+    horizontally: 'horitzontalment',
+    info: 'info',
+    keywords: 'cerques relacionades',
     layers: 'capes',
     lat: 'latitud',
     lng: 'longitud',
@@ -53,7 +68,10 @@ export default {
     metadata: 'metadades',
     opacity: 'opacitat',
     options: 'opcions',
-    type: 'tipus'
+    statistics: 'estadística',
+    type: 'tipus',
+    utilities: 'utilitats',
+    vertically: 'verticalment'
   },
   states: {
     empty: 'buit',
@@ -199,7 +217,7 @@ export default {
       simpleView: 'Vista simple'
     },
     statistics: {
-      columnCount: 'Compte',
+      columnCount: 'Recompte',
       columnColor: 'Color',
       groupBy: 'Agrupar per',
       palette: 'Paleta',

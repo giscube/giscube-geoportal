@@ -36,6 +36,20 @@ export function rowsInGeom (rows, geom) {
   return rows.filter(row => row.layer && contains(row.layer, latLngs, bounds))
 }
 
+export function layerInGeom (layer, geom) {
+  const latLngs = geom.getLatLngs()
+  const bounds = geom.getBounds()
+
+  return layer && contains(layer, latLngs, bounds)
+}
+
+export function layersInGeom (layer, geom) {
+  const latLngs = geom.getLatLngs()
+  const bounds = geom.getBounds()
+
+  return layer.filter(layer => layer && contains(layer, latLngs, bounds))
+}
+
 function containsWithHoles (point, multipolygon) {
   for (let polygon of multipolygon) {
     for (let i = 0; i < polygon.length; ++i) {
