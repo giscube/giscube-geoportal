@@ -11,7 +11,7 @@
       </div>
       <div class="">
         <q-btn-group class="no-shadow">
-          <q-btn-dropdown flat icon="save_alt">
+          <q-btn-dropdown v-show="canDownload" flat icon="save_alt">
             <q-list>
               <q-item clickable v-close-popup @click="downloadLayer('geojson')">
                 <q-item-section style="width: 140px">
