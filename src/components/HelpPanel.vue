@@ -28,6 +28,9 @@ export default {
 
     const steps = []
     this.$config.layout.headerToolbar.forEach(toolName => {
+      if (toolName.constructor === Object) {
+        return
+      }
       if (!toolName.startsWith('-') && this.$te(`tools.${toolName}.help`)) {
         steps.push([toolName, {
           title: this.$te(`tools.${toolName}.title`) ? this.$t(`tools.${toolName}.title`) : this.$t(`tools.${toolName}.headerName`),
