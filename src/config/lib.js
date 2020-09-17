@@ -131,7 +131,7 @@ export default new Options({
     auth: {
       icon: 'las la-user',
       to: 'auth',
-      headerComponent: require('components/AuthHeaderItem.js').default
+      headerComponent: require('components/header/AuthHeaderItem.js').default
     },
     cancelPrint: {
       icon: 'cancel',
