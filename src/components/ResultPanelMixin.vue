@@ -87,7 +87,7 @@
         <q-tab v-if="isData" name="data" :label="$t('names.data')"/>
         <q-tab v-if="statisticsEnabled && canAggregate" name="statistics" :label="$t('names.statistics')"/>
         <q-tab name="metadata" :label="$t('names.metadata')" v-if="result && layerDescriptor && layerDescriptor.length > 0"/>
-        <q-tab v-if="!isDescriptionGeoJSON && !table" name="utilities" :label="$t('names.utilities')" />
+        <q-tab v-if="isNotMarker && !table" name="utilities" :label="$t('names.utilities')" />
       </q-tabs>
 
       <!-- Tab Info -->
@@ -229,6 +229,13 @@ export default {
     },
     isInfo () {
       return (this.description || this.legend || this.keywords)
+    },
+    isNotMarker () {
+      if (!this.isDescriptionGeoJSON) {
+        return true
+      }
+      const layer = this.layer && this.layer.getLayers()[0]
+      return layer && layer.feature && layer.feature.geometry && !layer.feature.geometry.type.includes('Point')
     },
     statisticsEnabled () {
       return this.$config.tools.statistics.enabled
