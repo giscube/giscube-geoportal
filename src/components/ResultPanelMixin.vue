@@ -56,6 +56,8 @@
       </div>
       <q-space />
 
+      <slot name="after-tools"></slot>
+
       <div v-if="address">
         <q-icon name="home" size="1.4em" /> {{ address }}
       </div>
