@@ -7,7 +7,7 @@
         </q-item-section>
         <q-item-section top side>
           <div>
-            {{ opacityPercent }}%
+            {{ toPercent(opacity) }}%
           </div>
         </q-item-section>
       </q-item>
@@ -15,8 +15,8 @@
       <q-slider
         :min="0"
         :max="100"
-        :value="layer.options.opacity * 100"
-        @input="changeOpacity"
+        :value="opacity * 100"
+        @input="value => opacity = value"
       />
       </q-item>
     </div>
@@ -57,10 +57,6 @@
 import { QItem, QItemSection, QItemLabel, QRange, QSlider } from 'quasar'
 import { mapState } from 'vuex'
 
-function toPercent (value) {
-  return Math.round(value * 10000) / 100
-}
-
 export default {
   props: ['layer'],
   components: {
@@ -73,14 +69,27 @@ export default {
   data () {
     return {
       clipPercentX: (this.layer.options && this.layer.options.clipPercentX) || { min: 0, max: 100 },
-      clipPercentY: (this.layer.options && this.layer.options.clipPercentY) || { min: 0, max: 100 },
-      opacityPercent: this.layer.options && toPercent(this.layer.options.opacity)
+      clipPercentY: (this.layer.options && this.layer.options.clipPercentY) || { min: 0, max: 100 }
     }
   },
   computed: {
     ...mapState({
       map: state => state.map.mapObject
-    })
+    }),
+    opacity: {
+      get () {
+        return (this.layer.options && this.layer.options.opacity) || this.layer.getLayers()[0].options.opacity || 1
+      },
+      set (value) {
+        if (this.layer.options && this.layer.options.opacity) {
+          this.layer.setOpacity(value / 100)
+        } else if (this.layer.getLayers()[0].options.opacity) {
+          this.layer.eachLayer(layer => {
+            layer.setStyle({ opacity: value / 100, fillOpacity: value / 100 })
+          })
+        }
+      }
+    }
   },
   methods: {
     clip () {
@@ -106,9 +115,8 @@ export default {
       this.map.on('move', this.clip)
       this.clip()
     },
-    changeOpacity (value) {
-      this.opacityPercent = value
-      this.layer.setOpacity(value / 100)
+    toPercent (value) {
+      return Math.round(value * 10000) / 100
     }
   }
 }
