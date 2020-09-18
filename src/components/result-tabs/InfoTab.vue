@@ -4,8 +4,6 @@
       {{ description }}
     </div>
 
-    <slot name="after-tools"></slot>
-
     <div class="legend" v-if="result && legend">
       <p class="panel-subtitle">{{ $t('names.legend') | capitalize }}</p>
       <div v-html="legend"></div>
