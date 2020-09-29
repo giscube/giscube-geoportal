@@ -23,7 +23,7 @@ export function downloadDXF (data) {
   link.click()
 }
 
-export function convertGeoJsonToDXF (data, epsg = 'EPSG:4326') {
+export function convertGeoJsonToDXF (data, epsg = { label: 'Lat/Lon', code: 'EPSG:4326', def: '+title=WGS 84 (long/lat) +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees', format: ([x, y]) => `${y.toFixed(6)}°, ${x.toFixed(6)}°` }) {
   let output = ''
 
   // Initial info
@@ -57,13 +57,13 @@ function _convertGeometryToDXF (geometry, epsg) {
   if (geometry.type === 'Point') {
     output += _convertPoint(geometry.coordinates, epsg)
   } else {
-    output += _convertTraversable(geometry.type, geometry.coordinates)
+    output += _convertTraversable(geometry.type, geometry.coordinates, epsg)
   }
 
   return output
 }
 
-function _convertTraversable (type, coordinates) {
+function _convertTraversable (type, coordinates, epsg) {
   let output = ''
 
   // contem quants anidaments d'arrays tenim
@@ -71,32 +71,32 @@ function _convertTraversable (type, coordinates) {
 
   if (type === 'LineString') {
     if (levels === 1) {
-      output += _convertCoordArray(false, coordinates)
+      output += _convertCoordArray(false, coordinates, epsg)
     } else if (levels > 1) {
       for (let i = 0; i < coordinates.length; i++) {
-        output += _convertCoordArray(false, coordinates[i])
+        output += _convertCoordArray(false, coordinates[i], epsg)
       }
     }
   } else if (type === 'Polygon') {
     if (levels === 2) {
       for (let i = 0; i < coordinates.length; i++) {
-        output += _convertCoordArray(true, coordinates[i])
+        output += _convertCoordArray(true, coordinates[i], epsg)
       }
     } else if (levels > 2) {
       for (let i = 0; i < coordinates.length; i++) {
         for (let j = 0; j < coordinates[i].length; j++) {
-          output += _convertCoordArray(true, coordinates[i][j])
+          output += _convertCoordArray(true, coordinates[i][j], epsg)
         }
       }
     }
   } else if (type === 'MultiLineString') {
     for (let i = 0; i < coordinates.length; i++) {
-      output += _convertCoordArray(false, coordinates[i])
+      output += _convertCoordArray(false, coordinates[i], epsg)
     }
   } else if (type === 'MultiPolygon') {
     for (let i = 0; i < coordinates.length; i++) {
       for (let j = 0; j < coordinates[i].length; j++) {
-        output += _convertCoordArray(true, coordinates[i][j])
+        output += _convertCoordArray(true, coordinates[i][j], epsg)
       }
     }
   }
