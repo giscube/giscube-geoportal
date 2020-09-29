@@ -7,7 +7,7 @@
         </q-item-section>
         <q-item-section top side>
           <div>
-            {{ toPercent(opacity) }}%
+            {{ opacityPercent }}%
           </div>
         </q-item-section>
       </q-item>
@@ -69,7 +69,8 @@ export default {
   data () {
     return {
       clipPercentX: (this.layer.options && this.layer.options.clipPercentX) || { min: 0, max: 100 },
-      clipPercentY: (this.layer.options && this.layer.options.clipPercentY) || { min: 0, max: 100 }
+      clipPercentY: (this.layer.options && this.layer.options.clipPercentY) || { min: 0, max: 100 },
+      opacityPercent: (this.layer.options && this.toPercent(this.layer.options.opacity)) || (this.layer.getLayers && this.toPercent(this.layer.getLayers()[0].options.opacity)) || 100
     }
   },
   computed: {
@@ -78,16 +79,23 @@ export default {
     }),
     opacity: {
       get () {
-        return (this.layer.options && this.layer.options.opacity) || this.layer.getLayers()[0].options.opacity || 1
+        if (this.layer.options && this.layer.options.opacity !== undefined) {
+          return this.layer.options.opacity
+        } else if (this.layer.getLayers && this.layer.getLayers()[0].options.opacity !== undefined) {
+          return this.layer.getLayers()[0].options.opacity
+        } else {
+          return 0
+        }
       },
       set (value) {
-        if (this.layer.options && this.layer.options.opacity) {
+        if (this.layer.options && this.layer.options.opacity !== undefined) {
           this.layer.setOpacity(value / 100)
-        } else if (this.layer.getLayers()[0].options.opacity) {
+        } else if (this.layer.getLayers && this.layer.getLayers()[0].options.opacity !== undefined) {
           this.layer.eachLayer(layer => {
             layer.setStyle({ opacity: value / 100, fillOpacity: value / 100 })
           })
         }
+        this.opacityPercent = Math.round(value)
       }
     }
   },
