@@ -48,9 +48,9 @@
 </template>
 <script>
 import { QBtn, QSelect } from 'quasar'
-import { pageSizes } from 'src/lib/table/Remote'
-
 import TranslationMixin from './TranslationMixin'
+
+import { DEFAULT_PAGE_SIZE, DEFAULT_MAX_PAGE_SIZE } from 'src/lib/table/TableInfo'
 
 export default {
   mixins: [TranslationMixin],
@@ -62,6 +62,14 @@ export default {
     disable: {
       type: Boolean,
       default: false
+    },
+    maxPageSize: {
+      type: Number,
+      default: DEFAULT_MAX_PAGE_SIZE
+    },
+    rowsPerPage: {
+      type: Number,
+      default: DEFAULT_PAGE_SIZE
     }
   },
   components: {
@@ -70,6 +78,24 @@ export default {
   },
   computed: {
     options () {
+      let pageSizes = []
+      let rowsPerPage = DEFAULT_PAGE_SIZE
+      let maxPageSize = DEFAULT_MAX_PAGE_SIZE
+
+      if (this.rowsPerPage < this.maxPageSize) {
+        rowsPerPage = this.rowsPerPage
+        maxPageSize = this.maxPageSize
+      }
+
+      let current = rowsPerPage
+      let i = 0
+      while (current < maxPageSize) {
+        pageSizes.push(current)
+        current = current * ((i % 2) ? 2 : 5)
+        i++
+      }
+      pageSizes.push(maxPageSize)
+
       return pageSizes
     },
     preFirst () {

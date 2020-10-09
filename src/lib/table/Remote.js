@@ -3,17 +3,7 @@ import Vue from 'vue'
 import databaseLayersApi from 'src/api/databaselayers'
 import { map, join } from 'src/lib/itertools'
 import { INTERNAL_PROPERTY, isCleanEqual, fromEntries } from 'src/lib/utils'
-import TableInfo from './TableInfo'
-
-export const pageSizes = [
-  20,
-  50,
-  100,
-  500,
-  1000,
-  5000,
-  10000
-]
+import TableInfo, { DEFAULT_PAGE_SIZE } from './TableInfo'
 
 const _is = Object.freeze({
   source (value) {
@@ -45,7 +35,7 @@ export default class Remote {
       deleted: new Set()
     }
     this.pagination = {
-      rowsPerPage: 20,
+      rowsPerPage: DEFAULT_PAGE_SIZE,
       page: 1,
       rowsNumber: 0
     }
@@ -76,6 +66,7 @@ export default class Remote {
     return databaseLayersApi.getLayerInfo(this.source, this.layer, this.getConfig())
       .then(response => {
         this.info = new TableInfo(response.data, this.constFields)
+        this.pagination.rowsPerPage = this.info.rowsPerPage
         return this.info
       })
   }
@@ -147,7 +138,6 @@ export default class Remote {
 
           const { data } = response
 
-          this.pagination = pagination
           this.pagination.rowsNumber = data.count
           this.pagination.page = data.page
           this.pagination.rowsPerPage = data.page_size

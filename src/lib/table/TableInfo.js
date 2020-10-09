@@ -7,11 +7,18 @@ import { isVoid } from 'src/lib/utils'
 import { CircleStyle, ImageStyle, MarkerStyle, PathStyle } from './geom-styles'
 import GeomPath from './GeomPath'
 
+export const DEFAULT_PAGE_SIZE = 50
+export const DEFAULT_MAX_PAGE_SIZE = 1000
+
 export default class TableInfo {
   constructor (info, constFields) {
     this.maxPageSize = info.pagination.max_page_size
     if (typeof this.maxPageSize !== 'number') {
-      this.maxPageSize = 1000
+      this.maxPageSize = DEFAULT_MAX_PAGE_SIZE
+    }
+    this.rowsPerPage = info.pagination.page_size
+    if (typeof this.rowsPerPage !== 'number') {
+      this.rowsPerPage = DEFAULT_PAGE_SIZE
     }
 
     // Fields
