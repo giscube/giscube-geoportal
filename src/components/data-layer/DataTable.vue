@@ -113,6 +113,8 @@
       <table-pagination
         :disable="table.editing"
         :value="pagination"
+        :rowsPerPage="table.info.rowsPerPage"
+        :maxPageSize="table.info.maxPageSize"
         @input="onPaginationChange"
       />
     </q-card>
