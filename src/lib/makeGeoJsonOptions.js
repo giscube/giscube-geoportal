@@ -183,7 +183,8 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
         opacity: style.stroke_opacity !== void 0 ? style.stroke_opacity : 1,
         fillColor: style.fill_color || '#ffa500',
         fillOpacity: style.fill_opacity || 0.75,
-        radius: style.shape_radius || 10
+        radius: style.shape_radius || 10,
+        dashArray: style.stroke_dash_array || null
       }
     })
   }
