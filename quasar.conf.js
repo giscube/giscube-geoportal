@@ -68,6 +68,10 @@ module.exports = function (ctx) {
           })
         )
 
+        cfg.plugins.push(
+          new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /[^-]ca|es.js/)
+        )
+
         const htmlWebpackPlugin = cfg.plugins.find(plugin => plugin.constructor === HtmlWebpackPlugin)
         htmlWebpackPlugin.options.clientVersion = Math.floor(Date.now() / 1000)
 
