@@ -93,7 +93,7 @@
       <!-- Tab Info -->
       <div v-show="tab === 'info'" class="column no-wrap limit-parent">
         <slot name="info-tab">
-          <info-tab :description="description" :result="result" :legend="legend" :keywords="keywords" />
+          <info-tab :description="description" :result="result" :legend="legend" :downloads="downloads" :keywords="keywords" />
         </slot>
       </div>
 
@@ -276,6 +276,9 @@ export default {
       return null
     },
     overlay () {
+      return null
+    },
+    downloads () {
       return null
     },
     table () {
