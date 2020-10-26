@@ -56,6 +56,7 @@ export default {
     coords: 'coordenades',
     data: 'dades',
     description: 'descripció',
+    downloads: 'descàrregues',
     element: 'cap element | {count} element | {count} elements',
     horizontally: 'horitzontalment',
     info: 'info',

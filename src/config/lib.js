@@ -43,6 +43,16 @@ export default new Options({
   },
   catalog: {
   },
+  components: {
+    resultTabs: {
+      infoTab: {
+        previewContentTypes: [
+          'application/pdf',
+          'image/jpeg'
+        ]
+      }
+    }
+  },
   defaultLayers: [],
   editsources: [
   ],

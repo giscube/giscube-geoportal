@@ -83,6 +83,7 @@ export default {
       const isGeojson = !!this.result.geojson
       const isAuthenticated = this.result.private || (this.result.origin && this.result.origin.auth)
       const layerDescriptor = this.result && this.result.children && this.result.children.length > 0 && this.result.children[0]
+      const downloads = layerDescriptor && this.result.children.filter(child => child.giscube && child.giscube.downloadable)
       const options = {
         ...(layerDescriptor && layerDescriptor.giscube && layerDescriptor.giscube.single_image && { singleTile: true }),
         ...(this.result && this.result.options)
@@ -99,7 +100,8 @@ export default {
         metaOptions: {
           root: this.$root
         },
-        headers: isAuthenticated ? this.$store.getters['auth/headers'] : void 0
+        headers: isAuthenticated ? this.$store.getters['auth/headers'] : void 0,
+        downloads
       }
     },
     legend () {
@@ -121,6 +123,9 @@ export default {
     },
     properties () {
       return (this.result && this.result.geojson && this.result.geojson.properties) || {}
+    },
+    downloads () {
+      return this.layerOptions && this.layerOptions.downloads
     },
     table () {
       return this.table_
