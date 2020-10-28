@@ -21,27 +21,35 @@ export function checkCategories (context) {
 
 export function createCatalog (context) {
   let catalog = []
+  const categoriesPromises = []
   context.state.categories.forEach(category => {
     if (category.parent === null) {
-      context.dispatch('getChildren', category).then(children => {
-        const node = {
-          children: children,
-          data: category,
-          header: 'root',
-          id: category.id,
-          label: category.name,
-          noTick: true
-        }
+      categoriesPromises.push(
+        context.dispatch('getChildren', category).then(children => {
+          const node = {
+            children: children,
+            data: category,
+            header: 'root',
+            id: category.id,
+            label: category.name,
+            noTick: true
+          }
 
-        if (category.content) {
-          node.children.push(..._createLeaves(category.content))
-        }
+          if (category.content) {
+            node.children.push(..._createLeaves(category.content))
+          }
 
-        catalog.push(node)
-      })
+          catalog.push(node)
+        })
+      )
     }
   })
-  context.commit('setCatalog', catalog)
+  Promise.all(categoriesPromises).then(() => {
+    if (this.$config.catalog.filter) {
+      this.$config.catalog.filter(this, catalog)
+    }
+    context.commit('setCatalog', catalog)
+  })
 }
 
 function _createLeaves (contents) {
