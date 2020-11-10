@@ -52,6 +52,9 @@ export default {
   },
   mounted () {
     this.$nextTick(() => {
+      if (!this.$store.state.layout.isCustomView) {
+        this.$store.dispatch('map/addDefaultLayers')
+      }
       const { width, height } = this.$refs.layout
       this.$store.commit('layout/size', { width, height })
       this.$store.dispatch('layout/setSidebarOpen', true)
