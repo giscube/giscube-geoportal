@@ -98,6 +98,7 @@ export default {
       vm.$store.commit('setCurrentTool', 'share')
 
       if (Object.keys(to.query).length > 0) {
+        vm.$store.commit('layout/isCustomView', true)
         vm.applyQuery(to.query, 'home')
       }
     })

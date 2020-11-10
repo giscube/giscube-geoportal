@@ -1,5 +1,9 @@
 import Vue from 'vue'
 
+export function isCustomView (state, value) {
+  state.isCustomView = value
+}
+
 export function leftDrawerSize (state, value) {
   state.leftDrawerSize = value
 }

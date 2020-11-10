@@ -1,5 +1,6 @@
 export default {
   headerVisible: true,
+  isCustomView: false,
   sidebarVisible: true,
   size: {},
   drawerBreakpoint: 600,

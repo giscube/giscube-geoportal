@@ -41,10 +41,6 @@ export default {
   async mounted () {
     await this.$nextTick()
 
-    if (this.$route.name !== 'share') {
-      this.$store.dispatch('map/addDefaultLayers')
-    }
-
     if (this.automaticVersioning()) {
       this.checkNewVersion()
     }
