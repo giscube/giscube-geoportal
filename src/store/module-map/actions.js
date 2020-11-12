@@ -263,8 +263,8 @@ export async function addLayer (context, { id, layerDescriptor, title, options, 
   }
 }
 
-export function addSharedMarker (context, marker) {
-  context.state.shared.addLayer(marker)
+export function addSharedLayer (context, layer) {
+  context.state.shared.addLayer(layer)
 }
 
 export function addDefaultLayers (context) {

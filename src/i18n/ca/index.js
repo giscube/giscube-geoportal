@@ -168,6 +168,7 @@ export default {
       help: 'Dibuixar geometries sobre el mapa, mesurar-ne les distàncies i àrees.',
 
       area: 'Àrea',
+      circle: 'Cercle',
       drawMulti: 'Continuar dibuixant',
       drawMultiCaption: 'Permetre dibuixar noves mesures al finalitzar l\'element',
       explanation: 'Escolliu tipus de geometria, i seguidament cliqueu el mapa. Podeu fer doble clic per acabar de dibuixar.',
