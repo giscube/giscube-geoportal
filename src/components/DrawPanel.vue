@@ -54,7 +54,7 @@
       </div>
 
       <div class="q-pt-md">
-        <q-item tag="label" v-ripple class="q-pl-xs">
+        <q-item tag="label" class="q-pl-xs">
           <q-item-section avatar>
             <q-checkbox v-model="multi"/>
           </q-item-section>
