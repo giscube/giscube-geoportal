@@ -10,7 +10,7 @@
           <q-btn
             icon="place"
             v-show="!measuring"
-            @click="addMarker"
+            @click="addMeasure('point')"
           >
             <q-tooltip>
               {{ t('marker') }}
@@ -32,6 +32,15 @@
           >
             <q-tooltip>
               {{ t('area') }}
+            </q-tooltip>
+          </q-btn>
+          <q-btn
+            icon="far fa-dot-circle"
+            v-show="!measuring"
+            @click="addMeasure('circle')"
+          >
+            <q-tooltip>
+              {{ t('circle') }}
             </q-tooltip>
           </q-btn>
           <q-btn
@@ -167,7 +176,7 @@ export default {
         const latlng = layer.getLatLng()
         const lat = this.$n(latlng.lat, { maximumFractionDigits: 6, minimumFractionDigits: 6 })
         const lng = this.$n(latlng.lng, { maximumFractionDigits: 6, minimumFractionDigits: 6 })
-        return lat + ' ' + lng + ' r' + layer.getRadius()
+        return lat + ' ' + lng + ' r' + Math.round(layer.getRadius() * 1000) / 1000
       } else if (layer instanceof L.Polygon) {
         const value = this.$n(Math.round(area(layer.toGeoJSON(), { units: 'meters' })))
         return value + ' ' + this.$t('units.meters') + '<sup>2</sup>'
@@ -226,22 +235,22 @@ export default {
         this.map.measureControl.startMeasuring({ measureArea })
       })
     },
-    addMarker () {
+    addMeasure (type) {
       this.measuring = true
       this.$store.commit('setCurrentTool', this.map.measureControl)
       createLayer({
         map: this.map,
-        type: 'point'
+        type
       })
-        .then(marker => this.finishAddMarker(marker))
+        .then(measure => this.finishAddMeasure(measure, type))
         .catch(_ => this.stopMeasuring())
     },
-    finishAddMarker (marker) {
-      this.$store.dispatch('map/addSharedMarker', marker)
+    finishAddMeasure (measure, type) {
+      this.$store.dispatch('map/addSharedLayer', measure)
       this.updateSharedLayers()
       this.stopMeasuring()
       if (this.multi) {
-        requestAnimationFrame(() => this.addMarker())
+        requestAnimationFrame(() => this.addMeasure(type))
       }
     },
     stopMapMeasuring () {

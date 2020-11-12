@@ -166,6 +166,7 @@ export default {
       help: 'Draw geometries on the map and measure its distances or areas.',
 
       area: 'Area',
+      circle: 'Circle',
       drawMulti: 'Continue drawing',
       drawMultiCaption: 'Allow drawing new measurements when finishing the element',
       explanation: 'Please select geometry type, then click on the map. Double-click to finish drawing.',

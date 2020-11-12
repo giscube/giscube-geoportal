@@ -314,6 +314,9 @@ const geomCreators = {
   },
   polygon (editTools, config) {
     editTools.startPolygon(void 0, config)
+  },
+  circle (editTools, config) {
+    editTools.startCircle(void 0, config)
   }
 }
 
@@ -346,6 +349,8 @@ export function createLayer ({ map, type, config, keepDrawn = false }) {
           if (event.layer && event.layer.getLatLngs()[0].length >= 3) {
             layer = event.layer
           }
+          break
+        case 'circle':
           break
       }
       reject(new CancelError(layer))
