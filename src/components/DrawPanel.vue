@@ -3,7 +3,11 @@
     <div class="panel-content">
       <p class="panel-title">{{ t('title') }}</p>
 
-      <p>{{ t('explanation') }}</p>
+      <p v-if="!measureCircle">{{ t('explanation') }}</p>
+      <div v-if="measureCircle">
+        {{ t('explanationCircle') }}
+        <q-input filled dense v-model="radius" :label="t('radius') + ' (m)'" class="q-pt-sm q-pb-md" debounce="700" />
+      </div>
 
       <div class="row space-items-md">
         <q-btn-group class="no-shadow">
@@ -102,7 +106,7 @@
 
 <script>
 import { saveAs } from 'file-saver'
-import { QBtn, QBtnGroup, QCheckbox, QChip, QItem, QItemLabel, QItemSection, QTooltip } from 'quasar'
+import { QBtn, QBtnGroup, QCheckbox, QChip, QItem, QItemLabel, QItemSection, QInput, QTooltip } from 'quasar'
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import length from '@turf/length'
@@ -123,6 +127,7 @@ export default {
     QItem,
     QItemLabel,
     QItemSection,
+    QInput,
     QTooltip
   },
   data () {
@@ -130,6 +135,8 @@ export default {
       multi: false,
       measuring: false,
       measureArea: null,
+      measureCircle: false,
+      radius: null,
       sharedLayers: []
     }
   },
@@ -149,6 +156,10 @@ export default {
     }
   },
   watch: {
+    radius: function () {
+      this.stopMapMeasuring()
+      requestAnimationFrame(() => this.addMeasure('circle'))
+    },
     shared: {
       handler: 'updateSharedLayers',
       immediate: true
@@ -238,9 +249,17 @@ export default {
     addMeasure (type) {
       this.measuring = true
       this.$store.commit('setCurrentTool', this.map.measureControl)
+      let config
+      if (type === 'circle') {
+        this.measureCircle = true
+        if (this.radius) {
+          config = { radius: this.radius }
+        }
+      }
       createLayer({
         map: this.map,
-        type
+        type,
+        config
       })
         .then(measure => this.finishAddMeasure(measure, type))
         .catch(_ => this.stopMeasuring())
@@ -263,6 +282,9 @@ export default {
     stopMeasuring () {
       if (!this.measuring) {
         return
+      }
+      if (this.measureCircle) {
+        this.measureCircle = false
       }
       this.measuring = false
       this.map.off('measure:measurestop', this.stopMeasuring)

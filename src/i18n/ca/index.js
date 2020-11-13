@@ -172,8 +172,10 @@ export default {
       drawMulti: 'Continuar dibuixant',
       drawMultiCaption: 'Permetre dibuixar noves mesures al finalitzar l\'element',
       explanation: 'Escolliu tipus de geometria, i seguidament cliqueu el mapa. Podeu fer doble clic per acabar de dibuixar.',
+      explanationCircle: 'Feu clic sobre el mapa per dibuixar un cercle. Definiu el radi i cliqueu sobre el mapa o cliqueu i arrossegueu el punter.',
       marker: 'Punt',
       path: 'Línia',
+      radius: 'Radi',
       save: 'Guarda com a GeoJSON',
       stop: 'Parar de dibuixar'
     },
