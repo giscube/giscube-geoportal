@@ -25,6 +25,9 @@ const toRaw = p => [p.lat, p.lng]
 function contains (layer, geomLatlongs, bounds) {
   const rawLatLngs = geomLatlongs[0].map(toRaw)
   return somePoint(layer, p => {
+    if (Array.isArray(p)) {
+      return p.some(vertex => bounds.contains(vertex) && pointInPolygon(toRaw(vertex), rawLatLngs))
+    }
     return bounds.contains(p) && pointInPolygon(toRaw(p), rawLatLngs)
   })
 }
