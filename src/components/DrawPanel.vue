@@ -47,15 +47,21 @@
               {{ t('circle') }}
             </q-tooltip>
           </q-btn>
-          <q-btn
-            icon="save_alt"
-            v-show="!measuring"
-            @click="downloadGeoJSON"
-          >
-            <q-tooltip>
-              {{ t('save') }}
-            </q-tooltip>
-          </q-btn>
+          <q-btn-dropdown v-show="!measuring" icon="save_alt">
+            <q-list>
+              <q-item clickable v-close-popup @click="download('geojson')">
+                <q-item-section style="width: 140px">
+                  <q-item-label>{{ $t('actions.download') | capitalize }} GeoJSON</q-item-label>
+                </q-item-section>
+              </q-item>
+
+              <q-item clickable v-close-popup @click="download('dxf')">
+                <q-item-section>
+                  <q-item-label>{{ $t('actions.download') | capitalize }} DXF</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
         </q-btn-group>
         <q-btn
           outline
@@ -106,13 +112,14 @@
 
 <script>
 import { saveAs } from 'file-saver'
-import { QBtn, QBtnGroup, QCheckbox, QChip, QItem, QItemLabel, QItemSection, QInput, QTooltip } from 'quasar'
+import { ClosePopup, QBtn, QBtnDropdown, QBtnGroup, QCheckbox, QChip, QItem, QItemSection, QItemLabel, QInput, QList, QTooltip } from 'quasar'
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import length from '@turf/length'
 import area from '@turf/area'
 import L from 'src/lib/leaflet'
 import { createLayer } from 'src/lib/geomUtils'
+import { convertGeoJsonToDXF, downloadDXF } from 'src/lib/fileutils'
 
 import DrawMessageInput from 'components/DrawMessageInput.vue'
 import MeasureResultPopup from 'components/MeasureResultPopup.vue'
@@ -121,6 +128,7 @@ export default {
   components: {
     DrawMessageInput,
     QBtn,
+    QBtnDropdown,
     QBtnGroup,
     QCheckbox,
     QChip,
@@ -128,7 +136,11 @@ export default {
     QItemLabel,
     QItemSection,
     QInput,
+    QList,
     QTooltip
+  },
+  directives: {
+    ClosePopup
   },
   data () {
     return {
@@ -301,7 +313,7 @@ export default {
       this.shared.removeLayer(layer)
       this.updateSharedLayers()
     },
-    downloadGeoJSON () {
+    download (fileType) {
       const features = [
         ...this.shared.getLayers().map(layer => layer.toGeoJSON()),
         ...this.measureControl.measures.map(measure => {
@@ -313,9 +325,15 @@ export default {
           return layer.toGeoJSON()
         })
       ]
-      const geoJSON = JSON.stringify({ type: 'FeatureCollection', features })
-      const blob = new Blob([geoJSON], { type: 'application/geo+json;charset=utf-8' })
-      saveAs(blob, 'drawn-in-geoportal.geojson')
+      if (fileType === 'geojson') {
+        const geoJSON = JSON.stringify({ type: 'FeatureCollection', features })
+        const blob = new Blob([geoJSON], { type: 'application/geo+json;charset=utf-8' })
+        saveAs(blob, 'drawn-in-geoportal.geojson')
+      } else if (fileType === 'dxf') {
+        const data = { features }
+        const dataDXF = convertGeoJsonToDXF(data)
+        downloadDXF(dataDXF)
+      }
     }
   }
 }
