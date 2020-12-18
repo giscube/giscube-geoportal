@@ -279,9 +279,10 @@ export default {
     finishAddMeasure (measure, type) {
       this.$store.dispatch('map/addSharedLayer', measure)
       this.updateSharedLayers()
-      this.stopMeasuring()
       if (this.multi) {
         requestAnimationFrame(() => this.addMeasure(type))
+      } else {
+        this.stopMeasuring()
       }
     },
     stopMapMeasuring () {
