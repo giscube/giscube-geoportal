@@ -17,7 +17,7 @@ fi
 if ! [[ "$(git log -1 --pretty=%B)" =~ ^[0-9]+\.[0-9]+\.[0-9]+(\-beta\.[0-9]+)?$ ]]; then  # If the last commit is NOT a version commit
   while true; do
     echo
-    read -p "New prerelease? [y/n] " yn
+    read -p "New patch version? [y/n] " yn
     case $yn in
       [Yy]* ) break;;
       [Nn]* ) exit;;
@@ -25,11 +25,11 @@ if ! [[ "$(git log -1 --pretty=%B)" =~ ^[0-9]+\.[0-9]+\.[0-9]+(\-beta\.[0-9]+)?$
     esac
   done
 
-  npm version prerelease --preid=beta
+  npm version patch
 
   while true; do
     echo
-    read -p "Push prerelease? [Y/n] " yn
+    read -p "Push patch release? [Y/n] " yn
     case $yn in
       [Yy]* | '' )
         git push
