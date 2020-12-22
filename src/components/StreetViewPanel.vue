@@ -152,8 +152,10 @@ export default {
       }
 
       // The control is set to follow the query marker
-      // this.$store.commit('setCurrentTool', this)
-      // this.map.on('click', this.clickHandler)
+      if (!this.$config.streetview.followQueryMarker) {
+        this.$store.commit('setCurrentTool', this)
+        this.map.on('click', this.clickHandler)
+      }
 
       let center
       if (this.query && this.$store.getters['map/bbox']().contains(this.query.latlng)) {
