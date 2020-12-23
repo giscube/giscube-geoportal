@@ -137,6 +137,9 @@ export default new Options({
   sentry: {
     dsn: null
   },
+  streetview: {
+    followQueryMarker: true
+  },
   tools: {
     auth: {
       icon: 'las la-user',
