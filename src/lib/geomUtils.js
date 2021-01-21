@@ -195,7 +195,7 @@ function setTileLayerBoundary (layer, { boundary }) {
   return L.TileLayer.BoundaryCanvas.createFromLayer(layer, { boundary, trackAttribution: true })
 }
 
-function createExternalLayerWMS ({ layerDescriptor, title, options }) {
+function createExternalLayerWMS ({ accessToken, isAuthenticated, layerDescriptor, title, options }) {
   const defaultOptions = {
     layers: layerDescriptor.layers,
     format: 'image/png',
@@ -205,6 +205,9 @@ function createExternalLayerWMS ({ layerDescriptor, title, options }) {
   const allowedOptions = ['minZoom', 'maxZoom', 'layers', 'styles', 'format', 'transparent', 'format', 'version',
     'csr', 'uppercase', 'attribution']
   const layerOptions = applyExtraOptions(defaultOptions, options, allowedOptions)
+  if (isAuthenticated) {
+    layerDescriptor.url += '?access_token=' + accessToken
+  }
   let wms
   if (options.singleTile) {
     wms = LeafletWMS.overlay(layerDescriptor.url, layerOptions)
