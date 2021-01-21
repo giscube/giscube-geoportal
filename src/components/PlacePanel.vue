@@ -90,6 +90,8 @@ export default {
       }
 
       return {
+        accessToken: this.$store.state.auth.accessToken,
+        isAuthenticated,
         result: this.result,
         layerDescriptor,
         title: this.result && this.result.title,
