@@ -86,6 +86,7 @@ export default {
       const downloads = layerDescriptor && this.result.children.filter(child => child.giscube && child.giscube.downloadable)
       const options = {
         ...(layerDescriptor && layerDescriptor.giscube && layerDescriptor.giscube.single_image && { singleTile: true }),
+        ...(this.result && this.result.options && this.result.options.single_image && { singleTile: true }),
         ...(this.result && this.result.options)
       }
 

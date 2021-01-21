@@ -10,6 +10,7 @@ function extractResultOptions (result, $root) {
   const layerDescriptor = result.children && result.children.length > 0 && result.children[0]
   const options = {
     ...(layerDescriptor && layerDescriptor.giscube && layerDescriptor.giscube.single_image && { singleTile: true }),
+    ...(result && result.options && result.options.single_image && { singleTile: true }),
     ...result.options
   }
 
