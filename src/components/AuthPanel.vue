@@ -18,7 +18,9 @@
           />
         </div>
       </div>
-
+      <div v-else-if="loadingCode">
+        <q-spinner-tail size="2rem"/>
+      </div>
       <div v-else>
         <div v-if="!$store.state.auth.username" class="no-login">
           <div v-if="oauthType === 'code'">
@@ -110,7 +112,7 @@
 <script>
 import axios from 'axios'
 import { get } from 'lodash'
-import { QBtn, QForm, QInput } from 'quasar'
+import { QBtn, QForm, QInput, QSpinnerTail } from 'quasar'
 import qs from 'qs'
 
 export default {
@@ -118,7 +120,8 @@ export default {
   components: {
     QBtn,
     QForm,
-    QInput
+    QInput,
+    QSpinnerTail
   },
   data () {
     return {
@@ -127,6 +130,7 @@ export default {
         password: ''
       },
       loading: false,
+      loadingCode: false,
       canCloseWindow: false,
       loginCodeOk: false,
       loginCodeError: false,
@@ -159,6 +163,7 @@ export default {
           let params = vm.getUrlParams(location.search)
           let code = params.code
           if (code) {
+            vm.loadingCode = true
             let apiUrl = vm.$config.oauth.token
 
             var config = {
@@ -167,9 +172,10 @@ export default {
                 'Content-type': 'application/x-www-form-urlencoded'
               }
             }
+            const clientId = params.client_id
 
             let oauthParams = {
-              client_id: vm.$config.oauth.client_id,
+              client_id: clientId || vm.$config.oauth.client_id,
               grant_type: 'authorization_code',
               code: code,
               redirect_uri: vm.$config.oauth.redirect_uri
@@ -183,12 +189,19 @@ export default {
                 localStorage.setItem('expires_in', data.expires_in)
                 localStorage.setItem('refresh_token', data.refresh_token)
                 vm.loginCodeOk = true
-                vm.canCloseWindow = true
+
+                if (params.redirect) {
+                  vm.$router.push({ name: params.redirect })
+                } else {
+                  vm.canCloseWindow = true
+                }
+                vm.loadingCode = false
               })
               .catch(error => {
                 vm.$except(error)
                 vm.loginCodeError = true
                 vm.canCloseWindow = true
+                vm.loadingCode = false
               })
           }
           let cleanUri = location.protocol + '//' + location.host + location.pathname
