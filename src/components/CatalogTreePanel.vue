@@ -1,7 +1,9 @@
 <template>
 <div class="panel catalog-panel">
     <div class="panel-content">
-      <p class="panel-title">{{ t('title') }} <q-spinner v-if="loading" /></p>
+      <slot name="title">
+        <p class="panel-title">{{ t('title') }} <q-spinner v-if="loading" /></p>
+      </slot>
       <div class="categories" v-if="!loading">
         <q-input ref="filter" filled v-model="filter" :label="t('filter')" class="q-my-md">
           <template v-slot:append>
