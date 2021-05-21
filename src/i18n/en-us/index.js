@@ -87,6 +87,7 @@ export default {
 
       adminUrl: 'Manage',
       authenticatedAs: 'Authenticated as user',
+      changePassword: 'Change password',
       closeWindow: 'Close window',
       invalidCredentials: 'Invalid credentials',
       logIn: 'Log in',
