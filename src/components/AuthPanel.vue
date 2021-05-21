@@ -102,6 +102,14 @@
                @click="logout"
             />
           </div>
+          <div
+            v-if="isStaff && $config.oauth.changePassword"
+            class="text-right q-ma-md"
+          >
+            <a :href="$config.oauth.changePassword" target="_blank">
+              {{ t('changePassword') }}
+            </a>
+          </div>
         </div>
       </div>
 

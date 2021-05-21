@@ -87,6 +87,7 @@ export default {
 
       adminUrl: 'Administrar',
       authenticatedAs: 'Autenticat com a usuari',
+      changePassword: 'Canviar contrasenya',
       closeWindow: 'Tancar finestra',
       invalidCredentials: 'L\'usuari i/o la contrasenya no són vàlids',
       logIn: 'Iniciar sessió',
