@@ -217,7 +217,8 @@ export default {
       options: '@:names.options',
       openMessage: 'Open @:names.message',
       markerAtCenter: 'Marker at the center',
-      simpleView: 'Simple view'
+      simpleView: 'Simple view',
+      hideLayersControl: 'Hide layers control'
     },
     statistics: {
       columnCount: 'Count',

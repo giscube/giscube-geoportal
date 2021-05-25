@@ -26,3 +26,7 @@ export function padding (state, padding) {
 export function drawing (state, value) {
   state.drawing = value
 }
+
+export function hideLayersControl (state, value) {
+  state.hideLayersControl = value
+}

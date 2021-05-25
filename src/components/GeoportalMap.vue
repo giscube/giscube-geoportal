@@ -7,7 +7,7 @@
       @leaflet:load='onMapReady'
       @move="onMapMove"
     >
-      <layers-control ref="layersControl"></layers-control>
+      <layers-control ref="layersControl" v-show="!hideLayersControl"></layers-control>
       <!-- Query On Click -->
       <component :is="$config.geoportalMap.queryOnClick" />
     </l-map>
@@ -54,7 +54,7 @@ export default {
         return this.$store.dispatch('map/setMap', value)
       }
     },
-    ...mapState('map', ['mapGroup']),
+    ...mapState('map', ['mapGroup', 'hideLayersControl']),
     editLayerGeojson () {
       return this.$store.state.dataLayer.geojson
     },

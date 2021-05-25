@@ -31,6 +31,12 @@
           :value="layout === 'simple'"
            @input="layout = $event ? 'simple' : null"
         />
+        <br>
+        <q-toggle
+          :label="t('hideLayersControl')"
+          :value="hideLayersControl"
+          v-model="hideLayersControl"
+        />
       </div>
     </div>
   </div>
@@ -57,6 +63,7 @@ export default {
     const urlBase = l.origin + l.pathname + '#/share/'
     return {
       layout: null,
+      hideLayersControl: false,
       message: '',
       options: {},
       urlBase
@@ -82,6 +89,7 @@ export default {
         ...this.mapState,
         message: this.message,
         layout: this.layout,
+        hideLayersControl: this.hideLayersControl,
         geom: [
           ...this.sharedLayer.getLayers(),
           ...(this.$store.getters['map/drawnLayers']() || [])
@@ -132,6 +140,11 @@ export default {
         const layout = ShareQuery.extract(query, 'la')
         if (layout) {
           this.$store.commit('layout/setLayout', layout)
+        }
+
+        const layersControl = ShareQuery.extract(query, 'hlc')
+        if (layersControl === 'true') {
+          this.$store.commit('map/hideLayersControl', true)
         }
 
         const map = this.$store.state.map.mapObject
