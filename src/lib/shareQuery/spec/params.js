@@ -27,6 +27,12 @@ params.layers = params.l = params.results = {
   multi: behaviors.overrides
 }
 
+params.hideLayersControl = params.lc = {
+  key: 'hlc',
+  type: types.string,
+  multi: behaviors.overrides
+}
+
 params.message = params.m = {
   key: 'm',
   type: types.string,

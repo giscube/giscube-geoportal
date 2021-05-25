@@ -219,7 +219,8 @@ export default {
       options: '@:names.options',
       openMessage: 'Obrir @:names.message',
       markerAtCenter: 'Marcador al centre',
-      simpleView: 'Vista simple'
+      simpleView: 'Vista simple',
+      hideLayersControl: 'Amaga el control de capes'
     },
     statistics: {
       columnCount: 'Recompte',
