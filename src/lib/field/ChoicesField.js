@@ -9,6 +9,7 @@ export default class ChoicesField extends Field {
 
     this.valuesList = []
     this.valuesDict = {}
+    this.allowAddNew = info.widget_options.allow_add_new
 
     const valuesList = info.widget_options.values_list
     if (Array.isArray(valuesList)) {
@@ -27,7 +28,9 @@ export default class ChoicesField extends Field {
   str (data) {
     const key = this.getValue(data)
     const value = this.valuesDict[key]
-    return Field.toString(value === void 0 ? key : value)
+    const result = Field.toString(value === void 0 ? key : value)
+    console.log('RESULT', result)
+    return result
   }
 
   formWidget () {
@@ -35,6 +38,7 @@ export default class ChoicesField extends Field {
   }
 
   search (value) {
+    console.log('**** SEARCH', value)
     const choices = this.valuesList
       .filter(
         row => strContains(row.label, value)
