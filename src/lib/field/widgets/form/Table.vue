@@ -12,7 +12,7 @@
 import { QBtn } from 'quasar'
 
 import MultiResult from 'src/lib/MultiResult'
-import Table from 'src/lib/table'
+import { Table } from 'src/lib/table'
 import { isVoid } from 'src/lib/utils'
 import TableDialog from 'components/data-layer/TableDialog'
 

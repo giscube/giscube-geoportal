@@ -193,6 +193,7 @@ export default {
         id: !isVoid(this.result.giscube_id) && new GiscubeRef(this.result.giscube_id),
         layer: this.layer,
         layerType: this.layerType,
+        options: this.layerOptions.options,
         getfeatureinfoSupport,
         name
       })

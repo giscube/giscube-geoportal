@@ -4,7 +4,7 @@ import L from './leaflet.js'
 import LeafletWMS from 'leaflet.wms'
 import makeGeoJsonOptions from './makeGeoJsonOptions'
 import proj4 from 'proj4'
-import Table from './table'
+import { Table } from './table'
 import { cloneClean } from './utils'
 
 import FeaturePopup from 'components/FeaturePopup'
@@ -195,7 +195,7 @@ function setTileLayerBoundary (layer, { boundary }) {
   return L.TileLayer.BoundaryCanvas.createFromLayer(layer, { boundary, trackAttribution: true })
 }
 
-function createExternalLayerWMS ({ accessToken, isAuthenticated, layerDescriptor, title, options }) {
+function createExternalLayerWMS ({ layerDescriptor, title, options, headers }) {
   const defaultOptions = {
     layers: layerDescriptor.layers,
     format: 'image/png',
@@ -205,7 +205,8 @@ function createExternalLayerWMS ({ accessToken, isAuthenticated, layerDescriptor
   const allowedOptions = ['minZoom', 'maxZoom', 'layers', 'styles', 'format', 'transparent', 'format', 'version',
     'csr', 'uppercase', 'attribution']
   const layerOptions = applyExtraOptions(defaultOptions, options, allowedOptions)
-  if (isAuthenticated) {
+  if (headers && 'Authorization' in headers) {
+    const accessToken = headers['Authorization'].replace('Bearer ', '')
     layerDescriptor.url += '?access_token=' + accessToken
   }
   let wms
@@ -221,13 +222,17 @@ function createExternalLayerWMS ({ accessToken, isAuthenticated, layerDescriptor
   })
 }
 
-function createExternalLayerTMS ({ layerDescriptor, title, options }) {
+function createExternalLayerTMS ({ layerDescriptor, title, options, headers }) {
   const defaultOptions = {
     transparent: true,
     maxZoom: 22
   }
   const allowedOptions = ['minZoom', 'maxZoom', 'tms', 'attribution']
   const layerOptions = applyExtraOptions(defaultOptions, options, allowedOptions)
+  if (headers && 'Authorization' in headers) {
+    const accessToken = headers['Authorization'].replace('Bearer ', '')
+    layerDescriptor.url += '?access_token=' + accessToken
+  }
   const tms = L.tileLayer(layerDescriptor.url, layerOptions)
   return Promise.resolve({
     type: 'TMS',

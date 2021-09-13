@@ -114,7 +114,7 @@ export function setOverlays (context, overlays) {
   context.dispatch('reorderOverlay')
 }
 
-export function addOverlay (context, { id, layer, layerType, name, opacity, getfeatureinfoSupport }) {
+export function addOverlay (context, { id, layer, layerType, name, opacity, options, getfeatureinfoSupport }) {
   const overlays = context.state.layers.overlays
   const overlaysGroup = context.state.layers._overlaysGroup
   if (id === void 0) {
@@ -144,6 +144,7 @@ export function addOverlay (context, { id, layer, layerType, name, opacity, getf
       name,
       layer,
       layerType,
+      options,
       getfeatureinfoSupport,
       visible: false,
       setVisible (value) {
@@ -254,7 +255,7 @@ export async function addLayer (context, { id, layerDescriptor, title, options, 
 
     const name = type === 'WMS' ? layerDescriptor.title : title
     const getfeatureinfoSupport = layerDescriptor.giscube && layerDescriptor.giscube.getfeatureinfo_support
-    context.dispatch('addOverlay', { id, layer, layerType: type, name, getfeatureinfoSupport })
+    context.dispatch('addOverlay', { id, layer, layerType: type, name, options, getfeatureinfoSupport })
     return true
   } catch (e) {
     if (e) {

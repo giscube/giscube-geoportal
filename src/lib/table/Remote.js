@@ -31,6 +31,7 @@ export default class Remote {
       bbox: null,
       columns: {},
       general: null,
+      point: null,
       polygon: null,
       deleted: new Set()
     }
@@ -110,7 +111,7 @@ export default class Remote {
       const bbox = this.filters.bbox && this.filters.bbox().join(',')
       args['extraParams'] = {
         in_bbox: bbox || void 0,
-        intersects: this.filters.polygon || void 0,
+        intersects: this.filters.polygon || this.filters.point || void 0,
         [this.info.pkField.name + '__in!']: join(this.filters.deleted)
       }
     }
@@ -173,6 +174,16 @@ export default class Remote {
 
   save (bulk) {
     return databaseLayersApi.edit(this, bulk, this.getConfig())
+  }
+
+  setPointFilter (layer) {
+    if (!layer) {
+      this.filters.point = null
+    } else {
+      const coords = layer.getLatLngs()[0].map(c => `${c.lng},${c.lat}`)
+      const strCoords = [...coords, coords[0]].join(',')
+      this.filters.point = strCoords
+    }
   }
 
   setPolygonFilter (layer) {
