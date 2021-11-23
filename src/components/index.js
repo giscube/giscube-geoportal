@@ -13,6 +13,7 @@ import SearchResult from './SearchResult'
 import SearchResultPopupDialog from './SearchResultPopupDialog'
 import Sidebar from './Sidebar'
 import ValidatedInput from './ValidatedInput'
+import dataLayer from './data-layer'
 
 export default {
   BasicPopup,
@@ -29,5 +30,6 @@ export default {
   SearchResult,
   SearchResultPopupDialog,
   Sidebar,
-  ValidatedInput
+  ValidatedInput,
+  dataLayer
 }

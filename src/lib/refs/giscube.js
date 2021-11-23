@@ -67,6 +67,7 @@ export default class GiscubeRef {
         id: this,
         layer,
         layerType: type,
+        options: layerOptions.options,
         getfeatureinfoSupport,
         name,
         opacity

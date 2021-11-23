@@ -8,6 +8,7 @@ import Options from './options'
 import * as utils from './utils'
 import L from './leaflet'
 import * as refs from './refs'
+import * as table from './table'
 
 export default {
   DottedPath,
@@ -19,5 +20,6 @@ export default {
   Options,
   utils,
   refs,
+  table,
   L
 }

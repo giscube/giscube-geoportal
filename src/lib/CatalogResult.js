@@ -20,7 +20,8 @@ export default class CatalogResult {
     const layerDescriptor = this.children[0]
     const options = {
       ...(layerDescriptor && layerDescriptor.giscube && layerDescriptor.giscube.single_image && { singleTile: true }),
-      ...this.options
+      ...this.options,
+      ...this.data.options
     }
 
     return {

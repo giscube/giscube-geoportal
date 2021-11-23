@@ -45,7 +45,7 @@
 import { QSpace } from 'quasar'
 import { mapState } from 'vuex'
 import { isCleanEqual } from 'src/lib/utils'
-import Table from 'src/lib/table'
+import { Table } from 'src/lib/table'
 
 import TranslationMixin from './TranslationMixin'
 import DataEditControls from './DataEditControls'

@@ -76,6 +76,16 @@ export function toggleFilterPolygon (context) {
   }
 }
 
+export function setFilterPoint (context, { table, layer }) {
+  if (layer) {
+    layer.disableEdit()
+  }
+
+  if (table) {
+    table.remote.setPointFilter(layer)
+  }
+}
+
 export function setFilterPolygon (context, layer) {
   if (layer) {
     layer.disableEdit()
