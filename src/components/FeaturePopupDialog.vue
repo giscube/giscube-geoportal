@@ -4,7 +4,8 @@
     no-route-dismiss
     @hide="$emit('hide')"
   >
-    <q-card class="column q-pa-md">
+    <q-card class="row q-pa-md justify-end">
+      <q-btn icon="close" size="sm" flat dense @click="onClose"/>
       <q-card-section>
         <feature-popup
           :feature="feature"
@@ -12,15 +13,12 @@
           :renderContents="renderContents"
         />
       </q-card-section>
-      <q-card-actions align="right">
-        <q-btn :label="$t('actions.close')" @click="onClose" />
-      </q-card-actions>
     </q-card>
   </q-dialog>
 </template>
 
 <script>
-import { QBtn, QCard, QCardActions, QCardSection, QDialog } from 'quasar'
+import { QBtn, QCard, QCardSection, QDialog } from 'quasar'
 import FeaturePopup from './FeaturePopup'
 
 export default {
@@ -29,7 +27,6 @@ export default {
     FeaturePopup,
     QBtn,
     QCard,
-    QCardActions,
     QCardSection,
     QDialog
   },
