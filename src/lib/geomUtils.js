@@ -205,7 +205,7 @@ function createExternalLayerWMS ({ layerDescriptor, title, options, headers }) {
   const allowedOptions = ['minZoom', 'maxZoom', 'layers', 'styles', 'format', 'transparent', 'format', 'version',
     'csr', 'uppercase', 'attribution']
   const layerOptions = applyExtraOptions(defaultOptions, options, allowedOptions)
-  if (headers && 'Authorization' in headers) {
+  if (headers && 'Authorization' in headers && !layerDescriptor.url.includes('access_token')) {
     const accessToken = headers['Authorization'].replace('Bearer ', '')
     layerDescriptor.url += '?access_token=' + accessToken
   }
@@ -229,7 +229,7 @@ function createExternalLayerTMS ({ layerDescriptor, title, options, headers }) {
   }
   const allowedOptions = ['minZoom', 'maxZoom', 'tms', 'attribution']
   const layerOptions = applyExtraOptions(defaultOptions, options, allowedOptions)
-  if (headers && 'Authorization' in headers) {
+  if (headers && 'Authorization' in headers && !layerDescriptor.url.includes('access_token')) {
     const accessToken = headers['Authorization'].replace('Bearer ', '')
     layerDescriptor.url += '?access_token=' + accessToken
   }
