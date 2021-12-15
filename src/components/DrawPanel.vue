@@ -212,7 +212,7 @@ export default {
     },
     measurementText (measure) {
       let result = ''
-      result += measure.area || measure.length
+      result += measure.area || Math.round(measure.length_ori * 100) / 100
       result += ' ' + this.$t('units.' + measure.units_desc)
       if (measure.area) {
         result += '<sup>2</sup>'
