@@ -231,6 +231,9 @@ export default {
       return (this.description || this.legend || this.keywords)
     },
     isNotMarker () {
+      if (this.result && this.result.geojson && this.result.geojson.type === 'Point') {
+        return false
+      }
       if (!this.isDescriptionGeoJSON) {
         return true
       }
