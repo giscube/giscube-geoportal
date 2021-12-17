@@ -6,6 +6,7 @@ import makeGeoJsonOptions from './makeGeoJsonOptions'
 import proj4 from 'proj4'
 import { Table } from './table'
 import { cloneClean } from './utils'
+import gmapsInit from './gmaps'
 
 import FeaturePopup from 'components/FeaturePopup'
 import FeaturePopupDialog from 'components/FeaturePopupDialog'
@@ -442,4 +443,34 @@ export function makeReactiveTooltip (Component, componentConfig = {}, tooltipCon
   const component = new TooltipComponent(componentConfig)
   tooltip.setContent(component.$mount().$el)
   return tooltip
+}
+
+export function makeBaseLayer (baseLayer, self) {
+  if (!baseLayer.layer) {
+    let layer
+    if (baseLayer.type === 'tilelayer') {
+      layer = L.tileLayer(baseLayer.url, baseLayer)
+    } else if (baseLayer.type === 'wms') {
+      layer = L.tileLayer.wms(baseLayer.url, baseLayer)
+    } else if (baseLayer.type === 'googleMutant') {
+      if (!L.gridLayer.googleMutant) {
+        console.warn('[Giscube Geoportal] Trying to add googleMutant layer without the necessary package installed. Use npm i leaflet.gridlayer.googlemutant to install it.')
+      } else {
+        gmapsInit(self.$config.google.apiKey)
+          .then(
+            layer = L.gridLayer.googleMutant(baseLayer.options)
+          )
+          .catch(
+            // Google maps api not ready yet, try later
+            setTimeout(function () {
+              makeBaseLayer(baseLayer)
+            }, 500)
+          )
+      }
+    } else {
+      console.warn(`Unsupported base layer type: ${baseLayer.type}`)
+    }
+    baseLayer.layer = layer
+  }
+  return baseLayer.layer
 }
