@@ -176,7 +176,7 @@ export default {
     },
     show () {
       if (this.layer) {
-        this.resultsLayer.addLayer(this.layer)
+        this.resultsLayer.addLayer(this.layer).bringToFront()
       }
     },
     pin () {
