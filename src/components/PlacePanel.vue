@@ -179,6 +179,13 @@ export default {
         this.resultsLayer.addLayer(this.layer).bringToFront()
       }
     },
+    idFromString (word) {
+      let number = 0
+      for (let i = 0; i < word.length; i++) {
+        number += word.charCodeAt(i)
+      }
+      return number
+    },
     pin () {
       if (!this.layer) {
         return
@@ -189,8 +196,9 @@ export default {
 
       const name = this.layerType === 'WMS' ? this.layerOptions.layerDescriptor.title : this.layerOptions.title
       const getfeatureinfoSupport = this.layerOptions.layerDescriptor && this.layerOptions.layerDescriptor.giscube && this.layerOptions.layerDescriptor.giscube.getfeatureinfo_support
+      const id = !isVoid(this.result.giscube_id) ? new GiscubeRef(this.result.giscube_id) : new GiscubeRef(this.idFromString(`${this.result.title}-${this.result.subtitle}`))
       this.$store.dispatch('map/addOverlay', {
-        id: !isVoid(this.result.giscube_id) && new GiscubeRef(this.result.giscube_id),
+        id,
         layer: this.layer,
         layerType: this.layerType,
         options: this.layerOptions.options,
