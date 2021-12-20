@@ -21,7 +21,9 @@ import { debounce } from 'lodash'
 import L from '../lib/leaflet'
 import { LMap, LGeoJson } from 'vue2-leaflet'
 import { mapState } from 'vuex'
+import MiniMap from 'leaflet-minimap'
 
+import { makeBaseLayer } from '../lib/geomUtils'
 import LayersControl from 'components/LayersControl.vue'
 require('microdisseny-leaflet-measure')
 require('microdisseny-leaflet-measure/dist/leaflet-measure.css')
@@ -95,6 +97,7 @@ export default {
     addControls () {
       this.addAttribution()
       this.addScaleControl()
+      this.addMiniMap()
       this.addZoomControl()
       this.addGeolocationControl()
       this.addMeasureControl()
@@ -124,6 +127,18 @@ export default {
     addGeolocationControl () {
       L.control.locate({ 'position': 'bottomright' })
         .addTo(this.map)
+    },
+    addMiniMap () {
+      const basemap = this.$config.minimap && this.$config.minimap.basemap
+      if (basemap) {
+        const layer = makeBaseLayer(basemap)
+        let options = this.$config.minimap.options || {}
+        options.minimized = options.minimized || true
+        options.toggleDisplay = options.toggleDisplay || true
+        options.collapsedHeight = 25
+        options.collapsedWidth = 25
+        new MiniMap(layer, options).addTo(this.map)
+      }
     },
     onMapReady () {
       if (this.map) {
@@ -175,7 +190,11 @@ export default {
 .center-row {
   height: 100%;
 }
-
+.leaflet-control-minimap-toggle-display.leaflet-control-minimap-toggle-display-bottomright {
+  background-image: url('../assets/globe-icon.png');
+  height: 19px!important;
+  width: 19px!important;
+}
 #map { height: 100%; width: 100%; background-color: #ddd; border: 1px dashed #ccc;
   cursor: default;
 }
