@@ -42,7 +42,7 @@
     "md5": "^2.2.1",
     "microdisseny-leaflet-measure": "git+https://github.com/Microdisseny/microdisseny-leaflet-measure.git",
     "moment": "^2.24.0",
-    "node-sass": "^4.13.0",
+    "node-sass": "^7.0.0",
     "point-in-polygon": "^1.0.1",
     "proj4": "^2.5.0",
     "quasar": "^1.9.1",
