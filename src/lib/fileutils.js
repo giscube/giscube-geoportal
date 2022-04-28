@@ -23,7 +23,7 @@ export function downloadDXF (data) {
   link.click()
 }
 
-export function convertGeoJsonToDXF (data, epsg = { label: 'Lat/Lon', code: 'EPSG:4326', def: '+title=WGS 84 (long/lat) +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees', format: ([x, y]) => `${y.toFixed(6)}°, ${x.toFixed(6)}°` }) {
+export function convertGeoJsonToDXF (data, epsg = { label: 'x/y', code: 'EPSG:25831', def: '+proj=utm +zone=31 +ellps=GRS80 +units=m +no_defs ' }) {
   let output = ''
 
   // Initial info
@@ -141,9 +141,9 @@ function _convertCoordArray (isClosed, coordArray, epsg) {
     output += '8\n'
     output += 'Mapia\n'
     output += '10\n'
-    output += coords[0] + '\n'
+    output += coords[0].toFixed(3) + '\n'
     output += '20\n'
-    output += coords[1] + '\n'
+    output += coords[1].toFixed(3) + '\n'
     output += '30\n'
 
     if (coords.length < 3) {
@@ -168,9 +168,9 @@ function _convertPoint (coordinates, epsg) {
   output += '8\n'
   output += 'Mapia\n'
   output += '10\n'
-  output += coords[0] + '\n'
+  output += coords[0].toFixed(3) + '\n'
   output += '20\n'
-  output += coords[1] + '\n'
+  output += coords[1].toFixed(3) + '\n'
   output += '30\n'
 
   if (coords.length < 3) {
