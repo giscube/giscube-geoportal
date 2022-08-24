@@ -54,11 +54,18 @@ export function createCatalog (context) {
 
 function _createLeaves (contents) {
   return contents.map(content => {
+    const hasFilters = content.filters && content.filters.length > 0
     return CatalogTreeResult.create({
       data: content,
-      header: 'leaf',
+      header: hasFilters ? 'leaf-filters' : 'leaf',
+      body: hasFilters ? 'leaf-filters' : 'leaf',
+      expandFilters: false,
       id: content.giscube_id,
-      label: content.title
+      label: content.title,
+      filters: hasFilters && content.filters.map(filter => {
+        filter['active'] = false
+        return filter
+      })
     })
   })
 }
@@ -124,4 +131,16 @@ function _searchInCatalogRecursive (id, branch) {
       }
     }
   }
+}
+
+export function setNodePropertyValue (context, { id, property, value }) {
+  const catalog = context.state.catalog
+  for (let i = 0; i < catalog.length; i++) {
+    let leaf = _searchInCatalogRecursive(id, catalog[i])
+    if (leaf) {
+      leaf[property] = value
+    }
+  }
+  context.state.catalog.push('changed')
+  context.state.catalog.pop()
 }

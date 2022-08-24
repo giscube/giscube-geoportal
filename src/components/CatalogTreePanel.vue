@@ -35,7 +35,7 @@
           </template>
 
           <template v-slot:header-leaf="prop">
-            <div class="q-mx-sm col-10" @click="catalogResults(prop.node)">
+            <div class="q-mr-xs col-10" @click="catalogResults(prop.node)">
               <q-btn icon="las la-info-circle" flat round size="sm" color="primary"/>
               {{ prop.node.label }}
             </div>
@@ -49,6 +49,37 @@
               {{ prop.node.data.description }}
             </div>
           </template>
+
+          <template v-slot:header-leaf-filters="prop">
+            <div class="q-mr-xs col-10" @click="catalogResults(prop.node)">
+              <q-btn icon="las la-info-circle" flat round size="sm" color="primary"/>
+              {{ prop.node.label }}
+            </div>
+            <div class="col-1 text-right">
+              <q-spinner class="text-right" v-if="loadingLayers.includes(prop.node.id)" />
+            </div>
+            <div class="col-1 text-right">
+              <q-btn
+                :icon="prop.node.expandFilters ? 'expand_less' : 'expand_more'"
+                flat round size="sm"
+                @click="expandLeafFilters(prop.node)"
+              />
+            </div>
+          </template>
+
+          <template v-slot:body-leaf-filters="prop" tick-color="red-1">
+            <div class="description q-pl-lg" v-if="prop.node.data.description">
+              {{ prop.node.data.description }}
+            </div>
+            <div v-show="prop.node.expandFilters">
+              <div class="q-pl-sm" v-for="(filter, filterIdx) in prop.node.filters" :key="filter.id">
+                <q-checkbox class="q-pl-sm text-black" v-model="filter.active" v-on:click.native="setLeafFilters(prop.node, filterIdx)" :label="filter.title"/>
+                <div class="description q-pl-xl" v-if="filter.description">
+                  {{ filter.description }}
+                </div>
+              </div>
+            </div>
+          </template>
         </q-tree>
       </div>
 
@@ -57,13 +88,15 @@
 </template>
 
 <script>
-import { QBtn, QIcon, QInput, QSpinner, QTree } from 'quasar'
+import { QBtn, QCheckbox, QIcon, QInput, QSpinner, QTree } from 'quasar'
 
 import { mapState } from 'vuex'
 
+import GiscubeRef from '../lib/refs/giscube'
+
 export default {
   components: {
-    QBtn, QIcon, QInput, QSpinner, QTree
+    QBtn, QCheckbox, QIcon, QInput, QSpinner, QTree
   },
   data () {
     return {
@@ -118,6 +151,13 @@ export default {
             this.loadingLayers.push(tickedId)
             this.$store.dispatch('catalogTree/searchInCatalog', tickedId)
               .then(leaf => {
+                if (leaf.filters && leaf.filters.length > 0 && leaf.filters.filter(filter => filter.active).length === 0) {
+                  leaf.filters = leaf.filters.map(filter => {
+                    filter.active = true
+                    return filter
+                  })
+                  this.setLeafFilters(leaf)
+                }
                 const layer = leaf.toLayer(this.$root)
                 this.$store.dispatch('map/addLayer', layer).then(() => {
                   this.loadingLayers = this.loadingLayers.filter(loadingLayers => loadingLayers !== tickedId)
@@ -129,6 +169,16 @@ export default {
         activeLayersId.forEach(layerId => {
           const layersToDeactivate = activeLayersId.filter(layerId => !ticked.includes(layerId.plainRef))
           layersToDeactivate.forEach(layerToDeactivate => {
+            this.$store.dispatch('catalogTree/searchInCatalog', layerToDeactivate.plainRef)
+              .then(leaf => {
+                if (leaf.filters && leaf.filters.length > 0 && leaf.filters.filter(filter => filter.active).length > 0) {
+                  leaf.filters = leaf.filters.map(filter => {
+                    filter.active = false
+                    return filter
+                  })
+                  this.setLeafFilters(leaf)
+                }
+              })
             this.$store.dispatch('map/removeOverlayById', layerToDeactivate)
           })
         })
@@ -158,6 +208,29 @@ export default {
     resetFilter () {
       this.$store.commit('catalogTree/setFilter', '')
       this.$refs.filter.focus()
+    },
+    expandLeafFilters (node) {
+      const config = {
+        id: node.id,
+        property: 'expandFilters',
+        value: !node.expandFilters
+      }
+      this.$store.dispatch('catalogTree/setNodePropertyValue', config)
+    },
+    setLeafFilters (node) {
+      const config = {
+        id: node.id,
+        property: 'filters',
+        value: node.filters
+      }
+      this.$store.dispatch('catalogTree/setNodePropertyValue', config)
+      this.$store.dispatch('map/removeOverlayById', new GiscubeRef(node.id))
+      if (node.filters.filter(filter => filter.active).length > 0) {
+        const layer = node.toLayer(this.$root)
+        this.$store.dispatch('map/addLayer', layer).then(() => {
+          this.loadingLayers = this.loadingLayers.filter(loadingLayers => loadingLayers !== node.id)
+        })
+      }
     },
     t (key) {
       return this.$t('tools.catalogTree.' + key)
