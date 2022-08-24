@@ -241,7 +241,7 @@ function createExternalLayerTMS ({ layerDescriptor, title, options, headers }) {
   })
 }
 
-function createExternalLayerGeoJSON ({ layerDescriptor, title, options, map, popupComponent = FeaturePopup, dialogComponent = FeaturePopupDialog, headers, metaOptions = {} }) {
+function createExternalLayerGeoJSON ({ layerDescriptor, title, options, map, popupComponent = FeaturePopup, dialogComponent = FeaturePopupDialog, headers, metaOptions = {}, filters }) {
   const { root } = metaOptions
   return new Promise((resolve, reject) => {
     axios.get(layerDescriptor.url, { headers })
@@ -261,7 +261,30 @@ function createExternalLayerGeoJSON ({ layerDescriptor, title, options, map, pop
           root
         })
 
-        const geoJsonLayer = L.geoJson(response.data, options)
+        let data = response.data
+        if (filters) {
+          data.features = response.data.features.filter(data => {
+            let isInFilter = false
+            for (let i = 0; i < filters.length; i++) {
+              let filter = Object.assign({}, filters[i])
+              if (!filter.active) {
+                continue
+              }
+              for (const prop in data.properties) {
+                filter.filter = filter.filter.replaceAll(new RegExp('\\b' + prop + '\\b', 'g'), `data.properties['${prop}']`)
+              }
+              if (filter.filter === filters[i].filter) {
+                break
+              }
+              // eslint-disable-next-line
+              if (eval(filter.filter)) {
+                return true
+              }
+            }
+            return isInFilter
+          })
+        }
+        const geoJsonLayer = L.geoJson(data, options)
         const shapetype = response.data.metadata.style.shapetype
         const isCluster = shapetype === 'marker' || shapetype === 'circle' || shapetype === 'image'
         const clusterOptions = isCluster && response.data.metadata.design.cluster
