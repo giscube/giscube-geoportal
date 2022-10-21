@@ -69,6 +69,11 @@ export default {
   methods: {
     open (download) {
       const url = download.url
+      if (download.type === 'url') {
+        window.open(url)
+        return
+      }
+
       this.openingFiles.push(url)
       const isAuthenticated = this.result.private || (this.result.origin && this.result.origin.auth)
       const headers = isAuthenticated ? this.$store.getters['auth/headers'] : void 0
