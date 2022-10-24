@@ -2,6 +2,7 @@
 import Vue from 'vue'
 import { QBtn, QIcon } from 'quasar'
 import L from 'src/lib/leaflet'
+import proj4 from 'proj4'
 
 import LatLngPopup from './LatLngPopup'
 import ResultPanelMixin from './ResultPanelMixin'
@@ -11,8 +12,8 @@ function coordsRegex () {
   return /^([\w.,]+),? ([\w.,]+)$/g
 }
 
-export function toCoords (coords) {
-  coords = coordsRegex().exec(coords)
+export function toCoords (coords, epsgs = null) {
+  coords = coordsRegex().exec(coords.trim())
   if (!coords) {
     return null
   }
@@ -21,6 +22,14 @@ export function toCoords (coords) {
   const lng = parseFloat(coords[2])
   if (isNaN(lat) || isNaN(lng)) {
     return null
+  }
+
+  if (!epsgs || epsgs.length !== 2) {
+    return [lat, lng]
+  }
+
+  if (lat > 360 || lng > 360) {
+    return proj4(epsgs[1].code, epsgs[0].code, [lat, lng]).reverse()
   }
 
   return [lat, lng]
@@ -82,7 +91,7 @@ export default {
         return
       }
 
-      const coords = toCoords(this.result.coords)
+      const coords = toCoords(this.result.coords, this.$config.epsgs)
       if (!coords) {
         this.error = 'Invalid coordinates'
         return
