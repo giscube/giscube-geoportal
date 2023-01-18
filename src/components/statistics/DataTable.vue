@@ -187,6 +187,7 @@ export default {
         name: field.name,
         label: this.$filter('capitalize')(field.name),
         field: row => field.getValue({ from: row }),
+        align: 'left',
         sortable: true,
         internalField: field
       }))
