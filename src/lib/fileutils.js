@@ -164,9 +164,11 @@ function _convertPoint (coordinates, epsg) {
   let output = ''
 
   output += '0\n'
-  output += 'TEXT\n'
+  output += 'POINT\n'
   output += '8\n'
   output += 'Mapia\n'
+  output += '100\n'
+  output += 'AcDbPoint\n'
   output += '10\n'
   output += coords[0].toFixed(3) + '\n'
   output += '20\n'
@@ -178,15 +180,6 @@ function _convertPoint (coordinates, epsg) {
   } else {
     output += altitude + '\n'
   }
-
-  output += '40\n'
-  output += '1\n'
-  output += '41\n'
-  output += '1\n'
-  output += '50\n'
-  output += '0\n'
-  output += '1\n'
-  output += 'X\n'
 
   return output
 }
