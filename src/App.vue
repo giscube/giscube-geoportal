@@ -37,6 +37,10 @@ export default {
   beforeMount () {
     this.$store.dispatch('auth/loadState')
     window.addEventListener('beforeunload', this.onLeave)
+    if (this.$config.oauth.userTracking && this.$store.state.auth.username) {
+      let headers = this.$store.getters['auth/headers']
+      axios.post(this.$config.oauth.userTracking, {}, { headers })
+    }
   },
   async mounted () {
     await this.$nextTick()
