@@ -249,6 +249,12 @@ export default {
           this.credentials.password = ''
           this.loading = false
         })
+        .then(() => {
+          if (this.$config.oauth.userTracking && this.$store.state.auth.username) {
+            let headers = this.$store.getters['auth/headers']
+            axios.post(this.$config.oauth.userTracking, {}, { headers })
+          }
+        })
         .catch(({ invalidCredentials }) => {
           if (invalidCredentials) {
             this.invalidCredentials = true
