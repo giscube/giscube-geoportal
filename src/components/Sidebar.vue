@@ -27,9 +27,10 @@
        @touchend="onToggleWidthClick"
        class="sidebar-close sidebar-toggle-width"
        ><q-icon
-        name="drag_indicator"
+        style="padding: 18px 18px"
+        name="code"
         color="white"
-        size="35px"
+        size="24px"
         /></a>
   </q-drawer>
 </template>
