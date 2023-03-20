@@ -1,7 +1,7 @@
 <template>
   <q-header class="giscube-header">
     <q-toolbar class="giscube-toolbar">
-      <a class="giscube-header-brand cursor-pointer" :href="brandLink" v-touch-hold:2500.mouse="infoPopup"><img :src="brandLogo"><span>{{ brandText }}</span></a>
+      <a class="giscube-header-brand cursor-pointer" :href="brandLink" v-touch-hold:2500.mouse="infoPopup"><img :src="brandLogo"><span v-html="brandText"></span></a>
 
       <header-item-holder
         v-for="(item, i) in headerTools"
