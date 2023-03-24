@@ -9,8 +9,7 @@
   >
     <l-popup ref="popup">
       <q-spinner v-if="!query.component" />
-      <component v-bind:is="query.component" :results='query.results' :latlng='query.latlng' @remove-query="_removeQuery">
-        test
+      <component v-bind:is="query.component" :results='query.results' :latlng='query.latlng' :feature="feature" :render-contents="customPopup" @remove-query="_removeQuery">
       </component>
       <div class="tools" v-if="query.component">
         <q-btn flat dense
@@ -31,9 +30,11 @@ import axios from 'axios'
 import convert from 'xml-js'
 
 import { LMarker, LPopup, findRealParent } from 'vue2-leaflet'
+import { makeTemplate } from 'src/lib/makeGeoJsonOptions'
 
 import LatLngPopup from 'components/LatLngPopup.vue'
 import FeatureInfoPopup from 'components/FeatureInfoPopup.vue'
+import PopupData from 'components/PopupData.vue'
 
 export default {
   name: 'query-on-click',
@@ -45,10 +46,12 @@ export default {
   },
   data () {
     return {
+      feature: null,
       map: null,
       mapClicks: 0,
       mapClickDelay: 300,
       mapClickTimer: null,
+      customPopup: null,
       query: null
     }
   },
@@ -128,7 +131,27 @@ export default {
       if (!query.results) {
         await this.queryOverlays(event, query).then(result => {
           query.results = result
-          query.component = FeatureInfoPopup
+          if (query.results) {
+            if (this.customPopup) {
+              query.component = PopupData
+              this.feature = { 'properties': {} }
+              query.results.forEach(element => {
+                let elements = []
+                if (element.elements) {
+                  element.elements.forEach(elem => {
+                    let dictAtributes = {}
+                    elem.elements.forEach(attribute => {
+                      dictAtributes[this.toSnakeCase(attribute.attributes.name)] = attribute.attributes.value
+                    })
+                    elements.push(dictAtributes)
+                  })
+                }
+                this.feature.properties[this.toSnakeCase(element.attributes.name)] = elements
+              })
+            } else {
+              query.component = FeatureInfoPopup
+            }
+          }
         })
       }
 
@@ -147,7 +170,6 @@ export default {
           this.query = query
         })
       }
-
       if (this.$refs.popup) {
         // force the popup to be created again with proper dimensions
         this.$refs.popup.mapObject.update()
@@ -186,6 +208,9 @@ export default {
         }
 
         let wmsParams = layer.layer.wmsParams
+        if (layer.popup) {
+          this.customPopup = makeTemplate(layer.popup)
+        }
 
         var sw = this.map.getBounds().getSouthWest()
         var ne = this.map.getBounds().getNorthEast()
@@ -215,7 +240,7 @@ export default {
           .then(response => {
             let result = convert.xml2js(response.data, { compact: false })
             let results = result.elements[0].elements
-            if (results.length > 0 && results[0].elements) {
+            if (results.length > 0 && results.some(layer => layer.elements)) {
               queryResults = results
             }
           })
@@ -245,6 +270,15 @@ export default {
     },
     _getMapOverlays () {
       return this.$store.state.map.layers.overlays.filter(overlay => overlay.visible)
+    },
+    toSnakeCase (str) {
+      if (str !== 'undefined') {
+        const strArr = str.split(' ')
+        const snakeArr = strArr.reduce((acc, val) => {
+          return acc.concat(val.toLowerCase())
+        }, [])
+        return snakeArr.join('_')
+      } return str
     }
   }
 }

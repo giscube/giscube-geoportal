@@ -85,6 +85,7 @@ export function setOverlays (context, overlays) {
 export function addOverlay (context, { id, layer, layerType, name, opacity, options, getfeatureinfoSupport }) {
   const overlays = context.state.layers.overlays
   const overlaysGroup = context.state.layers._overlaysGroup
+  const popup = options.popup
   if (id === void 0) {
     id = unique()
   }
@@ -114,6 +115,7 @@ export function addOverlay (context, { id, layer, layerType, name, opacity, opti
       layerType,
       options,
       getfeatureinfoSupport,
+      popup,
       visible: false,
       setVisible (value) {
         if (typeof value !== 'boolean') {
