@@ -3,15 +3,19 @@
        @dblclick.prevent.stop=""
        id="giscube-layers-control"
        class="giscube-layers-control leaflet-control"
-       :class="{'showActions': showActions}">
+       :class="{'showActions': showActions}"
+       >
 
-    <div class="flex-nowrap-start layers-title" @click="collapsed = !collapsed">
+    <div
+      class="flex-nowrap-start layers-title"
+      @click="collapsed = !collapsed"
+      :style="collapsed ? 'border-radius: 4px;' : 'border-radius: 4px 4px 0px 0px;'"
+    >
       <a class="flex-icon link"
          ><q-icon name="layers" size="18px"/></a>
-      <a class="flex-label link">{{ $t('names.layers') }}</a>
-      <a class="flex-icon link">
+      <a v-show="!collapsed" class="flex-label link">{{ $t('names.layers') }}</a>
+      <a v-show="!collapsed" class="flex-icon link">
         <q-icon
-          v-show="!collapsed"
           flat round
           name="close"
           size="12px"
@@ -24,7 +28,10 @@
         <li class="flex-nowrap-start link" @click="baseLayerSelect=!baseLayerSelect">
           <a class="flex-icon"
              ><q-icon size="1.5em" name="ion-globe" label="base layer"></q-icon></a>
-          <a class="flex-label">{{ baseLayerSelected.name }}</a>
+          <a class="flex-label">
+            <div class="q-pb-xs"> Canvia el mapa base </div>
+            <i class="text-grey-6">{{ baseLayerSelected.name }}</i>
+          </a>
           <span class="flex-icon"></span>
           <span class="flex-icon"></span>
         </li>
@@ -38,8 +45,12 @@
           <li v-for="(layer, i) in baseLayers" :key="layer.id"
               class="flex-nowrap-start link"
               @click="setBaseLayer(i)">
-            <a class="flex-icon option gray"
-              ><q-icon color="grey" size="2em" name="keyboard_arrow_right" /></a>
+            <a class="flex-icon option gray">
+              <q-icon
+                size="1em"
+                :name="baseLayerSelected === layer ? 'radio_button_checked' : 'radio_button_unchecked'"
+              />
+            </a>
             <a class="flex-label link">{{ layer.name }}</a>
           </li>
         </q-scroll-area>
@@ -93,7 +104,7 @@ export default {
   data () {
     return {
       baseLayerSelect: false,
-      collapsed: this.$q.screen.lt.md,
+      collapsed: true,
       showActions: false,
       layerLastId: 0,
       lastZIndex: 0,
@@ -170,12 +181,13 @@ export default {
 <style lang="scss">
 .giscube-layers-control {
   display: block;
-  background-color: white;
+  background-color: rgba(255,255,255,.8);
   color: #212529;
   box-shadow: 0 4px 8px rgba(0,0,0,.3);
   max-width: 300px;
   line-height: 1em;
   z-index: 1000;
+  border-radius: 4px;
 
   .flex-nowrap-start {
     display: flex;
@@ -201,16 +213,16 @@ export default {
   }
 
   div.layers-title {
-    background: #0b1923;
+    background: rgba(255,255,255,.9);
     font-family: 'Lato', sans-serif;
     font-weight: 400;
     font-size: 1.3em;
     text-transform: uppercase;
     text-decoration: none;
-    padding-right: 7px;
+    // padding-right: 7px;
 
     a {
-      color: white;
+      color: black;
     }
   }
 
@@ -231,7 +243,7 @@ export default {
 
   div.sep {
     height: 1px;
-    border-bottom: 1px solid #9c9c9c;
+    border-bottom: 1px solid #d6d6d6;
   }
 
   .gray-svg svg {
