@@ -4,6 +4,7 @@ import 'leaflet.markercluster'
 import 'leaflet.path.drag'
 import 'leaflet-editable'
 import './leaflet-offset'
+import './leaflet-grayscale'
 
 try {
   require('leaflet.gridlayer.googlemutant')

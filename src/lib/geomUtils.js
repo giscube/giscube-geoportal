@@ -228,13 +228,18 @@ function createExternalLayerTMS ({ layerDescriptor, title, options, headers }) {
     transparent: true,
     maxZoom: 22
   }
-  const allowedOptions = ['minZoom', 'maxZoom', 'tms', 'attribution', 'opacity']
+  const allowedOptions = ['minZoom', 'maxZoom', 'tms', 'attribution', 'opacity', 'imageSize']
   const layerOptions = applyExtraOptions(defaultOptions, options, allowedOptions)
   if (headers && 'Authorization' in headers && !layerDescriptor.url.includes('access_token')) {
     const accessToken = headers['Authorization'].replace('Bearer ', '')
     layerDescriptor.url += '?access_token=' + accessToken
   }
-  const tms = L.tileLayer(layerDescriptor.url, layerOptions)
+  let tms
+  if (options.grayscale) {
+    tms = L.tileLayer.grayscale(layerDescriptor.url, layerOptions)
+  } else {
+    tms = L.tileLayer(layerDescriptor.url, layerOptions)
+  }
   return Promise.resolve({
     type: 'TMS',
     layer: setTileLayerBoundary(tms, options)
@@ -472,7 +477,11 @@ export function makeBaseLayer (baseLayer, self) {
   if (!baseLayer.layer) {
     let layer
     if (baseLayer.type === 'tilelayer') {
-      layer = L.tileLayer(baseLayer.url, baseLayer)
+      if (baseLayer.grayscale) {
+        layer = L.tileLayer.grayscale(baseLayer.url, baseLayer)
+      } else {
+        layer = L.tileLayer(baseLayer.url, baseLayer)
+      }
     } else if (baseLayer.type === 'wms') {
       layer = L.tileLayer.wms(baseLayer.url, baseLayer)
     } else if (baseLayer.type === 'googleMutant') {
