@@ -3,6 +3,7 @@ import 'leaflet.locatecontrol'
 import 'leaflet.markercluster'
 import 'leaflet.path.drag'
 import 'leaflet-editable'
+import 'leaflet-easybutton'
 import './leaflet-offset'
 import './leaflet-grayscale'
 
@@ -23,6 +24,7 @@ require('../../node_modules/leaflet/dist/leaflet.css')
 require('../../node_modules/leaflet.markercluster/dist/MarkerCluster.css')
 require('../../node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css')
 require('../../node_modules/leaflet-minimap/dist/Control.MiniMap.min.css')
+require('../../node_modules/leaflet-easybutton/src/easy-button.css')
 
 // FIX leaflet's default icon path problems with webpack
 delete L.Icon.Default.prototype._getIconUrl

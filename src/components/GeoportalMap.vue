@@ -97,9 +97,10 @@ export default {
     addControls () {
       this.addAttribution()
       this.addScaleControl()
+      this.addToolsBar()
+      this.addGeolocationControl()
       this.addMiniMap()
       this.addZoomControl()
-      this.addGeolocationControl()
       this.addMeasureControl()
     },
     addAttribution () {
@@ -108,6 +109,43 @@ export default {
         position: 'bottomright'
       })
         .addTo(this.map)
+    },
+    addToolsBar () {
+      const $store = this.$store
+      const $router = this.$router
+      L.easyButton({
+        position: 'bottomright',
+        id: 'street-view-control',
+        states: [{
+          icon: '<span class="las la-street-view" style="font-size: 18px; margin-top: 5px"></span>',
+          title: this.$t('tools.streetview.headerName'),
+          onClick: function (btn, map) {
+            $router.push({ name: 'streetview' })
+          }
+        }]
+      }).addTo(this.map)
+      L.easyButton({
+        position: 'bottomright',
+        id: 'draw-control',
+        states: [{
+          icon: '<span class="las la-pencil-ruler" style="font-size: 18px; margin-top: 5px"></span>',
+          title: this.$t('tools.draw.title'),
+          onClick: function (btn, map) {
+            $router.push({ name: 'draw' })
+          }
+        }]
+      }).addTo(this.map)
+      L.easyButton({
+        position: 'bottomright',
+        id: 'print-control',
+        states: [{
+          icon: '<span class="las la-print" style="font-size: 18px; margin-top: 6px"></span>',
+          title: this.$t('tools.print.headerName'),
+          onClick: function (btn, map) {
+            $store.dispatch('layout/setPrinting', true)
+          }
+        }]
+      }).addTo(this.map)
     },
     addMeasureControl () {
       this.map.measureControl = L.control.measure({
@@ -197,5 +235,25 @@ export default {
 }
 #map { height: 100%; width: 100%; background-color: #ddd; border: 1px dashed #ccc;
   cursor: default;
+}
+.leaflet-bar.leaflet-control {
+  border: 0px;
+}
+.leaflet-bottom.leaflet-right {
+  margin-right: 5px;
+  margin-bottom: -5px;
+}
+.leaflet-bottom.leaflet-right .leaflet-control {
+  margin-right: 5px;
+}
+.leaflet-bottom .leaflet-control {
+  margin-bottom: 5px;
+}
+.leaflet-control.easy-button-container {
+  clear: none;
+}
+.leaflet-control-scale.leaflet-control {
+  padding-top: 12px;
+  clear: none;
 }
 </style>
