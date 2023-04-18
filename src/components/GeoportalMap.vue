@@ -98,9 +98,9 @@ export default {
       this.addAttribution()
       this.addScaleControl()
       this.addToolsBar()
-      this.addGeolocationControl()
       this.addMiniMap()
       this.addZoomControl()
+      this.addGeolocationControl()
       this.addMeasureControl()
     },
     addAttribution () {
@@ -143,6 +143,18 @@ export default {
           title: this.$t('tools.print.headerName'),
           onClick: function (btn, map) {
             $store.dispatch('layout/setPrinting', true)
+          }
+        }]
+      }).addTo(this.map)
+      L.easyButton({
+        position: 'bottomright',
+        id: 'share-control',
+        leafletClasses: false,
+        states: [{
+          icon: '<span class="material-icons" style="font-size: 16px; margin-top: -1px">share</span>',
+          title: this.$t('tools.share.headerName'),
+          onClick: function (btn, map) {
+            $router.push({ name: 'share' })
           }
         }]
       }).addTo(this.map)
@@ -251,6 +263,17 @@ export default {
 }
 .leaflet-control.easy-button-container {
   clear: none;
+}
+#share-control {
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: #fff;
+  border-radius: 4px;
+}
+#share-control:hover {
+  background-color: #f4f4f4;
+  cursor: pointer;
 }
 .leaflet-control-scale.leaflet-control {
   padding-top: 12px;
