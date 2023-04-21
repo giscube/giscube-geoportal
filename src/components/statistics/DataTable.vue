@@ -1,7 +1,7 @@
 <template>
   <q-table
     v-if="data"
-    class="limit-parent"
+    class="limit-parent sticky-header"
     dense
     :data="data"
     :columns="columns"
@@ -267,3 +267,20 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.sticky-header {
+  height: 310px;
+}
+.sticky-header .q-table__top,
+.sticky-header thead tr:first-child th {
+  background-color: #fff;
+}
+.sticky-header thead tr th {
+  position: sticky;
+  z-index: 1;
+}
+.sticky-header thead tr:first-child th {
+  top: 0;
+}
+</style>
