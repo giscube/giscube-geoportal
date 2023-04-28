@@ -29,6 +29,9 @@ export default base.merge({
       lng: 2.812
     }
   },
+  incidence: {
+    url: 'http://localhost:8000/api/v2/giscube/incidence/'
+  },
   locale: {
     main: 'ca',
     fallback: 'en-us'

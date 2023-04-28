@@ -12,6 +12,7 @@ export default {
     overlays: [],
     _overlaysGroup: L.layerGroup()
   },
+  incidence: L.layerGroup(),
   shared: L.layerGroup(),
   hideLayersControl: false,
   drawing: false // changed by map events set in GeoportalMap

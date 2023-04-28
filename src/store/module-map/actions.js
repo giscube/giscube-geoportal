@@ -13,15 +13,18 @@ export function setMap (context, value) {
   context.dispatch('stopDrawing')
 
   const sharedGroup = context.state.shared
+  const incidenceGroup = context.state.incidence
   const overlaysGroup = context.state.layers._overlaysGroup
   const resultLayer = context.rootState.search.resultsLayer
 
   sharedGroup.remove()
+  incidenceGroup.remove()
   overlaysGroup.remove()
   resultLayer.remove()
 
   if (value) {
     sharedGroup.addTo(value)
+    incidenceGroup.addTo(value)
     overlaysGroup.addTo(value)
     resultLayer.addTo(value)
   }
@@ -233,6 +236,10 @@ export async function addLayer (context, { id, layerDescriptor, title, options, 
     }
     return false
   }
+}
+
+export function addIncidenceLayer (context, layer) {
+  context.state.incidence.addLayer(layer)
 }
 
 export function addSharedLayer (context, layer) {
