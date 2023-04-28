@@ -11,6 +11,7 @@ import CoordsPanel from 'components/CoordsPanel'
 import DataPanel from 'components/data-layer/DataPanel'
 import Sidebar from 'components/Sidebar'
 import DrawPanel from 'components/DrawPanel'
+import IncidencePanel from 'components/IncidencePanel'
 import PlacePanel from 'components/PlacePanel'
 import PlacePanelStrategy from 'components/PlacePanelStrategy'
 import SearchBar from 'components/SearchBar'
@@ -49,6 +50,7 @@ export {
   GiscubeLayout,
   Sidebar,
   DrawPanel,
+  IncidencePanel,
   PlacePanel,
   PlacePanelStrategy,
   SearchBar,

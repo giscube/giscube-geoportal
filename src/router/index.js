@@ -7,6 +7,7 @@ import HelpPanel from 'components/HelpPanel'
 import HomePanel from 'components/HomePanel'
 import AuthPanel from 'components/AuthPanel'
 import DrawPanel from 'components/DrawPanel'
+import IncidencePanel from 'components/IncidencePanel'
 import PlacePanelStrategy from 'components/PlacePanelStrategy'
 import SearchPanel from 'components/SearchPanel'
 import SharePanel from 'components/SharePanel'
@@ -30,6 +31,7 @@ export default function ({ Vue, store }) {
         { path: 'help/', component: HelpPanel, name: 'help' },
         { path: 'home/', component: HomePanel, name: 'home' },
         { path: 'draw/', component: DrawPanel, name: 'draw' },
+        { path: 'incidence/', component: IncidencePanel, name: 'incidence' },
         { path: 'place/:q*', component: PlacePanelStrategy, name: 'place' },
         { path: 'search/:q*', component: SearchPanel, name: 'search' },
         { path: 'share', component: SharePanel, name: 'share' },

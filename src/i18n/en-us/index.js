@@ -192,6 +192,23 @@ export default {
       headerName: 'Home',
       help: 'Go to the inital map view.'
     },
+    incidence: {
+      headerName: 'Incidence',
+      title: 'Create and send incidence',
+      help: 'Draw geometries on the map and measure its distances or areas.',
+
+      titleInput: 'Title',
+      descriptionInput: 'Description',
+      emailInput: 'Email',
+      errorMessage: 'Please enter a valid email address.',
+      post: 'Post',
+      message: 'Incidence sent',
+
+      area: 'Area',
+      delete: 'Delete geometries',
+      marker: 'Point',
+      stop: 'Stop drawing'
+    },
     print: {
       headerName: 'Print',
       help: 'Print the map.'

@@ -92,6 +92,7 @@ export default new Options({
       'streetview',
       'data',
       'draw',
+      'incidence',
       'print',
       'help',
       'contact',
@@ -167,6 +168,10 @@ export default new Options({
     draw: {
       icon: 'las la-ruler-horizontal',
       to: 'draw'
+    },
+    incidence: {
+      icon: 'las la-exclamation-triangle',
+      to: 'incidence'
     },
     fullscreen: {
       supported () {

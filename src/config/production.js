@@ -16,6 +16,9 @@ export default base.merge({
   google: {
     apiKey: 'AIzaSyDp_TZ0MTqUi18tC2qk_ifhXziqoJj-ntU' // giscube.org only ;)
   },
+  incidence: {
+    url: 'https://www.giscube.org/apps/api/v2/giscube/incidence/'
+  },
   searches: [
     {
       name: 'geoportal',

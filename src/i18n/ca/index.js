@@ -194,6 +194,23 @@ export default {
       headerName: 'Inici',
       help: 'Recupera la vista inicial.'
     },
+    incidence: {
+      headerName: 'Incidència',
+      title: 'Crear i enviar incidència',
+      help: 'Crear una incidència afegint un títol, una descripció i un correu i envia-la.',
+
+      titleInput: 'Títol',
+      descriptionInput: 'Descripció',
+      emailInput: 'Correu electrònic',
+      errorMessage: 'Si us plau, introdueix una adreça de correu electrònic vàlida.',
+      post: 'Enviar',
+      message: 'Incidència enviada',
+
+      area: 'Àrea',
+      delete: 'Eliminar geometries',
+      marker: 'Punt',
+      stop: 'Parar de dibuixar'
+    },
     print: {
       headerName: 'Impressió',
       help: 'Impressió del mapa'
