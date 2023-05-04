@@ -269,9 +269,6 @@ export default {
 </script>
 
 <style scoped>
-.sticky-header {
-  height: 310px;
-}
 .sticky-header .q-table__top,
 .sticky-header thead tr:first-child th {
   background-color: #fff;
