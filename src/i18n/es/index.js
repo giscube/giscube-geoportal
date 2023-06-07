@@ -114,6 +114,10 @@ export default {
 
       noItems: 'No se han encontrado elementos en esta categoría'
     },
+    cleanMap: {
+      headerName: 'Limpiar mapa',
+      title: 'Limpiar mapa'
+    },
     contact: {
       headerName: 'Contacto',
       help: 'Datos de contacto por si encontráis algún error o problema'

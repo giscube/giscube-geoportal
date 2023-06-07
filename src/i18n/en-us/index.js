@@ -114,6 +114,10 @@ export default {
 
       noItems: 'No items found in this subcategory'
     },
+    cleanMap: {
+      headerName: 'Clean mapa',
+      title: 'Clean mapa'
+    },
     contact: {
       headerName: 'Contact',
       help: 'Contact to report to if you find any error or problem.'

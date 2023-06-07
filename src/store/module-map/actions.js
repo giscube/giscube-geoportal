@@ -153,6 +153,13 @@ export function addOverlay (context, { id, layer, layerType, name, opacity, opti
   }
 }
 
+export function removeAllOverlays (context) {
+  const overlays = [...context.state.layers.overlays]
+  overlays.forEach(overlay => {
+    context.dispatch('removeOverlay', overlay)
+  })
+}
+
 export function removeOverlay (context, overlay) {
   const overlays = context.state.layers.overlays
   const i = overlays.indexOf(overlay)
@@ -242,8 +249,13 @@ export function addIncidenceLayer (context, layer) {
   context.state.incidence.addLayer(layer)
 }
 
+export function updateSharedLayers (context) {
+  context.state.sharedLayers = context.state.shared.getLayers()
+}
+
 export function addSharedLayer (context, layer) {
   context.state.shared.addLayer(layer)
+  context.dispatch('updateSharedLayers')
 }
 
 export function addDefaultLayers (context) {
@@ -258,4 +270,25 @@ export function addDefaultLayers (context) {
       context.dispatch('addLayer', layer)
     }, 0)
   })
+}
+
+export function removeMeasurements (context) {
+  const measureLayers = context.state.mapObject.measureControl.measures.map(measure => measure.layer)
+  measureLayers.forEach(layer => {
+    layer.remove()
+  })
+}
+
+export function removeSharedDrawings (context) {
+  const shared = context.state.shared.getLayers()
+  shared.forEach(layer => {
+    context.state.shared.removeLayer(layer)
+  })
+  context.dispatch('updateSharedLayers')
+}
+
+export function cleanMap (context) {
+  context.dispatch('removeAllOverlays')
+  context.dispatch('removeSharedDrawings')
+  context.dispatch('removeMeasurements')
 }

@@ -157,6 +157,12 @@ export default new Options({
       icon: 'las la-compass',
       to: 'catalog'
     },
+    cleanMap: {
+      icon: 'layers_clear',
+      action () {
+        this.$store.dispatch('map/cleanMap')
+      }
+    },
     contact: {
       icon: 'las la-envelope',
       to: 'contact'

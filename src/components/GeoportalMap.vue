@@ -126,6 +126,17 @@ export default {
       }).addTo(this.map)
       L.easyButton({
         position: 'bottomright',
+        id: 'clean-map',
+        states: [{
+          icon: '<span class="material-icons" style="font-size: 16px; margin-top: -1px">layers_clear</span>',
+          title: this.$t('tools.cleanMap.headerName'),
+          onClick: function (btn, map) {
+            $store.dispatch('map/cleanMap')
+          }
+        }]
+      }).addTo(this.map)
+      L.easyButton({
+        position: 'bottomright',
         id: 'draw-control',
         states: [{
           icon: '<span class="las la-pencil-ruler" style="font-size: 18px; margin-top: 5px"></span>',

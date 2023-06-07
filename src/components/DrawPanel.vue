@@ -148,8 +148,7 @@ export default {
       measuring: false,
       measureArea: null,
       measureCircle: false,
-      radius: null,
-      sharedLayers: []
+      radius: null
     }
   },
   computed: {
@@ -165,6 +164,9 @@ export default {
     },
     shared () {
       return this.$store.state.map.shared
+    },
+    sharedLayers () {
+      return this.$store.state.map.sharedLayers
     }
   },
   watch: {
@@ -186,7 +188,7 @@ export default {
     },
     updateSharedLayers () {
       this.$nextTick(() => {
-        this.sharedLayers = this.shared.getLayers()
+        this.$store.dispatch('map/updateSharedLayers')
       })
     },
     layerText (layer) {

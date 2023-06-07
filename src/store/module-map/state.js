@@ -14,6 +14,7 @@ export default {
   },
   incidence: L.layerGroup(),
   shared: L.layerGroup(),
+  sharedLayers: [],
   hideLayersControl: false,
   drawing: false // changed by map events set in GeoportalMap
 }
