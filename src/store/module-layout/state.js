@@ -9,5 +9,6 @@ export default {
   leftDrawerSize: 0,
   sidebarOpen: false,
   printing: false,
-  dialogs: []
+  dialogs: [],
+  toolsControlVisible: true
 }

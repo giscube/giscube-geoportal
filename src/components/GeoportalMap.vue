@@ -68,6 +68,9 @@ export default {
     },
     mainTable () {
       return this.$store.state.dataLayer.table
+    },
+    toolsControlVisible () {
+      return this.$store.state.layout.toolsControlVisible
     }
   },
   watch: {
@@ -79,6 +82,13 @@ export default {
         if (newValue) {
           newValue.addTo(this.map)
         }
+      }
+    },
+    toolsControlVisible: {
+      handler (isVisible) {
+        const toolsBar = document.getElementsByClassName('easy-button-container')
+        Array.from(toolsBar).forEach(element => { element.style.display = isVisible ? 'block' : 'none' })
+        document.getElementById('share-control').style.display = isVisible ? 'block' : 'none'
       }
     }
   },

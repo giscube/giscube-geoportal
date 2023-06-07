@@ -52,8 +52,10 @@ export function setLayout (state, value) {
     state.headerVisible = false
     state.sidebarVisible = false
     state.sidebarOpen = false
+    state.toolsControlVisible = false
   } else {
     state.headerVisible = true
     state.sidebarVisible = true
+    state.toolsControlVisible = true
   }
 }
