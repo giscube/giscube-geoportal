@@ -78,7 +78,9 @@ export default {
     },
     results () {
       return this.$store.state.map.layers.overlays
-        .map(overlay => ({ ref: overlay.id, opacity: overlay.opacity }))
+        .map(overlay => {
+          return ({ ref: overlay.id, opacity: overlay.getOpacity() })
+        })
         .filter(({ ref }) => ref.canOpen && ref.canOpen())
     },
     queryStr () {

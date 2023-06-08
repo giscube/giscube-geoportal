@@ -99,7 +99,7 @@ export function addOverlay (context, { id, layer, layerType, name, opacity, opti
       existing.name = name
     }
     if (opacity === void 0) {
-      opacity = existing.opacity
+      opacity = existing.getOpacity()
     }
 
     if (existing.layer !== layer) {
@@ -137,10 +137,27 @@ export function addOverlay (context, { id, layer, layerType, name, opacity, opti
       },
       opacity: 1,
       setOpacity (value) {
-        if (this.layer.setOpacity) {
+        if (layerType.toLowerCase() === 'geojson') {
+          if (this.layer.setStyle) {
+            this.layer.setStyle({ opacity: value })
+          } else {
+            this.layer.eachLayer(layer => {
+              layer.setStyle({ opacity: value })
+            })
+          }
+          this.opacity = value
+        } else if (this.layer.setOpacity) {
           this.layer.setOpacity(value)
           this.opacity = value
         }
+      },
+      getOpacity () {
+        if (layerType.toLowerCase() === 'geojson') {
+          return layer.getLayers && layer.getLayers()[0].options.opacity
+        } else if (layerType.toLowerCase() === 'tms' || layerType.toLowerCase() === 'wms') {
+          return layer.options.opacity
+        }
+        return 1
       }
     }
     if (!isVoid(opacity)) {
