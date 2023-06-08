@@ -51,6 +51,12 @@ params.layout = params.la = {
   multi: behaviors.overrides
 }
 
+params.catalog = params.ca = {
+  key: 'ca',
+  type: types.string,
+  multi: behaviors.overrides
+}
+
 params.zoom = params.z = {
   key: 'z',
   type: types.number,

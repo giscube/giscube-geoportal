@@ -37,6 +37,12 @@
           :value="hideLayersControl"
           v-model="hideLayersControl"
         />
+        <br>
+        <q-toggle
+          :label="t('catalogState')"
+          :value="categoriesOpen"
+          v-model="catalogState"
+        />
       </div>
     </div>
   </div>
@@ -64,6 +70,7 @@ export default {
     return {
       layout: null,
       hideLayersControl: false,
+      catalogState: false,
       message: '',
       options: {},
       urlBase
@@ -75,6 +82,9 @@ export default {
     },
     mapState () {
       return this.$store.state.map.state
+    },
+    categoriesOpen () {
+      return this.catalogState && this.$store.state.catalogTree.categoriesOpen
     },
     results () {
       return this.$store.state.map.layers.overlays
@@ -91,6 +101,7 @@ export default {
         ...this.mapState,
         message: this.message,
         layout: this.layout,
+        catalog: this.categoriesOpen,
         hideLayersControl: this.hideLayersControl,
         geom: [
           ...this.sharedLayer.getLayers(),
@@ -157,6 +168,13 @@ export default {
           })
         } else {
           this.applyMapQuery(query, map)
+        }
+
+        const catalogState = ShareQuery.extract(query, 'ca')
+        if (catalogState) {
+          const categoriesOpen = catalogState.split(',').map(id => parseInt(id))
+          this.$store.commit('catalogTree/setCategoriesOpen', categoriesOpen)
+          redirectTo = 'catalog'
         }
 
         if (redirectTo) {

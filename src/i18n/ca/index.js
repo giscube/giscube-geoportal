@@ -236,6 +236,7 @@ export default {
       title: 'Comparteix',
       help: 'Comparteixi el mapa actual amb les geometries que hagi dibuixat.',
 
+      catalogState: 'Estat del catàleg',
       message: '@:names.message',
       options: '@:names.options',
       openMessage: 'Obrir @:names.message',

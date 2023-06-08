@@ -234,6 +234,7 @@ export default {
       title: 'Share',
       help: 'Share map with the drawn geometries.',
 
+      catalogState: 'Estado del catálogo',
       message: '@:names.message',
       options: '@:names.options',
       openMessage: 'Open @:names.message',

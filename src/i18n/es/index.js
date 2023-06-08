@@ -219,6 +219,7 @@ export default {
       title: 'Comparte',
       help: 'Comparte el mapa actual con las geometrías que haya dibujado.',
 
+      catalogState: 'Catalog state',
       message: '@:names.message',
       options: '@:names.options',
       openMessage: 'Abrir @:names.message',
