@@ -58,6 +58,7 @@ export default {
       const { width, height } = this.$refs.layout
       this.$store.commit('layout/size', { width, height })
       this.$store.dispatch('layout/setSidebarOpen', true)
+      this.$store.dispatch('map/reorderOverlay')
     })
   },
   computed: mapState({

@@ -229,7 +229,7 @@ export default {
             add()
           }
         }
-        addAll()
+        addAll().then(() => this.$store.dispatch('map/reorderOverlay'))
       }
     },
     makePopup ({ map, layer }) {
