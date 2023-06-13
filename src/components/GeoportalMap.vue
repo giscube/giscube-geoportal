@@ -121,8 +121,8 @@ export default {
         .addTo(this.map)
     },
     addToolsBar () {
-      const $store = this.$store
-      const $router = this.$router
+      const tools = this.$config.tools
+      const _onToolClick = this._onToolClick
       L.easyButton({
         position: 'bottomright',
         id: 'street-view-control',
@@ -130,7 +130,7 @@ export default {
           icon: '<span class="las la-street-view" style="font-size: 18px; margin-top: 5px"></span>',
           title: this.$t('tools.streetview.headerName'),
           onClick: function (btn, map) {
-            $router.push({ name: 'streetview' })
+            _onToolClick(tools.streetview)
           }
         }]
       }).addTo(this.map)
@@ -138,10 +138,10 @@ export default {
         position: 'bottomright',
         id: 'clean-map',
         states: [{
-          icon: '<span class="material-icons" style="font-size: 16px; margin-top: -1px">layers_clear</span>',
+          icon: `<span class="material-icons" style="font-size: 16px; margin-top: -1px">${tools.cleanMap.icon}</span>`,
           title: this.$t('tools.cleanMap.headerName'),
           onClick: function (btn, map) {
-            $store.dispatch('map/cleanMap')
+            _onToolClick(tools.cleanMap)
           }
         }]
       }).addTo(this.map)
@@ -149,10 +149,10 @@ export default {
         position: 'bottomright',
         id: 'draw-control',
         states: [{
-          icon: '<span class="las la-pencil-ruler" style="font-size: 18px; margin-top: 5px"></span>',
+          icon: `<span class="${tools.draw.icon}" style="font-size: 18px; margin-top: 6px"></span>`,
           title: this.$t('tools.draw.title'),
           onClick: function (btn, map) {
-            $router.push({ name: 'draw' })
+            _onToolClick(tools.draw)
           }
         }]
       }).addTo(this.map)
@@ -160,10 +160,10 @@ export default {
         position: 'bottomright',
         id: 'print-control',
         states: [{
-          icon: '<span class="las la-print" style="font-size: 18px; margin-top: 6px"></span>',
+          icon: `<span class="${tools.print.icon}" style="font-size: 18px; margin-top: 6px"></span>`,
           title: this.$t('tools.print.headerName'),
           onClick: function (btn, map) {
-            $store.dispatch('layout/setPrinting', true)
+            _onToolClick(tools.print)
           }
         }]
       }).addTo(this.map)
@@ -172,10 +172,10 @@ export default {
         id: 'share-control',
         leafletClasses: false,
         states: [{
-          icon: '<span class="material-icons" style="font-size: 16px; margin-top: -1px">share</span>',
+          icon: `<span class="material-icons" style="font-size: 16px; margin-top: -1px">${tools.share.icon}</span>`,
           title: this.$t('tools.share.headerName'),
           onClick: function (btn, map) {
-            $router.push({ name: 'share' })
+            _onToolClick(tools.share)
           }
         }]
       }).addTo(this.map)
@@ -252,6 +252,27 @@ export default {
     },
     _setDrawing (value) {
       this.$store.commit('map/drawing', value)
+    },
+    _onToolClick (tool) {
+      if (tool.to) {
+        this.$emit('sidebar-visibility-changed', true)
+        this.$router.push({ name: tool.to })
+      }
+      if (tool.action) {
+        tool.action.call(this, tool)
+      }
+      if (tool.emit) {
+        this.emit(this._getOrCall(tool, this))
+      }
+    },
+    _getOrCall (tool) {
+      if (tool.emit) {
+        if (typeof tool.emit === 'function') {
+          return tool.emit.call(this, tool)
+        } else {
+          return tool.emit
+        }
+      }
     }
   }
 }
