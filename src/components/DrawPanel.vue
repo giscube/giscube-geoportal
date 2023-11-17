@@ -316,16 +316,24 @@ export default {
       this.shared.removeLayer(layer)
       this.updateSharedLayers()
     },
+    createGeoJSON (layer) {
+      let geojson = layer.toGeoJSON()
+      geojson.properties['text'] = layer.sharedMessage
+      if (layer.getRadius) {
+        geojson.properties['radius'] = layer.getRadius().toFixed(3)
+      }
+      return geojson
+    },
     download (fileType) {
       const features = [
-        ...this.shared.getLayers().map(layer => layer.toGeoJSON()),
+        ...this.shared.getLayers().map(layer => this.createGeoJSON(layer)),
         ...this.measureControl.measures.map(measure => {
           let layer = measure.layer.getLayers()[0]
           if (layer instanceof L.LayerGroup) {
             // Area
             layer = layer.getLayers()[0]
           }
-          return layer.toGeoJSON()
+          return this.createGeoJSON(layer)
         })
       ]
       if (fileType === 'geojson') {
