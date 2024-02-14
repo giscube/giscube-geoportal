@@ -78,6 +78,7 @@ import { QBtn, QBtnGroup, QIcon, QInput, QTable, QTd, QTh, QTooltip, exportFile 
 
 import { every, some } from 'src/lib/itertools'
 import { layerInGeom } from 'src/lib/layersInGeom'
+import { wrapCsvValue } from 'src/lib/fileutils.js'
 import DataCell from 'src/lib/field/components/DataCell'
 
 import ColumnFilter from './ColumnFilter'
@@ -89,26 +90,6 @@ async function computeData () {
 function debounceComputeData () {
   this.loading = true
   this.debounceComputeData()
-}
-
-function wrapCsvValue (val, formatFn) {
-  let formatted = formatFn !== void 0
-    ? formatFn(val)
-    : val
-
-  formatted = formatted === void 0 || formatted === null
-    ? ''
-    : String(formatted)
-
-  formatted = formatted.split('"').join('""')
-  /**
-   * Excel accepts \n and \r in strings, but some other CSV parsers do not
-   * Uncomment the next two lines to escape new lines
-   */
-  // .split('\n').join('\\n')
-  // .split('\r').join('\\r')
-
-  return `"${formatted}"`
 }
 
 export default {

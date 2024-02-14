@@ -8,6 +8,16 @@
     :pagination="{ rowsPerPage: 0 }"
     :rows-per-page-options="[0]"
   >
+    <template v-slot:top-right>
+      <q-btn
+        flat
+        icon-right="save_alt"
+        no-caps
+        @click="exportTable"
+      >
+        <q-tooltip>Export to csv</q-tooltip>
+      </q-btn>
+    </template>
     <template v-slot:body-cell-__internal__colorColumn="{ value }">
       <td class="aggregation-table__color" :style="{ 'background-color': value }"><span class="contrast">{{ value }}</span></td>
     </template>
@@ -15,12 +25,14 @@
 </template>
 
 <script>
-import { QTable } from 'quasar'
+import { QBtn, QTable, QTooltip, exportFile } from 'quasar'
 import { mapState } from 'vuex'
+
+import { wrapCsvValue } from 'src/lib/fileutils.js'
 
 export default {
   components: {
-    QTable
+    QBtn, QTable, QTooltip
   },
   data () {
     return {
@@ -84,6 +96,31 @@ export default {
       // Do not remake the columns if they are the same (avoids unnecessary reactivity of the table)
       if (this.dataColumns.length !== dataColumns.length || !this.dataColumns.every(column => keySet.has(column.name))) {
         this.dataColumns = dataColumns
+      }
+    },
+    exportTable () {
+      // naive encoding to csv format
+      const content = [ this.columns.map(col => wrapCsvValue(col.label)) ].concat(
+        this.by.map(row => this.columns.map(col => wrapCsvValue(
+          typeof col.field === 'function'
+            ? col.field(row)
+            : row[col.field === void 0 ? col.name : col.field],
+          col.format
+        )).join(','))
+      ).join('\r\n')
+
+      const status = exportFile(
+        'statistics-table-export.csv',
+        content,
+        'text/csv'
+      )
+
+      if (status !== true) {
+        this.$q.notify({
+          message: 'Browser denied file download...',
+          color: 'negative',
+          icon: 'warning'
+        })
       }
     },
     t (key) {
