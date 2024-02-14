@@ -275,7 +275,13 @@ function createExternalLayerGeoJSON ({ layerDescriptor, title, options, map, pop
               if (!filter.active) {
                 continue
               }
+              if (filter.filter.includes('data')) {
+                filter.filter = filter.filter.replaceAll(new RegExp('\\bdata\\b', 'g'), `data.properties['data']`)
+              }
               for (const prop in data.properties) {
+                if (prop === 'data') {
+                  continue
+                }
                 filter.filter = filter.filter.replaceAll(new RegExp('\\b' + prop + '\\b', 'g'), `data.properties['${prop}']`)
               }
               if (filter.filter === filters[i].filter) {
