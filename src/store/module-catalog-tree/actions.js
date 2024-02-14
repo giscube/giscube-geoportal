@@ -44,11 +44,12 @@ export function createCatalog (context) {
       )
     }
   })
-  Promise.all(categoriesPromises).then(() => {
+  return Promise.all(categoriesPromises).then(() => {
     if (this.$config.catalog.filter) {
       this.$config.catalog.filter(this, catalog)
     }
     context.commit('setCatalog', catalog)
+    return catalog
   })
 }
 
@@ -67,6 +68,13 @@ function _createLeaves (contents) {
         return filter
       })
     })
+  }).sort((a, b) => {
+    if (a.title < b.title) {
+      return -1
+    } else if (a.title > b.title) {
+      return 1
+    }
+    return 0
   })
 }
 
