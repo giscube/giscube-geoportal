@@ -7,6 +7,7 @@ import 'leaflet-editable'
 import 'leaflet-easybutton'
 import './leaflet-offset'
 import './leaflet-grayscale'
+import 'leaflet.heat'
 
 try {
   require('leaflet.gridlayer.googlemutant')

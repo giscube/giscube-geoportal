@@ -86,6 +86,7 @@
         <q-tab v-if="isInfo" name="info" :label="'Info'" />
         <q-tab v-if="isData" name="data" :label="$t('names.data')"/>
         <q-tab v-if="statisticsEnabled && canAggregate" name="statistics" :label="$t('names.statistics')"/>
+        <q-tab v-if="canAggregate" name="heat-map" :label="$t('tools.heatMap.title')"/>
         <q-tab name="metadata" :label="$t('names.metadata')" v-if="result && layerDescriptor && layerDescriptor.length > 0"/>
         <q-tab v-if="isNotMarker && !table" name="utilities" :label="$t('names.utilities')" />
       </q-tabs>
@@ -132,6 +133,13 @@
         </slot>
       </div>
 
+      <!-- Tab Heat map -->
+      <div v-show="tab === 'heat-map'" class="column no-wrap limit-parent">
+        <slot name="heat-map-tab">
+          <heat-map-tab :layer="layer" :tab="tab"/>
+        </slot>
+      </div>
+
       <!-- Tab Metadata -->
       <div v-show="tab === 'metadata'" class="column no-wrap limit-parent">
         <slot name="metadata-tab">
@@ -171,6 +179,7 @@ import SelectionControls from './data-layer/SelectionControls'
 import DataTable from './statistics/DataTable'
 
 import InfoTab from './result-tabs/InfoTab'
+import HeatMapTab from './result-tabs/HeatMapTab'
 import MetadataTab from './result-tabs/MetadataTab'
 import StatisticsTab from './result-tabs/StatisticsTab'
 import UtilitiesTab from './result-tabs/UtilitiesTab'
@@ -182,6 +191,7 @@ export default {
     SelectionControls,
     DataTable,
     InfoTab,
+    HeatMapTab,
     MetadataTab,
     StatisticsTab,
     UtilitiesTab,

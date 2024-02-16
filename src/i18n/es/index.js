@@ -188,6 +188,13 @@ export default {
       headerName: 'Pantalla completa',
       help: 'Cambia vista a pantalla completa.'
     },
+    heatMap: {
+      defaultOption: 'Por defecto (geometría)',
+      blur: 'Difuminado',
+      intensity: 'Intensidad',
+      radius: 'Radio',
+      title: 'Mapa de calor'
+    },
     help: {
       headerName: 'Ayuda',
       title: 'Ayuda',

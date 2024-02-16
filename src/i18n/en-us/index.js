@@ -186,6 +186,13 @@ export default {
       headerName: 'Fullscreen',
       help: 'Switch to fullscreen mode.'
     },
+    heatMap: {
+      defaultOption: 'Default (geometry)',
+      blur: 'Blur',
+      intensity: 'Intensity',
+      radius: 'Radius',
+      title: 'Heat map'
+    },
     help: {
       headerName: 'Help',
       title: 'Help',
