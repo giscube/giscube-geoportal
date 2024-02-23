@@ -21,5 +21,6 @@ export default {
     scheme: COLOR_SCHEMES[0],
     groups: 3
   },
+  legend: null,
   colorMap: new Map(DEFAULT_COLOR_MAP)
 }

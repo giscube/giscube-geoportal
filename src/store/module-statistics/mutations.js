@@ -66,3 +66,7 @@ export function resetLoading (state) {
   loading.current = 0
   loading.total = 0
 }
+
+export function legend (state, value) {
+  state.legend = value
+}

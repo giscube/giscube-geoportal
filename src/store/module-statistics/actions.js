@@ -253,6 +253,15 @@ export function calculateColors ({ state, commit }) {
     colorMap.set(layer, color)
     layer.setStyle({ fillColor: color })
   }
-
   commit('colorMap', colorMap)
+
+  let legend = []
+  for (let i = 0; i < n; i++) {
+    legend.push({
+      color: palette[i],
+      minValue: min + Math.floor(diff / n * i) === 0 ? 0 : min + Math.floor(diff / n * i) + 1,
+      maxValue: min + Math.floor(diff / n * (i + 1))
+    })
+  }
+  commit('legend', legend)
 }

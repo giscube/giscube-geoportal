@@ -30,6 +30,7 @@
       :scheme.sync="paletteScheme"
       :groups.sync="paletteGroups"
     />
+    <statistics-legend />
     <aggregation-table class="q-mt-md" style="min-height: 150px" />
   </div>
 </template>
@@ -43,6 +44,7 @@ import AggregationTable from '../statistics/AggregationTable'
 import FileSelect from '../FileSelect'
 import PaletteSelect from '../statistics/PaletteSelect'
 import PolygonTooltip from '../statistics/PolygonTooltip'
+import StatisticsLegend from '../statistics/StatisticsLegend'
 
 export default {
   props: ['result', 'legend', 'keywords'],
@@ -51,7 +53,8 @@ export default {
     QCircularProgress,
     AggregationTable,
     FileSelect,
-    PaletteSelect
+    PaletteSelect,
+    StatisticsLegend
   },
   computed: {
     ...mapState('statistics', ['by', 'byOption', 'byLayer']),
