@@ -9,14 +9,21 @@
     :rows-per-page-options="[0]"
   >
     <template v-slot:top-right>
-      <q-btn
-        flat
-        icon-right="save_alt"
-        no-caps
-        @click="exportTable"
-      >
-        <q-tooltip>Export to csv</q-tooltip>
-      </q-btn>
+      <q-btn-dropdown flat icon="save_alt">
+        <q-list>
+          <q-item clickable v-close-popup @click="exportTable()">
+            <q-item-section style="width: 140px">
+              <q-item-label>{{$t('actions.download') | capitalize}} CSV</q-item-label>
+            </q-item-section>
+          </q-item>
+
+          <q-item clickable v-close-popup @click="exportGeoJSON()">
+            <q-item-section>
+              <q-item-label>{{$t('actions.download') | capitalize}} GeoJSON</q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </q-btn-dropdown>
     </template>
     <template v-slot:body-cell-__internal__colorColumn="{ value }">
       <td class="aggregation-table__color" :style="{ 'background-color': value }"><span class="contrast">{{ value }}</span></td>
@@ -25,14 +32,15 @@
 </template>
 
 <script>
-import { QBtn, QTable, QTooltip, exportFile } from 'quasar'
+import { QBtnDropdown, QItem, QItemLabel, QItemSection, QList, QTable, exportFile } from 'quasar'
+import { saveAs } from 'file-saver'
 import { mapState } from 'vuex'
 
 import { wrapCsvValue } from 'src/lib/fileutils.js'
 
 export default {
   components: {
-    QBtn, QTable, QTooltip
+    QBtnDropdown, QItem, QItemLabel, QItemSection, QList, QTable
   },
   data () {
     return {
@@ -97,6 +105,23 @@ export default {
       if (this.dataColumns.length !== dataColumns.length || !this.dataColumns.every(column => keySet.has(column.name))) {
         this.dataColumns = dataColumns
       }
+    },
+    exportGeoJSON () {
+      const data = {
+        type: 'FeatureCollection',
+        features: this.by.map(layer => {
+          let layerGeoJSON = layer.toGeoJSON()
+          layerGeoJSON.properties = this.columns.reduce((prevCol, col) => {
+            prevCol[col.label.toLowerCase()] = typeof col.field === 'function'
+              ? col.field(layer)
+              : layer[col.field === void 0 ? col.name : col.field]
+            return prevCol
+          }, {})
+          return layerGeoJSON
+        })
+      }
+      const dataBlob = new Blob([JSON.stringify(data)], { type: 'application/json' })
+      saveAs(dataBlob, 'statistics.geojson')
     },
     exportTable () {
       // naive encoding to csv format
