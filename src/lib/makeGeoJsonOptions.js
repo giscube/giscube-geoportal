@@ -178,12 +178,12 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
     rules = makeRules(styleRules, style, style => {
       return {
         bubblingMouseEvents: false,
-        weight: style.stroke_width || 1,
+        weight: toNumber(style.stroke_width, 1),
         color: style.stroke_color || '#ffbc40',
-        opacity: style.stroke_opacity !== void 0 ? style.stroke_opacity : 1,
+        opacity: toNumber(style.stroke_opacity, 1),
         fillColor: style.fill_color || '#ffa500',
-        fillOpacity: style.fill_opacity || 0.75,
-        radius: style.shape_radius || 10,
+        fillOpacity: toNumber(style.fill_opacity, 0.75),
+        radius: toNumber(style.shape_radius, 10),
         dashArray: style.stroke_dash_array || null
       }
     })
