@@ -121,14 +121,17 @@ export default {
     },
     addHeatLayer () {
       const layers = this.layer && this.layer.getLayers()
+      let coords = null
       if (layers && layers[0].feature && layers[0].feature.geometry && layers[0].feature.geometry.type === 'Point') {
-        const coords = layers.map(layer => {
+        coords = layers.map(layer => {
           if (this.mapType !== this.$t('tools.heatMap.defaultOption')) {
             return [layer.feature.geometry.coordinates[1], layer.feature.geometry.coordinates[0], layer.feature.properties[this.mapType] / this.max]
           } else {
             return [layer.feature.geometry.coordinates[1], layer.feature.geometry.coordinates[0], this.max]
           }
         })
+      }
+      if (coords) {
         this.heatLayer = L.heatLayer(coords, {
           radius: this.radius,
           blur: this.blur,
