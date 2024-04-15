@@ -136,7 +136,7 @@
       <!-- Tab Heat map -->
       <div v-show="tab === 'heat-map'" class="column no-wrap limit-parent">
         <slot name="heat-map-tab">
-          <heat-map-tab :layer="layer" :tab="tab"/>
+          <heat-map-tab v-if="canAggregate" :layer="layer" :tab="tab"/>
         </slot>
       </div>
 
