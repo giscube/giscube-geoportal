@@ -140,9 +140,11 @@ export default {
                 if (element.elements) {
                   element.elements.forEach(elem => {
                     let dictAtributes = {}
-                    elem.elements.forEach(attribute => {
-                      dictAtributes[this.toSnakeCase(attribute.attributes.name)] = attribute.attributes.value
-                    })
+                    if (elem && elem.elements) {
+                      elem.elements.forEach(attribute => {
+                        dictAtributes[this.toSnakeCase(attribute.attributes.name)] = attribute.attributes.value
+                      })
+                    }
                     elements.push(dictAtributes)
                   })
                 }
