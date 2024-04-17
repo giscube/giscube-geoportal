@@ -211,9 +211,10 @@ export default {
       titleInput: 'Title',
       descriptionInput: 'Description',
       emailInput: 'Email',
-      errorMessage: 'Please enter a valid email address.',
+      emailErrorMessage: 'Please enter a valid email address. (name@example.com)',
       post: 'Post',
       message: 'Incidence sent',
+      errorMessage: 'Something went wrong while sending the incidence',
 
       area: 'Area',
       delete: 'Delete geometries',

@@ -205,6 +205,24 @@ export default {
       headerName: 'Inicio',
       help: 'Recupera la vista inicial.'
     },
+    incidence: {
+      headerName: 'Incidencia',
+      title: 'Crear y enviar incidencia',
+      help: 'Crea una incidencia añadiendo un título, una descripción y un correo y envíala.',
+
+      titleInput: 'Título',
+      descriptionInput: 'Descripción',
+      emailInput: 'Correo electrònico',
+      emailErrorMessage: 'Por favor, introduce una dirección de correo electrònico válida. (name@example.com)',
+      post: 'Enviar',
+      message: 'Incidencia enviada',
+      errorMessage: 'Ha habido un error al enviar la incidencia',
+
+      area: 'Área',
+      delete: 'Eliminar geometrías',
+      marker: 'Punto',
+      stop: 'Parar de dibujar'
+    },
     print: {
       headerName: 'Impresión',
       help: 'Impresión del mapa'

@@ -213,9 +213,10 @@ export default {
       titleInput: 'Títol',
       descriptionInput: 'Descripció',
       emailInput: 'Correu electrònic',
-      errorMessage: 'Si us plau, introdueix una adreça de correu electrònic vàlida.',
+      emailErrorMessage: 'Si us plau, introdueix una adreça de correu electrònic vàlida. (name@example.com)',
       post: 'Enviar',
       message: 'Incidència enviada',
+      errorMessage: 'Hi ha hagut algun error enviant la incidència',
 
       area: 'Àrea',
       delete: 'Eliminar geometries',

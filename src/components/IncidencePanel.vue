@@ -52,7 +52,7 @@
           @blur="emailVerification"
           :label="t('emailInput')"
           :error="showError"
-          :error-message="t('errorMessage')"
+          :error-message="t('emailErrorMessage')"
         />
         <q-btn color="primary" :label="t('post')" :loading="loading" @click="send('geojson')" />
       </div>
