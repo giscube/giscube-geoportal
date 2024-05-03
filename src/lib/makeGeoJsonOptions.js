@@ -328,6 +328,18 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
               })
             }
 
+            const originalStyle = (sourceTarget) => {
+              return transform(modStyle, rules.getResult(sourceTarget.feature), sourceTarget.feature)
+            }
+
+            const highlightStyle = (sourceTarget) => {
+              let style = transform(modStyle, rules.getResult(sourceTarget.feature), sourceTarget.feature)
+              style['weight'] = style['weight'] * 3
+              style['color'] = 'yellow'
+              style['fillColor'] = 'yellow'
+              return style
+            }
+
             layer.on('click', ({ latlng, sourceTarget }) => {
               if (popup.openCondition && !popup.openCondition()) {
                 return
@@ -343,8 +355,22 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
                   anchor = sourceTarget.getCenter ? sourceTarget.getCenter() : sourceTarget.getLatLng()
                 }
                 map.openPopup(this._container, anchor)
+                if (!(isImage || isMarker)) {
+                  this._container.on('remove', _ => {
+                    sourceTarget.setStyle(originalStyle(sourceTarget))
+                    sourceTarget.clicked = false
+                  })
+                }
+              }
+              if (!(isImage || isMarker)) {
+                sourceTarget.setStyle(highlightStyle(sourceTarget))
+                sourceTarget.clicked = true
               }
             })
+            if (!(isImage || isMarker)) {
+              layer.on('mouseover', ({ sourceTarget }) => sourceTarget.setStyle(highlightStyle(sourceTarget)))
+              layer.on('mouseout', ({ sourceTarget }) => !sourceTarget.clicked && sourceTarget.setStyle(originalStyle(sourceTarget)))
+            }
 
             layer.on('remove', _ => {
               if (this._container) {
