@@ -166,6 +166,7 @@ export default {
 
           if (type === 'GeoJSON') {
             this.layer.openPopup()
+            this.zoom()
           }
         })
         .catch(e => {
