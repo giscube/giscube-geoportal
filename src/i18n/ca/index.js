@@ -69,6 +69,7 @@ export default {
     metadata: 'metadades',
     opacity: 'opacitat',
     options: 'opcions',
+    searchResult: 'resultat de la cerca',
     statistics: 'estadística',
     type: 'tipus',
     utilities: 'utilitats',

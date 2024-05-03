@@ -88,7 +88,8 @@
         <q-tab v-if="statisticsEnabled && canAggregate" name="statistics" :label="$t('names.statistics')"/>
         <q-tab v-if="canAggregate" name="heat-map" :label="$t('tools.heatMap.title')"/>
         <q-tab name="metadata" :label="$t('names.metadata')" v-if="result && layerDescriptor && layerDescriptor.length > 0"/>
-        <q-tab v-if="isNotMarker && !table" name="utilities" :label="$t('names.utilities')" />
+        <q-tab v-if="isExternalSearchResult" name="search-result" :label="$t('names.searchResult')" />
+        <q-tab v-if="isNotMarker" name="utilities" :label="$t('names.utilities')" />
       </q-tabs>
 
       <!-- Tab Info -->
@@ -150,6 +151,12 @@
         </slot>
       </div>
 
+      <div v-show="tab === 'search-result'" class="column no-wrap limit-parent">
+        <slot name="search-result-tab">
+          <external-search-result-tab :properties="properties" />
+        </slot>
+      </div>
+
       <!-- Tab Utilities -->
       <div v-if="tab === 'utilities'" class="column no-wrap limit-parent">
         <slot name="utilities-tab">
@@ -178,6 +185,7 @@ import SelectionControls from './data-layer/SelectionControls'
 
 import DataTable from './statistics/DataTable'
 
+import ExternalSearchResultTab from './result-tabs/ExternalSearchResultTab'
 import InfoTab from './result-tabs/InfoTab'
 import HeatMapTab from './result-tabs/HeatMapTab'
 import MetadataTab from './result-tabs/MetadataTab'
@@ -190,6 +198,7 @@ export default {
     DataLayerTable,
     SelectionControls,
     DataTable,
+    ExternalSearchResultTab,
     InfoTab,
     HeatMapTab,
     MetadataTab,
@@ -239,12 +248,18 @@ export default {
     isData () {
       return this.canAggregate || this.table
     },
+    isExternalSearchResult () {
+      return this.result && this.result.origin && this.result.origin.name && this.result.origin.name !== 'geoportal' && this.properties
+    },
     isInfo () {
       return (this.description || this.legend || this.keywords)
     },
     isNotMarker () {
-      if (this.result && this.result.geojson && this.result.geojson.type === 'Point') {
+      if (this.isExternalSearchResult) {
         return false
+      }
+      if (this.result && this.result.geojson && this.result.geojson.type) {
+        return !this.result.geojson.type.includes('Point')
       }
       if (!this.isDescriptionGeoJSON) {
         return true

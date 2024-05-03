@@ -138,7 +138,7 @@ export default {
   },
   mounted () {
     this.applyParameters(this.$route.params)
-    this.isInfo ? this.tab = 'info' : this.isData ? this.tab = 'data' : this.tab = 'metadata'
+    this.isInfo ? this.tab = 'info' : this.isData ? this.tab = 'data' : this.isExternalSearchResult ? this.tab = 'search-result' : this.tab = 'metadata'
   },
   methods: {
     applyParameters (params) {
