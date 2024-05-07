@@ -142,7 +142,9 @@ export default {
                     let dictAtributes = {}
                     if (elem && elem.elements) {
                       elem.elements.forEach(attribute => {
-                        dictAtributes[this.toSnakeCase(attribute.attributes.name)] = attribute.attributes.value
+                        if (attribute.name === 'Attribute' && attribute.attributes.name !== 'geometry') {
+                          dictAtributes[this.toSnakeCase(attribute.attributes.name)] = attribute.attributes.value
+                        }
                       })
                     }
                     elements.push(dictAtributes)
