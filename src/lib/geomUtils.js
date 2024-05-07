@@ -150,6 +150,9 @@ export function createLayerFromConfig (config) {
 
 export function createGeoJSONLayer ({ result, popupComponent }) {
   const layer = L.GeoJSON.geometryToLayer(result.geojson)
+  if (layer && layer.setStyle) {
+    layer.setStyle({ weight: 3, color: 'yellow', fillColor: 'yellow' })
+  }
   if (popupComponent) {
     const PopupContent = Vue.extend(popupComponent)
     const popup = new PopupContent({

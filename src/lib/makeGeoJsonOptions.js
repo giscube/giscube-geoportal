@@ -358,18 +358,18 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
                 if (!(isImage || isMarker)) {
                   this._container.on('remove', _ => {
                     sourceTarget.setStyle(originalStyle(sourceTarget))
-                    sourceTarget.clicked = false
+                    sourceTarget.selected = false
                   })
                 }
               }
               if (!(isImage || isMarker)) {
                 sourceTarget.setStyle(highlightStyle(sourceTarget))
-                sourceTarget.clicked = true
+                sourceTarget.selected = true
               }
             })
             if (!(isImage || isMarker)) {
               layer.on('mouseover', ({ sourceTarget }) => sourceTarget.setStyle(highlightStyle(sourceTarget)))
-              layer.on('mouseout', ({ sourceTarget }) => !sourceTarget.clicked && sourceTarget.setStyle(originalStyle(sourceTarget)))
+              layer.on('mouseout', ({ sourceTarget }) => !sourceTarget.selected && sourceTarget.setStyle(originalStyle(sourceTarget)))
             }
 
             layer.on('remove', _ => {
