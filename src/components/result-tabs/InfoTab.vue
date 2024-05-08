@@ -35,6 +35,11 @@
       </q-list>
     </div>
 
+    <div>
+      <div class="panel-subtitle">{{ $t('names.layerPermissions') | capitalize }}</div>
+      {{ layerPermissions }}
+    </div>
+
     <div class="keywords" v-if="keywords">
       <div class="panel-subtitle">{{ $t('names.keywords') | capitalize }}</div>
       <q-chip
@@ -64,6 +69,11 @@ export default {
   data () {
     return {
       openingFiles: []
+    }
+  },
+  computed: {
+    layerPermissions () {
+      return this.result && this.result.private ? this.$t('names.private')[0].toUpperCase() + this.$t('names.private').slice(1) : this.$t('names.public')[0].toUpperCase() + this.$t('names.public').slice(1)
     }
   },
   methods: {
