@@ -54,12 +54,17 @@
         </q-item-section>
       </q-item>
     </q-list>
+    <div class="q-mt-sm">
+      <q-chip :class="privateLayer ? 'warning' : 'green'"  size="10px">
+        {{ layerPermissionsLabel }}
+      </q-chip>
+    </div>
   </div>
 </template>
 
 <script>
 import moment from 'moment'
-import { QBtn, QItem, QItemSection, QItemLabel, QList, QTooltip } from 'quasar'
+import { QBtn, QChip, QItem, QItemSection, QItemLabel, QList, QTooltip } from 'quasar'
 
 import { codeToNativeName } from 'src/lib/language'
 
@@ -67,6 +72,7 @@ export default {
   props: ['metadata', 'layerDescriptor'],
   components: {
     QBtn,
+    QChip,
     QItem,
     QItemSection,
     QItemLabel,
@@ -81,6 +87,16 @@ export default {
   computed: {
     date () {
       return this.metadata && this.metadata.date && moment(this.metadata.date).format('DD/MM/YYYY')
+    },
+    privateLayer () {
+      return this.result && this.result.private
+    },
+    layerPermissionsLabel () {
+      if (this.privateLayer) {
+        return this.$t('names.privateLayer')[0].toUpperCase() + this.$t('names.privateLayer').slice(1)
+      } else {
+        return this.$t('names.publicLayer')[0].toUpperCase() + this.$t('names.publicLayer').slice(1)
+      }
     },
     metadataList () {
       if (!this.metadata) {
@@ -132,3 +148,13 @@ export default {
   }
 }
 </script>
+<style lang="stylus" scope>
+.result-panel
+  .q-chip.warning
+    color: #0a1923
+    background-color: $warning !important
+
+  .q-chip.green
+    color: white
+    background-color: green !important
+</style>
