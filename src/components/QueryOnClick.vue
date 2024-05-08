@@ -4,6 +4,7 @@
     :lat-lng="query.latlng"
     :visible="query.visible"
     @add="onAdd"
+    @remove="onRemove"
     @popupopen="_setQuery"
     @popupclose="_unsetQuery"
   >
@@ -31,6 +32,7 @@ import convert from 'xml-js'
 
 import { LMarker, LPopup, findRealParent } from 'vue2-leaflet'
 import { makeTemplate } from 'src/lib/makeGeoJsonOptions'
+import { higlightWKTGeometry } from 'src/lib/geomUtils'
 
 import LatLngPopup from 'components/LatLngPopup.vue'
 import FeatureInfoPopup from 'components/FeatureInfoPopup.vue'
@@ -52,7 +54,8 @@ export default {
       mapClickDelay: 300,
       mapClickTimer: null,
       customPopup: null,
-      query: null
+      query: null,
+      queryHighlightLayers: []
     }
   },
   computed: {
@@ -70,6 +73,9 @@ export default {
       this.$nextTick(() => {
         event.target.openPopup()
       })
+    },
+    onRemove () {
+      this._removeHighlightResultsGeometries()
     },
     onMapDbClick () {
       clearTimeout(this.mapClickTimer)
@@ -155,6 +161,7 @@ export default {
             } else {
               query.component = FeatureInfoPopup
             }
+            this._highlightResultsGeomtries()
           }
         })
       }
@@ -233,7 +240,8 @@ export default {
           'y': Math.floor(event.containerPoint.y),
           'width': this.map.getSize().x,
           'height': this.map.getSize().y,
-          'feature_count': 100
+          'feature_count': 100,
+          'with_geometry': true
         }
 
         let searchUrl = layer.layer._url
@@ -253,6 +261,27 @@ export default {
 
       // return null for no results
       return queryResults
+    },
+    _highlightResultsGeomtries () {
+      this.query.results.forEach(element => {
+        element.elements.forEach(elem => {
+          elem.elements.forEach(attribute => {
+            if (attribute.name === 'Attribute' && attribute.attributes.name === 'geometry') {
+              let layers = higlightWKTGeometry(attribute.attributes.value)
+              if (layers.length > 0) {
+                this.queryHighlightLayers.push(...layers)
+              }
+            }
+          })
+        })
+        this.queryHighlightLayers.forEach(layer => this.map.addLayer(layer))
+      })
+    },
+    _removeHighlightResultsGeometries () {
+      if (this.queryHighlightLayers.length > 0) {
+        this.queryHighlightLayers.forEach(layer => this.map.removeLayer(layer))
+        this.queryHighlightLayers = []
+      }
     },
     _setQuery () {
       this.$store.commit('setQuery', this.query)

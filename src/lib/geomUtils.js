@@ -7,6 +7,7 @@ import proj4 from 'proj4'
 import { Table } from './table'
 import { cloneClean } from './utils'
 import gmapsInit from './gmaps'
+import { parse } from 'wkt'
 
 import FeaturePopup from 'components/FeaturePopup'
 import FeaturePopupDialog from 'components/FeaturePopupDialog'
@@ -514,4 +515,54 @@ export function makeBaseLayer (baseLayer, self) {
     baseLayer.layer = layer
   }
   return baseLayer.layer
+}
+
+function reprojectFeature (feature) {
+  const reprojectCoordinates = (coords) => {
+    const latlng = L.CRS.EPSG3857.unproject(L.point(coords))
+    return [latlng.lng, latlng.lat]
+  }
+  if (feature.type.toLowerCase() === 'point') {
+    feature.coordinates = reprojectCoordinates(feature.coordinates)
+  } else if (feature.type.toLowerCase() === 'multipoint') {
+    feature.coordinates = feature.coordinates.map(coords => reprojectCoordinates(coords))
+  } else if (feature.type.toLowerCase() === 'linestring') {
+    feature.coordinates = feature.coordinates.map(coords => reprojectCoordinates(coords))
+  } else if (feature.type.toLowerCase() === 'multilinestring') {
+    feature.coordinates = feature.coordinates.map(line => {
+      return line.map(coords => reprojectCoordinates(coords))
+    })
+  } else if (feature.type.toLowerCase() === 'polygon') {
+    feature.coordinates = feature.coordinates.map(ring => {
+      return ring.map(coords => reprojectCoordinates(coords))
+    })
+  } else if (feature.type.toLowerCase() === 'multipolygon') {
+    feature.coordinates = feature.coordinates.map(polygon => {
+      return polygon.map(ring => {
+        return ring.map(coords => reprojectCoordinates(coords))
+      })
+    })
+  }
+  return feature
+}
+
+export function higlightWKTGeometry (value) {
+  let feature = reprojectFeature(parse(value))
+  const geojson = {
+    type: 'FeatureCollection',
+    features: [{
+      type: 'Feature',
+      geometry: feature
+    }]
+  }
+  let layers = []
+  if (geojson.features[0].geometry.type === 'Point') {
+    layers.push(L.circleMarker(geojson.features[0].geometry.coordinates.reverse()))
+  } else if (geojson.features[0].geometry.type === 'MultiPoint') {
+    layers = geojson.features[0].geometry.coordinates.map(coords => L.circleMarker(coords.reverse()))
+  } else {
+    layers.push(L.geoJSON(geojson))
+  }
+  layers.forEach(layer => layer.setStyle({ color: 'yellow', fillColor: 'yellow', radius: 1.5 }))
+  return layers
 }

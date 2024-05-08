@@ -18,7 +18,7 @@
         :key="'feature-' + featureIndex"
       >
         <tr
-          v-for='(attr, attrIndex) in feature.elements'
+          v-for="(attr, attrIndex) in feature.elements.filter(attr => attr.attributes.name !== 'geometry')"
           class='attr'
           :key="'feature-' + featureIndex + '-attr-' + attrIndex"
         >
