@@ -182,14 +182,12 @@
 </template>
 
 <script>
-import axios from 'axios'
-import { formatCoords } from 'src/lib/geomUtils'
+import { formatCoords, getWMSbbox } from 'src/lib/geomUtils'
 import { ClosePopup, QBtn, QBtnDropdown, QBtnGroup, QIcon, QItem, QItemSection, QItemLabel, QList, QSpace, QTab, QTabs, QTooltip } from 'quasar'
 import L from 'src/lib/leaflet'
 import { convertGeoJsonToDXF, downloadDXF } from 'src/lib/fileutils'
 import { mapState } from 'vuex'
 import { saveAs } from 'file-saver'
-import WMSCapabilities from 'wms-capabilities'
 
 import DataFilter from './data-layer/DataFilter'
 import DataLayerTable from './data-layer/DataTable'
@@ -431,18 +429,11 @@ export default {
       }
       if (this.layerDescriptor.length > 0 && this.layerDescriptor[0].type.toLowerCase() === 'wms') {
         const headers = this.$store.getters['auth/headers']
-        axios.get(this.layerDescriptor[0].href, {}, { headers }).then(res => {
-          const json = new WMSCapabilities(res.data).toJSON()
-          for (let i = 0; i < json.Capability.Layer.BoundingBox.length; i++) {
-            if (json.Capability.Layer.BoundingBox[i].crs === 'EPSG:4326') {
-              let bbox = json.Capability.Layer.BoundingBox[i].extent
-              this.map.fitBounds([
-                [bbox[1], bbox[0]],
-                [bbox[3], bbox[2]]
-              ])
-              return
-            }
-          }
+        getWMSbbox(this.layerDescriptor[0].href, { headers }).then(bbox => {
+          this.map.fitBounds([
+            [bbox[1], bbox[0]],
+            [bbox[3], bbox[2]]
+          ])
         })
       }
 

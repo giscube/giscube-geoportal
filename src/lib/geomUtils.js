@@ -8,6 +8,7 @@ import { Table } from './table'
 import { cloneClean } from './utils'
 import gmapsInit from './gmaps'
 import { parse } from 'wkt'
+import WMSCapabilities from 'wms-capabilities'
 
 import FeaturePopup from 'components/FeaturePopup'
 import FeaturePopupDialog from 'components/FeaturePopupDialog'
@@ -194,7 +195,7 @@ function setTileLayerBoundary (layer, { boundary }) {
     return layer
   }
   if (!L.TileLayer.BoundaryCanvas) {
-    console.warn('[Giscube Geoportal] Trying to add a boundary without the necessary package installed. Use npm i leaflet-boundary-canvas to install it.')
+    console.warn('[Mapia Online] Trying to add a boundary without the necessary package installed. Use npm i leaflet-boundary-canvas to install it.')
     return layer
   }
   return L.TileLayer.BoundaryCanvas.createFromLayer(layer, { boundary, trackAttribution: true })
@@ -496,7 +497,7 @@ export function makeBaseLayer (baseLayer, self) {
       layer = L.tileLayer.wms(baseLayer.url, baseLayer)
     } else if (baseLayer.type === 'googleMutant') {
       if (!L.gridLayer.googleMutant) {
-        console.warn('[Giscube Geoportal] Trying to add googleMutant layer without the necessary package installed. Use npm i leaflet.gridlayer.googlemutant to install it.')
+        console.warn('[Mapia Online] Trying to add googleMutant layer without the necessary package installed. Use npm i leaflet.gridlayer.googlemutant to install it.')
       } else {
         gmapsInit(self.$config.google.apiKey)
           .then(
@@ -565,4 +566,22 @@ export function higlightWKTGeometry (value) {
   }
   layers.forEach(layer => layer.setStyle({ color: 'yellow', fillColor: 'yellow', radius: 1.5 }))
   return layers
+}
+
+export async function getWMSbbox (url, { headers }) {
+  if (url.includes('access_token')) {
+    url = url.split('?').filter(chunk => !chunk.includes('access_token')).join('?')
+  }
+  return axios.get(url, { headers }).then(res => {
+    try {
+      const json = new WMSCapabilities(res.data).toJSON()
+      for (let i = 0; i < json.Capability.Layer.BoundingBox.length; i++) {
+        if (json.Capability.Layer.BoundingBox[i].crs === 'EPSG:4326') {
+          return json.Capability.Layer.BoundingBox[i].extent
+        }
+      }
+    } catch (error) {
+      console.error('[Mapia Online] External WMS: unable to get bbox')
+    }
+  })
 }
