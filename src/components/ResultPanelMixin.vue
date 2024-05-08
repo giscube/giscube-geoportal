@@ -49,7 +49,7 @@
           </q-btn>
 
           <q-btn no-caps
-            :disabled="!supportsTooltip"
+            v-show="supportsTooltip"
             icon="las la-tag"
             @click="toggleTooltip"
           >
@@ -59,7 +59,7 @@
           </q-btn>
 
           <q-btn
-            :disabled="!canPin"
+            v-show="canPin"
             icon="layers"
             :label="$t('actions.pinToMap') | capitalize"
             @click="pin"
