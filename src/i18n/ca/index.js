@@ -62,6 +62,7 @@ export default {
     info: 'info',
     keywords: 'cerques relacionades',
     layers: 'capes',
+    layerInfo: 'informació de la capa',
     layerPermissions: 'permisos de la capa',
     lat: 'latitud',
     lng: 'longitud',

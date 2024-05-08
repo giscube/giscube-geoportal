@@ -62,6 +62,7 @@ export default {
     info: 'info',
     keywords: 'keywords',
     layers: 'layers',
+    layerInfo: 'informació de la capa',
     layerPermissions: 'layer permissions',
     lat: 'latitude',
     lng: 'longitude',

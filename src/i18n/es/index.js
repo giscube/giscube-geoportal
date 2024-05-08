@@ -62,6 +62,7 @@ export default {
     info: 'info',
     keywords: 'búsquedas relacionadas',
     layers: 'capas',
+    layerInfo: 'informació de la capa',
     layerPermission: 'permisos de la capa',
     lat: 'latitud',
     lng: 'longitud',

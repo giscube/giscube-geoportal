@@ -1,13 +1,25 @@
 <template>
   <div class="panel result-panel fit">
     <div class="panel-content limit-parent column no-wrap">
-      <div class="panel-title space">
+      <div class="panel-title space row">
         <q-btn flat dense
           icon="keyboard_arrow_left"
           size="md"
           @click="$router.go(-1)"
         />
         {{ title }}
+        <q-space />
+        <q-btn
+          v-if="routeInfoGiscubeId"
+          flat round
+          color="black"
+          icon="las la-info-circle"
+          @click="openInfoGiscubeId"
+        >
+          <q-tooltip>
+            {{$t('names.layerInfo') | capitalize}}
+          </q-tooltip>
+        </q-btn>
       </div>
       <div class="">
         <q-btn-group class="no-shadow">
@@ -252,7 +264,7 @@ export default {
       return this.result && this.result.origin && this.result.origin.name && this.result.origin.name !== 'geoportal' && this.properties
     },
     isInfo () {
-      return (this.description || this.legend || this.keywords)
+      return this.result && this.result.giscube_id
     },
     isNotMarker () {
       if (this.isExternalSearchResult) {
@@ -266,6 +278,9 @@ export default {
       }
       const layer = this.layer && this.layer.getLayers()[0]
       return layer && layer.feature && layer.feature.geometry && !layer.feature.geometry.type.includes('Point')
+    },
+    routeInfoGiscubeId () {
+      return this.$router.options.routes.find(({ path }) => path === '/info')?.children.some(({ name }) => name === 'giscube_id')
     },
     statisticsEnabled () {
       return this.$config.tools.statistics.enabled
@@ -377,6 +392,10 @@ export default {
     pin () {},
     projected (epsg) {
       return formatCoords(this.latlng, epsg)
+    },
+    openInfoGiscubeId () {
+      const url = `${location.href.split('#')[0]}#/info/giscube_id/${this.result && this.result.giscube_id}`
+      window.open(url, '_blank')
     },
     setAggregated (data) {
       requestAnimationFrame(() => {
