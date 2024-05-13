@@ -20,6 +20,7 @@ export default {
     next: 'siguiente',
     save: 'guarda',
     search: 'busca',
+    showTags: 'mostrar etiquetes',
     tooltip: 'enseñar/esconder etiquetas',
     zoom: 'haz zoom',
     zoomToData: 'haz zoom a los datos',

@@ -62,6 +62,9 @@
               </q-item>
             </q-list>
           </q-btn-dropdown>
+          <q-btn dense icon="las la-tag" @click="showAllPopups()">
+            <q-tooltip>{{ $t('actions.showTags') | capitalize }}</q-tooltip>
+          </q-btn>
         </q-btn-group>
         <q-btn
           outline
@@ -185,6 +188,18 @@ export default {
   methods: {
     t (key) {
       return this.$t('tools.draw.' + key)
+    },
+    showAllPopups () {
+      [
+        ...this.measureControl.measures.map(measure => measure.layer.getLayers()[0]),
+        ...this.sharedLayers.map(layer => layer)
+      ].forEach(layer => this.openPopup(layer))
+    },
+    openPopup (layer) {
+      if (layer._popup) {
+        layer._popup.options.autoClose = false
+        layer.openPopup()
+      }
     },
     updateSharedLayers () {
       this.$nextTick(() => {
