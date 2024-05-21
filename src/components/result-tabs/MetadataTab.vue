@@ -69,7 +69,7 @@ import { QBtn, QChip, QItem, QItemSection, QItemLabel, QList, QTooltip } from 'q
 import { codeToNativeName } from 'src/lib/language'
 
 export default {
-  props: ['metadata', 'layerDescriptor'],
+  props: ['result', 'metadata', 'layerDescriptor'],
   components: {
     QBtn,
     QChip,

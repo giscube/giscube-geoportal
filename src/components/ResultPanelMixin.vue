@@ -157,6 +157,7 @@
       <div v-show="tab === 'metadata'" class="column no-wrap limit-parent">
         <slot name="metadata-tab">
           <metadata-tab
+            :result="result"
             :metadata="metadata"
             :layerDescriptor="layerDescriptor"
           />
