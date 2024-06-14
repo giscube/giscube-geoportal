@@ -7,16 +7,16 @@
     <div class="value">{{ value }}</div>
   </div>
   <div
-    v-else-if="value && value.length > 85 && hasHTML && value.includes('<br>')"
+    v-else-if="value && value.length > 85 && hasHTML"
     :class="`q-py-xs ${classes}`"
   >
     <div class="title">{{ label }}</div>
     <span v-html="value" class="value"></span>
   </div>
   <div v-else :class="`row justify-between q-py-xs ${classes}`">
-    <div class="col-6 title">{{ label }}</div>
+    <div class="col-5 title">{{ label }}</div>
     <span v-if="value && hasHTML" v-html="value" class="col-6 text-right value"></span>
-    <div v-else class="col-6 text-right value">{{ value }}</div>
+    <div v-else class="col-7 text-right value">{{ value }}</div>
   </div>
 </template>
 
@@ -33,7 +33,7 @@ export default {
       return this.rowClass || 'line-bottom'
     },
     hasHTML () {
-      return !!this.value.includes && this.value.includes('<span>')
+      return !!this.value.includes && this.value.includes('<span')
     },
     label () {
       return this.formatString(this.element.label)

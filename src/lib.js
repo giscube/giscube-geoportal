@@ -9,6 +9,8 @@ import CatalogTreePanel from 'components/CatalogTreePanel'
 import CatalogResult from 'components/CatalogResult'
 import CoordsPanel from 'components/CoordsPanel'
 import DataPanel from 'components/data-layer/DataPanel'
+import DataRow from 'components/DataRow'
+import DataRowToggle from 'components/DataRowToggle'
 import Sidebar from 'components/Sidebar'
 import DrawPanel from 'components/DrawPanel'
 import IncidencePanel from 'components/IncidencePanel'
@@ -46,6 +48,8 @@ export {
   CatalogResult,
   CoordsPanel,
   DataPanel,
+  DataRow,
+  DataRowToggle,
   GeoportalMap,
   GiscubeLayout,
   Sidebar,
