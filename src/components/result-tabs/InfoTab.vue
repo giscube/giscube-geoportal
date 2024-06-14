@@ -35,6 +35,16 @@
       </q-list>
     </div>
 
+    <div v-if="metadata" class="metadata">
+      <div class="panel-subtitle">{{ $t('names.metadata') | capitalize }}</div>
+      <metadata-tab
+        v-if="result && layerDescriptor && layerDescriptor.length > 0"
+        :result="result"
+        :metadata="metadata"
+        :layerDescriptor="layerDescriptor"
+      />
+    </div>
+
     <div class="keywords" v-if="keywords">
       <div class="panel-subtitle">{{ $t('names.keywords') | capitalize }}</div>
       <q-chip
@@ -55,11 +65,12 @@
 import { QBtn, QChip, QItem, QItemLabel, QItemSection, QList, QSpinner, QTooltip } from 'quasar'
 import axios from 'axios'
 import { saveAs } from 'file-saver'
+import MetadataTab from './MetadataTab.vue'
 
 export default {
-  props: ['description', 'result', 'legend', 'downloads', 'keywords'],
+  props: ['description', 'result', 'legend', 'downloads', 'metadata', 'layerDescriptor', 'keywords'],
   components: {
-    QBtn, QChip, QItem, QItemLabel, QItemSection, QList, QSpinner, QTooltip
+    QBtn, QChip, QItem, QItemLabel, QItemSection, QList, QSpinner, QTooltip, MetadataTab
   },
   data () {
     return {
@@ -107,3 +118,10 @@ export default {
   }
 }
 </script>
+
+<style lang="stylus">
+.result-panel
+  .metadata table td
+    padding: $spaces.xs.y $spaces.xs.x
+
+</style>

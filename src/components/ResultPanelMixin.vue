@@ -99,7 +99,6 @@
         <q-tab v-if="isData" name="data" :label="$t('names.data')"/>
         <q-tab v-if="statisticsEnabled && canAggregate" name="statistics" :label="$t('names.statistics')"/>
         <q-tab v-if="canAggregate" name="heat-map" :label="$t('tools.heatMap.title')"/>
-        <q-tab name="metadata" :label="$t('names.metadata')" v-if="result && layerDescriptor && layerDescriptor.length > 0"/>
         <q-tab v-if="isExternalSearchResult" name="search-result" :label="$t('names.searchResult')" />
         <q-tab v-if="isNotMarker" name="utilities" :label="$t('names.utilities')" />
       </q-tabs>
@@ -107,7 +106,15 @@
       <!-- Tab Info -->
       <div v-show="tab === 'info'" class="column no-wrap limit-parent">
         <slot name="info-tab">
-          <info-tab :description="description" :result="result" :legend="legend" :downloads="downloads" :keywords="keywords" />
+          <info-tab
+            :description="description"
+            :result="result"
+            :legend="legend"
+            :downloads="downloads"
+            :metadata="metadata"
+            :layerDescriptor="layerDescriptor"
+            :keywords="keywords"
+          />
         </slot>
       </div>
 
@@ -153,17 +160,6 @@
         </slot>
       </div>
 
-      <!-- Tab Metadata -->
-      <div v-show="tab === 'metadata'" class="column no-wrap limit-parent">
-        <slot name="metadata-tab">
-          <metadata-tab
-            :result="result"
-            :metadata="metadata"
-            :layerDescriptor="layerDescriptor"
-          />
-        </slot>
-      </div>
-
       <div v-show="tab === 'search-result'" class="column no-wrap limit-parent">
         <slot name="search-result-tab">
           <external-search-result-tab :properties="properties" />
@@ -199,7 +195,6 @@ import DataTable from './statistics/DataTable'
 import ExternalSearchResultTab from './result-tabs/ExternalSearchResultTab'
 import InfoTab from './result-tabs/InfoTab'
 import HeatMapTab from './result-tabs/HeatMapTab'
-import MetadataTab from './result-tabs/MetadataTab'
 import StatisticsTab from './result-tabs/StatisticsTab'
 import UtilitiesTab from './result-tabs/UtilitiesTab'
 
@@ -212,7 +207,6 @@ export default {
     ExternalSearchResultTab,
     InfoTab,
     HeatMapTab,
-    MetadataTab,
     StatisticsTab,
     UtilitiesTab,
     QBtn,
@@ -454,9 +448,6 @@ export default {
   .q-chip
     color: #0a1923
     background-color: #a1d7f5 !important
-
-  .metadata table td
-    padding: $spaces.xs.y $spaces.xs.x
 
   .result-panel-latlng
     white-space: nowrap
