@@ -269,7 +269,7 @@ export default {
       if (!this.isDescriptionGeoJSON) {
         return true
       }
-      const layer = this.layer && this.layer.getLayers()[0]
+      const layer = this.layer && this.layer.getLayers().length > 0 && this.layer.getLayers()[0]
       return layer && layer.feature && layer.feature.geometry && !layer.feature.geometry.type.includes('Point')
     },
     routeInfoGiscubeId () {

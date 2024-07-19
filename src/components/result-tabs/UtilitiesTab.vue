@@ -81,7 +81,7 @@ export default {
       get () {
         if (this.layer.options && this.layer.options.opacity !== undefined) {
           return this.layer.options.opacity
-        } else if (this.layer.getLayers && this.layer.getLayers()[0].options.opacity !== undefined) {
+        } else if (this.layer.getLayers && this.layer.getLayers().length > 0 && this.layer.getLayers()[0].options.opacity !== undefined) {
           return this.layer.getLayers()[0].options.opacity
         } else {
           return 0

@@ -153,7 +153,7 @@ export function addOverlay (context, { id, layer, layerType, name, opacity, opti
       },
       getOpacity () {
         if (layerType.toLowerCase() === 'geojson') {
-          return layer.getLayers && layer.getLayers()[0].options.opacity
+          return layer.getLayers && layer.getLayers().length > 0 && layer.getLayers()[0].options.opacity
         } else if (layerType.toLowerCase() === 'tms' || layerType.toLowerCase() === 'wms') {
           return layer.options.opacity
         }

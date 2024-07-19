@@ -81,7 +81,10 @@ export default {
   },
   computed: {
     propertiesNames () {
-      return Object.keys(this.layer.getLayers()[0].feature.properties)
+      if (this.layer.getLayers().length > 0) {
+        return Object.keys(this.layer.getLayers()[0].feature.properties)
+      }
+      return []
     },
     map () {
       return this.$store.state.map.mapObject
