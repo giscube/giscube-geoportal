@@ -50,7 +50,7 @@
         </q-item-section>
         <q-item-section v-else>
           <q-item-label>{{ item.name | capitalize }}</q-item-label>
-          <q-item-label caption>{{ item.data }}</q-item-label>
+          <q-item-label caption><span v-html="item.data"></span></q-item-label>
         </q-item-section>
       </q-item>
     </q-list>
