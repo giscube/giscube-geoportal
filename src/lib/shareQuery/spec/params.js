@@ -57,6 +57,12 @@ params.catalog = params.ca = {
   multi: behaviors.overrides
 }
 
+params.giscube_id = params.id = {
+  key: 'id',
+  type: types.string,
+  multi: behaviors.overrides
+}
+
 params.zoom = params.z = {
   key: 'z',
   type: types.number,

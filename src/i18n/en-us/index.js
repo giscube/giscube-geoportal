@@ -254,7 +254,9 @@ export default {
       openMessage: 'Open @:names.message',
       markerAtCenter: 'Marker at the center',
       simpleView: 'Simple view',
-      hideLayersControl: 'Hide layers control'
+      hideLayersControl: 'Hide layers control',
+      selectLayer: 'Select one layer',
+      openLayerPanel: 'Open layer panel'
     },
     statistics: {
       columnCount: 'Count',

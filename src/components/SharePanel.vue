@@ -43,13 +43,34 @@
           :value="categoriesOpen"
           v-model="catalogState"
         />
+        <br>
+        <div class="row">
+          <q-toggle
+            :label="t('openLayerPanel')"
+            v-model="goToLayerPanel"
+          />
+          <q-select
+            outlined dense
+            :class="goToLayerPanel ? 'q-ml-sm bg-white' : 'q-ml-sm'"
+            style="min-width: 250px"
+            :disable="!goToLayerPanel"
+            v-model="layerId"
+            use-input
+            input-debounce="0"
+            :options="layerIdOptions"
+            @filter="filterCatalogOptions"
+            emit-value
+            map-options
+            :label="t('selectLayer')"
+          />
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { QInput, QToggle } from 'quasar'
+import { QInput, QSelect, QToggle } from 'quasar'
 import Vue from 'vue'
 import L from 'src/lib/leaflet'
 import ShareQuery from 'src/lib/shareQuery'
@@ -62,6 +83,7 @@ export default {
   components: {
     CopyToClipboard,
     QInput,
+    QSelect,
     QToggle
   },
   data () {
@@ -71,6 +93,10 @@ export default {
       layout: null,
       hideLayersControl: false,
       catalogState: false,
+      goToLayerPanel: false,
+      layerId: null,
+      layerIdOptions: [],
+      catalogOptions: [],
       message: '',
       options: {},
       urlBase
@@ -103,6 +129,7 @@ export default {
         layout: this.layout,
         catalog: this.categoriesOpen,
         hideLayersControl: this.hideLayersControl,
+        giscube_id: this.layerId,
         geom: [
           ...this.sharedLayer.getLayers(),
           ...(this.$store.getters['map/drawnLayers']() || [])
@@ -116,6 +143,7 @@ export default {
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
+      vm.$store.dispatch('catalogTree/checkCategories')
       vm.$store.commit('setCurrentTool', 'share')
 
       if (Object.keys(to.query).length > 0) {
@@ -175,6 +203,12 @@ export default {
           const categoriesOpen = catalogState.split(',').map(id => parseInt(id))
           this.$store.commit('catalogTree/setCategoriesOpen', categoriesOpen)
           redirectTo = 'catalog'
+        }
+
+        const giscubeId = ShareQuery.extract(query, 'id')
+        if (giscubeId) {
+          this.$router.replace({ name: 'search', query: { giscube_id: giscubeId } })
+          return
         }
 
         if (redirectTo) {
@@ -261,6 +295,45 @@ export default {
         this.$set(obj, key, true)
       } else {
         this.$delete(obj, key)
+      }
+    },
+    filterCatalogOptions (val, update) {
+      if (!val) {
+        update(() => {
+          this.layerIdOptions = this.catalogOptions
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        this.layerIdOptions = this.catalogOptions.filter(v => v.label.toLowerCase().indexOf(needle) > -1)
+      })
+    },
+    getCatalogLeaves (node, parentRoute) {
+      if (!node.header.includes('leaf')) {
+        for (let child of node.children) {
+          this.getCatalogLeaves(child, `${parentRoute} > ${child.label}`)
+        }
+      } else {
+        this.catalogOptions.push({
+          label: `${parentRoute}`,
+          value: node.id
+        })
+      }
+    },
+    getCatalogOptions () {
+      this.catalogOptions = []
+      for (let root of this.$store.state.catalogTree.catalog) {
+        this.getCatalogLeaves(root, root.label)
+      }
+    }
+  },
+  watch: {
+    goToLayerPanel (value) {
+      if (value) {
+        this.getCatalogOptions()
+      } else {
+        this.layerId = null
       }
     }
   }

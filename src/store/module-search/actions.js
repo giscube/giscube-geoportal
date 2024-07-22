@@ -1,4 +1,5 @@
 import { createGeoJSONLayer } from 'src/lib/geomUtils'
+import axios from 'axios'
 
 /**
  * @babel/polyfill@^7.4.0 is supposed to include "flat", but that doesn't work of us -
@@ -61,6 +62,21 @@ export function fetch (context) {
       context.commit('errorFetching', true)
       this.$except(error)
     })
+}
+
+export function searchGiscubeId (context, giscubeId) {
+  context.dispatch('clearResultLayer')
+
+  const url = this.$config.catalog.base + 'geoportal/giscube_id/' + giscubeId
+  const headers = context.rootGetters['auth/headers']
+  const conf = {
+    headers
+  }
+  axios.get(url, conf).then(response => {
+    const results = response.data.results
+    context.commit('fetchingResults', results)
+    context.dispatch('finishResults', flat(results))
+  })
 }
 
 export function finishResults (context, results) {

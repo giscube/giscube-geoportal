@@ -46,11 +46,21 @@ export default {
     SearchResult
   },
   beforeRouteEnter (to, from, next) {
-    next(vm => vm.$store.dispatch('search/search', { query: to.params.q }))
+    next(vm => {
+      if (to.query && to.query.giscube_id) {
+        vm.$store.dispatch('search/searchGiscubeId', to.query.giscube_id)
+      } else {
+        vm.$store.dispatch('search/search', { query: to.params.q })
+      }
+    })
   },
   beforeRouteUpdate (to, from, next) {
     this.$store.dispatch('search/clearResultLayer')
-    this.$store.dispatch('search/search', { query: to.params.q })
+    if (to.query && to.query.giscube_id) {
+      this.$store.dispatch('search/searchGiscubeId', to.query.giscube_id)
+    } else {
+      this.$store.dispatch('search/search', { query: to.params.q })
+    }
     next()
   },
   beforeRouteLeave (to, from, next) {

@@ -256,7 +256,9 @@ export default {
       openMessage: 'Abrir @:names.message',
       markerAtCenter: 'Marcador en el centro',
       simpleView: 'Vista simple',
-      hideLayersControl: 'Esconde el control de capas'
+      hideLayersControl: 'Esconde el control de capas',
+      selectLayer: 'Selecciona una capa',
+      openLayerPanel: 'Abrir panel de información de una capa'
     },
     statistics: {
       columnCount: 'Recuento',

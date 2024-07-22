@@ -33,7 +33,7 @@ export default function ({ Vue, store }) {
         { path: 'draw/', component: DrawPanel, name: 'draw' },
         { path: 'incidence/', component: IncidencePanel, name: 'incidence' },
         { path: 'place/:q*', component: PlacePanelStrategy, name: 'place' },
-        { path: 'search/:q*', component: SearchPanel, name: 'search' },
+        { path: 'search/:q*', component: SearchPanel, name: 'search', query: 'giscube_id' },
         { path: 'share', component: SharePanel, name: 'share' },
         { path: 'streetview/:q?', component: StreetViewPanel, name: 'streetview' },
 
