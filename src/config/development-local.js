@@ -10,6 +10,7 @@ export default base.merge({
   },
   catalog: {
     categories: 'http://localhost:8000/geoportal/category/',
+    categories: 'http://localhost:8000/geoportal/category/catalog/',
     search: 'http://localhost:8000/geoportal/catalog/',
     auth: true
   },
