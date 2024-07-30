@@ -13,25 +13,28 @@
     :behavior="$store.state.layout.drawerBehavior"
   >
     <router-view @needs-wide='setWide' />
-    <a @click.prevent="onToggleClick"
-       class="sidebar-close"
-       ><q-icon
+    <a @click.prevent="onToggleClick" class="sidebar-close">
+      <q-icon
         :name="sidebarOpen ? 'arrow_left' : 'arrow_right'"
         color="white"
         size="35px"
-        /></a>
-    <a v-if="sidebarOpen"
-       @click.prevent="onToggleWidthClick"
-       @mousedown="onToggleWidthMousedown"
-       @touchstart="onToggleWidthMousedown"
-       @touchend="onToggleWidthClick"
-       class="sidebar-close sidebar-toggle-width"
-       ><q-icon
-        style="padding: 18px 18px"
+        />
+    </a>
+    <a
+      v-if="sidebarOpen"
+      @click.prevent="onToggleWidthClick"
+      @mousedown="onToggleWidthMousedown"
+      @touchstart="onToggleWidthMousedown"
+      @touchend="onToggleWidthClick"
+      class="sidebar-close sidebar-toggle-width"
+    >
+      <q-icon
+        style="padding: 6px 6px"
         name="code"
         color="white"
         size="24px"
-        /></a>
+      />
+    </a>
   </q-drawer>
 </template>
 
@@ -247,6 +250,7 @@ aside.q-drawer--left {
   border-radius: 0 4px 4px 0;
   width: 23px;
   height: 48px;
+  visibility: visible!important;
 }
 .sidebar-close i {
   margin-left: -14px;
