@@ -167,6 +167,16 @@ export default {
           if (type === 'GeoJSON') {
             this.layer.openPopup()
             this.zoom()
+            if (this.isExternalSearchResult) {
+              const latlngPoint = layer.getPopup().getLatLng()
+              this.layer.closePopup()
+              this.map.fireEvent('click', {
+                latlng: latlngPoint,
+                layerPoint: this.map.latLngToLayerPoint(latlngPoint),
+                containerPoint: this.map.latLngToContainerPoint(latlngPoint)
+              })
+              this.layer.remove()
+            }
           }
         })
         .catch(e => {
