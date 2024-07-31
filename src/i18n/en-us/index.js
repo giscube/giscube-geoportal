@@ -247,6 +247,7 @@ export default {
       headerName: 'Share',
       title: 'Share',
       help: 'Share map with the drawn geometries.',
+      description: 'With this link, you can share the map at the current location and zoom level, the catalog layers that are fixed on the map, and the drawings and measurements you have made.<br>The options below will allow you to open a message when the link is opened, display the map without the toolbar, share the catalog state, among other things...',
 
       catalogState: 'Catalog state',
       message: '@:names.message',

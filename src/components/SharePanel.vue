@@ -3,6 +3,7 @@
 
     <div class="panel-content">
       <p class="panel-title">{{ t('title') | capitalize }}</p>
+      <p><span v-html="t('description')" /></p>
       <copy-to-clipboard
         :value="urlBase + queryStr"
       />
