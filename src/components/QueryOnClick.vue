@@ -143,7 +143,7 @@ export default {
               this.feature = { 'properties': {} }
               query.results.forEach(element => {
                 let elements = []
-                if (element.elements) {
+                if (element && element.elements) {
                   element.elements.forEach(elem => {
                     let dictAtributes = {}
                     if (elem && elem.elements) {
@@ -264,17 +264,19 @@ export default {
     },
     _highlightResultsGeomtries () {
       this.query.results.forEach(element => {
-        element.elements.forEach(elem => {
-          elem.elements.forEach(attribute => {
-            if (attribute.name === 'Attribute' && attribute.attributes.name === 'geometry') {
-              let layers = higlightWKTGeometry(attribute.attributes.value)
-              if (layers.length > 0) {
-                this.queryHighlightLayers.push(...layers)
+        if (element && element.elements) {
+          element.elements.forEach(elem => {
+            elem.elements.forEach(attribute => {
+              if (attribute.name === 'Attribute' && attribute.attributes.name === 'geometry') {
+                let layers = higlightWKTGeometry(attribute.attributes.value)
+                if (layers.length > 0) {
+                  this.queryHighlightLayers.push(...layers)
+                }
               }
-            }
+            })
           })
-        })
-        this.queryHighlightLayers.forEach(layer => this.map.addLayer(layer))
+          this.queryHighlightLayers.forEach(layer => this.map.addLayer(layer))
+        }
       })
     },
     _removeHighlightResultsGeometries () {
