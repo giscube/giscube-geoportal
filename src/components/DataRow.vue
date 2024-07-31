@@ -4,7 +4,10 @@
     :class="`q-py-xs ${classes}`"
   >
     <div class="title">{{ label }}</div>
-    <div class="value">{{ value }}</div>
+    <div v-if="isLink" class="value">
+      <a :href="value" target="_blank">{{ value }}</a>
+    </div>
+    <div v-else class="value">{{ value }}</div>
   </div>
   <div
     v-else-if="value && value.length > 85 && hasHTML"
@@ -16,6 +19,9 @@
   <div v-else :class="`row justify-between q-py-xs ${classes}`">
     <div class="col-5 title">{{ label }}</div>
     <span v-if="value && hasHTML" v-html="value" class="col-6 text-right value"></span>
+    <div v-else-if="isLink" class="col-7 text-right value">
+      <a :href="value" target="_blank">{{ value }}</a>
+    </div>
     <div v-else class="col-7 text-right value">{{ value }}</div>
   </div>
 </template>
@@ -34,6 +40,9 @@ export default {
     },
     hasHTML () {
       return !!this.value.includes && this.value.includes('<span')
+    },
+    isLink () {
+      return this.value.toLowerCase().startsWith('http')
     },
     label () {
       return this.formatString(this.element.label)
