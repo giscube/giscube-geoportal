@@ -37,7 +37,6 @@ export default {
 
     this.$store.dispatch('search/clearResultLayer')
     this.$store.commit('search/auto', false)
-    next({ name: 'search', params: to.params, replace: true })
   },
   beforeRouteLeave (to, from, next) {
     this.$store.dispatch('search/clearResultLayer')
