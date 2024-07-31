@@ -17,7 +17,9 @@ export function invalidateState (context) {
 }
 
 export function clearResultLayer (context) {
-  context.state.resultsLayer.clearLayers()
+  if (context.state.resultsLayer && context.state.resultsLayer.clearLayers) {
+    context.state.resultsLayer.clearLayers()
+  }
 }
 
 export async function search (context, { query, forceRefresh = false, auto }) {
