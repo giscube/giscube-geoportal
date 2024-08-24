@@ -19,6 +19,9 @@ export default {
       table_: null
     }
   },
+  destroyed () {
+    this.$store.commit('search/currentLayer', null)
+  },
   computed: {
     ...mapState({
       overlays: state => state.map.layers.overlays
@@ -84,6 +87,7 @@ export default {
       const isAuthenticated = this.result.private || (this.result.origin && this.result.origin.auth)
       const layerDescriptor = this.result && this.result.children && this.result.children.length > 0 && this.result.children[0]
       const downloads = layerDescriptor && this.result.children.filter(child => child.giscube && child.giscube.downloadable)
+      const getfeatureinfoSupport = layerDescriptor && layerDescriptor.giscube && layerDescriptor.giscube.getfeatureinfo_support
       const options = {
         ...(layerDescriptor && layerDescriptor.giscube && layerDescriptor.giscube.single_image && { singleTile: true }),
         ...(this.result && this.result.options)
@@ -103,7 +107,8 @@ export default {
           root: this.$root
         },
         headers: isAuthenticated ? this.$store.getters['auth/headers'] : void 0,
-        downloads
+        downloads,
+        getfeatureinfoSupport
       }
     },
     legend () {
@@ -188,6 +193,12 @@ export default {
     show () {
       if (this.layer) {
         this.resultsLayer.addLayer(this.layer).bringToFront()
+        this.$store.commit('search/currentLayer', {
+          layer: this.layer,
+          layerType: this.layerType,
+          popup: this.layerOptions.options.popup,
+          getfeatureinfoSupport: this.layerOptions.getfeatureinfoSupport
+        })
       }
     },
     idFromString (word) {

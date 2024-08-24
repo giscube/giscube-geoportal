@@ -63,3 +63,7 @@ export function result (state, value) {
   state.finalResults = null
   state.result = value
 }
+
+export function currentLayer (state, value) {
+  state.currentLayer = value
+}

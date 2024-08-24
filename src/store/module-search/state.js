@@ -9,5 +9,6 @@ export default {
   finalResults: null,
   result: null,
   resultsLayer: L.featureGroup(),
+  currentLayer: null,
   auto: true
 }

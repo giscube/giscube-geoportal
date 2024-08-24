@@ -61,6 +61,9 @@ export default {
   computed: {
     currentTool () {
       return this.$store.state.root.currentTool
+    },
+    currentLayer () {
+      return this.$store.state.search.currentLayer
     }
   },
   mounted () {
@@ -207,59 +210,72 @@ export default {
       // let latlng = event.latlng
       var queryResults = null
       var overlays = this._getMapOverlays()
+
+      if (this.currentLayer) {
+        queryResults = await this.getInfoFromWMS(this.currentLayer, event)
+      }
+
       while (!queryResults && overlays.length > 0) {
         let layer = overlays.shift()
-
-        if (layer.layerType !== 'WMS') {
-          continue
+        let info = await this.getInfoFromWMS(layer, event)
+        if (info) {
+          queryResults = info
         }
-
-        if (layer.getfeatureinfoSupport !== void 0 && !layer.getfeatureinfoSupport) {
-          continue
-        }
-
-        let wmsParams = layer.layer.wmsParams
-        if (layer.popup) {
-          this.customPopup = makeTemplate(layer.popup)
-        }
-
-        var sw = this.map.getBounds().getSouthWest()
-        var ne = this.map.getBounds().getNorthEast()
-        if (wmsParams.srs === 'EPSG:3857') {
-          sw = L.CRS.EPSG3857.project(sw)
-          ne = L.CRS.EPSG3857.project(ne)
-        }
-        let bbox = [sw.x, sw.y, ne.x, ne.y].join(',')
-
-        var params = {
-          'request': 'GetFeatureInfo',
-          'info_format': 'text/xml',
-          'query_layers': wmsParams.layers,
-          'bbox': bbox,
-          'x': Math.floor(event.containerPoint.x),
-          'y': Math.floor(event.containerPoint.y),
-          'width': this.map.getSize().x,
-          'height': this.map.getSize().y,
-          'feature_count': 100,
-          'with_geometry': true
-        }
-
-        let searchUrl = layer.layer._url
-
-        await axios.get(searchUrl, {
-          params: L.extend({}, wmsParams, params)
-        })
-          .then(response => {
-            let result = convert.xml2js(response.data, { compact: false })
-            let results = result.elements[0].elements
-            if (results.length > 0 && results.some(layer => layer.elements)) {
-              queryResults = results
-            }
-          })
-          .catch(this.$except)
       }
 
       // return null for no results
+      return queryResults
+    },
+    async getInfoFromWMS (layer, event) {
+      if (layer.layerType !== 'WMS') {
+        return null
+      }
+
+      if (layer.getfeatureinfoSupport !== void 0 && !layer.getfeatureinfoSupport) {
+        return null
+      }
+
+      let wmsParams = layer.layer.wmsParams
+      if (layer.popup) {
+        this.customPopup = makeTemplate(layer.popup)
+      }
+
+      var sw = this.map.getBounds().getSouthWest()
+      var ne = this.map.getBounds().getNorthEast()
+      if (wmsParams.srs === 'EPSG:3857') {
+        sw = L.CRS.EPSG3857.project(sw)
+        ne = L.CRS.EPSG3857.project(ne)
+      }
+      let bbox = [sw.x, sw.y, ne.x, ne.y].join(',')
+
+      var params = {
+        'request': 'GetFeatureInfo',
+        'info_format': 'text/xml',
+        'query_layers': wmsParams.layers,
+        'bbox': bbox,
+        'x': Math.floor(event.containerPoint.x),
+        'y': Math.floor(event.containerPoint.y),
+        'width': this.map.getSize().x,
+        'height': this.map.getSize().y,
+        'feature_count': 100,
+        'with_geometry': true
+      }
+
+      let searchUrl = layer.layer._url
+
+      let queryResults = null
+      await axios.get(searchUrl, {
+        params: L.extend({}, wmsParams, params)
+      })
+        .then(response => {
+          let result = convert.xml2js(response.data, { compact: false })
+          let results = result.elements[0].elements
+          if (results.length > 0 && results.some(layer => layer.elements)) {
+            queryResults = results
+          }
+        })
+        .catch(this.$except)
+
       return queryResults
     },
     _highlightResultsGeomtries () {
