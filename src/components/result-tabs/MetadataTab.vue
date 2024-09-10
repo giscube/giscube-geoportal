@@ -1,6 +1,16 @@
 <template>
   <div>
     <q-list separator dense>
+      <q-item v-if="metadata && metadata.information">
+        <q-item-section v-if="metadata.information < 60">{{ $t('metadata.information') | capitalize }}</q-item-section>
+        <q-item-section v-if="metadata.information < 60" side>
+          {{ metadata.information }}
+        </q-item-section>
+        <q-item-section v-else>
+          <q-item-label>{{ $t('metadata.information') | capitalize }}</q-item-label>
+          <q-item-label caption><span v-html="metadata.information"></span></q-item-label>
+        </q-item-section>
+      </q-item>
       <q-item v-if="layerDescriptor && layerDescriptor.length > 0">
         <q-item-section>
           <q-item-label>{{ layerDescriptor[0].name }}</q-item-label>
@@ -114,9 +124,6 @@ export default {
       }
       if (this.metadata.language) {
         metadataList_.push(this.listItem('language', this.metadata.language, 'lang'))
-      }
-      if (this.metadata.information) {
-        metadataList_.push(this.listItem('information', this.metadata.information))
       }
       if (this.metadata.provider_web) {
         metadataList_.push(this.listItem('provider_web', this.metadata.provider_web, 'web'))
