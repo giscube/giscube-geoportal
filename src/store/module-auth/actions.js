@@ -19,6 +19,7 @@ export function credentialsLogin (context, { username, password }) {
         context.commit('setUsername', username)
         context.dispatch('saveState')
         context.dispatch('updateUserInfo')
+        context.dispatch('catalogTree/checkCategories', true, { root: true })
         resolve()
       })
       .catch(error => {
@@ -68,6 +69,7 @@ export function logout (context) {
         context.commit('setAccessToken', null)
         context.commit('setUsername', null)
         context.dispatch('saveState')
+        context.dispatch('catalogTree/checkCategories', true, { root: true })
         resolve()
       })
       .catch(reject)

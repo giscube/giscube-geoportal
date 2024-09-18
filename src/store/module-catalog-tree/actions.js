@@ -1,8 +1,8 @@
 import axios from 'axios'
 import CatalogTreeResult from '../../lib/CatalogTreeResult'
 
-export function checkCategories (context) {
-  if (context.state.categories.length > 0) {
+export function checkCategories (context, forceRefresh = false) {
+  if (context.state.categories.length > 0 && !forceRefresh) {
     return
   }
   context.commit('loading', true)
