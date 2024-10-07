@@ -34,6 +34,12 @@
         />
         <br>
         <q-toggle
+          :label="t('closeSidebar')"
+          :value="closeSidebar"
+          v-model="closeSidebar"
+        />
+        <br>
+        <q-toggle
           :label="t('hideLayersControl')"
           :value="hideLayersControl"
           v-model="hideLayersControl"
@@ -92,6 +98,7 @@ export default {
     const urlBase = l.origin + l.pathname + '#/share/'
     return {
       layout: null,
+      closeSidebar: false,
       hideLayersControl: false,
       catalogState: false,
       goToLayerPanel: false,
@@ -129,6 +136,7 @@ export default {
         message: this.message,
         layout: this.layout,
         catalog: this.categoriesOpen,
+        closeSidebar: this.closeSidebar,
         hideLayersControl: this.hideLayersControl,
         giscube_id: this.layerId,
         geom: [
@@ -182,6 +190,11 @@ export default {
         const layout = ShareQuery.extract(query, 'la')
         if (layout) {
           this.$store.commit('layout/setLayout', layout)
+        }
+
+        const closeSidebar = ShareQuery.extract(query, 'csb')
+        if (closeSidebar === 'true') {
+          this.$store.dispatch('layout/setSidebarOpen', false)
         }
 
         const layersControl = ShareQuery.extract(query, 'hlc')

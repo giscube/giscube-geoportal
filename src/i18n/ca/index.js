@@ -252,6 +252,7 @@ export default {
       description: 'Amb aquest enllaç pots compartir el mapa a l\'ubicació i el nivell de zoom actual, les capes del catàleg que estan fixades al mapa i els dibuixos i mesures que has fet.<br>Les opcions d\'abaix et permetran obrir un missatge quan s\'obri l\'enllaç, mostrar el mapa sense la barra d\'eines, compartir l\'estat del catàleg, entre altres...',
 
       catalogState: 'Estat del catàleg',
+      closeSidebar: 'Tanca el panell lateral',
       message: '@:names.message',
       options: '@:names.options',
       openMessage: 'Obrir @:names.message',

@@ -27,6 +27,12 @@ params.layers = params.l = params.results = {
   multi: behaviors.overrides
 }
 
+params.closeSidebar = params.csb = {
+  key: 'csb',
+  type: types.string,
+  multi: behaviors.overrides
+}
+
 params.hideLayersControl = params.hlc = {
   key: 'hlc',
   type: types.string,
