@@ -180,7 +180,6 @@ export default {
                 layerPoint: this.map.latLngToLayerPoint(latlngPoint),
                 containerPoint: this.map.latLngToContainerPoint(latlngPoint)
               })
-              this.layer.remove()
             }
           }
         })
