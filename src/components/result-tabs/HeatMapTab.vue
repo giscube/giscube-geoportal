@@ -125,12 +125,13 @@ export default {
     addHeatLayer () {
       const layers = this.layer && this.layer.getLayers()
       let coords = null
-      if (layers && layers[0].feature && layers[0].feature.geometry && layers[0].feature.geometry.type === 'Point') {
+      if (layers && layers[0].feature && layers[0].feature.geometry && (layers[0].feature.geometry.type === 'Point' || layers[0].feature.geometry.type === 'MultiPoint')) {
         coords = layers.map(layer => {
+          const _coords = layer.feature.geometry.type === 'Point' ? [layer.feature.geometry.coordinates[1], layer.feature.geometry.coordinates[0]] : [layer.feature.geometry.coordinates[0][1], layer.feature.geometry.coordinates[0][0]]
           if (this.mapType !== this.$t('tools.heatMap.defaultOption')) {
-            return [layer.feature.geometry.coordinates[1], layer.feature.geometry.coordinates[0], layer.feature.properties[this.mapType] / this.max]
+            return [..._coords, layer.feature.properties[this.mapType] / this.max]
           } else {
-            return [layer.feature.geometry.coordinates[1], layer.feature.geometry.coordinates[0], this.max]
+            return [..._coords, this.max]
           }
         })
       }
