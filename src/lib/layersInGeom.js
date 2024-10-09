@@ -88,23 +88,26 @@ export function groupPointsByPolygons (points, polygons) {
       }
     )
   )
-
-  for (let layer of points) {
-    if (layer.getLatLng) {
-      layer = layer.getLatLng()
+  const pointslatLngs = points.flatMap(point => {
+    if (point.getLatLng) {
+      return point.getLatLng()
     }
-    if (!(layer instanceof L.LatLng)) {
+    if (point.feature && point.feature.geometry && point.feature.geometry.type === 'MultiPoint') {
+      return point.feature.geometry.coordinates.map(coord => L.latLng(coord[1], coord[0]))
+    }
+  }).filter(latlng => latlng)
+  for (let latLng of pointslatLngs) {
+    if (!(latLng instanceof L.LatLng)) {
       continue
     }
-    const rawLayer = toRaw(layer)
+    const rawLayer = toRaw(latLng)
     for (let polygon of result.keys()) {
       const rawPolygon = rawPolygons.get(polygon)
       if (containsWithHoles(rawLayer, rawPolygon)) {
-        result.get(polygon).push(layer)
+        result.get(polygon).push(latLng)
         break
       }
     }
   }
-
   return result
 }
