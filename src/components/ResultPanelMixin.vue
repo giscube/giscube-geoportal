@@ -141,6 +141,7 @@
           <data-table
             v-else
             :value="aggregatedData"
+            :filteredFields="filteredFields"
             @filtered="setAggregated"
           />
         </slot>
@@ -277,6 +278,9 @@ export default {
     },
     statisticsEnabled () {
       return this.$config.tools.statistics.enabled
+    },
+    filteredFields () {
+      return this.result && this.result.filtered_fields
     },
 
     // To override

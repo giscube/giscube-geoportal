@@ -93,7 +93,7 @@ function debounceComputeData () {
 }
 
 export default {
-  props: ['value'],
+  props: ['value', 'filteredFields'],
   components: {
     ColumnFilter,
     DataCell,
@@ -164,7 +164,7 @@ export default {
       return this.$store.state.statistics.filterPolygon
     },
     columns () {
-      return this.fields.map(field => ({
+      let listColumns = this.fields.map(field => ({
         name: field.name,
         label: this.$filter('capitalize')(field.name),
         field: row => field.getValue({ from: row }),
@@ -172,6 +172,17 @@ export default {
         sortable: true,
         internalField: field
       }))
+      if (this.filteredFields) {
+        let listFilteredColumns = []
+        this.filteredFields.forEach(name => {
+          const column = listColumns.find(col => col.name === name)
+          if (column) {
+            listFilteredColumns.push(column)
+          }
+        })
+        return listFilteredColumns
+      }
+      return listColumns
     }
   },
   methods: {
