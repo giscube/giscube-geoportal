@@ -18,6 +18,9 @@
         />
       </template>
     </file-select>
+    <label-select>
+    
+    </label-select>
     <q-circular-progress
       v-if="progressTotal > 0"
       :value="progress"
@@ -42,6 +45,7 @@ import { QBtn, QCircularProgress } from 'quasar'
 
 import AggregationTable from '../statistics/AggregationTable'
 import FileSelect from '../FileSelect'
+import LabelSelect from '../statistics/LabelSelect'
 import PaletteSelect from '../statistics/PaletteSelect'
 import PolygonTooltip from '../statistics/PolygonTooltip'
 import StatisticsLegend from '../statistics/StatisticsLegend'

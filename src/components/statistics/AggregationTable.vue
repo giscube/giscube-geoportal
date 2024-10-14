@@ -67,13 +67,13 @@ export default {
     },
     columns () {
       return [
-        ...this.dataColumns,
         ...this.aggregationColumns,
         {
           name: '__internal__colorColumn',
           label: this.t('columnColor'),
           field: row => this.colorMap.get(row) || this.colorMap.get('default')
-        }
+        },
+        ...this.dataColumns
       ]
     }
   },
