@@ -9,7 +9,7 @@ export default {
     },
     attr: {
       type: String,
-      default: 'count'
+      default: 'label'
     }
   },
   computed: mapState('statistics', ['result', 'colorMap']),
