@@ -49,7 +49,7 @@ export default {
     }
   },
   computed: {
-    ...mapState('statistics', ['by', 'aggregation', 'result', 'colorMap']),
+    ...mapState('statistics', ['by', 'aggregation', 'result', 'colorMap', 'keyLabel']),
     aggregationColumns () {
       if (!this.result) {
         return []
@@ -67,19 +67,23 @@ export default {
     },
     columns () {
       return [
-        ...this.dataColumns,
         ...this.aggregationColumns,
         {
           name: '__internal__colorColumn',
           label: this.t('columnColor'),
           field: row => this.colorMap.get(row) || this.colorMap.get('default')
-        }
+        },
+        ...this.dataColumns
       ]
     }
   },
   watch: {
     by: {
       handler: 'computeDataColumn',
+      immediate: true
+    },
+    keyLabel: {
+      handler: 'computeDataColumnWithKeyLabel',
       immediate: true
     }
   },
@@ -100,10 +104,16 @@ export default {
           }
         }
       })
-
       // Do not remake the columns if they are the same (avoids unnecessary reactivity of the table)
       if (this.dataColumns.length !== dataColumns.length || !this.dataColumns.every(column => keySet.has(column.name))) {
         this.dataColumns = dataColumns
+      }
+    },
+    computeDataColumnWithKeyLabel (key) {
+      const index = this.dataColumns.findIndex(item => item.name === key)
+      if (index > 0) {
+        const element = this.dataColumns.splice(index, 1)[0]
+        this.dataColumns.unshift(element)
       }
     },
     exportGeoJSON () {

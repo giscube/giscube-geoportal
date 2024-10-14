@@ -185,10 +185,14 @@ export function aggregate ({ state, commit, dispatch }) {
       state.by,
       layer => {
         const group = groups.get(layer)
+        const count = group ? group.length : 0
+        const valueLabel = state.valueLabel ? state.valueLabel.get(layer) : null
+        const label = valueLabel ? valueLabel + ' (' + count + ')' : count
         return [
           layer,
           {
-            count: group ? group.length : 0
+            count: count,
+            label: label
           }
         ]
       }
@@ -207,6 +211,14 @@ export function setPaletteScheme ({ commit, dispatch }, value) {
 export function setPaletteGroups ({ commit, dispatch }, value) {
   commit('paletteGroups', value)
   dispatch('calculateColors')
+}
+
+export function setKeyLabel ({ commit, dispatch }, value) {
+  commit('keyLabel', value)
+}
+
+export function setValueLabel ({ commit, dispatch }, value) {
+  commit('valueLabel', value)
 }
 
 export function calculateColors ({ state, commit }) {

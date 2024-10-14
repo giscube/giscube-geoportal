@@ -18,6 +18,10 @@
         />
       </template>
     </file-select>
+    <label-select
+      :value.sync="keyLabel"
+      :byOptions="by"
+    />
     <q-circular-progress
       v-if="progressTotal > 0"
       :value="progress"
@@ -42,6 +46,7 @@ import { QBtn, QCircularProgress } from 'quasar'
 
 import AggregationTable from '../statistics/AggregationTable'
 import FileSelect from '../FileSelect'
+import LabelSelect from '../statistics/LabelSelect'
 import PaletteSelect from '../statistics/PaletteSelect'
 import PolygonTooltip from '../statistics/PolygonTooltip'
 import StatisticsLegend from '../statistics/StatisticsLegend'
@@ -53,6 +58,7 @@ export default {
     QCircularProgress,
     AggregationTable,
     FileSelect,
+    LabelSelect,
     PaletteSelect,
     StatisticsLegend
   },
@@ -76,6 +82,14 @@ export default {
       },
       set (value) {
         this.$store.dispatch('statistics/setPaletteGroups', value)
+      }
+    },
+    keyLabel: {
+      get () {
+        return this.$store.state.statistics && this.$store.state.statistics.keyLabel
+      },
+      set (value) {
+        this.$store.dispatch('statistics/setKeyLabel', value)
       }
     },
     byOptions () {
