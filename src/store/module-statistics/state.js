@@ -22,5 +22,6 @@ export default {
     groups: 3
   },
   legend: null,
+  valueLabel: null,
   colorMap: new Map(DEFAULT_COLOR_MAP)
 }

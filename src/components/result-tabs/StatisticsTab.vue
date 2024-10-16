@@ -18,9 +18,10 @@
         />
       </template>
     </file-select>
-    <label-select>
-    
-    </label-select>
+    <label-select
+      :value.sync="valueLabel"
+      :byOptions="byOptions"
+    />
     <q-circular-progress
       v-if="progressTotal > 0"
       :value="progress"
@@ -57,6 +58,7 @@ export default {
     QCircularProgress,
     AggregationTable,
     FileSelect,
+    LabelSelect,
     PaletteSelect,
     StatisticsLegend
   },
@@ -80,6 +82,14 @@ export default {
       },
       set (value) {
         this.$store.dispatch('statistics/setPaletteGroups', value)
+      }
+    },
+    valueLabel: {
+      get () {
+        return this.$store.state.statistics && this.$store.state.statistics.valueLabel
+      },
+      set (value) {
+        this.$store.dispatch('statistics/setValueLabel', value)
       }
     },
     byOptions () {

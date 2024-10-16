@@ -70,3 +70,7 @@ export function resetLoading (state) {
 export function legend (state, value) {
   state.legend = value
 }
+
+export function valueLabel (state, value) {
+  state.valueLabel = value
+}

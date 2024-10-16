@@ -264,6 +264,7 @@ export default {
       columnCount: 'Count',
       columnColor: 'Color',
       groupBy: 'Group by',
+      label: 'Label',
       palette: 'Palette',
       tabData: 'Data',
       tabResults: 'Results',

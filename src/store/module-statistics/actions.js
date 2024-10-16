@@ -209,6 +209,10 @@ export function setPaletteGroups ({ commit, dispatch }, value) {
   dispatch('calculateColors')
 }
 
+export function setValueLabel ({ commit, dispatch }, value) {
+  commit('valueLabel', value)
+}
+
 export function calculateColors ({ state, commit }) {
   const colorMap = new Map(DEFAULT_COLOR_MAP)
 

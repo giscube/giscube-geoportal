@@ -1,14 +1,12 @@
 <template>
-<div class="row q-gutter-md">
+<div class="q-mb-md">
     <q-select
-      class="col-grow"
-      :value="scheme"
-      @input="$emit('update:scheme', $event)"
-      :options="options"
-      :label="t('palette')"
       filled
-      emit-value
-      map-options
+      :value="value"
+      @input="$emit('update:value', $event)"
+      :options="options"
+      :label="t('label')"
+      clearable
     />
   </div>
 </template>
@@ -16,22 +14,13 @@
 import { QSelect } from 'quasar'
 
 export default {
-  props: ['scheme', 'groups'],
+  props: ['value', 'byOptions'],
   components: {
-    QInput,
     QSelect
   },
   data () {
     return {
-      options: Object.freeze(
-        COLOR_SCHEMES.map(scheme => {
-          const palette = scheme.groups[scheme.maxGroups]
-          return {
-            label: `<div class="palette">${palette.map(colorSpan).join('')}</div>`,
-            value: scheme
-          }
-        })
-      )
+      options: this.byOptions.map(option => option.name)
     }
   },
   methods: {

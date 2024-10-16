@@ -266,6 +266,7 @@ export default {
       columnCount: 'Recompte',
       columnColor: 'Color',
       groupBy: 'Agrupar per',
+      label: 'Etiqueta',
       palette: 'Paleta',
       tabData: 'Dades',
       tabResults: 'Temàtic',
