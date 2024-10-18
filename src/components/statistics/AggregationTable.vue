@@ -1,6 +1,7 @@
 <template>
   <q-table
     v-if="by"
+    dense
     :data="by"
     :columns="columns"
     row-key="name"
