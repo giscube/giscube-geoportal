@@ -7,6 +7,8 @@
       :options="options"
       :label="t('label')"
       clearable
+      emit-value
+      map-options
     />
   </div>
 </template>
@@ -20,7 +22,12 @@ export default {
   },
   data () {
     return {
-      options: this.byOptions.map(option => option.name)
+      options: this.byOptions.map(option => {
+        return {
+          label: option.name,
+          value: option.url
+        }
+      })
     }
   },
   methods: {

@@ -39,6 +39,7 @@ export function clearStats ({ commit, dispatch }) {
 
 export async function selectBy ({ state, commit, dispatch, rootState }, { option, tooltip = {} } = {}) {
   commit('byOption', option)
+  console.log('options', option, tooltip)
 
   const geoJSON = option.file ? await jsonFileToObject(option.file) : await getByOption(option)
   const by = L.geoJSON(geoJSON)
@@ -179,16 +180,21 @@ export function aggregate ({ state, commit, dispatch }) {
     return
   }
 
+  if (state.valueLabel) {
+    // afegir els camps
+  }
+
   const groups = groupPointsByPolygons(state.aggregated, state.by)
+  console.log(groups)
   const aggregation = new WeakMap(
     map(
       state.by,
       layer => {
-        const group = groups.get(layer)
+        // const group = groups.get(layer)
         return [
           layer,
           {
-            count: group ? group.length : 0
+            count: 'Sant Narcis'
           }
         ]
       }
@@ -196,6 +202,7 @@ export function aggregate ({ state, commit, dispatch }) {
   )
 
   commit('result', aggregation)
+  console.log('aggregation', aggregation)
   dispatch('calculateColors')
 }
 
@@ -267,5 +274,6 @@ export function calculateColors ({ state, commit }) {
       maxValue: min + Math.floor(diff / n * (i + 1))
     })
   }
+  console.log('legend', legend, colorMap)
   commit('legend', legend)
 }
