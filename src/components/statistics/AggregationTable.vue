@@ -1,11 +1,12 @@
 <template>
   <q-table
     v-if="by"
+    class="limit-parent sticky-header"
     :data="by"
     :columns="columns"
     row-key="name"
     virtual-scroll
-    :pagination="{ rowsPerPage: 0 }"
+    :pagination.sync="pagination"
     :rows-per-page-options="[0]"
   >
     <template v-slot:top-right>
@@ -44,6 +45,11 @@ export default {
   },
   data () {
     return {
+      pagination: {
+        sortBy: null,
+        descending: false,
+        rowsPerPage: 0
+      },
       table: null,
       dataColumns: []
     }
