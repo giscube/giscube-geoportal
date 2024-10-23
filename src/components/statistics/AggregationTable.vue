@@ -163,6 +163,7 @@ export default {
 }
 .sticky-header thead tr th {
   position: sticky;
+  z-index: 1;
 }
 .sticky-header thead tr:first-child th {
   top: 0;
