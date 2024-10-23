@@ -6,7 +6,7 @@
     :columns="columns"
     row-key="name"
     virtual-scroll
-    :pagination.sync="pagination"
+    :pagination="{ rowsPerPage: 0 }"
     :rows-per-page-options="[0]"
   >
     <template v-slot:top-right>
@@ -45,11 +45,6 @@ export default {
   },
   data () {
     return {
-      pagination: {
-        sortBy: null,
-        descending: false,
-        rowsPerPage: 0
-      },
       table: null,
       dataColumns: []
     }
@@ -160,6 +155,19 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.sticky-header .q-table__top,
+.sticky-header thead tr:first-child th {
+  background-color: #fff;
+}
+.sticky-header thead tr th {
+  position: sticky;
+}
+.sticky-header thead tr:first-child th {
+  top: 0;
+}
+</style>
 
 <style>
 .aggregation-table__color {
