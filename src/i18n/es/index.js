@@ -266,6 +266,7 @@ export default {
       columnCount: 'Recuento',
       columnColor: 'Color',
       groupBy: 'Agrupar por',
+      label: 'Etiqueta',
       palette: 'Paleta',
       tabData: 'Datos',
       tabResults: 'Temático',
