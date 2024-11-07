@@ -7,6 +7,7 @@ export default {
   errorFetching: false,
   fetchingResults: null,
   finalResults: null,
+  optionResult: null,
   result: null,
   resultsLayer: L.featureGroup(),
   currentLayer: null,
