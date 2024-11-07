@@ -126,3 +126,22 @@ export function clearResultsLayers (context) {
     context.state.resultsLayer.clearLayers()
   }
 }
+
+export async function optionSearch (context, { query, forceRefresh = false }) {
+  context.commit('query', query)
+  if (query) {
+    context.dispatch('clearResultLayer')
+    context.dispatch('ensureEngine')
+
+    const search = context.state.engine.search(context.state.query)
+
+    search
+      .then(results => {
+        context.commit('optionResult', flat(results))
+      })
+      .catch(error => {
+        context.commit('errorFetching', true)
+        this.$except(error)
+      })
+  }
+}

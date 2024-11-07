@@ -15,6 +15,10 @@ export function results (state) {
   return state.finalResults || flat(state.fetchingResults && state.fetchingResults)
 }
 
+export function optionResult (state) {
+  return state.optionResult || []
+}
+
 export function state (state) {
   if (state.finalResults) {
     return STATES.RESULTS_LOADED

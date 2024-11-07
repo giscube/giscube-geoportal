@@ -57,6 +57,10 @@ export function selectResult (state, value) {
   state.result = value
 }
 
+export function optionResult (state, value) {
+  state.optionResult = value
+}
+
 // Applies a result without fetching (if generating a result without a list)
 export function result (state, value) {
   state.fetchingResults = null
