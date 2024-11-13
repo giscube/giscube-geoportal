@@ -3,5 +3,8 @@ export function setCurrentTool (state, value) {
 }
 
 export function setQuery (state, query) {
+  if (query) {
+    state.lastQuery = query
+  }
   state.query = query
 }

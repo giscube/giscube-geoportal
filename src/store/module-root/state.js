@@ -1,4 +1,5 @@
 export default {
   currentTool: null,
-  query: null
+  query: null,
+  lastQuery: null
 }
