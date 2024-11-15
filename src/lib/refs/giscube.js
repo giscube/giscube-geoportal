@@ -46,12 +46,12 @@ export default class GiscubeRef {
   }
 
   async openInSidebar ({ context, $router }) {
-    const result = await context.dispatch('catalog/getResultById', this.plainRef, { root: true })
+    const result = await context.dispatch('catalogTree/getResultById', this.plainRef, { root: true })
     $router.push({ name: 'place', params: { q: result.title } })
   }
 
   async addAsResult (opacity, $root) {
-    const result = await $root.$store.dispatch('catalog/getResultById', this.plainRef)
+    const result = await $root.$store.dispatch('catalogTree/getResultById', this.plainRef)
 
     if (!result) {
       return () => {}
