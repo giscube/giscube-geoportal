@@ -123,6 +123,7 @@ import area from '@turf/area'
 import L from 'src/lib/leaflet'
 import { createLayer } from 'src/lib/geomUtils'
 import { convertGeoJsonToDXF, downloadDXF } from 'src/lib/fileutils'
+import geoportalApi from 'src/api/geoportal'
 
 import DrawMessageInput from 'components/DrawMessageInput.vue'
 import MeasureResultPopup from 'components/MeasureResultPopup.vue'
@@ -258,6 +259,10 @@ export default {
       }
     },
     startMeasuring (measureArea) {
+      let type = 'linestring'
+      if (measureArea) {
+        type = 'area'
+      }
       this.measureArea = measureArea
       if (!this.map) {
         this.$except('Measure control is missing the map property')
@@ -271,6 +276,7 @@ export default {
       this.$store.commit('setCurrentTool', this.map.measureControl)
       this.map.on('measure:measurestop', this.stopMeasuring)
       this.map.on('measure:finishedpath', this.finishedpath)
+      geoportalApi.newToolRegister(this.$config.registers, type, this.$store.getters['auth/config'], this.$store.state.auth.username)
       this.$nextTick(_ => {
         this.map.measureControl.startMeasuring({ measureArea })
       })
@@ -290,7 +296,10 @@ export default {
         type,
         config
       })
-        .then(measure => this.finishAddMeasure(measure, type))
+        .then(measure => {
+          this.finishAddMeasure(measure, type)
+          geoportalApi.newToolRegister(this.$config.registers, type, this.$store.getters['auth/config'], this.$store.state.auth.username)
+        })
         .catch(_ => this.stopMeasuring())
     },
     finishAddMeasure (measure, type) {

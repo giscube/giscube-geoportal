@@ -10,6 +10,8 @@ import { delay, isVoid } from '../lib/utils'
 import GiscubeRef from '../lib/refs/giscube'
 import { mapState } from 'vuex'
 
+import geoportalApi from 'src/api/geoportal'
+
 export default {
   mixins: [ResultPanelMixin],
   data () {
@@ -160,6 +162,7 @@ export default {
     applyResult () {
       createLayerFromConfig(this.layerOptions)
         .then(({ type, layer, table }) => {
+          geoportalApi.newLayerRegister(this.$config.registers, this.layerOptions, this.$store.getters['auth/config'], this.$store.state.auth.username)
           this.layerType = type
           this.table_ = table
           if (this.overlay) {

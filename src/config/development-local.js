@@ -9,7 +9,7 @@ export default base.merge({
     login: true
   },
   catalog: {
-    categories: 'http://localhost:8000/geoportal/category/',
+    // categories: 'http://localhost:8000/geoportal/category/',
     categories: 'http://localhost:8000/geoportal/category/catalog/',
     search: 'http://localhost:8000/geoportal/catalog/',
     auth: true
@@ -32,6 +32,9 @@ export default base.merge({
   },
   incidence: {
     url: 'http://localhost:8000/api/v2/giscube/incidence/'
+  },
+  registers: {
+    url: 'http://localhost:8000/users_tracking/api/v1/'
   },
   locale: {
     main: 'ca',

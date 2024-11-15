@@ -9,6 +9,7 @@ import * as utils from './utils'
 import L from './leaflet'
 import * as refs from './refs'
 import * as table from './table'
+import * as toolUtils from './toolUtils'
 
 export default {
   DottedPath,
@@ -21,5 +22,6 @@ export default {
   utils,
   refs,
   table,
+  toolUtils,
   L
 }

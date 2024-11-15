@@ -24,6 +24,7 @@ import { mapState } from 'vuex'
 import MiniMap from 'leaflet-minimap'
 
 import { makeBaseLayer } from '../lib/geomUtils'
+import { onToolClick } from '../lib/toolUtils'
 import LayersControl from 'components/LayersControl.vue'
 require('microdisseny-leaflet-measure')
 require('microdisseny-leaflet-measure/dist/leaflet-measure.css')
@@ -122,7 +123,7 @@ export default {
     },
     addToolsBar () {
       const tools = this.$config.tools
-      const _onToolClick = this._onToolClick
+      const self = this
       L.easyButton({
         position: 'bottomright',
         id: 'street-view-control',
@@ -130,7 +131,7 @@ export default {
           icon: '<span class="las la-street-view" style="font-size: 18px; margin-top: 5px"></span>',
           title: this.$t('tools.streetview.headerName'),
           onClick: function (btn, map) {
-            _onToolClick(tools.streetview)
+            onToolClick('streetview', self)
           }
         }]
       }).addTo(this.map)
@@ -141,7 +142,7 @@ export default {
           icon: `<span class="material-icons" style="font-size: 16px; margin-top: -1px">${tools.cleanMap.icon}</span>`,
           title: this.$t('tools.cleanMap.headerName'),
           onClick: function (btn, map) {
-            _onToolClick(tools.cleanMap)
+            onToolClick('cleanMap', self)
           }
         }]
       }).addTo(this.map)
@@ -152,7 +153,7 @@ export default {
           icon: `<span class="${tools.draw.icon}" style="font-size: 18px; margin-top: 6px"></span>`,
           title: this.$t('tools.draw.title'),
           onClick: function (btn, map) {
-            _onToolClick(tools.draw)
+            onToolClick('draw', self)
           }
         }]
       }).addTo(this.map)
@@ -163,7 +164,7 @@ export default {
           icon: `<span class="${tools.print.icon}" style="font-size: 18px; margin-top: 6px"></span>`,
           title: this.$t('tools.print.headerName'),
           onClick: function (btn, map) {
-            _onToolClick(tools.print)
+            onToolClick('print', self)
           }
         }]
       }).addTo(this.map)
@@ -175,7 +176,7 @@ export default {
           icon: `<span class="material-icons" style="font-size: 16px; margin-top: -1px">${tools.share.icon}</span>`,
           title: this.$t('tools.share.headerName'),
           onClick: function (btn, map) {
-            _onToolClick(tools.share)
+            onToolClick('share', self)
           }
         }]
       }).addTo(this.map)
@@ -252,27 +253,6 @@ export default {
     },
     _setDrawing (value) {
       this.$store.commit('map/drawing', value)
-    },
-    _onToolClick (tool) {
-      if (tool.to) {
-        this.$emit('sidebar-visibility-changed', true)
-        this.$router.push({ name: tool.to })
-      }
-      if (tool.action) {
-        tool.action.call(this, tool)
-      }
-      if (tool.emit) {
-        this.emit(this._getOrCall(tool, this))
-      }
-    },
-    _getOrCall (tool) {
-      if (tool.emit) {
-        if (typeof tool.emit === 'function') {
-          return tool.emit.call(this, tool)
-        } else {
-          return tool.emit
-        }
-      }
     }
   }
 }
