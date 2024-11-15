@@ -25,6 +25,7 @@
 
 <script>
 import { ClosePopup, QBtn, QIcon, QItem, QItemSection } from 'quasar'
+import { getOrCall, onToolClick } from 'src/lib/toolUtils'
 
 export default {
   props: {
@@ -55,13 +56,13 @@ export default {
       return !this.tool.supported || this.tool.supported.call(this, this.tool)
     },
     icon () {
-      return this._getOrCall(this.tool.icon)
+      return getOrCall(this.tool.icon, this.tool, this)
     },
     label () {
       return this.$t('tools.' + this.name + '.headerName')
     },
     to () {
-      const value = this._getOrCall(this.tool.to)
+      const value = getOrCall(this.tool.to, this.tool, this)
       if (typeof value === 'string') {
         return { name: value }
       } else {
@@ -73,6 +74,9 @@ export default {
     }
   },
   methods: {
+    _onClick () {
+      return onToolClick(this.name, this)
+    },
     emit (event, value) {
       if (typeof event === 'string' && event) {
         this.$emit('event', { name: event, value })
@@ -80,26 +84,6 @@ export default {
         this.$emit('event', event)
       } else {
         this.$except('[HeaderItemHolder.vue] Trying to emit an incorrectly configured event. Check your config.')
-      }
-    },
-    _onClick () {
-      if (this.tool.to) {
-        this.$emit('sidebar-visibility-changed', true)
-      }
-      if (this.tool.action) {
-        this.tool.action.call(this, this.tool)
-      }
-      if (this.tool.emit) {
-        this.emit(this._getOrCall(this.tool.emit))
-      }
-    },
-    _getOrCall (v) {
-      if (v) {
-        if (typeof v === 'function') {
-          return v.call(this, this.tool)
-        } else {
-          return v
-        }
       }
     }
   }

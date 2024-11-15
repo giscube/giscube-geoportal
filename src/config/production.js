@@ -19,6 +19,9 @@ export default base.merge({
   incidence: {
     url: 'https://www.giscube.org/apps/api/v2/giscube/incidence/'
   },
+  registers: {
+    url: 'https://www.giscube.org/apps/api/v2/'
+  },
   searches: [
     {
       name: 'geoportal',
