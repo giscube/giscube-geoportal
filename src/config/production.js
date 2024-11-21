@@ -31,6 +31,14 @@ export default base.merge({
       is_geojson: true,
       url: 'https://www.giscube.org/apps/indexer/search/'
     }
-  ]
+  ],
+  geocodificadorICGC: {
+    title: 'Geocodificador ICGC',
+    url: 'https://eines.icgc.cat/geocodificador/autocompletar',
+    params: {
+      size: 6
+      // mun: '082055'
+    }
+  }
   // tools: {}
 })

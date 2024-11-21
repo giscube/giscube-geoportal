@@ -33,6 +33,28 @@ export default class Search {
     return this.$config.searches
   }
 
+  parseICGCResult ({ search, data }) {
+    let results = []
+
+    data.features.forEach(element => {
+      const subtitle = (
+        element.properties.addendum && element.properties.addendum.tipus
+      ) ? element.properties.addendum.tipus + ': ' : ''
+      let result = {
+        title: element.properties.etiqueta,
+        subtitle: subtitle + element.properties.etiqueta,
+        geojson: element,
+        origin: {
+          name: 'icgc'
+        }
+      }
+      delete result.geojson.properties.addendum
+      results.push(result)
+    })
+
+    return results
+  }
+
   parseResult ({ search, data }) {
     const results = search.parseData ? search.parseData(data) : data.results
     if (results === void 0 || results === null) {
@@ -60,6 +82,26 @@ export default class Search {
     }
   }
 
+  setICGCSearch (q) {
+    const search = this.$config.geocodificadorICGC
+    if (search) {
+      const config = {
+        params: {
+          text: q,
+          layers: /\d/.test(q) ? 'address' : 'topo1,topo2',
+          ...this.$config.geocodificadorICGC.params
+        }
+      }
+      this.promises.push(new Promise((resolve, reject) => {
+        axios.get(search.url, config)
+          .then(response => {
+            resolve(this.parseICGCResult({ search, data: response.data }))
+          })
+          .catch(reject)
+      }))
+    }
+  }
+
   setSearches (q) {
     this.getSearches().map(search => {
       const config = {
@@ -82,6 +124,7 @@ export default class Search {
   setAllSearches (q) {
     this.setCoordsSearch(q)
     this.setSearches(q)
+    this.setICGCSearch(q)
   }
 
   search (q) {
