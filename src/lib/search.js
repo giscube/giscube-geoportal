@@ -33,7 +33,31 @@ export default class Search {
     return this.$config.searches
   }
 
+  transformData (search, data) {
+    let results = []
+
+    data.features.forEach(element => {
+      let result = {}
+      let subtitle = (
+        element.properties.addendum && element.properties.addendum.tipus
+      ) ? element.properties.addendum.tipus + ': ' : ''
+      result['title'] = element.properties.etiqueta
+      result['subtitle'] = subtitle + result['title']
+      const { addendum, ...filteredElement } = element.properties
+      result['geojson'] = element
+      result.geojson.properties = filteredElement
+      result['origin'] = search
+      results.push(result)
+    })
+
+    return results
+  }
+
   parseResult ({ search, data }) {
+    if (search.dataFormat && search.dataFormat === 'features') {
+      return this.transformData(search, data)
+    }
+
     const results = search.parseData ? search.parseData(data) : data.results
     if (results === void 0 || results === null) {
       except('Response without results', { hide: true })
@@ -63,7 +87,9 @@ export default class Search {
   setSearches (q) {
     this.getSearches().map(search => {
       const config = {
-        params: { q }
+        params: {
+          ...(search.param ? { [search.param]: q } : { q })
+        }
       }
       if (search.auth) {
         Object.assign(config, this.$context.rootGetters['auth/config'])
