@@ -33,20 +33,22 @@ export default class Search {
     return this.$config.searches
   }
 
-  transformData (search, data) {
+  parseICGCResult ({ search, data }) {
     let results = []
 
     data.features.forEach(element => {
-      let result = {}
-      let subtitle = (
+      const subtitle = (
         element.properties.addendum && element.properties.addendum.tipus
       ) ? element.properties.addendum.tipus + ': ' : ''
-      result['title'] = element.properties.etiqueta
-      result['subtitle'] = subtitle + result['title']
-      const { addendum, ...filteredElement } = element.properties
-      result['geojson'] = element
-      result.geojson.properties = filteredElement
-      result['origin'] = search
+      let result = {
+        title: element.properties.etiqueta,
+        subtitle: subtitle + element.properties.etiqueta,
+        geojson: element,
+        origin: {
+          name: 'icgc'
+        }
+      }
+      delete result.geojson.properties.addendum
       results.push(result)
     })
 
@@ -54,10 +56,6 @@ export default class Search {
   }
 
   parseResult ({ search, data }) {
-    if (search.dataFormat && search.dataFormat === 'features') {
-      return this.transformData(search, data)
-    }
-
     const results = search.parseData ? search.parseData(data) : data.results
     if (results === void 0 || results === null) {
       except('Response without results', { hide: true })
@@ -84,12 +82,30 @@ export default class Search {
     }
   }
 
+  setICGCSearch (q) {
+    const search = this.$config.geocodificadorICGC
+    if (search) {
+      const config = {
+        params: {
+          text: q,
+          layers: /\d/.test(q) ? 'address' : 'topo1,topo2',
+          ...this.$config.geocodificadorICGC.params
+        }
+      }
+      this.promises.push(new Promise((resolve, reject) => {
+        axios.get(search.url, config)
+          .then(response => {
+            resolve(this.parseICGCResult({ search, data: response.data }))
+          })
+          .catch(reject)
+      }))
+    }
+  }
+
   setSearches (q) {
     this.getSearches().map(search => {
       const config = {
-        params: {
-          ...(search.param ? { [search.param]: q } : { q })
-        }
+        params: { q }
       }
       if (search.auth) {
         Object.assign(config, this.$context.rootGetters['auth/config'])
@@ -108,6 +124,7 @@ export default class Search {
   setAllSearches (q) {
     this.setCoordsSearch(q)
     this.setSearches(q)
+    this.setICGCSearch(q)
   }
 
   search (q) {
