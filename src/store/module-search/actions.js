@@ -138,6 +138,7 @@ export async function optionSearch (context, { query }) {
 
     const search = context.state.engine.search(query)
 
+    context.commit('fetchingOptions', true)
     search
       .then(results => {
         context.commit('optionResult', flat(results))
@@ -145,6 +146,9 @@ export async function optionSearch (context, { query }) {
       .catch(error => {
         context.commit('errorFetching', true)
         this.$except(error)
+      })
+      .then(_ => {
+        context.commit('fetchingOptions', false)
       })
   }
 }

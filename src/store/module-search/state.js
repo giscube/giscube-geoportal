@@ -6,6 +6,7 @@ export default {
   history: [],
   errorFetching: false,
   fetchingResults: null,
+  fetchingOptions: false,
   finalResults: null,
   optionResult: null,
   result: null,

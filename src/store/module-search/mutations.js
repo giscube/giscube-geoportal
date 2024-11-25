@@ -71,3 +71,7 @@ export function result (state, value) {
 export function currentLayer (state, value) {
   state.currentLayer = value
 }
+
+export function fetchingOptions (state, value) {
+  state.fetchingOptions = value
+}
