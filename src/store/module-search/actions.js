@@ -127,13 +127,11 @@ export function clearResultsLayers (context) {
   }
 }
 
-export async function optionSearch (context, { query, forceRefresh = false }) {
-  context.commit('query', query)
+export async function optionSearch (context, { query }) {
   if (query) {
-    context.dispatch('clearResultLayer')
     context.dispatch('ensureEngine')
 
-    const search = context.state.engine.search(context.state.query)
+    const search = context.state.engine.search(query)
 
     search
       .then(results => {
