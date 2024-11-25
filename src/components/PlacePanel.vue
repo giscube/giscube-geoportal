@@ -244,6 +244,15 @@ export default {
           })
       }
     }
+  },
+  watch: {
+    '$route.params': {
+      handler (params) {
+        if (params && this.result) {
+          this.applyResult()
+        }
+      }
+    }
   }
 }
 </script>
