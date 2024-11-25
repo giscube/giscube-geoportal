@@ -115,6 +115,7 @@ export default {
     catalogTree: {
       headerName: 'Catàleg',
       title: 'Catàleg',
+      searchTitle: 'Capa del catàleg',
       help: 'Veure els conjunts de dades organitzats per categories.',
       filter: 'Filtre',
 

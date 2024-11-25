@@ -115,6 +115,7 @@ export default {
     catalogTree: {
       headerName: 'Catalog',
       title: 'Catalog',
+      searchTitle: 'Catalog layer',
       help: 'View data organized in categories.',
       filter: 'Filter',
 
