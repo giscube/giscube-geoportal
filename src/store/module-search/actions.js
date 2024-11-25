@@ -88,7 +88,12 @@ export function finishResults (context, results) {
 
 export function uniqueSelection (context) {
   const finalResults = context.state.finalResults
-  if (finalResults && finalResults.length === 1) {
+  if (!finalResults || finalResults.length === 0) {
+    return false
+  }
+  const isUniqueResult = finalResults.length === 1
+  const isTitleMatch = finalResults[0].title === context.state.query
+  if (isUniqueResult || isTitleMatch) {
     context.dispatch('select', { result: finalResults[0], replace: true })
     return true
   }
