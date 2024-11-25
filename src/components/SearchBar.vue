@@ -59,7 +59,7 @@ export default {
       }
     },
     onSearchType (event) {
-      if (event.keyCode === 13) {
+      if (['Enter', 'NumpadEnter'].includes(event.key)) {
         this.onSearch()
       }
     }
