@@ -42,7 +42,7 @@ export default {
       return !!this.value.includes && this.value.includes('<span')
     },
     isLink () {
-      return this.value.toLowerCase().startsWith('http')
+      return this.value.toLowerCase && this.value.toLowerCase().startsWith('http')
     },
     label () {
       return this.formatString(this.element.label)
