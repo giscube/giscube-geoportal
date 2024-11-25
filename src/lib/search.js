@@ -45,7 +45,8 @@ export default class Search {
         subtitle: subtitle + element.properties.etiqueta,
         geojson: element,
         origin: {
-          name: 'icgc'
+          name: 'icgc',
+          title: search.title
         }
       }
       delete result.geojson.properties.addendum
