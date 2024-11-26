@@ -97,6 +97,7 @@ export default new Options({
       'help',
       'contact',
       'share',
+      'criminal',
       '----------',
       'fullscreen',
       'auth'
@@ -240,6 +241,10 @@ export default new Options({
     streetview: {
       icon: 'las la-street-view',
       to: 'streetview'
+    },
+    criminal: {
+      icon: 'las la-mask',
+      to: 'criminal'
     }
   }
 })

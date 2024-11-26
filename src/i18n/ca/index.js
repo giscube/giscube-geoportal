@@ -281,6 +281,9 @@ export default {
 
       noDataError: 'En aquesta localització no s\'han pogut trobar dades de l\'Street View.',
       centerMap: 'Centra mapa'
+    },
+    criminal: {
+      headerName: 'Mapa delinqüèncial'
     }
   },
   units: {

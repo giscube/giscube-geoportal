@@ -279,6 +279,9 @@ export default {
 
       noDataError: 'Street View data not found for this location.',
       centerMap: 'Center map'
+    },
+    criminal: {
+      headerName: 'Criminal map'
     }
   },
   units: {

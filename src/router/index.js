@@ -13,6 +13,7 @@ import SearchPanel from 'components/SearchPanel'
 import SharePanel from 'components/SharePanel'
 import StreetViewPanel from 'components/StreetViewPanel'
 import DataPanel from 'components/data-layer/DataPanel'
+import CriminalPanel from 'components/CriminalPanel'
 
 export default function ({ Vue, store }) {
   Vue.use(Router)
@@ -36,6 +37,7 @@ export default function ({ Vue, store }) {
         { path: 'search/:q*', component: SearchPanel, name: 'search', query: 'giscube_id' },
         { path: 'share', component: SharePanel, name: 'share' },
         { path: 'streetview/:q?', component: StreetViewPanel, name: 'streetview' },
+        { path: 'criminal/', component: CriminalPanel, name: 'criminal' },
 
         { path: ':q?', name: 'auth_params', component: AuthPanel },
         { path: '', redirect: { name: 'home' } }

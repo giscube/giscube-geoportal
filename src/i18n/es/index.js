@@ -281,6 +281,9 @@ export default {
 
       noDataError: 'En esta localización no se han podido encontrar datos del Street View.',
       centerMap: 'Centrar mapa'
+    },
+    criminal: {
+      headerName: 'Mapa delincuencial'
     }
   },
   units: {
