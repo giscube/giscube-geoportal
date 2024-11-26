@@ -13,7 +13,10 @@ import DataRow from 'components/DataRow'
 import DataRowToggle from 'components/DataRowToggle'
 import Sidebar from 'components/Sidebar'
 import DrawPanel from 'components/DrawPanel'
+import FileSelect from 'components/FileSelect'
 import IncidencePanel from 'components/IncidencePanel'
+import PaletteSelect from 'components/statistics/PaletteSelect'
+import PolygonTooltip from 'components/statistics/PolygonTooltip'
 import PlacePanel from 'components/PlacePanel'
 import PlacePanelStrategy from 'components/PlacePanelStrategy'
 import SearchBar from 'components/SearchBar'
@@ -54,7 +57,10 @@ export {
   GiscubeLayout,
   Sidebar,
   DrawPanel,
+  FileSelect,
   IncidencePanel,
+  PaletteSelect,
+  PolygonTooltip,
   PlacePanel,
   PlacePanelStrategy,
   SearchBar,

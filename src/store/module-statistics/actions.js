@@ -129,6 +129,11 @@ export function setFilterPolygon (context, layerPolygon) {
 
 export async function loadData ({ state, commit, dispatch, rootGetters }, { source, layer, title }) {
   commit('aggregatedData', [])
+  const aggregatedData = 'aggregatedData'
+  dispatch('getData', { source, layer, aggregatedData, title })
+}
+
+export async function getData ({ state, commit, dispatch, rootGetters }, { source, layer, aggregatedData, title }) {
   const layers = []
 
   const loading = state.processes.loading
@@ -147,12 +152,26 @@ export async function loadData ({ state, commit, dispatch, rootGetters }, { sour
     loading.current = data.to
     loading.total = data.count
     Array.prototype.push.apply(layers, data.features.map(featureToLayer))
+    if (aggregatedData === 'aggregatedDataCustom') {
+      commit(aggregatedData, layers)
+    }
   }
+  if (aggregatedData === 'aggregatedDataCustom') {
+    commit('loadingDataCustom', false)
+  } else {
+    commit('resetLoading')
+    Object.freeze(layers) // Better performance in data table
+    commit(aggregatedData, layers)
+    commit('aggregatedTitle', title)
+  }
+}
 
-  commit('resetLoading')
-  Object.freeze(layers) // Better performance in data table
-  commit('aggregatedData', layers)
-  commit('aggregatedTitle', title)
+export async function loadDataCustom ({ state, commit, dispatch, rootGetters }, { source, layer }) {
+  commit('aggregatedDataCustom', [])
+  commit('loadingDataCustom', true)
+  const aggregatedData = 'aggregatedDataCustom'
+  const title = null
+  dispatch('getData', { source, layer, aggregatedData, title })
 }
 
 export function computeAggregatedFields ({ state, commit }) {
