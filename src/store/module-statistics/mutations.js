@@ -45,6 +45,14 @@ export function by (state, value) {
   state.byLayer = value
 }
 
+export function aggregatedDataCustom (state, value) {
+  state.aggregatedDataCustom = value
+}
+
+export function loadingDataCustom (state, value) {
+  state.loadingDataCustom = value
+}
+
 export function result (state, value) {
   state.result = value
 }
