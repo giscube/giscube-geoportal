@@ -77,6 +77,7 @@ export default {
     searchResult: 'search result',
     statistics: 'statistics',
     type: 'type',
+    url: 'url',
     utilities: 'utilities',
     vertically: 'vertically'
   },

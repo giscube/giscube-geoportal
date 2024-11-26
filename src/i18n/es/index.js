@@ -77,6 +77,7 @@ export default {
     searchResult: 'resultado de la búsqueda',
     statistics: 'estadística',
     type: 'tipos',
+    url: 'Enlace geoservicio',
     utilities: 'utilidades',
     vertically: 'verticalmente'
   },
