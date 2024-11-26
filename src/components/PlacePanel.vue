@@ -69,7 +69,7 @@ export default {
           url += '?service=WMS&request=GetCapabilities'
         }
         layerDescriptor.push({
-          name: 'URL',
+          name: this.$t('names.url'),
           text: text,
           href: url,
           type: type
