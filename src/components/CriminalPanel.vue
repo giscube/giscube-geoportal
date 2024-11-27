@@ -16,18 +16,22 @@
             :options="factTypeOptions"
             label="Tipus de fets:"
           />
-          <p> Any: </p>
-          <q-slider
-            v-model="year"
-            marker-labels
-            :min="2013"
-            :max="2023"
-            color="grey"
-            track-color="grey"
-            inner-track-color="transparent"
-            selection-color="transparent"
-            markers
-          />
+          <div class="q-pt-md">
+            <q-badge color="secondary">
+              Any: {{ year }}
+            </q-badge>
+            <q-slider
+              v-model="year"
+              marker-labels
+              :min="2013"
+              :max="2023"
+              color="grey"
+              track-color="grey"
+              inner-track-color="transparent"
+              selection-color="transparent"
+              markers
+            />
+          </div>
         </div>
     </div>
   </div>
