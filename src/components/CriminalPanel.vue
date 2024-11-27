@@ -1,38 +1,48 @@
 <template>
   <div class="panel">
     <div class="panel-content">
-        <q-toolbar>
-          <q-toolbar-title>{{ $t('tools.criminal.headerName') }}</q-toolbar-title>
-          <q-btn flat round icon="las la-info-circle" @click="redirectInfo" />
-        </q-toolbar>
-        <div class="q-pa-sm">
-          <q-select
-            v-model="penalCode"
-            :options="penalCodeOptions"
-            label="Títol Codi Penal:"
+      <q-toolbar>
+        <q-toolbar-title>{{ $t('tools.criminal.headerName') }}</q-toolbar-title>
+        <q-btn
+          flat
+          round
+          icon="info"
+          color="primary"
+          type="a"
+          href=""
+          target="_blank"
+        />
+      </q-toolbar>
+      <div class="q-pa-sm">
+        <q-select
+          v-model="penalCode"
+          :options="penalCodeOptions"
+          label="Títol Codi Penal:"
+        />
+        <q-select
+          v-model="factType"
+          :options="factTypeOptions"
+          label="Tipus de fets:"
+        />
+        <div class="q-pt-sm">
+          <p>Any: {{ year }}</p>
+          <q-slider
+            v-model="year"
+            marker-labels
+            :min="2013"
+            :max="2023"
+            color="grey"
+            track-color="grey"
+            inner-track-color="transparent"
+            selection-color="transparent"
+            markers
           />
-          <q-select
-            v-model="factType"
-            :options="factTypeOptions"
-            label="Tipus de fets:"
-          />
-          <div class="q-pt-md">
-            <q-badge color="secondary">
-              Any: {{ year }}
-            </q-badge>
-            <q-slider
-              v-model="year"
-              marker-labels
-              :min="2013"
-              :max="2023"
-              color="grey"
-              track-color="grey"
-              inner-track-color="transparent"
-              selection-color="transparent"
-              markers
-            />
-          </div>
         </div>
+        <palette-select
+          :scheme.sync="paletteScheme"
+          :groups.sync="paletteGroups"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -40,13 +50,16 @@
 <script>
 import { QSelect, QSlider, QToolbarTitle, QToolbar, QBtn } from 'quasar'
 
+import PaletteSelect from 'components/statistics/PaletteSelect'
+
 export default {
   components: {
     QSelect,
     QSlider,
     QToolbarTitle,
     QToolbar,
-    QBtn
+    QBtn,
+    PaletteSelect
   },
   data () {
     return {
@@ -60,6 +73,24 @@ export default {
         'De les falsedats', 'De les lesions'
       ],
       year: null
+    }
+  },
+  computed: {
+    paletteScheme: {
+      get () {
+        return this.$store.state.statistics && this.$store.state.statistics.palette && this.$store.state.statistics.palette.scheme
+      },
+      set (value) {
+        this.$store.dispatch('statistics/setPaletteScheme', value)
+      }
+    },
+    paletteGroups: {
+      get () {
+        return this.$store.state.statistics && this.$store.state.statistics.palette && this.$store.state.statistics.palette.groups
+      },
+      set (value) {
+        this.$store.dispatch('statistics/setPaletteGroups', value)
+      }
     }
   }
 }
