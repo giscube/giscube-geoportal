@@ -14,6 +14,7 @@ import DataRowToggle from 'components/DataRowToggle'
 import Sidebar from 'components/Sidebar'
 import DrawPanel from 'components/DrawPanel'
 import IncidencePanel from 'components/IncidencePanel'
+import PaletteSelect from 'components/statistics/PaletteSelect'
 import PlacePanel from 'components/PlacePanel'
 import PlacePanelStrategy from 'components/PlacePanelStrategy'
 import SearchBar from 'components/SearchBar'
@@ -55,6 +56,7 @@ export {
   Sidebar,
   DrawPanel,
   IncidencePanel,
+  PaletteSelect,
   PlacePanel,
   PlacePanelStrategy,
   SearchBar,
