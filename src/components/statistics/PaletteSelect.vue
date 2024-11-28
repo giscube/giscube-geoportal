@@ -11,6 +11,7 @@
       map-options
     />
     <q-input
+      v-if="!groupsNotShowing"
       label="Groups"
       type="number"
       :min="scheme ? scheme.minGroups : 3"
@@ -27,7 +28,7 @@ import { COLOR_SCHEMES } from 'src/store/module-statistics/constants'
 
 const colorSpan = color => `<span style="background-color: ${color}"></span>`
 export default {
-  props: ['scheme', 'groups'],
+  props: ['scheme', 'groups', 'groupsNotShowing'],
   components: {
     QInput,
     QSelect
@@ -37,6 +38,7 @@ export default {
       options: Object.freeze(
         COLOR_SCHEMES.map(scheme => {
           const palette = scheme.groups[scheme.maxGroups]
+          console.log('color', scheme, palette)
           return {
             label: `<div class="palette">${palette.map(colorSpan).join('')}</div>`,
             value: scheme

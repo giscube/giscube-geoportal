@@ -28,7 +28,6 @@
           <p>Any: {{ year }}</p>
           <q-slider
             v-model="year"
-            marker-labels
             :min="2013"
             :max="2023"
             color="grey"
@@ -40,7 +39,8 @@
         </div>
         <palette-select
           :scheme.sync="paletteScheme"
-          :groups.sync="paletteGroups"
+          :groups=5
+          :groupsNotShowing="true"
         />
       </div>
     </div>
