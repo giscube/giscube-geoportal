@@ -38,7 +38,6 @@ export default {
       options: Object.freeze(
         COLOR_SCHEMES.map(scheme => {
           const palette = scheme.groups[scheme.maxGroups]
-          console.log('color', scheme, palette)
           return {
             label: `<div class="palette">${palette.map(colorSpan).join('')}</div>`,
             value: scheme
