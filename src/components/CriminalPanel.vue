@@ -42,15 +42,28 @@
           :groups=5
           :groupsNotShowing="true"
         />
+        <Bar :data="data2" :options="options" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  CategoryScale,
+  LinearScale
+} from 'chart.js'
+import { Bar } from 'vue-chartjs'
 import { QSelect, QSlider, QToolbarTitle, QToolbar, QBtn } from 'quasar'
 
 import PaletteSelect from 'components/statistics/PaletteSelect'
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 export default {
   components: {
@@ -59,7 +72,8 @@ export default {
     QToolbarTitle,
     QToolbar,
     QBtn,
-    PaletteSelect
+    PaletteSelect,
+    Bar
   },
   data () {
     return {
