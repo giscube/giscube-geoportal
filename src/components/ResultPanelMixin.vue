@@ -427,13 +427,21 @@ export default {
         }
       }
       if (this.layerDescriptor.length > 0 && this.layerDescriptor[0].type.toLowerCase() === 'wms') {
-        const headers = this.$store.getters['auth/headers']
-        getWMSbbox(this.layerDescriptor[0].href, { headers }).then(bbox => {
+        getWMSbbox(this.layerDescriptor[0].href, this.layerOptions).then(bbox => {
           this.map.fitBounds([
             [bbox[1], bbox[0]],
             [bbox[3], bbox[2]]
           ])
         })
+        return
+      }
+      if (this.layerDescriptor.length > 0 && this.layerDescriptor[0].bbox) {
+        const bbox = this.layerDescriptor[0].bbox.split(',')
+        this.map.fitBounds([
+          [bbox[1], bbox[0]],
+          [bbox[3], bbox[2]]
+        ])
+        return
       }
 
       // If we can't zoom, go to home view

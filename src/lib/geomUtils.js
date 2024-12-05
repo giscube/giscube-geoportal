@@ -568,18 +568,34 @@ export function higlightWKTGeometry (value) {
   return layers
 }
 
-export async function getWMSbbox (url, { headers }) {
+export async function getWMSbbox (url, { layerDescriptor, headers }) {
+  let layersName = []
+  if (layerDescriptor) {
+    layersName = layerDescriptor.layers.split(',')
+  }
   if (url.includes('access_token')) {
     url = url.split('?').filter(chunk => !chunk.includes('access_token')).join('?')
   }
   return axios.get(url, { headers }).then(res => {
     try {
       const json = new WMSCapabilities(res.data).toJSON()
-      for (let i = 0; i < json.Capability.Layer.BoundingBox.length; i++) {
-        if (json.Capability.Layer.BoundingBox[i].crs === 'EPSG:4326') {
-          return json.Capability.Layer.BoundingBox[i].extent
+      const layers = json.Capability.Layer.Layer.filter(layer => layersName.includes(layer.Name))
+      let bbox
+      for (let i = 0; i < layers.length; i++) {
+        for (let j = 0; j < layers[i].BoundingBox.length; j++) {
+          if (layers[i].BoundingBox[j].crs === 'EPSG:4326') {
+            if (!bbox) {
+              bbox = layers[i].BoundingBox[j].extent
+            } else {
+              bbox[0] = layers[i].BoundingBox[j].extent[0] < bbox[0] ? layers[i].BoundingBox[j].extent[0] : bbox[0]
+              bbox[1] = layers[i].BoundingBox[j].extent[1] < bbox[1] ? layers[i].BoundingBox[j].extent[1] : bbox[1]
+              bbox[2] = layers[i].BoundingBox[j].extent[2] > bbox[2] ? layers[i].BoundingBox[j].extent[2] : bbox[2]
+              bbox[3] = layers[i].BoundingBox[j].extent[3] > bbox[3] ? layers[i].BoundingBox[j].extent[3] : bbox[3]
+            }
+          }
         }
       }
+      return bbox
     } catch (error) {
       console.error('[Mapia Online] External WMS: unable to get bbox')
     }

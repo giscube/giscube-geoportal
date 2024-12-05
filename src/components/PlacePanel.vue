@@ -74,6 +74,9 @@ export default {
           href: url,
           type: type
         })
+        if (type && type.toLowerCase() === 'tms' && this.layerOptions.layerDescriptor.bbox) {
+          layerDescriptor[0]['bbox'] = this.layerOptions.layerDescriptor.bbox
+        }
       }
 
       return layerDescriptor
@@ -181,6 +184,11 @@ export default {
                 containerPoint: this.map.latLngToContainerPoint(latlngPoint)
               })
             }
+          } else if (
+            type.toLowerCase() === 'wms' ||
+            (type.toLowerCase() === 'tms' && this.layerDescriptor[0].bbox)
+          ) {
+            this.zoom()
           }
         })
         .catch(e => {
