@@ -155,6 +155,36 @@ export async function loadData ({ state, commit, dispatch, rootGetters }, { sour
   commit('aggregatedTitle', title)
 }
 
+export async function getData ({ state, commit, dispatch, rootGetters }, { source, layer }) {
+  const layers = []
+
+  const loading = state.processes.loading
+  const pagination = { page: 1, rowsPerPage: 500 }
+  const request = { source, layer, pagination }
+
+  let data
+  let totalPages = 1
+
+  for (; pagination.page <= totalPages; ++pagination.page) {
+    const response = await databaseLayersApi.getData(request, rootGetters['auth/config'])
+    data = response.data
+    pagination.rowsPerPage = data.page_size
+    totalPages = data.total_pages
+
+    loading.current = data.to
+    loading.total = data.count
+    Array.prototype.push.apply(layers, data.features.map(featureToLayer))
+    commit('aggregatedDataCustom', layers)
+  }
+  commit('loadingDataCustom', false)
+}
+
+export async function loadDataCustom ({ state, commit, dispatch, rootGetters }, { source, layer }) {
+  commit('aggregatedDataCustom', [])
+  commit('loadingDataCustom', true)
+  dispatch('getData', { source, layer })
+}
+
 export function computeAggregatedFields ({ state, commit }) {
   const rows = state.aggregatedData
   if (!rows || rows.length <= 0) {

@@ -58,9 +58,9 @@
     "vuedraggable": "^2.23.0",
     "wkt": "^0.1.1",
     "wms-capabilities": "^0.6.0",
-    "chart.js": "^4.4.7",
-    "vue-chartjs": "^5.3.2",
-    "xml-js": "^1.6.11"
+    "xml-js": "^1.6.11",
+    "chart.js": "^2.9.4",
+    "vue-chartjs": "^3.5.1"
   },
   "devDependencies": {
     "@quasar/app": "^1.5.5",

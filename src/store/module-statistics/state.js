@@ -3,6 +3,8 @@ import { DEFAULT_COLOR_MAP, COLOR_SCHEMES } from './constants'
 export default {
   aggregated: null,
   aggregatedData: null,
+  aggregatedDataCustom: null,
+  loadingDataCustom: false,
   aggregatedTitle: null,
   aggregatedFields: [],
   filter: '',
