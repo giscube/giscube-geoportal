@@ -95,8 +95,9 @@ export default {
       label: 'Nombre de casos per mesos de l\'any',
       factType: null,
       penalCode: null,
+      penalCodeOptions: [],
       year: null,
-      years: [2021, 2022],
+      years: null,
       groupScheme: 5,
       option: {}
     }
@@ -111,10 +112,16 @@ export default {
       return (this.factType || '') + year
     },
     minYear () {
-      return this.years[0]
+      if (this.years) {
+        return this.years[0]
+      }
+      return null
     },
     maxYear () {
-      return this.years[this.years.length - 1]
+      if (this.years) {
+        return this.years[this.years.length - 1]
+      }
+      return null
     },
     filteredData () {
       const colorList = this.paletteScheme.groups[this.groupScheme]
@@ -165,12 +172,6 @@ export default {
       }
       return []
     },
-    penalCodeOptions () {
-      if (this.aggregatedDataCustom) {
-        return [...new Set(this.aggregatedDataCustom.map(obj => obj.feature.properties['tipus_fet_nivell_1']))]
-      }
-      return []
-    },
     paletteScheme: {
       get () {
         return this.$store.state.statistics && this.$store.state.statistics.palette && this.$store.state.statistics.palette.scheme
@@ -205,9 +206,10 @@ export default {
       await new Promise(resolve => setTimeout(resolve, 0))
       this.$store.dispatch('statistics/aggregate')
     },
-    options () {
+    refreshOptions () {
       if (this.aggregatedDataCustom && this.aggregatedDataCustom.length > 0) {
         this.getYears()
+        this.getPenalCodeOptions()
       }
     },
     getYears () {
@@ -215,6 +217,9 @@ export default {
         const date = new Date(obj.feature.properties['data_inici'])
         return date.getFullYear()
       }))]
+    },
+    getPenalCodeOptions () {
+      this.penalCodeOptions = [...new Set(this.aggregatedDataCustom.map(obj => obj.feature.properties['tipus_fet_nivell_1']))]
     },
     t (key) {
       return this.$t('tools.statistics.' + key)
@@ -225,8 +230,12 @@ export default {
       handler: 'calculateColors',
       immediate: true
     },
+    aggregatedDataCustom: {
+      handler: 'refreshOptions',
+      immediate: true
+    },
     loadingDataCustom: {
-      handler: 'options',
+      handler: 'refreshOptions',
       immediate: true
     }
   }
