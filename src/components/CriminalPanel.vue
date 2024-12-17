@@ -14,6 +14,7 @@
           v-model="penalCode"
           :options="penalCodeOptions"
           label="Títol Codi Penal:"
+          @input="penalCodeChanged"
         />
         <q-select
           v-model="factType"
