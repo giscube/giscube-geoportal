@@ -9,6 +9,23 @@
           size="2em"
         />
       </q-toolbar>
+      <file-select
+        :value="byOption"
+        :options="byOptions"
+        accept="application/geo+json,.json,.geojson"
+        :label="t('groupBy')"
+        @input="setBy"
+      >
+        <template v-slot:addBtn>
+          <q-btn
+            flat
+            icon="close"
+            v-show="by"
+            @click="deleteStatsSelection"
+            @click.stop="value = null"
+          />
+        </template>
+      </file-select>
       <div class="q-pa-sm q-gutter-sm">
         <q-select
           v-model="penalCode"
@@ -38,26 +55,8 @@
         <p>{{ titleWithYear }}</p>
         <palette-select
           :scheme.sync="paletteScheme"
-          :groups=groupScheme
-          :groupsNotShowing="true"
+          :groups.sync="paletteGroups"
         />
-        <file-select
-          :value="byOption"
-          :options="byOptions"
-          accept="application/geo+json,.json,.geojson"
-          :label="t('groupBy')"
-          @input="setBy"
-        >
-          <template v-slot:addBtn>
-            <q-btn
-              flat
-              icon="close"
-              v-show="by"
-              @click="deleteStatsSelection"
-              @click.stop="value = null"
-            />
-          </template>
-        </file-select>
         <bar-chart
           :chartData="chartData"
           :options="barOption"
@@ -99,7 +98,6 @@ export default {
       penalCodeOptions: [],
       year: null,
       years: null,
-      groupScheme: 5,
       barOption: {}
     }
   },
@@ -125,7 +123,7 @@ export default {
       return null
     },
     chartData () {
-      const colorList = this.paletteScheme.groups[this.groupScheme]
+      const colorList = this.paletteScheme.groups[this.paletteGroups]
       const lastColor = colorList[colorList.length - 1]
       const monthlyCounts = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
       if (this.filteredData && this.filteredData.length > 0) {
@@ -178,6 +176,14 @@ export default {
       },
       set (value) {
         this.$store.dispatch('statistics/setPaletteScheme', value)
+      }
+    },
+    paletteGroups: {
+      get () {
+        return this.$store.state.statistics && this.$store.state.statistics.palette && this.$store.state.statistics.palette.groups
+      },
+      set (value) {
+        this.$store.dispatch('statistics/setPaletteGroups', value)
       }
     },
     byOptions () {
