@@ -58,8 +58,8 @@
           </template>
         </file-select>
         <bar-chart
-          :chartData="filteredData"
-          :options="option"
+          :chartData="chartData"
+          :options="barOption"
         />
       </div>
     </div>
@@ -99,7 +99,7 @@ export default {
       year: null,
       years: null,
       groupScheme: 5,
-      option: {}
+      barOption: {}
     }
   },
   computed: {
@@ -123,22 +123,12 @@ export default {
       }
       return null
     },
-    filteredData () {
+    chartData () {
       const colorList = this.paletteScheme.groups[this.groupScheme]
       const lastColor = colorList[colorList.length - 1]
-      if (this.aggregatedDataCustom && this.aggregatedDataCustom.length > 0 && this.factType && this.year) {
-        let filteredEvents = this.aggregatedDataCustom
-          .filter(obj => {
-            const date = new Date(obj.feature.properties['data_inici'])
-            return (
-              obj.feature.properties['tipus_fet_nivell_2'] === this.factType &&
-              date.getFullYear() === this.year
-            )
-          })
-
-        const monthlyCounts = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-
-        filteredEvents.forEach(obj => {
+      const monthlyCounts = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+      if (this.filteredData && this.filteredData.length > 0) {
+        this.filteredData.forEach(obj => {
           const date = new Date(obj.feature.properties['data_inici'])
           const month = date.getMonth()
           monthlyCounts[month]++
@@ -152,23 +142,32 @@ export default {
             data: monthlyCounts
           }]
         }
-      } else {
-        return {
-          labels: this.monthLabels,
-          datasets: [{
-            label: this.label,
-            backgroundColor: lastColor,
-            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-          }]
-        }
       }
+      return {
+        labels: this.monthLabels,
+        datasets: [{
+          label: this.label,
+          backgroundColor: lastColor,
+          data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        }]
+      }
+    },
+    filteredData () {
+      if (this.aggregatedDataCustom && this.aggregatedDataCustom.length > 0 && this.factType && this.year) {
+        return this.aggregatedDataCustom
+          .filter(obj => {
+            const date = new Date(obj.feature.properties['data_inici'])
+            return (
+              obj.feature.properties['tipus_fet_nivell_2'] === this.factType &&
+              date.getFullYear() === this.year
+            )
+          })
+      }
+      return []
     },
     factTypeOptions () {
       if (this.penalCode) {
-        return [...new Set(this.aggregatedDataCustom
-          .filter(obj => obj.feature.properties['tipus_fet_nivell_1'] === this.penalCode)
-          .map(obj => obj.feature.properties['tipus_fet_nivell_2'])
-        )]
+        return this.getFactTypeOptions(this.penalCode)
       }
       return []
     },
@@ -194,6 +193,7 @@ export default {
   methods: {
     calculateColors () {
       this.$store.commit('statistics/aggregated', this.filteredData)
+      this.$store.dispatch('statistics/aggregate')
     },
     deleteStatsSelection () {
       this.$store.commit('statistics/byOption', null)
@@ -209,6 +209,7 @@ export default {
     refreshOptions () {
       if (this.aggregatedDataCustom && this.aggregatedDataCustom.length > 0) {
         this.getYears()
+        this.year = this.minYear
         this.getPenalCodeOptions()
       }
     },
@@ -220,6 +221,22 @@ export default {
     },
     getPenalCodeOptions () {
       this.penalCodeOptions = [...new Set(this.aggregatedDataCustom.map(obj => obj.feature.properties['tipus_fet_nivell_1']))]
+    },
+    getFactTypeOptions (penalCode) {
+      return [...new Set(this.aggregatedDataCustom
+        .filter(obj => obj.feature.properties['tipus_fet_nivell_1'] === penalCode)
+        .map(obj => obj.feature.properties['tipus_fet_nivell_2'])
+      )]
+    },
+    penalCodeChanged () {
+      if (this.penalCode) {
+        this.factType = null
+      } else if (this.factType) {
+        const factTypes = this.getFactTypeOptions(this.penalCode)
+        if (!factTypes.includes(this.factType)) {
+          this.factType = null
+        }
+      }
     },
     t (key) {
       return this.$t('tools.statistics.' + key)
