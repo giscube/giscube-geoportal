@@ -428,10 +428,12 @@ export default {
       }
       if (this.layerDescriptor.length > 0 && this.layerDescriptor[0].type.toLowerCase() === 'wms') {
         getWMSbbox(this.layerDescriptor[0].href, this.layerOptions).then(bbox => {
-          this.map.fitBounds([
-            [bbox[1], bbox[0]],
-            [bbox[3], bbox[2]]
-          ])
+          if (bbox) {
+            this.map.fitBounds([
+              [bbox[1], bbox[0]],
+              [bbox[3], bbox[2]]
+            ])
+          }
         })
         return
       }
