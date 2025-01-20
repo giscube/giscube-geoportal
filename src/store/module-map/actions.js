@@ -250,7 +250,7 @@ export async function addLayer (context, { id, layerDescriptor, title, options, 
     }
     map.addLayer(layer)
 
-    const name = type === 'WMS' ? layerDescriptor.title : title
+    const name = type.toLowerCase() === 'wms' ? layerDescriptor.title : title
     const getfeatureinfoSupport = layerDescriptor.giscube && layerDescriptor.giscube.getfeatureinfo_support
     context.dispatch('addOverlay', { id, layer, layerType: type, name, options, getfeatureinfoSupport })
     return true
