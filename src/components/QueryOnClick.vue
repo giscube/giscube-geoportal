@@ -227,7 +227,7 @@ export default {
       return queryResults
     },
     async getInfoFromWMS (layer, event) {
-      if (layer.layerType !== 'WMS') {
+      if (layer.layerType.toLowerCase() !== 'wms') {
         return null
       }
 
