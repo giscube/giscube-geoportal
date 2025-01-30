@@ -6,12 +6,22 @@
     <div class="row no-wrap items-center">
       <span class="q-mr-xs">{{ t('filters') }}</span>
       <q-input
-      v-model="filter"
-      outlined
-      dense
-      :placeholder="t('findInTable')"
-      debounce="500"
+        autogrow
+        v-model="filter"
+        outlined
+        dense
+        :placeholder="t('findInTable')"
+        debounce="500"
       />
+      <q-btn
+        flat
+        round
+        size="sm"
+        color="primary"
+        icon="info"
+      >
+        <q-tooltip> {{ getAdvancedInfo }} </q-tooltip>
+      </q-btn>
     </div>
     <div>
       <q-btn
@@ -40,7 +50,7 @@
 
 <script>
 import Vue from 'vue'
-import { QBtn, QInput } from 'quasar'
+import { QBtn, QInput, QTooltip } from 'quasar'
 
 import TranslationMixin from './TranslationMixin'
 
@@ -55,7 +65,13 @@ export default {
   },
   components: {
     QBtn,
-    QInput
+    QInput,
+    QTooltip
+  },
+  data () {
+    return {
+      getAdvancedInfo: '"field" + COMP + "value"'
+    }
   },
   computed: {
     editing () {

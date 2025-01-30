@@ -45,11 +45,26 @@
       </q-btn-group>
     </template>
     <template v-slot:top-left>
-      <q-input borderless dense v-model="filter" :placeholder="$t('actions.search') | capitalize">
+      <q-input
+        autogrow
+        borderless
+        dense
+        v-model="filter"
+        :placeholder="$t('actions.search') | capitalize"
+      >
         <template v-slot:append>
           <q-icon name="search"></q-icon>
         </template>
       </q-input>
+      <q-btn
+        flat
+        round
+        size="sm"
+        color="primary"
+        icon="info"
+      >
+        <q-tooltip> {{ getAdvancedInfo }} </q-tooltip>
+      </q-btn>
     </template>
     <template v-slot:header-cell="props">
       <q-th :props="props">
@@ -121,7 +136,8 @@ export default {
         descending: false,
         rowsPerPage: 0
       },
-      data: []
+      data: [],
+      getAdvancedInfo: '"field" + COMP + "value"'
     }
   },
   watch: {
@@ -193,6 +209,45 @@ export default {
       this.pagination.sortBy = pagination.sortBy
       this.pagination.descending = pagination.descending
     },
+    parseListFilter (value) {
+      if (typeof value !== 'string') return null
+
+      const values = value.split(/\s+AND\s+|\s+and\s+/i).filter(Boolean)
+      const regex = /^\s*["']?([\w.]+)["']?\s*(>=|<=|>|<|CONTAINS|LIKE|IN|ISNULL|EXACT)\s*["']?(.*?)["']?\s*$/i
+      const listFilter = []
+      values.forEach(val => {
+        const dictFilter = this.parseFilter(val, regex)
+        if (dictFilter) {
+          listFilter.push(dictFilter)
+        }
+      })
+      return listFilter
+    },
+    parseFilter (value, customRegex = null) {
+      if (typeof value !== 'string') return null
+
+      let regex = /^(>=|<=|>|<|CONTAINS|LIKE|IN|ISNULL|EXACT)\s+["']?(.*?)["']?$/i
+      if (customRegex) {
+        regex = customRegex
+      }
+      const match = value.match(regex)
+
+      if (match) {
+        if (customRegex) {
+          let [, field, operator, val] = match
+          operator = operator.toUpperCase()
+          val = val.trim()
+          return { field, operator, val }
+        } else {
+          let [, operator, val] = match
+          operator = operator.toUpperCase()
+          val = val.trim()
+          return { operator, val }
+        }
+      }
+
+      return null
+    },
     _computeData () {
       if (!this.value) {
         this.data = null
@@ -203,10 +258,18 @@ export default {
         const data = { from: row }
         let result = true
         result = result && (!this.filter || some(this.fields, field => {
+          const listFilter = this.parseListFilter(this.filter)
+          if (listFilter.length > 0) {
+            return field.compareListFilter(data, listFilter)
+          }
           return field.filter(data, this.filter)
         }))
         result = result && every(this.fields, field => {
           const colFilter = this.colFilters[field.name]
+          const dictFilter = this.parseFilter(colFilter)
+          if (dictFilter) {
+            return field.compareFilter(data, dictFilter)
+          }
           return field.colFilter(data, colFilter)
         })
         result = result && (!this.filterPolygon || layerInGeom(row, this.filterPolygon))

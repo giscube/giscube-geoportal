@@ -248,6 +248,52 @@ export default class Field {
     return DefaultFilterComponent
   }
 
+  compareListFilter (data, listFilter) {
+    if (!Array.isArray(listFilter) || listFilter.length === 0) return true
+
+    return listFilter.every(filter => {
+      const val = data.from?.feature.properties[filter.field]
+      if (val) {
+        const result = this.compareValues(val, filter)
+        if (result) {
+          return true
+        } else {
+          return false
+        }
+      }
+    })
+  }
+
+  compareFilter (data, filter) {
+    const v = this.getValue(data)
+    return this.compareValues(v, filter)
+  }
+
+  compareValues (v, filter) {
+    const val = filter.val
+    switch (filter.operator) {
+      case '>': return v > val
+      case '>=': return v >= val
+      case '<': return v < val
+      case '<=': return v <= val
+      case 'CONTAINS':
+        return v && v.includes(val)
+      case 'EXACT':
+        return v === val
+      case 'LIKE':
+        if (val.startsWith('%') && val.endsWith('%')) {
+          return v && v.includes(val.slice(1, -1))
+        } else if (val.startsWith('%')) {
+          return v && v.endsWith(val.slice(1))
+        } else if (val.endsWith('%')) {
+          return v && v.startsWith(val.slice(0, -1))
+        } else {
+          return v && v.includes(val)
+        }
+      default: return false
+    }
+  }
+
   static toString (value) {
     if (isVoid(value)) {
       return ''
