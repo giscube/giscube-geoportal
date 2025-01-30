@@ -10,7 +10,7 @@
       <status-controls v-if="table && table.info" :table="table" />
     </div>
     <div class="row items-center space-items-sm" v-if="table && table.info">
-      <div class="space row">
+      <div class="space">
         <draw-controls
           v-if="drawing"
         />
