@@ -245,7 +245,8 @@ export default {
       noResults: 'No s\'ha trobat cap resultat',
       results: 'Resultats per a {q}',
       resultsError: 'Error al cercar',
-      search: 'cerca'
+      search: 'cerca',
+      advancedSearchInfo: '"camp" + COMPARADOR + "valor"'
     },
     share: {
       headerName: 'Comparteix',

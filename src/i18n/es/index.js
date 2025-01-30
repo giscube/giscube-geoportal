@@ -245,7 +245,8 @@ export default {
       noResults: 'No se ha encontrado ningún resultado',
       results: 'Resultados por a {q}',
       resultsError: 'Error al buscar',
-      search: 'buscar'
+      search: 'buscar',
+      advancedSearchInfo: '"campo" + COMPARADOR + "valor"'
     },
     share: {
       headerName: 'Comparte',

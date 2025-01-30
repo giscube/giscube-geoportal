@@ -243,7 +243,8 @@ export default {
       noResults: 'No matches found',
       results: 'Results for {q}',
       resultsError: 'Error retrieving results',
-      search: 'search'
+      search: 'search',
+      advancedSearchInfo: '"field" + COMPARATOR + "value"'
     },
     share: {
       headerName: 'Share',

@@ -1,17 +1,36 @@
 <template>
   <div
     v-show="!editing"
-    class="row items-center space-items-xs"
+    class="items-center space-items-xs"
   >
     <div class="row no-wrap items-center">
-      <span class="q-mr-xs">{{ t('filters') }}</span>
       <q-input
-      v-model="filter"
-      outlined
-      dense
-      :placeholder="t('findInTable')"
-      debounce="500"
-      />
+        class="col-12"
+        autogrow
+        v-model="filter"
+        outlined
+        dense
+        :placeholder="t('findInTable')"
+        debounce="500"
+      >
+        <template v-slot:before>
+          <span class="q-mr-xs" style="font-size: 14px; color: black">{{ t('filters') }}</span>
+        </template>
+        <template v-slot:after>
+          <q-btn
+            flat
+            round
+            icon="las la-info-circle"
+          >
+            <q-tooltip> {{ $t('tools.search.advancedSearchInfo') }} </q-tooltip>
+            <q-menu>
+              <advanced-search-panel
+                :advancedOption.sync="advancedOption"
+              />
+            </q-menu>
+          </q-btn>
+        </template>
+      </q-input>
     </div>
     <div>
       <q-btn
@@ -40,8 +59,9 @@
 
 <script>
 import Vue from 'vue'
-import { QBtn, QInput } from 'quasar'
+import { QBtn, QInput, QTooltip, QMenu } from 'quasar'
 
+import AdvancedSearchPanel from './AdvancedSearchPanel'
 import TranslationMixin from './TranslationMixin'
 
 export default {
@@ -53,9 +73,17 @@ export default {
       default: false
     }
   },
+  data () {
+    return {
+      advancedOption: null
+    }
+  },
   components: {
     QBtn,
-    QInput
+    QInput,
+    QTooltip,
+    QMenu,
+    AdvancedSearchPanel
   },
   computed: {
     editing () {
@@ -85,9 +113,24 @@ export default {
       }
     }
   },
+  watch: {
+    advancedOption: {
+      handler: 'updateFilters',
+      immediate: true
+    }
+  },
   methods: {
     onPolygonFilter () {
       this.$store.dispatch('dataLayer/toggleFilterPolygon')
+    },
+    updateFilters () {
+      if (this.advancedOption) {
+        if (this.filter) {
+          this.filter += ' ' + this.advancedOption + ' '
+        } else {
+          this.filter = '"" ' + this.advancedOption + ' ""'
+        }
+      }
     }
   }
 }

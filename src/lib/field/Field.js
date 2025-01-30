@@ -248,6 +248,69 @@ export default class Field {
     return DefaultFilterComponent
   }
 
+  compareListFilter (data, listFilter) {
+    if (!Array.isArray(listFilter) || listFilter.length === 0) return true
+
+    return listFilter.every(filter => {
+      let val = data.from?.feature.properties[filter.field]
+      if (val) {
+        if (typeof val === 'string') {
+          val = val.toLowerCase()
+        }
+        const result = this.compareValues(val, filter)
+        if (result) {
+          return true
+        } else {
+          return false
+        }
+      }
+    })
+  }
+
+  compareFilter (data, filter) {
+    let v = this.getValue(data)
+    if (typeof val === 'string') {
+      v = v.toLowerCase()
+    }
+    return this.compareValues(v, filter)
+  }
+
+  getNumberValue (value) {
+    if (!isNaN(value)) {
+      return Number(value)
+    }
+    return value
+  }
+
+  compareValues (v, filter) {
+    const val = filter.val
+    switch (filter.operator) {
+      case '>':
+        return this.getNumberValue(v) > val
+      case '>=':
+        return this.getNumberValue(v) >= val
+      case '<':
+        return this.getNumberValue(v) < val
+      case '<=':
+        return this.getNumberValue(v) <= val
+      case 'CONTAINS':
+        return v && v.includes(val)
+      case 'EXACT': return v === val
+      case '=': return v === val
+      case 'LIKE':
+        if (val.startsWith('%') && val.endsWith('%')) {
+          return v && v.includes(val.slice(1, -1))
+        } else if (val.startsWith('%')) {
+          return v && v.endsWith(val.slice(1))
+        } else if (val.endsWith('%')) {
+          return v && v.startsWith(val.slice(0, -1))
+        } else {
+          return v && v.includes(val)
+        }
+      default: return false
+    }
+  }
+
   static toString (value) {
     if (isVoid(value)) {
       return ''
