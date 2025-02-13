@@ -254,7 +254,7 @@ export default class Field {
     return listFilter.every(filter => {
       const val = data.from?.feature.properties[filter.field]
       if (val) {
-        const result = this.compareValues(val, filter)
+        const result = this.compareValues(val.toLowerCase(), filter)
         if (result) {
           return true
         } else {
@@ -266,7 +266,7 @@ export default class Field {
 
   compareFilter (data, filter) {
     const v = this.getValue(data)
-    return this.compareValues(v, filter)
+    return this.compareValues(v.toLowerCase(), filter)
   }
 
   compareValues (v, filter) {
@@ -278,8 +278,8 @@ export default class Field {
       case '<=': return v <= val
       case 'CONTAINS':
         return v && v.includes(val)
-      case 'EXACT':
-        return v === val
+      case 'EXACT': return v === val
+      case '=': return v === val
       case 'LIKE':
         if (val.startsWith('%') && val.endsWith('%')) {
           return v && v.includes(val.slice(1, -1))

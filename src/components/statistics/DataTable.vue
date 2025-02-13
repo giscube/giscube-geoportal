@@ -213,7 +213,7 @@ export default {
       if (typeof value !== 'string') return null
 
       const values = value.split(/\s+AND\s+|\s+and\s+/i).filter(Boolean)
-      const regex = /^\s*["']?([\w.]+)["']?\s*(>=|<=|>|<|CONTAINS|LIKE|IN|ISNULL|EXACT)\s*["']?(.*?)["']?\s*$/i
+      const regex = /^\s*["']?([\w.]+)["']?\s*(>=|<=|>|<|=|CONTAINS|LIKE|EXACT)\s*["']?(.*?)["']?\s*$/i
       const listFilter = []
       values.forEach(val => {
         const dictFilter = this.parseFilter(val, regex)
@@ -226,7 +226,7 @@ export default {
     parseFilter (value, customRegex = null) {
       if (typeof value !== 'string') return null
 
-      let regex = /^(>=|<=|>|<|CONTAINS|LIKE|IN|ISNULL|EXACT)\s+["']?(.*?)["']?$/i
+      let regex = /^\s*(>=|<=|>|<|=|CONTAINS|LIKE|EXACT)\s+["']?(.*?)["']?$/i
       if (customRegex) {
         regex = customRegex
       }
@@ -235,13 +235,14 @@ export default {
       if (match) {
         if (customRegex) {
           let [, field, operator, val] = match
+          field = field.toLowerCase().trim()
           operator = operator.toUpperCase()
-          val = val.trim()
+          val = val.toLowerCase().trim()
           return { field, operator, val }
         } else {
           let [, operator, val] = match
           operator = operator.toUpperCase()
-          val = val.trim()
+          val = val.toLowerCase().trim()
           return { operator, val }
         }
       }
