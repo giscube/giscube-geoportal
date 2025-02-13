@@ -282,7 +282,7 @@ export function calculateColors ({ state, commit }) {
     const color = palette[index]
 
     colorMap.set(layer, color)
-    layer.setStyle({ fillColor: color })
+    layer.setStyle({ fillColor: color, fillOpacity: 0.7 })
   }
   commit('colorMap', colorMap)
 
