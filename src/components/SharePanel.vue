@@ -184,7 +184,7 @@ export default {
       })
     },
     applyQuery (query, redirectTo) {
-      this.$nextTick(() => {
+      this.$nextTick(async () => {
         this.message = ShareQuery.extract(query, 'm')
 
         const layout = ShareQuery.extract(query, 'la')
@@ -203,13 +203,14 @@ export default {
         }
 
         const map = this.$store.state.map.mapObject
+        const giscubeId = ShareQuery.extract(query, 'id')
         if (!map) {
           // Watch map until is set and then apply map-related queries
-          this.waitFor('$store.state.map.mapObject', newMap => {
-            this.applyMapQuery(query, newMap)
+          this.waitFor('$store.state.map.mapObject', async newMap => {
+            giscubeId ? await this.applyMapQuery(query, newMap) : this.applyMapQuery(query, newMap)
           })
         } else {
-          this.applyMapQuery(query, map)
+          giscubeId ? await this.applyMapQuery(query, map) : this.applyMapQuery(query, map)
         }
 
         const catalogState = ShareQuery.extract(query, 'ca')
@@ -219,7 +220,6 @@ export default {
           redirectTo = 'catalog'
         }
 
-        const giscubeId = ShareQuery.extract(query, 'id')
         if (giscubeId) {
           this.$router.replace({ name: 'search', query: { giscube_id: giscubeId } })
           return
@@ -230,7 +230,7 @@ export default {
         }
       })
     },
-    applyMapQuery (query, map) {
+    async applyMapQuery (query, map) {
       this.sharedLayer.clearLayers()
       const center = ShareQuery.extract(query, 'c')
       const zoom = ShareQuery.extract(query, 'z')
@@ -270,14 +270,13 @@ export default {
       const l = ShareQuery.extract(query, 'l')
       if (l) {
         const promises = l.map(({ ref, opacity }) => ref.addAsResult(opacity, this.$root))
-
-        const addAll = async () => {
-          for (let promise of reverse(promises)) {
+        await Promise.all(
+          reverse(promises).map(async (promise) => {
             const add = await promise
             add()
-          }
-        }
-        addAll().then(() => this.$store.dispatch('map/reorderOverlay'))
+          })
+        )
+        this.$store.dispatch('map/reorderOverlay')
       }
     },
     makePopup ({ map, layer }) {
