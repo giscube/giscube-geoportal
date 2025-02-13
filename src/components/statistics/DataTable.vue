@@ -47,7 +47,7 @@
     <template v-slot:top-left>
       <q-input
         autogrow
-        borderless
+        outlined
         dense
         v-model="filter"
         :placeholder="$t('actions.search') | capitalize"
@@ -59,11 +59,9 @@
       <q-btn
         flat
         round
-        size="sm"
-        color="primary"
-        icon="info"
+        icon="las la-info-circle"
       >
-        <q-tooltip> {{ getAdvancedInfo }} </q-tooltip>
+        <q-tooltip> {{ $t('tools.search.advancedSearchInfo') }} </q-tooltip>
       </q-btn>
     </template>
     <template v-slot:header-cell="props">
@@ -136,8 +134,7 @@ export default {
         descending: false,
         rowsPerPage: 0
       },
-      data: [],
-      getAdvancedInfo: '"field" + COMP + "value"'
+      data: []
     }
   },
   watch: {

@@ -12,15 +12,14 @@
         dense
         :placeholder="t('findInTable')"
         debounce="500"
+        type="textarea"
       />
       <q-btn
         flat
         round
-        size="sm"
-        color="primary"
-        icon="info"
+        icon="las la-info-circle"
       >
-        <q-tooltip> {{ getAdvancedInfo }} </q-tooltip>
+        <q-tooltip> {{ $t('tools.search.advancedSearchInfo') }} </q-tooltip>
       </q-btn>
     </div>
     <div>
@@ -67,11 +66,6 @@ export default {
     QBtn,
     QInput,
     QTooltip
-  },
-  data () {
-    return {
-      getAdvancedInfo: '"field" + COMP + "value"'
-    }
   },
   computed: {
     editing () {
