@@ -1,10 +1,9 @@
 <template>
   <div
     v-show="!editing"
-    class="row items-center space-items-xs"
+    class="items-center space-items-xs"
   >
-    <div class="row no-wrap items-center">
-      <span class="q-mr-xs">{{ t('filters') }}</span>
+    <div class="no-wrap items-center">
       <q-input
         autogrow
         v-model="filter"
@@ -13,14 +12,26 @@
         :placeholder="t('findInTable')"
         debounce="500"
         type="textarea"
-      />
-      <q-btn
-        flat
-        round
-        icon="las la-info-circle"
       >
-        <q-tooltip> {{ $t('tools.search.advancedSearchInfo') }} </q-tooltip>
-      </q-btn>
+        <template v-slot:before>
+          <span class="q-mr-xs" style="font-size: 14px; color: black">{{ t('filters') }}</span>
+        </template>
+        <template v-slot:after>
+          <q-btn
+            flat
+            round
+            icon="las la-info-circle"
+          >
+            <q-tooltip> {{ $t('tools.search.advancedSearchInfo') }} </q-tooltip>
+            <q-menu>
+              <advanced-search-panel
+                :items="operators"
+                :advancedOption.sync="advancedOption"
+              />
+            </q-menu>
+          </q-btn>
+        </template>
+      </q-input>
     </div>
     <div>
       <q-btn
@@ -49,8 +60,9 @@
 
 <script>
 import Vue from 'vue'
-import { QBtn, QInput, QTooltip } from 'quasar'
+import { QBtn, QInput, QTooltip, QMenu } from 'quasar'
 
+import AdvancedSearchPanel from './AdvancedSearchPanel'
 import TranslationMixin from './TranslationMixin'
 
 export default {
@@ -62,10 +74,20 @@ export default {
       default: false
     }
   },
+  data () {
+    return {
+      advancedOption: null,
+      operators: [
+        '>', '>=', '<', '<=', '=', 'LIKE'
+      ]
+    }
+  },
   components: {
     QBtn,
     QInput,
-    QTooltip
+    QTooltip,
+    QMenu,
+    AdvancedSearchPanel
   },
   computed: {
     editing () {
@@ -95,9 +117,25 @@ export default {
       }
     }
   },
+  watch: {
+    advancedOption: {
+      handler: 'updateFilters',
+      immediate: true
+    }
+  },
   methods: {
     onPolygonFilter () {
       this.$store.dispatch('dataLayer/toggleFilterPolygon')
+    },
+    updateFilters () {
+      if (this.advancedOption) {
+        console.log('advancedOption', this.advancedOption)
+        if (this.filter) {
+          this.filter += ' ' + this.advancedOption + ' '
+        } else {
+          this.filter = '"" ' + this.advancedOption + ' ""'
+        }
+      }
     }
   }
 }
