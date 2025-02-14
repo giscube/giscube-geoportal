@@ -45,7 +45,9 @@
       </q-btn-group>
     </template>
     <template v-slot:top-left>
+      <div class="row full-width items-center">
       <q-input
+        class="col"
         autogrow
         outlined
         dense
@@ -62,7 +64,13 @@
         icon="las la-info-circle"
       >
         <q-tooltip> {{ $t('tools.search.advancedSearchInfo') }} </q-tooltip>
+        <q-menu>
+          <advanced-search-panel
+            :advancedOption.sync="advancedOption"
+          />
+        </q-menu>
       </q-btn>
+      </div>
     </template>
     <template v-slot:header-cell="props">
       <q-th :props="props">
@@ -87,12 +95,13 @@
 
 <script>
 import debounce from 'lodash/debounce.js'
-import { QBtn, QBtnGroup, QIcon, QInput, QTable, QTd, QTh, QTooltip, exportFile } from 'quasar'
+import { QBtn, QBtnGroup, QIcon, QInput, QTable, QTd, QTh, QTooltip, QMenu, exportFile } from 'quasar'
 
 import { every, some } from 'src/lib/itertools'
 import { layerInGeom } from 'src/lib/layersInGeom'
 import { wrapCsvValue } from 'src/lib/fileutils.js'
 import DataCell from 'src/lib/field/components/DataCell'
+import AdvancedSearchPanel from 'src/components/data-layer/AdvancedSearchPanel'
 
 import ColumnFilter from './ColumnFilter'
 
@@ -108,6 +117,7 @@ function debounceComputeData () {
 export default {
   props: ['value', 'filteredFields'],
   components: {
+    AdvancedSearchPanel,
     ColumnFilter,
     DataCell,
     QBtn,
@@ -117,6 +127,7 @@ export default {
     QTable,
     QTd,
     QTh,
+    QMenu,
     QTooltip
   },
   created () {
@@ -128,6 +139,7 @@ export default {
   },
   data () {
     return {
+      advancedOption: null,
       loading: false,
       pagination: {
         sortBy: null,
@@ -138,6 +150,10 @@ export default {
     }
   },
   watch: {
+    advancedOption: {
+      handler: 'updateFilters',
+      immediate: true
+    },
     value: {
       handler: computeData,
       immediate: true
@@ -316,6 +332,15 @@ export default {
         rows = rows.sort((a, b) => sortByField.compare({ from: a }, { from: b }, descending))
       }
       return rows
+    },
+    updateFilters () {
+      if (this.advancedOption) {
+        if (this.filter) {
+          this.filter += ' ' + this.advancedOption + ' '
+        } else {
+          this.filter = '"" ' + this.advancedOption + ' ""'
+        }
+      }
     }
   }
 }

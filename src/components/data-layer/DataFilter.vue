@@ -3,15 +3,15 @@
     v-show="!editing"
     class="items-center space-items-xs"
   >
-    <div class="no-wrap items-center">
+    <div class="row no-wrap items-center">
       <q-input
+        class="col-12"
         autogrow
         v-model="filter"
         outlined
         dense
         :placeholder="t('findInTable')"
         debounce="500"
-        type="textarea"
       >
         <template v-slot:before>
           <span class="q-mr-xs" style="font-size: 14px; color: black">{{ t('filters') }}</span>
@@ -25,7 +25,6 @@
             <q-tooltip> {{ $t('tools.search.advancedSearchInfo') }} </q-tooltip>
             <q-menu>
               <advanced-search-panel
-                :items="operators"
                 :advancedOption.sync="advancedOption"
               />
             </q-menu>
@@ -76,10 +75,7 @@ export default {
   },
   data () {
     return {
-      advancedOption: null,
-      operators: [
-        '>', '>=', '<', '<=', '=', 'LIKE'
-      ]
+      advancedOption: null
     }
   },
   components: {
@@ -129,7 +125,6 @@ export default {
     },
     updateFilters () {
       if (this.advancedOption) {
-        console.log('advancedOption', this.advancedOption)
         if (this.filter) {
           this.filter += ' ' + this.advancedOption + ' '
         } else {

@@ -16,11 +16,18 @@
 import { QItem, QItemSection, QList } from 'quasar'
 
 export default {
-  props: ['advancedOption', 'items'],
+  props: ['advancedOption'],
   components: {
     QItem,
     QItemSection,
     QList
+  },
+  data () {
+    return {
+      items: [
+        '>', '>=', '<', '<=', '=', 'LIKE'
+      ]
+    }
   },
   computed: {},
   methods: {
