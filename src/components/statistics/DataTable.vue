@@ -14,62 +14,64 @@
     virtual-scroll
     @request="onRequest"
   >
-    <template v-slot:top-right>
-      <q-btn-group class="no-shadow">
-        <q-btn
-          flat
-          icon-right="mdi-filter-remove-outline"
-          no-caps
-          @click="clearFilter"
-        >
-          <q-tooltip>Clear filters</q-tooltip>
-        </q-btn>
-        <q-btn
-          flat
-          :icon-right="isDrawing ? 'pause' : filterPolygon ? 'fas fa-times' : 'fas fa-draw-polygon'"
-          no-caps
-          @click="toggleFilterPolygon"
-        >
-          <q-tooltip v-if="isDrawing">Stop drawing</q-tooltip>
-          <q-tooltip v-if="!filterPolygon">Filter by polygon</q-tooltip>
-          <q-tooltip v-else>Remove polygon filter</q-tooltip>
-        </q-btn>
-        <q-btn
-          flat
-          icon-right="save_alt"
-          no-caps
-          @click="exportTable"
-        >
-          <q-tooltip>Export to csv</q-tooltip>
-        </q-btn>
-      </q-btn-group>
-    </template>
-    <template v-slot:top-left>
-      <div class="row full-width items-center">
-      <q-input
-        class="col"
-        autogrow
-        outlined
-        dense
-        v-model="filter"
-        :placeholder="$t('actions.search') | capitalize"
-      >
-        <template v-slot:append>
-          <q-icon name="search"></q-icon>
-        </template>
-      </q-input>
-      <q-btn
-        flat
-        round
-        icon="las la-info-circle"
-      >
-        <q-tooltip> {{ $t('tools.search.advancedSearchInfo') }} </q-tooltip>
-        <q-menu>
-          <advanced-search-panel
-            :advancedOption.sync="advancedOption"
-          />
-        </q-menu>
-      </q-btn>
+    <template v-slot:top>
+      <div class="row full-width justify-between items-center">
+        <div class="row col items-center">
+          <q-input
+            class="col"
+            autogrow
+            outlined
+            dense
+            v-model="filter"
+            :placeholder="$t('actions.search') | capitalize"
+          >
+            <template v-slot:append>
+              <q-icon name="search"></q-icon>
+            </template>
+          </q-input>
+          <q-btn
+            class="q-ml-sm"
+            flat
+            round
+            icon="las la-info-circle"
+          >
+            <q-tooltip> {{ $t('tools.search.advancedSearchInfo') }} </q-tooltip>
+            <q-menu>
+              <advanced-search-panel
+                :advancedOption.sync="advancedOption"
+              />
+            </q-menu>
+          </q-btn>
+        </div>
+
+        <q-btn-group class="no-shadow q-ml-md">
+          <q-btn
+            flat
+            icon-right="mdi-filter-remove-outline"
+            no-caps
+            @click="clearFilter"
+          >
+            <q-tooltip>Clear filters</q-tooltip>
+          </q-btn>
+          <q-btn
+            flat
+            :icon-right="isDrawing ? 'pause' : filterPolygon ? 'fas fa-times' : 'fas fa-draw-polygon'"
+            no-caps
+            @click="toggleFilterPolygon"
+          >
+            <q-tooltip v-if="isDrawing">Stop drawing</q-tooltip>
+            <q-tooltip v-if="!filterPolygon">Filter by polygon</q-tooltip>
+            <q-tooltip v-else>Remove polygon filter</q-tooltip>
+          </q-btn>
+          <q-btn
+            flat
+            icon-right="save_alt"
+            no-caps
+            @click="exportTable"
+          >
+            <q-tooltip>Export to csv</q-tooltip>
+          </q-btn>
+        </q-btn-group>
       </div>
     </template>
     <template v-slot:header-cell="props">

@@ -252,9 +252,12 @@ export default class Field {
     if (!Array.isArray(listFilter) || listFilter.length === 0) return true
 
     return listFilter.every(filter => {
-      const val = data.from?.feature.properties[filter.field]
+      let val = data.from?.feature.properties[filter.field]
       if (val) {
-        const result = this.compareValues(val.toLowerCase(), filter)
+        if (typeof val === 'string') {
+          val = val.toLowerCase()
+        }
+        const result = this.compareValues(val, filter)
         if (result) {
           return true
         } else {
@@ -265,17 +268,31 @@ export default class Field {
   }
 
   compareFilter (data, filter) {
-    const v = this.getValue(data)
-    return this.compareValues(v.toLowerCase(), filter)
+    let v = this.getValue(data)
+    if (typeof val === 'string') {
+      v = v.toLowerCase()
+    }
+    return this.compareValues(v, filter)
+  }
+
+  getNumberValue (value) {
+    if (!isNaN(value)) {
+      return Number(value)
+    }
+    return value
   }
 
   compareValues (v, filter) {
     const val = filter.val
     switch (filter.operator) {
-      case '>': return v > val
-      case '>=': return v >= val
-      case '<': return v < val
-      case '<=': return v <= val
+      case '>':
+        return this.getNumberValue(v) > val
+      case '>=':
+        return this.getNumberValue(v) >= val
+      case '<':
+        return this.getNumberValue(v) < val
+      case '<=':
+        return this.getNumberValue(v) <= val
       case 'CONTAINS':
         return v && v.includes(val)
       case 'EXACT': return v === val
