@@ -1,7 +1,7 @@
 import axios from 'axios'
 import Vue from 'vue'
 import L from './leaflet.js'
-import LeafletWMS from 'leaflet.wms'
+import SingleTileWMSLayer from './SingleTileWMSLayer'
 import makeGeoJsonOptions from './makeGeoJsonOptions'
 import proj4 from 'proj4'
 import { Table } from './table'
@@ -217,7 +217,7 @@ function createExternalLayerWMS ({ layerDescriptor, title, options, headers }) {
   }
   let wms
   if (options.singleTile) {
-    wms = LeafletWMS.overlay(layerDescriptor.url, layerOptions)
+    wms = SingleTileWMSLayer.overlay(layerDescriptor.url, layerOptions)
   } else {
     wms = setTileLayerBoundary(L.tileLayer.wms(layerDescriptor.url, layerOptions), options)
   }
