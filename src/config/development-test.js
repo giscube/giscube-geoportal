@@ -32,6 +32,9 @@ export default base.merge({
   incidence: {
     url: 'http://localhost:8000/api/v2/giscube/incidence/'
   },
+  registers: {
+    url: 'http://localhost:8000/api/v2/'
+  },
   locale: {
     main: 'ca',
     fallback: 'en-us'
