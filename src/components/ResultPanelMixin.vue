@@ -126,10 +126,7 @@
             class="col column no-wrap"
           >
             <data-filter :table="table" />
-            <!-- <div class="row items-center space-items-sm" v-if="table && table.info">
-              <q-space /> -->
-              <selection-controls :table="table" />
-            <!-- </div> -->
+            <selection-controls :table="table" />
             <div class="full-width col q-mt-sm">
               <data-layer-table
                 class="limit-parent"
