@@ -81,7 +81,7 @@ export default {
   },
   computed: {
     propertiesNames () {
-      if (this.layer.getLayers().length > 0) {
+      if (this.layer.getLayers().length > 0 && this.layer.getLayers()[0].feature) {
         return Object.keys(this.layer.getLayers()[0].feature.properties)
       }
       return []
