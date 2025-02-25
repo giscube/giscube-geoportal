@@ -244,7 +244,14 @@ export default {
       results: 'Results for {q}',
       resultsError: 'Error retrieving results',
       search: 'search',
-      advancedSearchInfo: '"field" + COMPARATOR + "value"'
+      queryBuilder: {
+        title: 'Query builder',
+        fields: 'Fields',
+        values: 'Values',
+        operators: 'Operators',
+        addFilter: 'Add filter',
+        help: 'Click on a field or a value to select it, and double-click to add it to the query. Click on an operator to add it to the query. You can also add values to the query that are not in the list.'
+      }
     },
     share: {
       headerName: 'Share',

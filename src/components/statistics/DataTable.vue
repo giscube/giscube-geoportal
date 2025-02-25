@@ -16,35 +16,33 @@
   >
     <template v-slot:top>
       <div class="row full-width justify-between items-center">
-        <div class="row col items-center">
-          <q-input
-            class="col"
-            autogrow
-            outlined
-            dense
-            v-model="filter"
-            :placeholder="$t('actions.search') | capitalize"
-          >
-            <template v-slot:append>
-              <q-icon name="search"></q-icon>
-            </template>
-          </q-input>
-          <q-btn
-            class="q-ml-sm"
-            flat
-            round
-            icon="las la-info-circle"
-          >
-            <q-tooltip> {{ $t('tools.search.advancedSearchInfo') }} </q-tooltip>
-            <q-menu>
-              <advanced-search-panel
-                :advancedOption.sync="advancedOption"
-              />
-            </q-menu>
-          </q-btn>
-        </div>
-
+        <q-input
+          class="col"
+          autogrow
+          outlined
+          dense
+          v-model="filter"
+          :placeholder="$t('actions.search') | capitalize"
+        >
+          <template v-slot:append>
+            <q-icon name="close" @click="filter = ''" class="cursor-pointer"></q-icon>
+          </template>
+        </q-input>
         <q-btn-group class="no-shadow q-ml-md">
+          <q-btn
+            flat
+            icon-right="functions"
+            @click="showAdvancedSearchPanel = true"
+          >
+            <q-tooltip> {{ $t('tools.search.queryBuilder.title') }} </q-tooltip>
+              <query-builder-dialog
+                :fields="columns"
+                :values="filterValues"
+                :advancedOption.sync="advancedOption"
+                :show.sync="showAdvancedSearchPanel"
+                @get-field-values="getFieldValues"
+              />
+          </q-btn>
           <q-btn
             flat
             icon-right="mdi-filter-remove-outline"
@@ -97,13 +95,13 @@
 
 <script>
 import debounce from 'lodash/debounce.js'
-import { QBtn, QBtnGroup, QIcon, QInput, QTable, QTd, QTh, QTooltip, QMenu, exportFile } from 'quasar'
+import { QBtn, QBtnGroup, QIcon, QInput, QTable, QTd, QTh, QTooltip, exportFile } from 'quasar'
 
 import { every, some } from 'src/lib/itertools'
 import { layerInGeom } from 'src/lib/layersInGeom'
 import { wrapCsvValue } from 'src/lib/fileutils.js'
 import DataCell from 'src/lib/field/components/DataCell'
-import AdvancedSearchPanel from 'src/components/data-layer/AdvancedSearchPanel'
+import QueryBuilderDialog from 'src/components/data-layer/QueryBuilderDialog'
 
 import ColumnFilter from './ColumnFilter'
 
@@ -119,7 +117,7 @@ function debounceComputeData () {
 export default {
   props: ['value', 'filteredFields'],
   components: {
-    AdvancedSearchPanel,
+    QueryBuilderDialog,
     ColumnFilter,
     DataCell,
     QBtn,
@@ -129,7 +127,6 @@ export default {
     QTable,
     QTd,
     QTh,
-    QMenu,
     QTooltip
   },
   created () {
@@ -148,7 +145,9 @@ export default {
         descending: false,
         rowsPerPage: 0
       },
-      data: []
+      data: [],
+      filterValues: [],
+      showAdvancedSearchPanel: false
     }
   },
   watch: {
@@ -336,12 +335,19 @@ export default {
       return rows
     },
     updateFilters () {
-      if (this.advancedOption) {
-        if (this.filter) {
-          this.filter += ' ' + this.advancedOption + ' '
-        } else {
-          this.filter = '"" ' + this.advancedOption + ' ""'
-        }
+      this.filter = this.advancedOption
+    },
+    getFieldValues (field) {
+      if (field?.name) {
+        this.filterValues = [...new Set(
+          this.value.map(row => {
+            if (row.feature.properties[field.name]) {
+              return row.feature.properties[field.name]
+            }
+          })
+        )].sort()
+      } else {
+        this.filterValues = []
       }
     }
   }

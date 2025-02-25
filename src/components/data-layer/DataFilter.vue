@@ -3,35 +3,35 @@
     v-show="!editing"
     class="items-center space-items-xs"
   >
-    <div class="row no-wrap items-center">
-      <q-input
-        class="col-12"
-        autogrow
-        v-model="filter"
-        outlined
-        dense
-        :placeholder="t('findInTable')"
-        debounce="500"
-      >
-        <template v-slot:before>
-          <span class="q-mr-xs" style="font-size: 14px; color: black">{{ t('filters') }}</span>
-        </template>
-        <template v-slot:after>
-          <q-btn
-            flat
-            round
-            icon="las la-info-circle"
-          >
-            <q-tooltip> {{ $t('tools.search.advancedSearchInfo') }} </q-tooltip>
-            <q-menu>
-              <advanced-search-panel
-                :advancedOption.sync="advancedOption"
-              />
-            </q-menu>
-          </q-btn>
-        </template>
-      </q-input>
-    </div>
+    <q-input
+      class="col"
+      v-model="filter"
+      outlined
+      dense
+      :placeholder="t('findInTable')"
+      debounce="500"
+    >
+      <template v-slot:append>
+        <q-icon name="close" @click="filter = ''" class="cursor-pointer"></q-icon>
+      </template>
+      <template v-slot:after>
+        <q-btn
+          flat
+          round
+          icon="functions"
+          @click="showAdvancedSearchPanel = true"
+        >
+          <q-tooltip> {{ $t('tools.search.queryBuilder.title') }} </q-tooltip>
+          <query-builder-dialog
+            :fields="fields"
+            :values="filterValues"
+            :advancedOption.sync="advancedOption"
+            :show.sync="showAdvancedSearchPanel"
+            @get-field-values="getFieldValues"
+          />
+        </q-btn>
+      </template>
+    </q-input>
     <div>
       <q-btn
         v-if="allowGeom && table.info.hasGeom"
@@ -59,9 +59,9 @@
 
 <script>
 import Vue from 'vue'
-import { QBtn, QInput, QTooltip, QMenu } from 'quasar'
+import { QBtn, QIcon, QInput, QTooltip } from 'quasar'
 
-import AdvancedSearchPanel from './AdvancedSearchPanel'
+import QueryBuilderDialog from './QueryBuilderDialog'
 import TranslationMixin from './TranslationMixin'
 
 export default {
@@ -75,15 +75,17 @@ export default {
   },
   data () {
     return {
-      advancedOption: null
+      advancedOption: null,
+      showAdvancedSearchPanel: false,
+      filterValues: []
     }
   },
   components: {
     QBtn,
+    QIcon,
     QInput,
     QTooltip,
-    QMenu,
-    AdvancedSearchPanel
+    QueryBuilderDialog
   },
   computed: {
     editing () {
@@ -91,7 +93,7 @@ export default {
     },
     filter: {
       get () {
-        return this.table.remote.filters.general
+        return this.table.remote.filters.general || ''
       },
       set (value) {
         this.table.remote.filters.general = value
@@ -111,6 +113,9 @@ export default {
           Vue.set(this.table.remote.filters, 'bbox', null)
         }
       }
+    },
+    fields () {
+      return this.table?.info?.tableFields
     }
   },
   watch: {
@@ -124,12 +129,19 @@ export default {
       this.$store.dispatch('dataLayer/toggleFilterPolygon')
     },
     updateFilters () {
-      if (this.advancedOption) {
-        if (this.filter) {
-          this.filter += ' ' + this.advancedOption + ' '
-        } else {
-          this.filter = '"" ' + this.advancedOption + ' ""'
-        }
+      this.filter = this.advancedOption
+    },
+    getFieldValues (field) {
+      if (field?.name) {
+        this.filterValues = [...new Set(
+          this.table.rows.map(row => {
+            if (row.properties[field.name]) {
+              return row.properties[field.name]
+            }
+          })
+        )].sort()
+      } else {
+        this.filterValues = []
       }
     }
   }

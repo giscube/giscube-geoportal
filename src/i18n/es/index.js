@@ -246,7 +246,14 @@ export default {
       results: 'Resultados por a {q}',
       resultsError: 'Error al buscar',
       search: 'buscar',
-      advancedSearchInfo: '"campo" + COMPARADOR + "valor"'
+      queryBuilder: {
+        title: 'Constructor de consultas',
+        fields: 'Campos',
+        values: 'Valores',
+        operators: 'Operadores',
+        addFilter: 'Añadir filtro',
+        help: 'Haz clic en un campo o en un valor para seleccionarlo, y doble clic para añadirlo a la consulta. Haz clic en un operador para añadirlo a la consulta. También se pueden añadir valores a la consulta que no estén en la lista.'
+      }
     },
     share: {
       headerName: 'Comparte',
