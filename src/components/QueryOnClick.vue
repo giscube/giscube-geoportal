@@ -291,7 +291,9 @@ export default {
               }
             })
           })
-          this.queryHighlightLayers.forEach(layer => this.map.addLayer(layer))
+          if (this.queryHighlightLayers.length > 0) {
+            this.queryHighlightLayers.forEach(layer => this.map.addLayer(layer))
+          }
         }
       })
     },
