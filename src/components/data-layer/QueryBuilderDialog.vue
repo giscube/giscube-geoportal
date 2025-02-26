@@ -62,7 +62,7 @@
         </div>
       </div>
       <div class="q-pt-md">
-        <q-input dense outlined class="col" v-model="query">
+        <q-input dense outlined class="col" v-model="query" placeholder='E.g. "name" = "value" AND ...'>
           <template v-slot:append>
             <q-icon name="close" @click="query = ''" class="cursor-pointer" />
           </template>
@@ -123,6 +123,7 @@ export default {
     },
     addQuery () {
       this.$emit('update:advancedOption', this.query)
+      this.$emit('update:show', false)
     },
     clickOnField (field) {
       if (field !== this.selectedField) {
