@@ -125,15 +125,12 @@
             v-if="table"
             class="col column no-wrap"
           >
-            <data-filter :table="table" />
             <selection-controls :table="table" />
-            <div class="full-width col q-mt-sm">
-              <data-layer-table
-                class="limit-parent"
-                v-if="table.info"
-                :table="table"
-              />
-            </div>
+            <data-layer-table
+              class="limit-parent"
+              v-if="table.info"
+              :table="table"
+            />
           </div>
           <data-table
             v-else
@@ -184,8 +181,7 @@ import { convertGeoJsonToDXF, downloadDXF } from 'src/lib/fileutils'
 import { mapState } from 'vuex'
 import { saveAs } from 'file-saver'
 
-import DataFilter from './data-layer/DataFilter'
-import DataLayerTable from './data-layer/DataTable'
+import DataLayerTable from './data-layer/DataLayerTable'
 import SelectionControls from './data-layer/SelectionControls'
 
 import DataTable from './statistics/DataTable'
@@ -198,7 +194,6 @@ import UtilitiesTab from './result-tabs/UtilitiesTab'
 
 export default {
   components: {
-    DataFilter,
     DataLayerTable,
     SelectionControls,
     DataTable,
