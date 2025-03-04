@@ -37,7 +37,7 @@ export default {
       return this.properties.address
     },
     canAggregate () {
-      return (!!this.table_ || this.isDescriptionGeoJSON)
+      return this.isDescriptionGeoJSON
     },
     canDownload () {
       return this.isDescriptionGeoJSON
