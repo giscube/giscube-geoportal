@@ -58,6 +58,16 @@
             </q-tooltip>
           </q-btn>
 
+          <q-btn no-caps
+            v-show="hasDataPerm"
+            icon="las la-pencil-alt"
+            @click="goToDataPanel"
+          >
+            <q-tooltip>
+              {{$t('tools.data.title') | capitalize}}
+            </q-tooltip>
+          </q-btn>
+
           <q-btn
             v-show="canPin"
             icon="layers"
@@ -265,6 +275,9 @@ export default {
       const layer = this.layer && this.layer.getLayers().length > 0 && this.layer.getLayers()[0]
       return layer && layer.feature && layer.feature.geometry && !layer.feature.geometry.type.includes('Point')
     },
+    hasDataPerm () {
+      return this.table && this.table.info.permissions?.update
+    },
     routeInfoGiscubeId () {
       return this.$router.options.routes.find(({ path }) => path === '/info')?.children.some(({ name }) => name === 'giscube_id')
     },
@@ -319,6 +332,9 @@ export default {
       return null
     },
     title () {
+      return null
+    },
+    layerName () {
       return null
     },
     canPin () {
@@ -402,6 +418,30 @@ export default {
           })
         }
       })
+    },
+    goToDataPanel () {
+      this.$store.dispatch('dataLayer/refreshSources')
+        .then(() => {
+          const sources = this.$store.getters['dataLayer/sources']
+          for (let sourceKey in sources) {
+            if (sources.hasOwnProperty(sourceKey)) {
+              const source = sources[sourceKey]
+              if (source.layers && Array.isArray(source.layers)) {
+                for (let layer of source.layers) {
+                  if (layer.name === this.layerName) {
+                    this.$router.push({
+                      name: 'data',
+                      params: {
+                        sourceName: source.name, layerName: this.layerName
+                      }
+                    })
+                    return
+                  }
+                }
+              }
+            }
+          }
+        })
     },
     zoom () {
       const maxZoom = this.$config.layout.mapMaxFlyZoom
