@@ -173,7 +173,6 @@ export default {
     },
     colFilters: {
       get () {
-        console.log('colFilters', this.filters.columns)
         return this.filters.columns
       },
       set (value) {

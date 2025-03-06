@@ -81,6 +81,7 @@ export default class TableInfo {
     }
 
     this.referenceLayers = info.references
+    this.permissions = info.permissions || {}
   }
 
   setup (relatedTables) {

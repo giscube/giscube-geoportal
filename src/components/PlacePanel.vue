@@ -144,6 +144,9 @@ export default {
     },
     title () {
       return this.result && this.result.title
+    },
+    layerName () {
+      return this.table?.remote?.layer?.name
     }
   },
   mounted () {
