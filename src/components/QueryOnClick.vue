@@ -270,6 +270,9 @@ export default {
         .then(response => {
           let result = convert.xml2js(response.data, { compact: false })
           let results = result.elements[0].elements
+          if (result.elements && result.elements.length > 0 && result.elements[0]?.name.includes('wfs')) {
+            results = this.getAttributesWFS(result)
+          }
           if (results.length > 0 && results.some(layer => layer.elements)) {
             queryResults = results
           }
@@ -277,6 +280,101 @@ export default {
         .catch(this.$except)
 
       return queryResults
+    },
+    getAttributesWFS (result) {
+      if (!result.elements || !result.elements[0] || !result.elements[0].name.includes('wfs:FeatureCollection')) {
+        return []
+      }
+
+      const results = []
+
+      const featureCollection = result.elements[0]
+      const featureMembers = featureCollection.elements.filter(el =>
+        el.name && el.name.includes('featureMember')
+      )
+
+      if (featureMembers.length === 0) {
+        return []
+      }
+
+      const firstFeature = featureMembers[0].elements[0]
+
+      const layerName = firstFeature.name.split(':').pop()
+
+      const layerResult = {
+        attributes: {
+          name: layerName
+        },
+        elements: []
+      }
+
+      for (const featureMember of featureMembers) {
+        if (!featureMember.elements || featureMember.elements.length === 0) continue
+
+        const feature = featureMember.elements[0]
+        const featureElement = {
+          elements: []
+        }
+
+        if (feature.attributes && feature.attributes.fid) {
+          featureElement.elements.push({
+            attributes: {
+              name: 'ID',
+              value: feature.attributes.fid
+            }
+          })
+        }
+
+        for (const attribute of feature.elements || []) {
+          const attrName = attribute.name.split(':').pop()
+
+          if (attrName === 'SHAPE' || attrName.toLowerCase().includes('geometry')) {
+            featureElement.elements.push({
+              attributes: {
+                name: 'geometry',
+                value: 'Geometria disponible'
+              }
+            })
+            continue
+          }
+
+          if (attribute.elements && attribute.elements.length > 0) {
+            const textNode = attribute.elements.find(el => el.type === 'text')
+            if (textNode) {
+              featureElement.elements.push({
+                attributes: {
+                  name: attrName,
+                  value: textNode.text
+                }
+              })
+            } else {
+              featureElement.elements.push({
+                attributes: {
+                  name: attrName,
+                  value: 'Valor complex'
+                }
+              })
+            }
+          } else if (attribute.text) {
+            featureElement.elements.push({
+              attributes: {
+                name: attrName,
+                value: attribute.text
+              }
+            })
+          }
+        }
+
+        if (featureElement.elements.length > 0) {
+          layerResult.elements.push(featureElement)
+        }
+      }
+
+      if (layerResult.elements.length > 0) {
+        results.push(layerResult)
+      }
+
+      return results
     },
     _highlightResultsGeomtries () {
       this.query.results.forEach(element => {
