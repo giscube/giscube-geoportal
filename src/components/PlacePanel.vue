@@ -229,7 +229,7 @@ export default {
       this.resultsLayer.removeLayer(this.layer)
       this.map.addLayer(this.layer)
 
-      const name = this.layerType === 'WMS' ? this.layerOptions.layerDescriptor.title : this.layerOptions.title
+      const name = this.layerType.toLowerCase() === 'wms' ? this.layerOptions.layerDescriptor.title : this.layerOptions.title
       const getfeatureinfoSupport = this.layerOptions.layerDescriptor && this.layerOptions.layerDescriptor.giscube && this.layerOptions.layerDescriptor.giscube.getfeatureinfo_support
       const id = !isVoid(this.result.giscube_id) ? new GiscubeRef(this.result.giscube_id) : new GiscubeRef(this.idFromString(`${this.result.title}-${this.result.subtitle}`))
       this.$store.dispatch('map/addOverlay', {

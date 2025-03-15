@@ -172,6 +172,7 @@ export function createGeoJSONLayer ({ result, popupComponent }) {
 
 const createExternalLayerActions = {
   wms: createExternalLayerWMS,
+  wmts: createExternalLayerWMTS,
   tms: createExternalLayerTMS,
   geojson: createExternalLayerGeoJSON,
   databaselayer: createExternalDataBaseLayer
@@ -225,6 +226,30 @@ function createExternalLayerWMS ({ layerDescriptor, title, options, headers }) {
   return Promise.resolve({
     type: 'WMS',
     layer: wms
+  })
+}
+
+function createExternalLayerWMTS ({ layerDescriptor, title, options, headers }) {
+  let url = layerDescriptor.url
+
+  if (headers && 'Authorization' in headers && !layerDescriptor.url.includes('access_token')) {
+    const accessToken = headers['Authorization'].replace('Bearer ', '')
+    url += '?access_token=' + accessToken + '&'
+  } else {
+    url += '?'
+  }
+
+  url += 'SERVICE=WMTS&REQUEST=GetTile' +
+         '&LAYER=' + encodeURIComponent(layerDescriptor.layers) +
+         '&FORMAT=image/png' +
+         '&TILEMATRIXSET=EPSG:3857' +
+         '&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}'
+
+  const wmts = setTileLayerBoundary(L.tileLayer(url), options)
+
+  return Promise.resolve({
+    type: 'WMTS',
+    layer: wmts
   })
 }
 
@@ -495,6 +520,11 @@ export function makeBaseLayer (baseLayer, self) {
       }
     } else if (baseLayer.type === 'wms') {
       layer = L.tileLayer.wms(baseLayer.url, baseLayer)
+    } else if (baseLayer.type === 'wmts') {
+      const url = baseLayer.url + '?SERVICE=WMTS&REQUEST=GetTile' +
+            '&LAYER=' + baseLayer.layers + '&FORMAT=image/png' +
+            '&TILEMATRIXSET=EPSG:3857&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}'
+      layer = L.tileLayer(url, baseLayer)
     } else if (baseLayer.type === 'googleMutant') {
       if (!L.gridLayer.googleMutant) {
         console.warn('[Mapia Online] Trying to add googleMutant layer without the necessary package installed. Use npm i leaflet.gridlayer.googlemutant to install it.')

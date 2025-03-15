@@ -60,7 +60,7 @@ export default class GiscubeRef {
     const layerOptions = extractResultOptions(result, $root)
     const { type, layer } = await createLayerFromConfig(layerOptions) // TODO save table
 
-    const name = type === 'WMS' ? layerOptions.layerDescriptor.title : layerOptions.title
+    const name = type.toLowerCase() === 'wms' ? layerOptions.layerDescriptor.title : layerOptions.title
     return () => {
       const getfeatureinfoSupport = layerOptions.layerDescriptor.giscube && layerOptions.layerDescriptor.giscube.getfeatureinfo_support
       $root.$store.dispatch('map/addOverlay', {
