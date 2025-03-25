@@ -49,4 +49,8 @@ export default class CoordinatesRef {
       })
     }
   }
+
+  async getAsResult (opacity, $root) {
+    this.addAsResult(opacity, $root)
+  }
 }

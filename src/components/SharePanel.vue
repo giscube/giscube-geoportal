@@ -81,7 +81,6 @@ import { QInput, QSelect, QToggle } from 'quasar'
 import Vue from 'vue'
 import L from 'src/lib/leaflet'
 import ShareQuery from 'src/lib/shareQuery'
-import { reverse } from 'src/lib/utils'
 
 import CopyToClipboard from './CopyToClipboard'
 import BasicPopup from './BasicPopup'
@@ -269,13 +268,21 @@ export default {
 
       const l = ShareQuery.extract(query, 'l')
       if (l) {
-        const promises = l.map(({ ref, opacity }) => ref.addAsResult(opacity, this.$root))
+        const overlays = {}
+        const promises = l.map(({ ref, opacity }, index) => ({
+          promise: ref.getAsResult(opacity, this.$root),
+          index
+        }))
+
         await Promise.all(
-          reverse(promises).map(async (promise) => {
-            const add = await promise
-            add()
+          promises.map(async ({ promise, index }) => {
+            const result = await promise
+            overlays[index] = result
           })
         )
+        for (let k of Object.keys(overlays).reverse()) {
+          this.$root.$store.dispatch('map/addOverlay', overlays[k])
+        }
         this.$store.dispatch('map/reorderOverlay')
       }
     },
