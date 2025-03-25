@@ -50,6 +50,36 @@ export default class GiscubeRef {
     $router.push({ name: 'place', params: { q: result.title } })
   }
 
+  async overlayerAsResult (result, opacity, $root) {
+    const layerOptions = extractResultOptions(result, $root)
+    const { type, layer } = await createLayerFromConfig(layerOptions) // TODO save table
+    const name = type === 'WMS' ? layerOptions.layerDescriptor.title : layerOptions.title
+
+    const getfeatureinfoSupport =
+      layerOptions.layerDescriptor.giscube &&
+      layerOptions.layerDescriptor.giscube.getfeatureinfo_support
+
+    return {
+      id: this,
+      layer,
+      layerType: type,
+      options: layerOptions.options,
+      getfeatureinfoSupport,
+      name,
+      opacity
+    }
+  }
+
+  async getAsResult (opacity, $root) {
+    const result = await $root.$store.dispatch('catalogTree/getResultById', this.plainRef)
+
+    if (!result) {
+      return () => {}
+    }
+
+    return this.overlayerAsResult(result, opacity, $root)
+  }
+
   async addAsResult (opacity, $root) {
     const result = await $root.$store.dispatch('catalogTree/getResultById', this.plainRef)
 
@@ -57,21 +87,8 @@ export default class GiscubeRef {
       return () => {}
     }
 
-    const layerOptions = extractResultOptions(result, $root)
-    const { type, layer } = await createLayerFromConfig(layerOptions) // TODO save table
-
-    const name = type === 'WMS' ? layerOptions.layerDescriptor.title : layerOptions.title
-    return () => {
-      const getfeatureinfoSupport = layerOptions.layerDescriptor.giscube && layerOptions.layerDescriptor.giscube.getfeatureinfo_support
-      $root.$store.dispatch('map/addOverlay', {
-        id: this,
-        layer,
-        layerType: type,
-        options: layerOptions.options,
-        getfeatureinfoSupport,
-        name,
-        opacity
-      })
-    }
+    await this.overlayerAsResult(result, opacity, $root).then((overlay) => {
+      $root.$store.dispatch('map/addOverlay', overlay)
+    })
   }
 }
