@@ -201,9 +201,17 @@ function setTileLayerBoundary (layer, { boundary }) {
   return L.TileLayer.BoundaryCanvas.createFromLayer(layer, { boundary, trackAttribution: true })
 }
 
-function createExternalLayerWMS ({ layerDescriptor, title, options, headers }) {
+function createExternalLayerWMS ({ layerDescriptor, title, options, headers, filters }) {
+  const layers = new Set()
+  if (filters && filters.length > 0) {
+    filters.forEach(filter => {
+      if (filter.active) {
+        layers.add(filter.layers)
+      }
+    })
+  }
   const defaultOptions = {
-    layers: layerDescriptor.layers,
+    layers: layers.size ? Array.from(layers).join(',') : layerDescriptor.layers,
     format: 'image/png',
     transparent: true,
     maxZoom: 22
