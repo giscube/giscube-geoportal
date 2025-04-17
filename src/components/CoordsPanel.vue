@@ -9,11 +9,12 @@ import ResultPanelMixin from './ResultPanelMixin'
 import CoordinatesRef from 'src/lib/refs/coordinates'
 
 function coordsRegex () {
-  return /^([\w.,]+),? ([\w.,]+)$/g
+  return /^([\w.,]+)?,([\w.,]+)$/g
 }
 
 export function toCoords (coords, epsgs = null) {
-  coords = coordsRegex().exec(coords.trim())
+  coords = coords.trim().split(',').map(coord => coord.trim())
+  coords = coordsRegex().exec(coords.join(','))
   if (!coords) {
     return null
   }
@@ -70,6 +71,9 @@ export default {
     },
     title () {
       return this.$t('names.coords')
+    },
+    properties () {
+      return {}
     }
   },
   mounted () {
