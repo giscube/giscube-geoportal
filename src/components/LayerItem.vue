@@ -15,11 +15,12 @@
           round
           size="small"
           @click.stop="openLayer(layer)"
+          class="desktop-only"
         ><q-icon name="las la-info-circle" size="20px" /></q-btn>
         <q-btn
           flat
           round
-          icon="las la-info"
+          icon="las la-info-circle"
           @click.stop="openLayer(layer)"
           class="desktop-hide"
         />
@@ -27,6 +28,7 @@
           flat
           round
           @click="$emit('remove-layer', { overlay: layer, isOpen: panelOpen })"
+          class="desktop-only"
         ><q-icon name="las la-trash-alt" size="20px" /></q-btn>
         <q-btn
           flat
@@ -90,6 +92,13 @@ export default {
 
 <style lang="scss">
 .layer-item {
+  .desktop-only {
+    color: transparent;
+  }
+  &:hover .desktop-only {
+    color: black;
+  }
+
   .layerinfo {
     padding: 10px 20px;
     width: 100%;
