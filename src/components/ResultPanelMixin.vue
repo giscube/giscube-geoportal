@@ -279,7 +279,10 @@ export default {
       return this.table && this.table.info.permissions?.update
     },
     routeInfoGiscubeId () {
-      return this.$router.options.routes.find(({ path }) => path === '/info')?.children.some(({ name }) => name === 'giscube_id')
+      return (
+        this.isInfo &&
+        this.$router.options.routes.find(({ path }) => path === '/info')?.children.some(({ name }) => name === 'giscube_id')
+      )
     },
     statisticsEnabled () {
       return this.$config.tools.statistics.enabled
