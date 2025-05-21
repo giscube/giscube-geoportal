@@ -375,6 +375,19 @@ export default {
       if (table && !this.isInfo) {
         this.tab = 'data'
       }
+    },
+    result: function (newResult) {
+      const validTabs = []
+      if (this.isInfo) validTabs.push('info')
+      if (this.isData) validTabs.push('data')
+      if (this.statisticsEnabled && this.canAggregate) validTabs.push('statistics')
+      if (this.canAggregate) validTabs.push('heat-map')
+      if (this.isExternalSearchResult) validTabs.push('search-result')
+      if (this.isNotMarker) validTabs.push('utilities')
+
+      if (!validTabs.includes(this.tab)) {
+        this.tab = validTabs[0] || 'info'
+      }
     }
   },
   methods: {
