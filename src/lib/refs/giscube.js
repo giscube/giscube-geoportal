@@ -47,7 +47,9 @@ export default class GiscubeRef {
 
   async openInSidebar ({ context, $router }) {
     const result = await context.dispatch('catalogTree/getResultById', this.plainRef, { root: true })
-    $router.push({ name: 'place', params: { q: result.title } })
+    if (result) {
+      $router.push({ name: 'place', params: { q: result.title } })
+    }
   }
 
   async overlayerAsResult (result, opacity, $root) {
