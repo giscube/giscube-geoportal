@@ -272,8 +272,11 @@ export default {
       if (!this.isDescriptionGeoJSON) {
         return true
       }
-      const layer = this.layer && this.layer.getLayers().length > 0 && this.layer.getLayers()[0]
-      return layer && layer.feature && layer.feature.geometry && !layer.feature.geometry.type.includes('Point')
+      if (this.layer && typeof this.layer.getLayers === 'function') {
+        const layer = this.layer.getLayers().length > 0 && this.layer.getLayers()[0]
+        return layer && layer.feature && layer.feature.geometry && !layer.feature.geometry.type.includes('Point')
+      }
+      return null
     },
     hasDataPerm () {
       return this.table && this.table.info.permissions?.update
