@@ -275,6 +275,10 @@ export function addSharedLayer (context, layer) {
   context.dispatch('updateSharedLayers')
 }
 
+export function addPinLayer (context, layer) {
+  context.state.pinLayers.addLayer(layer)
+}
+
 export function addDefaultLayers (context) {
   const layers = this.$config.defaultLayers
   if (!layers || layers.length <= 0) {

@@ -121,7 +121,7 @@ types.coords = types.coordinates = {
 }
 
 const geomCoordsList = list(types.coords, ';')
-types.geom = types.geometry = {
+types.geom = types.geometry = types.search = {
   fromQuery (str) {
     if (!str) {
       return // TODO exception?
@@ -162,7 +162,12 @@ types.geom = types.geometry = {
       const latlngs = obj.getLatLngs()[0].map(c => [c.lat, c.lng])
       return 'p' + geomCoordsList.toQuery(latlngs)
     } else if (obj instanceof L.Polyline) {
-      const latlngs = obj.getLatLngs().map(c => [c.lat, c.lng])
+      let latlngs = obj.getLatLngs()
+      if (Array.isArray(latlngs[0])) {
+        latlngs = latlngs.flat().map(c => [c.lat, c.lng])
+      } else {
+        latlngs = latlngs.map(c => [c.lat, c.lng])
+      }
       return 'l' + geomCoordsList.toQuery(latlngs)
     } else if (obj instanceof L.Circle) {
       const radius = obj.getRadius()

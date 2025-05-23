@@ -45,6 +45,12 @@ params.message = params.m = {
   multi: behaviors.overrides
 }
 
+params.pinLayers = params.search = params.s = {
+  key: 's',
+  type: types.list(types.msgGeom, ':'),
+  multi: behaviors.overrides
+}
+
 params.options = params.o = {
   key: 'o',
   type: types.flags(['mc', 'om']),

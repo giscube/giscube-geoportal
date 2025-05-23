@@ -142,8 +142,15 @@ export default {
           ...this.sharedLayer.getLayers(),
           ...(this.$store.getters['map/drawnLayers']() || [])
         ],
+        search: this.pinLayers,
         results: this.results
       })
+    },
+    pinLayers () {
+      if (this.$store.state.map.pinLayers && typeof this.$store.state.map.pinLayers.getLayers === 'function') {
+        return this.$store.state.map.pinLayers.getLayers()
+      }
+      return []
     },
     sharedLayer () {
       return this.$store.state.map.shared
@@ -238,6 +245,7 @@ export default {
       })
 
       const g = ShareQuery.extract(query, 'g')
+      const s = ShareQuery.extract(query, 's')
 
       this.options = ShareQuery.extract(query, 'o') || {}
       const marker = this.options.mc && L.marker(center)
@@ -246,12 +254,10 @@ export default {
         this.sharedLayer.addLayer(marker)
       }
       if (g) {
-        g.forEach(layer => {
-          if (layer.sharedMessage) {
-            layer.bindPopup(layer.sharedMessage)
-          }
-          this.sharedLayer.addLayer(layer)
-        })
+        this.addLayers(g)
+      }
+      if (s) {
+        this.addLayers(s)
       }
 
       if (this.message) {
@@ -285,6 +291,14 @@ export default {
         }
         this.$store.dispatch('map/reorderOverlay')
       }
+    },
+    addLayers (geom) {
+      geom.forEach(layer => {
+        if (layer.sharedMessage) {
+          layer.bindPopup(layer.sharedMessage)
+        }
+        this.sharedLayer.addLayer(layer)
+      })
     },
     makePopup ({ map, layer }) {
       const Popup = Vue.extend(BasicPopup)
