@@ -1,4 +1,6 @@
 <script>
+import Vue from 'vue'
+
 import { saveAs } from 'file-saver'
 import ResultPanelMixin from './ResultPanelMixin'
 import FeaturePopup from './FeaturePopup'
@@ -232,14 +234,25 @@ export default {
       const name = this.layerType === 'WMS' ? this.layerOptions.layerDescriptor.title : this.layerOptions.title
       const getfeatureinfoSupport = this.layerOptions.layerDescriptor && this.layerOptions.layerDescriptor.giscube && this.layerOptions.layerDescriptor.giscube.getfeatureinfo_support
       const id = !isVoid(this.result.giscube_id) ? new GiscubeRef(this.result.giscube_id) : new GiscubeRef(this.idFromString(`${this.result.title}-${this.result.subtitle}`))
-      this.$store.dispatch('map/addOverlay', {
+      const overlay = {
         id,
         layer: this.layer,
         layerType: this.layerType,
         options: this.layerOptions.options,
         getfeatureinfoSupport,
         name
-      })
+      }
+      this.$store.dispatch('map/addOverlay', overlay)
+
+      if (typeof this.layer.getLayers === 'function') {
+        this.layer.getLayers().forEach(l => {
+          Vue.set(l, 'sharedMessage', overlay.name)
+          this.$store.dispatch('map/addPinLayer', l)
+        })
+      } else {
+        Vue.set(this.layer, 'sharedMessage', overlay.name)
+        this.$store.dispatch('map/addPinLayer', this.layer)
+      }
     },
     async setBy (option) {
       const tooltip = { parent: this, Component: PolygonTooltip }

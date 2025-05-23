@@ -21,6 +21,7 @@ The link must follow this format:
      * [[l] Layers](#l-layers)
      * [[o] Options](#o-options)
      * [[z] Zoom level](#z-zoom-level)
+     * [[s] Search points](#s-search)
   * [Types](#types)
      * [BaseMap](#basemap)
      * [Coordinates](#coordinates)

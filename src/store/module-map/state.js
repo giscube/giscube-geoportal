@@ -15,6 +15,7 @@ export default {
   incidence: L.layerGroup(),
   shared: L.layerGroup(),
   sharedLayers: [],
+  pinLayers: L.layerGroup(),
   hideLayersControl: false,
   drawing: false // changed by map events set in GeoportalMap
 }
