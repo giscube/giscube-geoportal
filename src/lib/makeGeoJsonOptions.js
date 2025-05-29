@@ -329,7 +329,15 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
             }
 
             const originalStyle = (sourceTarget) => {
-              return transform(modStyle, rules.getResult(sourceTarget.feature), sourceTarget.feature)
+              const baseStyle = transform(modStyle, rules.getResult(sourceTarget.feature), sourceTarget.feature)
+              const currentOpacity = sourceTarget.options.activeOpacity || baseStyle.opacity
+              const currentFillOpacity = sourceTarget.options.activeOpacity || baseStyle.fillOpacity
+
+              return {
+                ...baseStyle,
+                opacity: currentOpacity,
+                fillOpacity: currentFillOpacity
+              }
             }
 
             const highlightStyle = (sourceTarget) => {
