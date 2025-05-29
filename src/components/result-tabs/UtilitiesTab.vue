@@ -88,12 +88,15 @@ export default {
         }
       },
       set (value) {
-        if (this.layer.options && this.layer.options.opacity !== undefined) {
-          this.layer.setOpacity(value / 100)
+        const opacity = value / 100
+        if (this.layer.options && this.layer.options.opacity !== undefined && typeof this.layer.setOpacity === 'function') {
+          this.layer.setOpacity(opacity)
         } else if (this.layer.getLayers && this.layer.getLayers()[0].options.opacity !== undefined) {
           this.layer.eachLayer(layer => {
-            layer.setStyle({ opacity: value / 100, fillOpacity: value / 100 })
+            layer.options.activeOpacity = opacity
+            layer.setStyle({ opacity: opacity, fillOpacity: opacity })
           })
+          this.layer.options.opacity = opacity
         }
         this.opacityPercent = Math.round(value)
       }
