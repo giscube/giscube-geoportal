@@ -37,6 +37,12 @@
           <template v-slot:header-leaf="prop">
             <div class="q-mr-xs col-10" @click="catalogResults(prop.node)">
               <q-btn icon="las la-info-circle" flat round size="sm" color="primary"/>
+              <q-icon
+                v-if="prop.node.data.catalog_icon"
+                size="xs"
+                :name="prop.node.data.catalog_icon"
+                :style="{ color: getCatalogColor(prop.node.data) }"
+              />
               {{ prop.node.label }}
             </div>
             <div class="col-1 text-right">
@@ -53,6 +59,12 @@
           <template v-slot:header-leaf-filters="prop">
             <div class="q-mr-xs col-10" @click="catalogResults(prop.node)">
               <q-btn icon="las la-info-circle" flat round size="sm" color="primary"/>
+              <q-icon
+                v-if="prop.node.data.catalog_icon"
+                size="xs"
+                :name="prop.node.data.catalog_icon"
+                :style="{ color: getCatalogColor(prop.node.data) }"
+              />
               {{ prop.node.label }}
             </div>
             <div class="col-1 text-right">
@@ -72,8 +84,19 @@
               {{ prop.node.data.description }}
             </div>
             <div v-show="prop.node.expandFilters">
-              <div class="q-pl-sm" v-for="(filter, filterIdx) in prop.node.filters" :key="filter.id">
-                <q-checkbox class="q-pl-sm text-black" v-model="filter.active" v-on:click.native="setLeafFilters(prop.node, filterIdx)" :label="filter.title"/>
+              <div class="q-pl-sm row items-center" v-for="(filter, filterIdx) in prop.node.filters" :key="filter.id">
+                <q-checkbox
+                  class="q-pl-sm text-black"
+                  v-model="filter.active"
+                  v-on:click.native="setLeafFilters(prop.node, filterIdx)"
+                />
+                <q-icon
+                  v-if="prop.node.data.catalog_icon"
+                  size="xs"
+                  :name="prop.node.data.catalog_icon"
+                  :style="{ color: getCatalogColor(prop.node.data, filter) }"
+                />
+                <div class="q-pl-sm text-black"> {{ filter.title }}</div>
                 <div class="description q-pl-xl" v-if="filter.description">
                   {{ filter.description }}
                 </div>
@@ -231,6 +254,14 @@ export default {
           this.loadingLayers = this.loadingLayers.filter(loadingLayers => loadingLayers !== node.id)
         })
       }
+    },
+    getCatalogColor (obj, filter = null) {
+      if (filter && filter.catalog_color) {
+        return filter.catalog_color
+      } else if (obj.catalog_color) {
+        return obj.catalog_color
+      }
+      return null
     },
     t (key) {
       return this.$t('tools.catalogTree.' + key)
