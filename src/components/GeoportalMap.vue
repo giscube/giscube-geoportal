@@ -45,7 +45,9 @@ export default {
         attributionControl: false,
         zoomControl: false,
         editable: true
-      }
+      },
+      ctrlPressed: false,
+      cmdPressed: false
     }
   },
   computed: {
@@ -72,6 +74,12 @@ export default {
     },
     toolsControlVisible () {
       return this.$store.state.layout.toolsControlVisible
+    },
+    mapControlled () {
+      return this.$store.state.layout.mapControlled
+    },
+    isModifierPressed () {
+      return this.ctrlPressed || this.cmdPressed
     }
   },
   watch: {
@@ -91,6 +99,13 @@ export default {
         Array.from(toolsBar).forEach(element => { element.style.display = isVisible ? 'block' : 'none' })
         document.getElementById('share-control').style.display = isVisible ? 'block' : 'none'
       }
+    },
+    mapControlled: {
+      handler (value) {
+        if (value) {
+          this.disabledZoom()
+        }
+      }
     }
   },
   created () {
@@ -103,8 +118,83 @@ export default {
     if (this.map) {
       this.map.invalidateSize()
     }
+    this.setupKeyboardListeners()
+  },
+  beforeDestroy () {
+    this.removeKeyboardListeners()
   },
   methods: {
+    setupKeyboardListeners () {
+      document.addEventListener('keydown', this.onKeyDown)
+      document.addEventListener('keyup', this.onKeyUp)
+    },
+    removeKeyboardListeners () {
+      document.removeEventListener('keydown', this.onKeyDown)
+      document.removeEventListener('keyup', this.onKeyUp)
+    },
+    onKeyDown (event) {
+      if (event.ctrlKey || event.metaKey) {
+        this.ctrlPressed = event.ctrlKey
+        this.cmdPressed = event.metaKey
+        this.updateZoomBehavior()
+      }
+    },
+    onKeyUp (event) {
+      if (!event.ctrlKey && !event.metaKey) {
+        this.ctrlPressed = false
+        this.cmdPressed = false
+        this.updateZoomBehavior()
+      }
+    },
+    disabledZoom () {
+      this.map.scrollWheelZoom.disable()
+      this.map.doubleClickZoom.disable()
+      this.map.touchZoom.disable()
+      this.map.boxZoom.disable()
+      this.map.keyboard.disable()
+    },
+    updateZoomBehavior () {
+      if (!this.map || !this.mapControlled) return
+
+      if (this.isModifierPressed) {
+        this.map.scrollWheelZoom.enable()
+        this.map.doubleClickZoom.enable()
+        this.map.touchZoom.enable()
+        this.map.boxZoom.enable()
+        this.map.keyboard.enable()
+      } else {
+        this.disabledZoom()
+      }
+    },
+    setupZoomControl () {
+      if (!this.mapControlled) return
+
+      this.disabledZoom()
+
+      this.map.on('wheel', (e) => {
+        if (this.mapControlled && !this.isModifierPressed) {
+          e.originalEvent.preventDefault()
+          e.originalEvent.stopPropagation()
+          return false
+        }
+      })
+
+      this.map.on('dblclick', (e) => {
+        if (this.mapControlled && !this.isModifierPressed) {
+          e.originalEvent.preventDefault()
+          e.originalEvent.stopPropagation()
+          return false
+        }
+      })
+
+      this.map.on('touchstart', (e) => {
+        if (this.mapControlled && !this.isModifierPressed && e.originalEvent.touches.length > 1) {
+          e.originalEvent.preventDefault()
+          e.originalEvent.stopPropagation()
+          return false
+        }
+      })
+    },
     addControls () {
       this.addAttribution()
       this.addScaleControl()

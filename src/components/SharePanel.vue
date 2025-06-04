@@ -34,6 +34,12 @@
         />
         <br>
         <q-toggle
+          :label="t('controlledMap')"
+          :value="!!options.ctrl"
+           @input="setFlag(options, 'ctrl', $event)"
+        />
+        <br>
+        <q-toggle
           :label="t('closeSidebar')"
           :value="closeSidebar"
           v-model="closeSidebar"
@@ -264,6 +270,10 @@ export default {
             map.openPopup(popup, center)
           }
         }
+      }
+
+      if (this.options.ctrl) {
+        this.$store.commit('layout/setMapControlled', true)
       }
 
       const l = ShareQuery.extract(query, 'l')

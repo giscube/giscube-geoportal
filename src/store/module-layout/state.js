@@ -10,5 +10,6 @@ export default {
   sidebarOpen: false,
   printing: false,
   dialogs: [],
-  toolsControlVisible: true
+  toolsControlVisible: true,
+  mapControlled: false
 }

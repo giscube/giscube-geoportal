@@ -93,6 +93,7 @@ Option flags.
 List of flags:
   - `om` (open message): If the message should be automatically opened
   - `mc` (marker at the center): If a marker should be added at the center of the shared view.
+  - `ctrl` (controlled map): The map can only be zoomed in when you click ctrl or command
 
 ### [z] Zoom level
 The zoom that the map will have.
