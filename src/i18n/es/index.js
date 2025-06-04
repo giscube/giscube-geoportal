@@ -262,6 +262,7 @@ export default {
       description: 'Con este enlace puedes compartir el mapa en la ubicación y el nivel de zoom actual, las capas del catálogo que están fijadas en el mapa y los dibujos y medidas que has hecho.<br>Las opciones de abajo te permitirán abrir un mensaje cuando se abra el enlace, mostrar el mapa sin la barra de herramientas, compartir el estado del catálogo, entre otras...',
 
       catalogState: 'Catalog state',
+      controlledMap: 'Bloquear zoom con la rueda del ratón (Ctrl para activarlo)',
       closeSidebar: 'Cierra el panel lateral',
       message: '@:names.message',
       options: '@:names.options',

@@ -24,6 +24,10 @@ export function addDialog (state, obj) {
   state.dialogs.push(obj)
 }
 
+export function setMapControlled (state, value) {
+  state.mapControlled = value
+}
+
 export function removeDialog (state, obj) {
   const dialogs = state.dialogs
   // delete
