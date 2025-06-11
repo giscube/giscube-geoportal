@@ -10,8 +10,9 @@
       </div>
 
       <div class="row space-items-md">
-        <q-btn-group class="no-shadow">
+        <div class="col-12">
           <q-btn
+            flat
             icon="place"
             v-show="!measuring"
             @click="addMeasure('point')"
@@ -21,6 +22,7 @@
             </q-tooltip>
           </q-btn>
           <q-btn
+            flat
             icon="timeline"
             v-show="!measuring"
             @click="startMeasuring(false)"
@@ -30,6 +32,7 @@
             </q-tooltip>
           </q-btn>
           <q-btn
+            flat
             icon="fas fa-draw-polygon"
             v-show="!measuring"
             @click="startMeasuring(true)"
@@ -39,6 +42,7 @@
             </q-tooltip>
           </q-btn>
           <q-btn
+            flat
             icon="far fa-dot-circle"
             v-show="!measuring"
             @click="addMeasure('circle')"
@@ -47,7 +51,7 @@
               {{ t('circle') }}
             </q-tooltip>
           </q-btn>
-          <q-btn-dropdown v-show="!measuring" icon="save_alt">
+          <q-btn-dropdown flat v-show="!measuring" icon="save_alt">
             <q-list>
               <q-item clickable v-close-popup @click="download('geojson')">
                 <q-item-section style="width: 140px">
@@ -62,17 +66,31 @@
               </q-item>
             </q-list>
           </q-btn-dropdown>
-          <q-btn dense icon="las la-tag" @click="showAllPopups()">
+          <q-btn
+            flat
+            icon="las la-tag"
+            @click="showAllPopups()"
+          >
             <q-tooltip>{{ $t('actions.showTags') | capitalize }}</q-tooltip>
           </q-btn>
-        </q-btn-group>
-        <q-btn
-          outline
-          v-show="measuring"
-          @click="stopMapMeasuring"
-        >
-          {{ t('stop') }}
-        </q-btn>
+          <q-btn
+            flat
+            icon="share"
+            v-show="!measuring"
+            @click="goToShare()"
+          >
+            <q-tooltip>
+              {{ $t('tools.share.headerName') }}
+            </q-tooltip>
+          </q-btn>
+          <q-btn
+            outline
+            v-show="measuring"
+            @click="stopMapMeasuring"
+          >
+            {{ t('stop') }}
+          </q-btn>
+        </div>
       </div>
 
       <div class="q-pt-md">
@@ -115,7 +133,7 @@
 
 <script>
 import { saveAs } from 'file-saver'
-import { ClosePopup, QBtn, QBtnDropdown, QBtnGroup, QCheckbox, QChip, QItem, QItemSection, QItemLabel, QInput, QList, QTooltip } from 'quasar'
+import { ClosePopup, QBtn, QBtnDropdown, QCheckbox, QChip, QItem, QItemSection, QItemLabel, QInput, QList, QTooltip } from 'quasar'
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import length from '@turf/length'
@@ -123,6 +141,7 @@ import area from '@turf/area'
 import L from 'src/lib/leaflet'
 import { createLayer } from 'src/lib/geomUtils'
 import { convertGeoJsonToDXF, downloadDXF } from 'src/lib/fileutils'
+import { onToolClick } from '../lib/toolUtils'
 import geoportalApi from 'src/api/geoportal'
 
 import DrawMessageInput from 'components/DrawMessageInput.vue'
@@ -133,7 +152,6 @@ export default {
     DrawMessageInput,
     QBtn,
     QBtnDropdown,
-    QBtnGroup,
     QCheckbox,
     QChip,
     QItem,
@@ -369,6 +387,10 @@ export default {
         const dataDXF = convertGeoJsonToDXF(data)
         downloadDXF(dataDXF)
       }
+    },
+    goToShare () {
+      const self = this
+      onToolClick('share', self)
     }
   }
 }
