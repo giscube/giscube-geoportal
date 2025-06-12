@@ -427,4 +427,7 @@ export default {
   padding-top: 12px;
   clear: none;
 }
+.leaflet-control-minimap {
+  box-shadow: none;
+}
 </style>
