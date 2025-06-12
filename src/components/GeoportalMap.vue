@@ -297,10 +297,51 @@ export default {
         let options = this.$config.minimap.options || {}
         options.minimized = options.minimized || true
         options.toggleDisplay = options.toggleDisplay || true
-        options.collapsedHeight = 25
-        options.collapsedWidth = 25
+        options.collapsedHeight = 30
+        options.collapsedWidth = 30
         new MiniMap(layer, options).addTo(this.map)
+
+        this.customizeMiniMapButton()
       }
+    },
+    customizeMiniMapButton () {
+      this.$nextTick(() => {
+        const minimapContainer = document.querySelector('.leaflet-control-minimap')
+        if (minimapContainer) {
+          const toggleButton = minimapContainer.querySelector('.leaflet-control-minimap-toggle-display')
+          if (toggleButton) {
+            toggleButton.classList.add('custom-minimap-button')
+
+            toggleButton.innerHTML = ''
+            const iconWrapper = document.createElement('div')
+            iconWrapper.innerHTML = `<i class="q-icon material-icons" style="font-size: 20px; color: #000;">language</i>`
+            iconWrapper.style.backgroundColor = '#ffffff'
+            iconWrapper.style.borderRadius = '4px'
+            iconWrapper.style.width = '100%'
+            iconWrapper.style.height = '100%'
+            iconWrapper.style.display = 'flex'
+            iconWrapper.style.alignItems = 'center'
+            iconWrapper.style.justifyContent = 'center'
+
+            toggleButton.appendChild(iconWrapper)
+
+            toggleButton.style.width = '30px'
+            toggleButton.style.height = '30px'
+            toggleButton.style.border = 'none'
+            toggleButton.style.borderRadius = '4px'
+            toggleButton.style.display = 'flex'
+            toggleButton.style.alignItems = 'center'
+            toggleButton.style.justifyContent = 'center'
+            toggleButton.style.cursor = 'pointer'
+            toggleButton.style.boxShadow = 'none'
+            toggleButton.style.textDecoration = 'none'
+
+            minimapContainer.style.border = 'none'
+            minimapContainer.style.borderRadius = '4px'
+            minimapContainer.style.overflow = 'hidden'
+          }
+        }
+      })
     },
     onMapReady () {
       if (this.map) {
@@ -351,11 +392,6 @@ export default {
 <style lang="scss">
 .center-row {
   height: 100%;
-}
-.leaflet-control-minimap-toggle-display.leaflet-control-minimap-toggle-display-bottomright {
-  background-image: url('../assets/globe-icon.png');
-  height: 19px!important;
-  width: 19px!important;
 }
 #map { height: 100%; width: 100%; background-color: #ddd; border: 1px dashed #ccc;
   cursor: default;
