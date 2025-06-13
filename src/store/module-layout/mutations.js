@@ -28,6 +28,10 @@ export function setMapControlled (state, value) {
   state.mapControlled = value
 }
 
+export function setdeactivateClick (state, value) {
+  state.deactivateClick = value
+}
+
 export function removeDialog (state, obj) {
   const dialogs = state.dialogs
   // delete

@@ -78,6 +78,9 @@ export default {
     mapControlled () {
       return this.$store.state.layout.mapControlled
     },
+    deactivateClick () {
+      return this.$store.state.layout.deactivateClick
+    },
     isModifierPressed () {
       return this.ctrlPressed || this.cmdPressed
     }
@@ -104,6 +107,13 @@ export default {
       handler (value) {
         if (value) {
           this.disabledZoom()
+        }
+      }
+    },
+    deactivateClick: {
+      handler (value) {
+        if (value) {
+          this.disabledClick()
         }
       }
     }
@@ -165,6 +175,11 @@ export default {
       this.map.doubleClickZoom.disable()
       this.map.boxZoom.disable()
       this.map.keyboard.disable()
+    },
+    disabledClick () {
+      this.map.off('click')
+      this.map.off('dblclick')
+      this.map.off('contextmenu')
     },
     updateZoomBehavior () {
       if (!this.map || !this.mapControlled) return

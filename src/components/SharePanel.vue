@@ -38,6 +38,11 @@
           :value="!!options.ctrl"
            @input="setFlag(options, 'ctrl', $event)"
         />
+        <q-toggle
+          :label="t('deactivateClick')"
+          :value="!!options.dc"
+           @input="setFlag(options, 'dc', $event)"
+        />
         <br>
         <q-toggle
           :label="t('zoomDrawingLayers')"
@@ -295,6 +300,9 @@ export default {
 
       if (this.options.ctrl) {
         this.$store.commit('layout/setMapControlled', true)
+      }
+      if (this.options.dc) {
+        this.$store.commit('layout/setdeactivateClick', true)
       }
 
       if (this.options.zd) {

@@ -11,5 +11,6 @@ export default {
   printing: false,
   dialogs: [],
   toolsControlVisible: true,
-  mapControlled: false
+  mapControlled: false,
+  deactivateClick: false
 }

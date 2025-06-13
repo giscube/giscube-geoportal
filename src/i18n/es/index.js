@@ -264,6 +264,7 @@ export default {
       catalogState: 'Catalog state',
       controlledMap: 'Bloquear zoom con la rueda del ratón (Ctrl para activarlo)',
       zoomDrawingLayers: 'Ajustar a los elementos dibujados',
+      deactivateClick: 'Desactivar clics en el mapa',
       closeSidebar: 'Cierra el panel lateral',
       clusterMarkers: 'Agrupar marcadores',
       message: '@:names.message',
