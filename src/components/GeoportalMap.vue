@@ -127,10 +127,14 @@ export default {
     setupKeyboardListeners () {
       document.addEventListener('keydown', this.onKeyDown)
       document.addEventListener('keyup', this.onKeyUp)
+      document.addEventListener('touchstart', this.handleTouchStart)
+      document.addEventListener('touchend', this.handleTouchEnd)
     },
     removeKeyboardListeners () {
       document.removeEventListener('keydown', this.onKeyDown)
       document.removeEventListener('keyup', this.onKeyUp)
+      document.removeEventListener('touchstart', this.handleTouchStart)
+      document.removeEventListener('touchend', this.handleTouchEnd)
     },
     onKeyDown (event) {
       if (event.ctrlKey || event.metaKey) {
@@ -146,10 +150,19 @@ export default {
         this.updateZoomBehavior()
       }
     },
+    handleTouchStart (event) {
+      if (this.mapControlled && event.touches.length > 1) {
+        this.map.touchZoom.enable()
+      }
+    },
+    handleTouchEnd (event) {
+      if (this.mapControlled && event.touches.length === 0) {
+        this.map.touchZoom.disable()
+      }
+    },
     disabledZoom () {
       this.map.scrollWheelZoom.disable()
       this.map.doubleClickZoom.disable()
-      this.map.touchZoom.disable()
       this.map.boxZoom.disable()
       this.map.keyboard.disable()
     },
@@ -159,7 +172,6 @@ export default {
       if (this.isModifierPressed) {
         this.map.scrollWheelZoom.enable()
         this.map.doubleClickZoom.enable()
-        this.map.touchZoom.enable()
         this.map.boxZoom.enable()
         this.map.keyboard.enable()
       } else {
@@ -181,14 +193,6 @@ export default {
 
       this.map.on('dblclick', (e) => {
         if (this.mapControlled && !this.isModifierPressed) {
-          e.originalEvent.preventDefault()
-          e.originalEvent.stopPropagation()
-          return false
-        }
-      })
-
-      this.map.on('touchstart', (e) => {
-        if (this.mapControlled && !this.isModifierPressed && e.originalEvent.touches.length > 1) {
           e.originalEvent.preventDefault()
           e.originalEvent.stopPropagation()
           return false
