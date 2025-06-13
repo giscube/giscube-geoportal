@@ -96,6 +96,7 @@ List of flags:
   - `mc` (marker at the center): If a marker should be added at the center of the shared view.
   - `ctrl` (controlled map): The map can only be zoomed in when you click ctrl or command
   - `zd` (zoom drawing layers): Fit zoom to drawn elements
+  - `dc` (deactivate click): Deactivate click on the map
 
 ### [z] Zoom level
 The zoom that the map will have.
