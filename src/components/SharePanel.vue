@@ -40,6 +40,12 @@
         />
         <br>
         <q-toggle
+          :label="t('zoomDrawingLayers')"
+          :value="!!options.zd"
+           @input="setFlag(options, 'zd', $event)"
+        />
+        <br>
+        <q-toggle
           :label="t('clusterMarkers')"
           :value="clusterMarkers"
           v-model="clusterMarkers"
@@ -289,6 +295,16 @@ export default {
 
       if (this.options.ctrl) {
         this.$store.commit('layout/setMapControlled', true)
+      }
+
+      if (this.options.zd) {
+        if (this.sharedLayer && typeof this.sharedLayer.getLayers === 'function') {
+          const layers = this.sharedLayer.getLayers()
+          if (layers.length > 0) {
+            const bounds = L.latLngBounds(layers.map(layer => layer.getBounds ? layer.getBounds() : layer.getLatLng()))
+            map.fitBounds(bounds)
+          }
+        }
       }
 
       const l = ShareQuery.extract(query, 'l')
