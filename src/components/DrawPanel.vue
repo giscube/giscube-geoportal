@@ -107,24 +107,20 @@
 
       <div class='q-mt-md'>
         <div v-for='(layer, key) in sharedLayers' class='measure' :key="'shared-' + key">
-          <q-chip
-            color="primary"
-            text-color="white"
-            removable
+          <draw-message
+            :layer-text="layerText(layer)"
+            :layer="layer"
             @remove="removeFromShared(layer)"
-          >
-            <span v-html="layerText(layer)"></span><draw-message-input :layer="layer" />
-          </q-chip>
+            ref="messageInput"
+          />
         </div>
         <div v-for='(measure, key) in measureControl.measures' class='measure' :key="key">
-          <q-chip
-            color="primary"
-            text-color="white"
-            removable
+          <draw-message
+            :layer-text="measurementText(measure)"
+            :layer="measureLayer(measure)"
             @remove="removeMeasure(measure)"
-          >
-            <span v-html="measurementText(measure)"></span><draw-message-input :layer="measureLayer(measure)" />
-          </q-chip>
+            ref="messageInput"
+          />
         </div>
       </div>
     </div>
@@ -133,7 +129,7 @@
 
 <script>
 import { saveAs } from 'file-saver'
-import { ClosePopup, QBtn, QBtnDropdown, QCheckbox, QChip, QItem, QItemSection, QItemLabel, QInput, QList, QTooltip } from 'quasar'
+import { ClosePopup, QBtn, QBtnDropdown, QCheckbox, QItem, QItemSection, QItemLabel, QInput, QList, QTooltip } from 'quasar'
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import length from '@turf/length'
@@ -144,16 +140,15 @@ import { convertGeoJsonToDXF, downloadDXF } from 'src/lib/fileutils'
 import { onToolClick } from '../lib/toolUtils'
 import geoportalApi from 'src/api/geoportal'
 
-import DrawMessageInput from 'components/DrawMessageInput.vue'
+import DrawMessage from 'components/DrawMessageComponent.vue'
 import MeasureResultPopup from 'components/MeasureResultPopup.vue'
 
 export default {
   components: {
-    DrawMessageInput,
+    DrawMessage,
     QBtn,
     QBtnDropdown,
     QCheckbox,
-    QChip,
     QItem,
     QItemLabel,
     QItemSection,
