@@ -261,6 +261,7 @@ export default {
 
       catalogState: 'Catalog state',
       controlledMap: 'Lock mouse wheel zoom (Ctrl to activate it)',
+      zoomDrawingLayers: 'Fit zoom to drawn elements',
       closeSidebar: 'Close sidebar',
       clusterMarkers: 'Cluster markers',
       message: '@:names.message',
