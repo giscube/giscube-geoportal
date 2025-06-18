@@ -12,10 +12,49 @@ const separateFirst = separator => v => v.split(new RegExp(regexEscape(separator
 
 const types = {}
 
+function containsHTML (str) {
+  const htmlRegex = /<[^>]*>/
+  return htmlRegex.test(str)
+}
+
+function smartSplit (str, separator) {
+  if (!containsHTML(str)) {
+    return str.split(separator)
+  }
+
+  const result = []
+  let current = ''
+  let insideTag = false
+
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i]
+
+    if (char === '<') {
+      insideTag = true
+      current += char
+    } else if (char === '>') {
+      insideTag = false
+      current += char
+    } else if (char === separator && !insideTag) {
+      if (current.trim()) {
+        result.push(current.trim())
+      }
+      current = ''
+    } else {
+      current += char
+    }
+  }
+
+  if (current.trim()) {
+    result.push(current.trim())
+  }
+  return result
+}
+
 function list (type, separator) {
   return {
     fromQuery (str) {
-      return str.split(separator).map(type.fromQuery)
+      return smartSplit(str, separator).map(type.fromQuery)
     },
     toQuery (obj) {
       return (obj && obj.length > 0) ? obj.map(type.toQuery).filter(v => v !== void 0).join(separator) : void 0
@@ -202,7 +241,12 @@ function getGeomWithMessage (layer) {
 const msgGeomSplit = separateFirst('~')
 types.msgGeom = types.msggeom = {
   fromQuery (str) {
-    const [geom, message] = msgGeomSplit(str)
+    const [geom, message] = containsHTML(str)
+      ? (() => {
+        const [g, ...rest] = str.split('~')
+        return [g, rest.join('~').trim()]
+      })()
+      : msgGeomSplit(str)
     const result = types.geom.fromQuery(geom)
     result.sharedMessage = message && types.string.fromQuery(message)
     return result
