@@ -30,6 +30,9 @@ export default {
       chipHeight: '28'
     }
   },
+  mounted () {
+    this.resize()
+  },
   methods: {
     onInput (event) {
       const value = event.target.value
