@@ -175,6 +175,12 @@ types.geom = types.geometry = types.search = {
     } else if (obj instanceof L.CircleMarker) {
       const radius = obj.getRadius()
       return 'k' + geomCoordsList.toQuery([obj.getLatLng()]) + ',' + radius
+    } if (obj instanceof L.FeatureGroup) {
+      let layers = []
+      obj.getLayers().forEach(layer => {
+        layers.push('m' + geomCoordsList.toQuery([layer.getLatLng()]))
+      })
+      return layers.join(':')
     } else if (obj.getLatLng) {
       return 'm' + geomCoordsList.toQuery([obj.getLatLng()])
     } else {
@@ -185,6 +191,14 @@ types.geom = types.geometry = types.search = {
 
 types.list = list
 
+function getGeomWithMessage (layer) {
+  const result = [types.geom.toQuery(layer)]
+  if (layer.sharedMessage) {
+    result.push(types.string.toQuery(layer.sharedMessage))
+  }
+  return result.join('~')
+}
+
 const msgGeomSplit = separateFirst('~')
 types.msgGeom = types.msggeom = {
   fromQuery (str) {
@@ -194,11 +208,15 @@ types.msgGeom = types.msggeom = {
     return result
   },
   toQuery (layer) {
-    const result = [types.geom.toQuery(layer)]
-    if (layer.sharedMessage) {
-      result.push(types.string.toQuery(layer.sharedMessage))
+    if (layer instanceof L.FeatureGroup) {
+      let result = []
+      layer.getLayers().forEach(layer => {
+        const geomMessage = getGeomWithMessage(layer)
+        result.push(geomMessage)
+      })
+      return result.join(':')
     }
-    return result.join('~')
+    return getGeomWithMessage(layer)
   }
 }
 

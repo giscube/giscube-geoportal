@@ -262,6 +262,7 @@ export default {
       catalogState: 'Catalog state',
       controlledMap: 'Lock mouse wheel zoom (Ctrl to activate it)',
       closeSidebar: 'Close sidebar',
+      clusterMarkers: 'Cluster markers',
       message: '@:names.message',
       options: '@:names.options',
       openMessage: 'Open @:names.message',

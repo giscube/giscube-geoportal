@@ -264,6 +264,7 @@ export default {
       catalogState: 'Estat del catàleg',
       controlledMap: 'Bloquejar zoom rodeta del ratolí (Ctrl per activar-lo)',
       closeSidebar: 'Tanca el panell lateral',
+      clusterMarkers: 'Agrupar marcadors',
       message: '@:names.message',
       options: '@:names.options',
       openMessage: 'Obrir @:names.message',
