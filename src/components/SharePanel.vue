@@ -40,6 +40,12 @@
         />
         <br>
         <q-toggle
+          :label="t('clusterMarkers')"
+          :value="clusterMarkers"
+          v-model="clusterMarkers"
+        />
+        <br>
+        <q-toggle
           :label="t('closeSidebar')"
           :value="closeSidebar"
           v-model="closeSidebar"
@@ -104,6 +110,7 @@ export default {
     return {
       layout: null,
       closeSidebar: false,
+      clusterMarkers: false,
       hideLayersControl: false,
       catalogState: false,
       goToLayerPanel: false,
@@ -142,6 +149,7 @@ export default {
         layout: this.layout,
         catalog: this.categoriesOpen,
         closeSidebar: this.closeSidebar,
+        clusterMarkers: this.clusterMarkers,
         hideLayersControl: this.hideLayersControl,
         giscube_id: this.layerId,
         geom: [
@@ -253,6 +261,7 @@ export default {
       const g = ShareQuery.extract(query, 'g')
       const s = ShareQuery.extract(query, 's')
 
+      const clusterMarkers = ShareQuery.extract(query, 'cm')
       this.options = ShareQuery.extract(query, 'o') || {}
       const marker = this.options.mc && L.marker(center)
 
@@ -260,10 +269,10 @@ export default {
         this.sharedLayer.addLayer(marker)
       }
       if (g) {
-        this.addLayers(g)
+        this.addLayers(g, clusterMarkers)
       }
       if (s) {
-        this.addLayers(s)
+        this.addLayers(s, clusterMarkers)
       }
 
       if (this.message) {
@@ -302,13 +311,20 @@ export default {
         this.$store.dispatch('map/reorderOverlay')
       }
     },
-    addLayers (geom) {
+    addLayers (geom, clusterMarkers) {
+      let layers = this.sharedLayer
+      if (clusterMarkers) {
+        layers = L.markerClusterGroup()
+      }
       geom.forEach(layer => {
         if (layer.sharedMessage) {
           layer.bindPopup(layer.sharedMessage)
         }
-        this.sharedLayer.addLayer(layer)
+        layers.addLayer(layer)
       })
+      if (clusterMarkers) {
+        this.sharedLayer.addLayer(layers)
+      }
     },
     makePopup ({ map, layer }) {
       const Popup = Vue.extend(BasicPopup)

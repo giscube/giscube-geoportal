@@ -188,7 +188,7 @@ export default {
       return this.$store.state.map.shared
     },
     sharedLayers () {
-      return this.$store.state.map.sharedLayers
+      return this.$store.state.map.sharedLayers.filter(layer => !(layer instanceof L.FeatureGroup))
     }
   },
   watch: {

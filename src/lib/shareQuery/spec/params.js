@@ -33,6 +33,12 @@ params.closeSidebar = params.csb = {
   multi: behaviors.overrides
 }
 
+params.clusterMarkers = params.cm = {
+  key: 'cm',
+  type: types.string,
+  multi: behaviors.overrides
+}
+
 params.hideLayersControl = params.hlc = {
   key: 'hlc',
   type: types.string,
