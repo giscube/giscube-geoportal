@@ -244,14 +244,16 @@ export default {
       }
       this.$store.dispatch('map/addOverlay', overlay)
 
-      if (typeof this.layer.getLayers === 'function') {
-        this.layer.getLayers().forEach(l => {
-          Vue.set(l, 'sharedMessage', overlay.name)
-          this.$store.dispatch('map/addPinLayer', l)
-        })
-      } else {
-        Vue.set(this.layer, 'sharedMessage', overlay.name)
-        this.$store.dispatch('map/addPinLayer', this.layer)
+      if (!this.result.giscube_id) {
+        if (typeof this.layer.getLayers === 'function') {
+          this.layer.getLayers().forEach(l => {
+            Vue.set(l, 'sharedMessage', overlay.name)
+            this.$store.dispatch('map/addPinLayer', l)
+          })
+        } else {
+          Vue.set(this.layer, 'sharedMessage', overlay.name)
+          this.$store.dispatch('map/addPinLayer', this.layer)
+        }
       }
     },
     async setBy (option) {
