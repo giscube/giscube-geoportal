@@ -6,12 +6,13 @@
       :data="data"
       :columns="columns"
       row-key="id"
-      pagination.sync="pagination"
+      :pagination.sync="pagination"
       :rows-per-page-options="[0]"
       :loading="loading"
       :sort-method="sort"
       binary-state-sort
       virtual-scroll
+      @request="onPaginationChange"
     >
       <template v-slot:top>
         <div class="row full-width justify-between items-center">
@@ -297,8 +298,8 @@ export default {
       this.pagination.page = 1
       this.update()
     },
-    onPaginationChange (pagination) {
-      this.pagination = pagination
+    onPaginationChange (request) {
+      this.pagination = request.pagination
       this.update()
     },
     onResize (size) {
