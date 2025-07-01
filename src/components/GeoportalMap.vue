@@ -137,8 +137,8 @@ export default {
     setupKeyboardListeners () {
       document.addEventListener('keydown', this.onKeyDown)
       document.addEventListener('keyup', this.onKeyUp)
-      document.addEventListener('touchstart', this.handleTouchStart)
-      document.addEventListener('touchend', this.handleTouchEnd)
+      document.addEventListener('touchstart', this.handleTouchStart, { passive: false })
+      document.addEventListener('touchend', this.handleTouchEnd, { passive: false })
     },
     removeKeyboardListeners () {
       document.removeEventListener('keydown', this.onKeyDown)
@@ -161,13 +161,21 @@ export default {
       }
     },
     handleTouchStart (event) {
-      if (this.mapControlled && event.touches.length > 1) {
-        this.map.touchZoom.enable()
+      if (!this.mapControlled) return
+
+      const touchCount = event.touches.length
+      if (touchCount < 2) {
+        this.map.dragging.disable()
+      } else {
+        this.map.dragging.enable()
       }
     },
     handleTouchEnd (event) {
-      if (this.mapControlled && event.touches.length === 0) {
-        this.map.touchZoom.disable()
+      if (!this.mapControlled) return
+
+      const touchCount = event.touches.length
+      if (touchCount < 2) {
+        this.map.dragging.disable()
       }
     },
     disabledZoom () {
@@ -373,6 +381,9 @@ export default {
 
       this.addControls()
       this.$store.dispatch('map/setDefaultBaseLayer')
+
+      this.setupZoomControl()
+
       this.map.addLayer(this.mapGroup)
       if (this.mainTable) {
         this.mainTable.addTo(this.map)
