@@ -6,7 +6,8 @@
     :columns="columns"
     row-key="name"
     virtual-scroll
-    :pagination="{ rowsPerPage: 0 }"
+    binary-state-sort
+    :pagination.sync="pagination"
     :rows-per-page-options="[0]"
   >
     <template v-slot:top-right>
@@ -46,7 +47,12 @@ export default {
   data () {
     return {
       table: null,
-      dataColumns: []
+      dataColumns: [],
+      pagination: {
+        sortBy: null,
+        descending: false,
+        rowsPerPage: 0
+      }
     }
   },
   computed: {
@@ -59,6 +65,7 @@ export default {
         {
           name: '__internal__agg__count',
           label: this.t('columnCount'),
+          sortable: true,
           field: row => {
             const r = this.result && this.result.get(row)
             return r ? r.count : 0
@@ -72,7 +79,8 @@ export default {
         {
           name: '__internal__colorColumn',
           label: this.t('columnColor'),
-          field: row => this.colorMap.get(row) || this.colorMap.get('default')
+          field: row => this.colorMap.get(row) || this.colorMap.get('default'),
+          sortable: true
         },
         ...this.dataColumns
       ]
@@ -100,7 +108,24 @@ export default {
               name: key,
               label: this.$filter('capitalize')(key),
               field: row => row.feature.properties[key],
-              align: 'left'
+              align: 'left',
+              sortable: true,
+              sort: (a, b, rowA, rowB) => {
+                const valueA = typeof a === 'string' ? a.toLowerCase() : a
+                const valueB = typeof b === 'string' ? b.toLowerCase() : b
+
+                if (valueA == null && valueB == null) return 0
+                if (valueA == null) return 1
+                if (valueB == null) return -1
+
+                if (typeof valueA === 'number' && typeof valueB === 'number') {
+                  return valueA - valueB
+                }
+
+                if (valueA < valueB) return -1
+                if (valueA > valueB) return 1
+                return 0
+              }
             })
           }
         }
