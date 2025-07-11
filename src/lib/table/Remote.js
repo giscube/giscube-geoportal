@@ -139,9 +139,9 @@ export default class Remote {
 
           const { data } = response
 
-          this.pagination.rowsNumber = data.count
-          this.pagination.page = data.page
-          this.pagination.rowsPerPage = data.page_size
+          this.pagination.rowsNumber = data.count || data.features.length || 0
+          this.pagination.page = data.page || 1
+          this.pagination.rowsPerPage = data.page_size || 0
 
           this.fetching = false
 
