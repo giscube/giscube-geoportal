@@ -39,9 +39,8 @@
               <q-btn icon="las la-info-circle" flat round size="sm" color="primary"/>
               <q-icon
                 v-if="prop.node.data.catalog_icon"
-                size="xs"
                 :name="prop.node.data.catalog_icon"
-                :style="{ color: getCatalogColor(prop.node.data) }"
+                :style="getStyle(prop.node.data)"
               />
               {{ prop.node.label }}
             </div>
@@ -61,9 +60,8 @@
               <q-btn icon="las la-info-circle" flat round size="sm" color="primary"/>
               <q-icon
                 v-if="prop.node.data.catalog_icon"
-                size="xs"
                 :name="prop.node.data.catalog_icon"
-                :style="{ color: getCatalogColor(prop.node.data) }"
+                :style="getStyle(prop.node.data)"
               />
               {{ prop.node.label }}
             </div>
@@ -85,18 +83,19 @@
             </div>
             <div v-show="prop.node.expandFilters">
               <div class="q-pl-sm row items-center" v-for="(filter, filterIdx) in prop.node.filters" :key="filter.id">
-                <q-checkbox
-                  class="q-pl-sm text-black"
-                  v-model="filter.active"
-                  v-on:click.native="setLeafFilters(prop.node, filterIdx)"
-                />
-                <q-icon
-                  v-if="prop.node.data.catalog_icon"
-                  size="xs"
-                  :name="prop.node.data.catalog_icon"
-                  :style="{ color: getCatalogColor(prop.node.data, filter) }"
-                />
-                <div class="q-pl-sm text-black"> {{ filter.title }}</div>
+                <div class="q-pl-sm text-black">
+                  <q-checkbox
+                    class="text-black"
+                    v-model="filter.active"
+                    v-on:click.native="setLeafFilters(prop.node, filterIdx)"
+                  />
+                  <q-icon
+                    v-if="prop.node.data.catalog_icon"
+                    :name="prop.node.data.catalog_icon"
+                    :style="getStyle(prop.node.data, filter)"
+                  />
+                  {{ filter.title }}
+                </div>
                 <div class="description q-pl-xl" v-if="filter.description">
                   {{ filter.description }}
                 </div>
@@ -253,6 +252,22 @@ export default {
         this.$store.dispatch('map/addLayer', layer).then(() => {
           this.loadingLayers = this.loadingLayers.filter(loadingLayers => loadingLayers !== node.id)
         })
+      }
+    },
+    getStyle (obj, filter) {
+      const color = this.getCatalogColor(obj, filter)
+      let size = {
+        'font-size': '18px'
+      }
+      if (obj && obj.catalog_icon === 'fas fa-solid fa-circle') {
+        size = {
+          'font-size': '12px',
+          'padding-left': '3px!important'
+        }
+      }
+      return {
+        color,
+        ...size
       }
     },
     getCatalogColor (obj, filter = null) {
