@@ -10,6 +10,7 @@
     :rows-per-page-options="[0]"
     :loading="loading"
     :sort-method="sort"
+    :virtual-scroll-slice-size="35"
     binary-state-sort
     virtual-scroll
     @request="onRequest"
