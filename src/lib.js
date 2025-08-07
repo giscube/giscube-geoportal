@@ -27,6 +27,7 @@ import QueryOnClick from 'components/QueryOnClick'
 import LayersControl from 'components/LayersControl'
 import HelpPanel from 'components/HelpPanel'
 import StreetViewPanel from 'components/StreetViewPanel'
+import OcupacioPanel from 'components/OcupacioPanel'
 import api from './api'
 import geoportalBoot from './boot'
 import store from './store/index.js'
@@ -71,6 +72,7 @@ export {
   LayersControl,
   HelpPanel,
   StreetViewPanel,
+  OcupacioPanel,
   api,
   boot,
   store,

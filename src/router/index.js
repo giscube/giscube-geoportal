@@ -8,6 +8,7 @@ import HomePanel from 'components/HomePanel'
 import AuthPanel from 'components/AuthPanel'
 import DrawPanel from 'components/DrawPanel'
 import IncidencePanel from 'components/IncidencePanel'
+import OcupacioPanel from 'components/OcupacioPanel'
 import PlacePanelStrategy from 'components/PlacePanelStrategy'
 import SearchPanel from 'components/SearchPanel'
 import SharePanel from 'components/SharePanel'
@@ -36,6 +37,7 @@ export default function ({ Vue, store }) {
         { path: 'search/:q*', component: SearchPanel, name: 'search', query: 'giscube_id' },
         { path: 'share', component: SharePanel, name: 'share' },
         { path: 'streetview/:q?', component: StreetViewPanel, name: 'streetview' },
+        { path: 'ocupacio/', component: OcupacioPanel, name: 'ocupacio' },
 
         { path: ':q?', name: 'auth_params', component: AuthPanel },
         { path: '', redirect: { name: 'home' } }

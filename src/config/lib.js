@@ -90,6 +90,7 @@ export default new Options({
       'search',
       'catalog',
       'streetview',
+      'ocupacio',
       'data',
       'draw',
       'incidence',
@@ -140,6 +141,8 @@ export default new Options({
   },
   streetview: {
     followQueryMarker: true
+  },
+  ocupacio: {
   },
   tools: {
     auth: {
