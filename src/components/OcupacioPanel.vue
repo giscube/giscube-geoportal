@@ -72,9 +72,8 @@ export default {
     updateOcupacio () {
       const date1 = this.selectedDates.from || this.selectedDates
       const date2 = this.selectedDates.to || this.selectedDates
-      this.$store.dispatch('obres/updateOcupacio', {
+      this.$store.dispatch('ocupacio/addOcupacio', {
         url: 'https://aupacaux.apps.santcugat.cat/api/GetOvpGeomByDates?geoque=LINES',
-        apiKey: this.apiKey,
         date1,
         date2
       })
