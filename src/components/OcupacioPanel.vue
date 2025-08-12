@@ -13,16 +13,13 @@
         <div style="padding: 12px; padding-top: 15px;!important padding-bottom: -5px;!important border-radius: 25px;">
         </div>
         <div v-show="isAuthenticated" class="q-pb-sm">
-          <div><q-toggle v-model="tallsExt" label="Talls (extern)" color="warning" keep-color /></div>
-          <div><q-toggle v-model="tallsInt" label="Talls (intern)" color="red" keep-color /></div>
-          <div><q-toggle v-model="assabentatsInt" label="Assabentats (intern)" color="blue" keep-color /></div>
         </div>
       </div>
       <div>
         <q-date v-model="selectedDates" range mask="DD/MM/YYYY"/>
       </div>
       <div class="q-py-sm">
-        <q-btn label="Actualitza" color="primary" @click="updateTalls" :loading="loading" :disable="!selectedDates">
+        <q-btn label="Actualitza" color="primary" @click="updateOcupacio" :loading="loading" :disable="!selectedDates">
           <q-tooltip v-if="!selectedDates">
             Selecciona una data
           </q-tooltip>
@@ -33,15 +30,14 @@
 </template>
 
 <script>
-import { QBtn, QDate, QTooltip, QToggle } from 'quasar'
+import { QBtn, QDate, QTooltip } from 'quasar'
 
 export default {
   name: 'OcupacioPanel',
   components: {
     QBtn,
     QDate,
-    QTooltip,
-    QToggle
+    QTooltip
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {

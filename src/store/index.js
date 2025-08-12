@@ -10,6 +10,7 @@ import map from './module-map'
 import search from './module-search'
 import statistics from './module-statistics'
 import root from './module-root'
+import ocupacio from './module-ocupacio'
 
 Vue.use(Vuex)
 
@@ -22,7 +23,8 @@ const modules = {
   map,
   search,
   statistics,
-  root
+  root,
+  ocupacio
 }
 
 function registerModules (store) {
