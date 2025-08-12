@@ -134,8 +134,7 @@ function createLayer (apiData, type) {
 }
 
 export function getResponse (context, { url, date1, date2 }) {
-  url += '?apiKey=' + context.state.token + '&desde=' + date1 + '&fins=' + date2
-  url += '&geoque=LINES'
+  url += '&apiKey=' + context.state.token + '&desde=' + date1 + '&fins=' + date2
   return axios.get(url)
 }
 
@@ -143,6 +142,7 @@ export function addOcupacio (context, { url, date1, date2 }) {
   context.state.loading = true
   context.dispatch('getResponse', { url, date1, date2 })
     .then(response => {
+      console.log('Ocupació response', response.data)
       const layer = createLayer(response, 'ocupacio')
 
       this.dispatch('map/addOverlay', {
@@ -153,7 +153,7 @@ export function addOcupacio (context, { url, date1, date2 }) {
       })
     })
     .catch(_ => {
-      context.dispatch('addOcupacio', { url, date1 })
+      console.log('fail')
     })
     .then(_ => {
       context.state.loading = false

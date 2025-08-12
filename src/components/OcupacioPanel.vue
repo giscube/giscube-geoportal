@@ -66,13 +66,19 @@ export default {
   },
   methods: {
     updateOcupacio () {
-      const date1 = this.selectedDates.from || this.selectedDates
-      const date2 = this.selectedDates.to || this.selectedDates
+      console.log('updateOcupacio', this.selectedDates)
+      const date1 = this.transformDate(this.selectedDates.from || this.selectedDates)
+      const date2 = this.transformDate(this.selectedDates.to || this.selectedDates)
       this.$store.dispatch('ocupacio/addOcupacio', {
         url: 'https://aupacaux.apps.santcugat.cat/api/GetOvpGeomByDates?geoque=LINES',
         date1,
         date2
       })
+    },
+    transformDate (date) {
+      if (!date) return null
+      const [day, month, year] = date.split('/')
+      return `${year}-${month}-${day}`
     }
   }
 }
