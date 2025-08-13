@@ -43,6 +43,7 @@ export default {
     next(vm => {
       const today = new Date()
       vm.selectedDates = today.toJSON().slice(0, 10).split('-').reverse().join('/')
+      vm.updateOcupacio()
     })
   },
   data () {
@@ -66,7 +67,6 @@ export default {
   },
   methods: {
     updateOcupacio () {
-      console.log('updateOcupacio', this.selectedDates)
       const date1 = this.transformDate(this.selectedDates.from || this.selectedDates)
       const date2 = this.transformDate(this.selectedDates.to || this.selectedDates)
       this.$store.dispatch('ocupacio/addOcupacio', {

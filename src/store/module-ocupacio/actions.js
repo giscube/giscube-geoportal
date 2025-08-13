@@ -23,7 +23,7 @@ function parseWKT (wkt) {
     }
   } else if (wkt.startsWith('LINESTRING')) {
     const coords = coordString.split(',').map(pair => {
-      const [lng, lat] = pair.trim().split(' ').map(Number)
+      const [lat, lng] = pair.trim().split(' ').map(Number)
       return [lat, lng]
     })
     return {
@@ -46,6 +46,9 @@ function parseWKT (wkt) {
 }
 
 function convertToGeoJSON (apiData) {
+  // if (!Array.isArray(apiData) || apiData.length === 0) {
+  //   return { type: 'FeatureCollection', features: [] }
+  // }
   const features = apiData.map(item => {
     const geometry = parseWKT(item.wkt)
 
@@ -115,18 +118,17 @@ function createLayer (apiData, type) {
       }
     },
     onEachFeature: (feature, layer) => {
-      let popupComponent
+      const nomgeom = feature.properties.nomgeom || 'Feature'
+      const coords = feature.geometry.coordinates
 
-      const PopupContent = popupComponent
-      const popup = new PopupContent({
-        propsData: { feature, layer }
-      })
+      const popupComponent = `
+        <div>
+          <strong>${nomgeom}</strong><br>
+          Coordenades: ${Array.isArray(coords[0]) ? 'Múltiples punts' : coords.join(', ')}
+        </div>
+      `
 
-      popup.$on('delete', () => {
-        layer.remove()
-      })
-
-      layer.bindPopup(popup.$mount().$el)
+      layer.bindPopup(popupComponent)
     }
   })
 
@@ -142,8 +144,7 @@ export function addOcupacio (context, { url, date1, date2 }) {
   context.state.loading = true
   context.dispatch('getResponse', { url, date1, date2 })
     .then(response => {
-      console.log('Ocupació response', response.data)
-      const layer = createLayer(response, 'ocupacio')
+      const layer = createLayer(response.data, 'ocupacio')
 
       this.dispatch('map/addOverlay', {
         layer,
@@ -151,9 +152,13 @@ export function addOcupacio (context, { url, date1, date2 }) {
         name: 'Ocupacions',
         id: new GiscubeRef(idFromString('ocupació'))
       })
+
+      if (layer.getBounds && layer.getBounds().isValid()) {
+        context.rootState.map.mapObject.fitBounds(layer.getBounds())
+      }
     })
-    .catch(_ => {
-      console.log('fail')
+    .catch(e => {
+      context.dispatch('addTalls', { url, date1, date2 })
     })
     .then(_ => {
       context.state.loading = false
