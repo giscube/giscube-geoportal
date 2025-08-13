@@ -46,9 +46,9 @@ function parseWKT (wkt) {
 }
 
 function convertToGeoJSON (apiData) {
-  // if (!Array.isArray(apiData) || apiData.length === 0) {
-  //   return { type: 'FeatureCollection', features: [] }
-  // }
+  if (!Array.isArray(apiData) || apiData.length === 0) {
+    return null
+  }
   const features = apiData.map(item => {
     const geometry = parseWKT(item.wkt)
 
@@ -77,8 +77,11 @@ function convertToGeoJSON (apiData) {
   }
 }
 
-function createLayer (apiData, type) {
+function createLayer (apiData) {
   const geoJsonData = convertToGeoJSON(apiData)
+  if (!geoJsonData) {
+    return null
+  }
 
   const layer = L.geoJSON(geoJsonData, {
     pointToLayer: function (feature, latlng) {
@@ -118,12 +121,18 @@ function createLayer (apiData, type) {
       }
     },
     onEachFeature: (feature, layer) => {
-      const nomgeom = feature.properties.nomgeom || 'Feature'
+      const nom = feature.properties.nom || 'Feature'
+      const tipus = feature.properties.nomgeom || 'Desconegut'
       const coords = feature.geometry.coordinates
+      const inici = feature.properties.Inici.slice(0, 10).split('-').reverse().join('/') || 'Desconegut'
+      const final = feature.properties.Final.slice(0, 10).split('-').reverse().join('/') || 'Desconegut'
 
       const popupComponent = `
         <div>
-          <strong>${nomgeom}</strong><br>
+          <strong>${nom}</strong><br>
+          Tipus: ${tipus}</br>
+          Inici: ${inici}<br>
+          Final: ${final}<br>
           Coordenades: ${Array.isArray(coords[0]) ? 'Múltiples punts' : coords.join(', ')}
         </div>
       `
@@ -144,21 +153,19 @@ export function addOcupacio (context, { url, date1, date2 }) {
   context.state.loading = true
   context.dispatch('getResponse', { url, date1, date2 })
     .then(response => {
-      const layer = createLayer(response.data, 'ocupacio')
-
+      const layer = createLayer(response.data)
+      if (!layer) {
+        return
+      }
       this.dispatch('map/addOverlay', {
         layer,
         layerType: 'geojson',
         name: 'Ocupacions',
         id: new GiscubeRef(idFromString('ocupació'))
       })
-
-      if (layer.getBounds && layer.getBounds().isValid()) {
-        context.rootState.map.mapObject.fitBounds(layer.getBounds())
-      }
     })
     .catch(e => {
-      context.dispatch('addTalls', { url, date1, date2 })
+      console.log('Error al afegir ocupació:', e)
     })
     .then(_ => {
       context.state.loading = false

@@ -46,6 +46,9 @@ export default {
       vm.updateOcupacio()
     })
   },
+  destroyed () {
+    this.$store.dispatch('map/removeOverlay', this.$store.state.map.layers.overlays.find(overlay => overlay.name === 'ocupacio'))
+  },
   data () {
     return {
       selectedDates: {
