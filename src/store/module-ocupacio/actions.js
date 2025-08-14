@@ -19,7 +19,7 @@ function parseWKT (wkt) {
     const coords = coordString.split(' ').map(Number)
     return {
       type: 'Point',
-      coordinates: [coords[1], coords[0]]
+      coordinates: [coords[0], coords[1]]
     }
   } else if (wkt.startsWith('LINESTRING')) {
     const coords = coordString.split(',').map(pair => {
@@ -33,7 +33,7 @@ function parseWKT (wkt) {
   } else if (wkt.startsWith('POLYGON')) {
     const ringString = coordString.replace(/^\(/, '').replace(/\)$/, '')
     const coords = ringString.split(',').map(pair => {
-      const [lng, lat] = pair.trim().split(' ').map(Number)
+      const [lat, lng] = pair.trim().split(' ').map(Number)
       return [lat, lng]
     })
     return {
@@ -122,18 +122,14 @@ function createLayer (apiData) {
     },
     onEachFeature: (feature, layer) => {
       const nom = feature.properties.nom || 'Feature'
-      const tipus = feature.properties.nomgeom || 'Desconegut'
-      const coords = feature.geometry.coordinates
       const inici = feature.properties.Inici.slice(0, 10).split('-').reverse().join('/') || 'Desconegut'
       const final = feature.properties.Final.slice(0, 10).split('-').reverse().join('/') || 'Desconegut'
 
       const popupComponent = `
         <div>
           <strong>${nom}</strong><br>
-          Tipus: ${tipus}</br>
           Inici: ${inici}<br>
           Final: ${final}<br>
-          Coordenades: ${Array.isArray(coords[0]) ? 'Múltiples punts' : coords.join(', ')}
         </div>
       `
 
@@ -145,7 +141,7 @@ function createLayer (apiData) {
 }
 
 export function getResponse (context, { url, date1, date2 }) {
-  url += '&apiKey=' + context.state.token + '&desde=' + date1 + '&fins=' + date2
+  url += '?apiKey=' + context.state.token + '&desde=' + date1 + '&fins=' + date2
   return axios.get(url)
 }
 
@@ -160,9 +156,12 @@ export function addOcupacio (context, { url, date1, date2 }) {
       this.dispatch('map/addOverlay', {
         layer,
         layerType: 'geojson',
-        name: 'Ocupacions',
+        name: 'ocupacio',
         id: new GiscubeRef(idFromString('ocupació'))
       })
+      if (layer.getBounds && layer.getBounds().isValid()) {
+        context.rootState.map.mapObject.fitBounds(layer.getBounds())
+      }
     })
     .catch(e => {
       console.log('Error al afegir ocupació:', e)

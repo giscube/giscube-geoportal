@@ -10,10 +10,6 @@
           Selecciona el rang de dates que vols consultar i prem "Actualitza" per veure els talls al mapa.
           Per consultar només un dia fes click dues vegades a la mateixa data.
         </p>
-        <div style="padding: 12px; padding-top: 15px;!important padding-bottom: -5px;!important border-radius: 25px;">
-        </div>
-        <div v-show="isAuthenticated" class="q-pb-sm">
-        </div>
       </div>
       <div>
         <q-date v-model="selectedDates" range mask="DD/MM/YYYY"/>
@@ -70,10 +66,11 @@ export default {
   },
   methods: {
     updateOcupacio () {
+      this.$store.dispatch('map/removeOverlay', this.$store.state.map.layers.overlays.find(overlay => overlay.name === 'ocupacio'))
       const date1 = this.transformDate(this.selectedDates.from || this.selectedDates)
       const date2 = this.transformDate(this.selectedDates.to || this.selectedDates)
       this.$store.dispatch('ocupacio/addOcupacio', {
-        url: 'https://aupacaux.apps.santcugat.cat/api/GetOvpGeomByDates?geoque=LINES',
+        url: 'https://aupacaux.apps.santcugat.cat/api/GetOvpGeomByDates',
         date1,
         date2
       })
