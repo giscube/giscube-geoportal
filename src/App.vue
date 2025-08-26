@@ -11,6 +11,8 @@ require('./css/print.styl')
 import axios from 'axios'
 import BooleanDialog from 'components/BooleanDialog'
 
+import { registerAccessLog } from 'src/lib/utils'
+
 function preventExit (e, str) {
   e.preventDefault()
   e.returnValue = str || ''
@@ -79,6 +81,17 @@ export default {
     },
     queueRunning () {
       return this.queues.some(queue => queue.running)
+    },
+    isAuthenticated () {
+      return this.$store.state.auth.username
+    }
+  },
+  watch: {
+    isAuthenticated: {
+      handler () {
+        registerAccessLog(this)
+      },
+      immediate: true
     }
   },
   methods: {

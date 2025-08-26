@@ -1,3 +1,4 @@
+import axios from 'axios'
 import isEqualWith from 'lodash/isEqualWith.js'
 
 export function noop () {
@@ -194,4 +195,28 @@ export function isPart (object, part) {
       return objectValue === value
     }
   })
+}
+
+export function registerAccessLog (self) {
+  let apiUrl = self.$config.accesslogs?.url
+  if (!apiUrl) {
+    return
+  }
+  var config = {
+    timeout: 10000,
+    headers: {
+      'Content-type': 'application/x-www-form-urlencoded'
+    },
+    params: {
+      username: self.$store.state.auth.username
+    }
+  }
+
+  axios.get(apiUrl, config)
+    .then(() => {
+      console.log('Access log registered')
+    })
+    .catch(error => {
+      console.log(error)
+    })
 }

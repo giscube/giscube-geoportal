@@ -36,6 +36,9 @@ export default base.merge({
   registers: {
     url: 'http://localhost:8000/users_tracking/api/v1/'
   },
+  accesslogs: {
+    url: 'http://localhost:8000/api/v2/giscube/new_accesslog'
+  },
   locale: {
     main: 'ca',
     fallback: 'en-us'
