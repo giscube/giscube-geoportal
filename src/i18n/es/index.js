@@ -165,6 +165,8 @@ export default {
       selectByPolygon: 'Polígono',
       selectNews: 'Seleccionar los nuevos elementos creados',
       selection: 'Selección',
+      showAdditionalLayer: 'Mostrar capa addicional',
+      hideAdditionalLayer: 'Ocultar capa addicional',
       someDeleted: 'Algunos de los elementos seleccionados están marcados para ser eliminados.',
       stopDrawing: 'Dejar de dibujar elementos',
       thisDeleted: 'Este elemento está marcado para ser eliminado.',
