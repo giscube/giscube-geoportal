@@ -163,6 +163,8 @@ export default {
       selectByPolygon: 'Polygon',
       selectNews: 'Select created elements',
       selection: 'Selection',
+      showAdditionalLayer: 'Show additional layer',
+      hideAdditionalLayer: 'Hide additional layer',
       someDeleted: 'Some of the selected elements have been marked as deleted.',
       stopDrawing: 'Stop drawing elements',
       thisDeleted: 'This element has been marked as deleted.',

@@ -11,6 +11,10 @@
     </div>
     <div class="row items-center space-items-sm" v-if="table && table.info">
       <div class="space">
+        <additional-layer
+          v-if="table.info.additionalLayer"
+          :result="table.info.additionalLayer"
+        />
         <draw-controls
           v-if="drawing"
         />
@@ -47,6 +51,7 @@ import { mapState } from 'vuex'
 import { isCleanEqual } from 'src/lib/utils'
 import { Table } from 'src/lib/table'
 
+import AdditionalLayer from './AdditionalLayer'
 import TranslationMixin from './TranslationMixin'
 import DataEditControls from './DataEditControls'
 import DataFilter from './DataFilter'
@@ -61,6 +66,7 @@ import ZoomControls from './ZoomControls'
 export default {
   mixins: [TranslationMixin],
   components: {
+    AdditionalLayer,
     DataEditControls,
     DataFilter,
     DataTable,
