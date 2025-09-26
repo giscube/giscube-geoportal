@@ -94,6 +94,12 @@
             :label="t('selectLayer')"
           />
         </div>
+        <slot
+          name="extra-options"
+          :extraOptions="extraOptions"
+          :setFlag="setFlag"
+        >
+        </slot>
       </div>
     </div>
   </div>
@@ -130,6 +136,7 @@ export default {
       catalogOptions: [],
       message: '',
       options: {},
+      extraOptions: {},
       urlBase
     }
   },
@@ -154,6 +161,7 @@ export default {
       // a return ''
       return ShareQuery.toQuery({
         options: this.options,
+        extraOptions: this.extraOptions,
         basemap: this.$store.getters['map/baseMapIndex'],
         ...this.mapState,
         message: this.message,
@@ -334,6 +342,10 @@ export default {
         }
         this.$store.dispatch('map/reorderOverlay')
       }
+      this.applyExtraQuery(query, map)
+    },
+    applyExtraQuery () {
+      return null
     },
     addLayers (geom, clusterMarkers) {
       let layers = this.sharedLayer

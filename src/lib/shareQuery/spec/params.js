@@ -63,6 +63,12 @@ params.options = params.o = {
   multi: behaviors.merges
 }
 
+params.extraOptions = params.extra = {
+  key: 'extra',
+  type: types.flags([]),
+  multi: behaviors.merges
+}
+
 params.layout = params.la = {
   key: 'la',
   type: types.string,
