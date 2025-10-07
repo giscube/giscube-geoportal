@@ -94,12 +94,6 @@
             :label="t('selectLayer')"
           />
         </div>
-        <slot
-          name="extra-options"
-          :extraOptions="extraOptions"
-          :setFlag="setFlag"
-        >
-        </slot>
       </div>
     </div>
   </div>
@@ -136,7 +130,7 @@ export default {
       catalogOptions: [],
       message: '',
       options: {},
-      extraOptions: {},
+      extraOptions: [],
       urlBase
     }
   },
@@ -196,13 +190,15 @@ export default {
 
       if (Object.keys(to.query).length > 0) {
         vm.$store.commit('layout/isCustomView', true)
-        vm.applyQuery(to.query, 'home')
+        const route = vm.getRouteParams(to.query)
+        vm.applyQuery(to.query, route.routeName, route.params)
       }
     })
   },
   beforeRouteUpdate (to, from, next) {
     if (Object.keys(to.query).length > 0) {
-      this.applyQuery(to.query)
+      const route = this.getRouteParams(to.query)
+      this.applyQuery(to.query, route.routeName, route.params)
     }
     next()
   },
@@ -222,7 +218,7 @@ export default {
         }
       })
     },
-    applyQuery (query, redirectTo) {
+    applyQuery (query, redirectTo, params = {}) {
       this.$nextTick(async () => {
         this.message = ShareQuery.extract(query, 'm')
 
@@ -260,12 +256,12 @@ export default {
         }
 
         if (giscubeId) {
-          this.$router.replace({ name: 'search', query: { giscube_id: giscubeId } })
+          this.$router.replace({ name: 'search', query: { giscube_id: giscubeId }, params })
           return
         }
 
         if (redirectTo) {
-          this.$router.replace({ name: redirectTo })
+          this.$router.replace({ name: redirectTo, params })
         }
       })
     },
@@ -342,10 +338,6 @@ export default {
         }
         this.$store.dispatch('map/reorderOverlay')
       }
-      this.applyExtraQuery(query, map)
-    },
-    applyExtraQuery () {
-      return null
     },
     addLayers (geom, clusterMarkers) {
       let layers = this.sharedLayer
@@ -361,6 +353,9 @@ export default {
       if (clusterMarkers) {
         this.sharedLayer.addLayer(layers)
       }
+    },
+    getRouteParams (query) {
+      return { routeName: 'home', params: {} }
     },
     makePopup ({ map, layer }) {
       const Popup = Vue.extend(BasicPopup)

@@ -8,6 +8,7 @@ import CatalogPanel from 'components/CatalogPanel'
 import CatalogTreePanel from 'components/CatalogTreePanel'
 import CatalogResult from 'components/CatalogResult'
 import CoordsPanel from 'components/CoordsPanel'
+import CopyToClipboard from 'components/CopyToClipboard'
 import DataPanel from 'components/data-layer/DataPanel'
 import DataRow from 'components/DataRow'
 import DataRowToggle from 'components/DataRowToggle'
@@ -50,6 +51,7 @@ export {
   CatalogTreePanel,
   CatalogResult,
   CoordsPanel,
+  CopyToClipboard,
   DataPanel,
   DataRow,
   DataRowToggle,
