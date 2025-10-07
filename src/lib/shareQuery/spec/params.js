@@ -65,7 +65,7 @@ params.options = params.o = {
 
 params.extraOptions = params.extra = {
   key: 'extra',
-  type: types.flags([]),
+  type: types.list(types.string, ','),
   multi: behaviors.merges
 }
 
