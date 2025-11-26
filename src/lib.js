@@ -16,6 +16,7 @@ import Sidebar from 'components/Sidebar'
 import DrawPanel from 'components/DrawPanel'
 import FileSelect from 'components/FileSelect'
 import IncidencePanel from 'components/IncidencePanel'
+import AggregationTable from 'components/statistics/AggregationTable'
 import PaletteSelect from 'components/statistics/PaletteSelect'
 import PolygonTooltip from 'components/statistics/PolygonTooltip'
 import PlacePanel from 'components/PlacePanel'
@@ -63,6 +64,7 @@ export {
   IncidencePanel,
   PaletteSelect,
   PolygonTooltip,
+  AggregationTable,
   PlacePanel,
   PlacePanelStrategy,
   SearchBar,
