@@ -243,7 +243,7 @@ export function setValueLabel ({ commit, dispatch }, value) {
 export function calculateColors ({ state, commit }) {
   const colorMap = new Map(DEFAULT_COLOR_MAP)
 
-  if (!state.result) {
+  if (!state.by) {
     commit('colorMap', colorMap)
     return
   }
@@ -260,10 +260,15 @@ export function calculateColors ({ state, commit }) {
   let min = Infinity
   let max = -Infinity
 
-  for (let layer of state.by) {
-    const v = state.result.get(layer).count
-    min = Math.min(min, v)
-    max = Math.max(max, v)
+  if (state.result) {
+    for (let layer of state.by) {
+      const v = state.result.get(layer).count
+      min = Math.min(min, v)
+      max = Math.max(max, v)
+    }
+  } else {
+    min = 0
+    max = 0
   }
 
   const diff = max - min
@@ -273,7 +278,7 @@ export function calculateColors ({ state, commit }) {
   for (let layer of state.by) {
     let index
     if (diff > 0) {
-      const p = state.result.get(layer).count
+      const p = state.result ? state.result.get(layer).count : 0
       const t = n * (p - min) / diff
       index = Math.min(isNaN(t) ? 0 : Math.floor(t), n - 1)
     } else {
