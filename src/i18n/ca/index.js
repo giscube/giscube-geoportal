@@ -270,6 +270,7 @@ export default {
       message: '@:names.message',
       options: '@:names.options',
       openMessage: 'Obrir @:names.message',
+      showTooltips: 'Mostrar etiquetes',
       markerAtCenter: 'Marcador al centre',
       simpleView: 'Vista simple',
       hideLayersControl: 'Amaga el control de capes',
