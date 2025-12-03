@@ -22,6 +22,12 @@
         />
         <br>
         <q-toggle
+          :label="t('showTooltips')"
+          :value="!!options.showt"
+          @input="setFlag(options, 'showt', $event)"
+        />
+        <br>
+        <q-toggle
           :label="t('markerAtCenter')"
           :value="!!options.mc"
           @input="setFlag(options, 'mc', $event)"
@@ -335,6 +341,11 @@ export default {
         )
         for (let k of Object.keys(overlays).reverse()) {
           this.$root.$store.dispatch('map/addOverlay', overlays[k])
+          if (this.options.showt) {
+            overlays[k].layer.getLayers().forEach((l) => {
+              this.showTooltip(l)
+            })
+          }
         }
         this.$store.dispatch('map/reorderOverlay')
       }
@@ -349,9 +360,26 @@ export default {
           layer.bindPopup(layer.sharedMessage)
         }
         layers.addLayer(layer)
+        if (this.options.showt) {
+          this.openPopup(layer)
+        }
       })
       if (clusterMarkers) {
         this.sharedLayer.addLayer(layers)
+      }
+    },
+    openPopup (layer) {
+      if (layer._popup) {
+        layer._popup.options.autoClose = false
+        layer.openPopup()
+      }
+    },
+    showTooltip (layer) {
+      if (layer.getTooltip()) {
+        var tooltip = layer.getTooltip()
+        layer.unbindTooltip().bindTooltip(tooltip, {
+          permanent: true
+        })
       }
     },
     getRouteParams (query) {
