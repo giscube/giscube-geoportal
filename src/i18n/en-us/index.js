@@ -269,6 +269,7 @@ export default {
       options: '@:names.options',
       openMessage: 'Open @:names.message',
       showTooltips: 'Show tooltips',
+      shareSeach: 'Share search',
       markerAtCenter: 'Marker at the center',
       simpleView: 'Simple view',
       hideLayersControl: 'Hide layers control',

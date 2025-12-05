@@ -93,5 +93,11 @@ params.zoom = params.z = {
   multi: behaviors.overrides
 }
 
+params.place = params.p = {
+  key: 'p',
+  type: types.string,
+  multi: behaviors.overrides
+}
+
 // export values
 export { params as default, params }
