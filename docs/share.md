@@ -22,6 +22,7 @@ The link must follow this format:
      * [[o] Options](#o-options)
      * [[z] Zoom level](#z-zoom-level)
      * [[s] Search points](#s-search)
+     * [[p] Share Search](#p-place)
   * [Types](#types)
      * [BaseMap](#basemap)
      * [Coordinates](#coordinates)
@@ -45,6 +46,9 @@ Which layer is being used as a base layer.
  - Type: [BaseMap](#basemap)
  - Multiple: overrides
  - Example: `b=cEE1`
+
+### [p] Share Search
+Share the last search.
 
 ### [c] Center
 Point to center the map to.

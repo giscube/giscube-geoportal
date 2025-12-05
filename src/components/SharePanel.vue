@@ -28,6 +28,12 @@
         />
         <br>
         <q-toggle
+          :label="t('shareSeach')"
+          :value="!!sharePlace"
+          @input="sharePlace = $event"
+        />
+        <br>
+        <q-toggle
           :label="t('markerAtCenter')"
           :value="!!options.mc"
           @input="setFlag(options, 'mc', $event)"
@@ -137,7 +143,9 @@ export default {
       message: '',
       options: {},
       extraOptions: [],
-      urlBase
+      urlBase,
+      sharePlace: false,
+      lastPlace: null
     }
   },
   computed: {
@@ -170,6 +178,7 @@ export default {
         closeSidebar: this.closeSidebar,
         clusterMarkers: this.clusterMarkers,
         hideLayersControl: this.hideLayersControl,
+        place: this.sharePlace ? this.lastPlace : '',
         giscube_id: this.layerId,
         geom: [
           ...this.sharedLayer.getLayers(),
@@ -193,6 +202,9 @@ export default {
     next(vm => {
       vm.$store.dispatch('catalogTree/checkCategories')
       vm.$store.commit('setCurrentTool', 'share')
+      if (from.name === 'place' && from.params.q) {
+        vm.lastPlace = from.params.q
+      }
 
       if (Object.keys(to.query).length > 0) {
         vm.$store.commit('layout/isCustomView', true)
@@ -268,6 +280,12 @@ export default {
 
         if (redirectTo) {
           this.$router.replace({ name: redirectTo, params })
+        }
+
+        const sharePlace = ShareQuery.extract(query, 'p')
+
+        if (sharePlace) {
+          this.$router.push({ name: 'place', params: { q: sharePlace } })
         }
       })
     },
