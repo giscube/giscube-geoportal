@@ -68,6 +68,7 @@ export function logout (context) {
       .then(_ => {
         context.commit('setAccessToken', null)
         context.commit('setUsername', null)
+        context.commit('setProfile', null)
         context.dispatch('saveState')
         context.dispatch('catalogTree/checkCategories', true, { root: true })
         resolve()
