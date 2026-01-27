@@ -97,6 +97,7 @@ export default {
       changePassword: 'Canviar contrasenya',
       closeWindow: 'Tancar finestra',
       invalidCredentials: 'L\'usuari i/o la contrasenya no són vàlids',
+      lastLogin: 'Última connexió: ',
       logIn: 'Iniciar sessió',
       loginCodeError: 'L\'inici de sessió ha fallat',
       loginCodeOk: 'Inici de sessió correcte, podeu tancar la finestra.',

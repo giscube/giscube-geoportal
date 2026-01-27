@@ -47,7 +47,8 @@ export default base.merge({
     type: 'password',
     client_id: 'RQLuYjgbU5pwM9WNdIiFtq2ngE7x4wPJoH7bk70Q',
     token: 'http://localhost:8000/o/token/',
-    revokeToken: 'http://localhost:8000/o/revoke-token/'
+    revokeToken: 'http://localhost:8000/o/revoke-token/',
+    profile: 'http://localhost:8000/geoportal/api/v1/profile/'
   },
   searches: [
     {

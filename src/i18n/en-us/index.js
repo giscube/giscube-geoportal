@@ -97,6 +97,7 @@ export default {
       changePassword: 'Change password',
       closeWindow: 'Close window',
       invalidCredentials: 'Invalid credentials',
+      lastLogin: 'Last login: ',
       logIn: 'Log in',
       loginCodeError: 'Login failed',
       loginCodeOk: 'Login succeeded, you can close this window',

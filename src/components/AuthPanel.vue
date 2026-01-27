@@ -84,6 +84,8 @@
         <div v-else class="valid-login">
           {{ t('authenticatedAs') }} <span class="username">{{ $store.state.auth.username }}</span>
 
+          <p> {{ t('lastLogin') }} <span class="username">{{ lastLogin }}</span> </p>
+
           <div class="buttons q-mt-md">
             <q-btn
               v-if="adminUrl && isStaff"
@@ -157,6 +159,9 @@ export default {
         return this.$config.oauth.type
       }
       return ''
+    },
+    lastLogin () {
+      return this.$store.state.auth.lastLogin
     }
   },
   beforeRouteLeave (to, from, next) {
