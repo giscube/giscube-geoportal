@@ -97,6 +97,7 @@ export default {
       changePassword: 'Cambiar contraseña',
       closeWindow: 'Cerrar ventana',
       invalidCredentials: 'El usuario y/o la contraseña no son válidos',
+      lastLogin: 'Última connexión: ',
       logIn: 'Iniciar sesión',
       loginCodeError: 'El inicio de sesión ha fallado',
       loginCodeOk: 'Inicio de sesión correcto, podéis cerrar la ventana',

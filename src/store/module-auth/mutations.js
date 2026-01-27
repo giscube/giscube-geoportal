@@ -14,3 +14,7 @@ export function setUsername (state, value) {
 export function setProfile (state, value) {
   state.profile = value
 }
+
+export function setLastLogin (state, value) {
+  state.lastLogin = value
+}

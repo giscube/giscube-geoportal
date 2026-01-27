@@ -68,6 +68,7 @@ export function logout (context) {
       .then(_ => {
         context.commit('setAccessToken', null)
         context.commit('setUsername', null)
+        context.commit('setLastLogin', null)
         context.commit('setProfile', null)
         context.dispatch('saveState')
         context.dispatch('catalogTree/checkCategories', true, { root: true })
@@ -126,6 +127,7 @@ export function updateUserInfo (context) {
     .then(response => {
       context.commit('setUsername', response.data.username)
       context.commit('setProfile', response.data)
+      context.commit('setLastLogin', response.data.last_login)
     })
     .catch(error => {
       if (error.request && error.request.status >= 300 && (error.request.status < 400 || error.request.status === 401 || error.request.status === 403)) {
