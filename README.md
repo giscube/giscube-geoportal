@@ -39,3 +39,9 @@ CONFIG=test quasar test --e2e cypress
 CONFIG=test quasar dev           # in one tab
 ./node_modules/.bin/cypress open # in another tab (both running at the same time)
 ```
+
+## Docker commands
+
+docker-compose -f docker-compose-dev.yml up --build
+
+docker-compose -f docker-compose-build.yml up --build
