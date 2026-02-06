@@ -1,4 +1,5 @@
 import proj4 from 'proj4'
+import { saveAs } from 'file-saver'
 
 export function fileToText (file) {
   return new Promise((resolve, reject) => {
@@ -216,4 +217,32 @@ export function wrapCsvValue (val, formatFn) {
   // .split('\r').join('\\r')
 
   return `"${formatted}"`
+}
+
+export function convertFeatureToWKT (data) {
+  const txtWkt = []
+  for (let i = 0; i < data.features.length; i++) {
+    const wktFeature = convertFeatureToWKT(data.features[i])
+    wkt.push(wktFeature)
+  }
+  return wkt.join('\n')
+}
+
+export function downloadWKT (txtWkt) {
+  const blob = new Blob([txtWkt], { type: 'application/txt;charset=utf-8' })
+  saveAs(blob, 'drawn-in-geoportal.txt')
+}
+
+function convertFeatureToWKT (feature) {
+  const type = feature.geometry.type.toUpperCase()
+  let coordinatesString = JSON.stringify(feature.geometry.coordinates)
+  coordinatesString = coordinatesString.replaceAll('[', '(').replaceAll(']', ')')
+  if (type === 'POINT') {
+    coordinatesString = coordinatesString.replaceAll(',', ' ')
+  } else if (type === 'LINESTRING') {
+    coordinatesString = coordinatesString.replaceAll('((', ' (').replaceAll('))', ') ').replaceAll(',', ' ').replaceAll(') (', ',')
+  } else if (type === 'POLYGON') {
+    coordinatesString = coordinatesString.replaceAll('(((', ' ((').replaceAll(')))', ')) ').replaceAll(',', ' ').replaceAll(') (', ',')
+  }
+  return `${type} ${coordinatesString}`
 }
