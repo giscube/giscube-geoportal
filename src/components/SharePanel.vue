@@ -22,6 +22,18 @@
         />
         <br>
         <q-toggle
+          :label="t('showTooltips')"
+          :value="!!options.showt"
+          @input="setFlag(options, 'showt', $event)"
+        />
+        <br>
+        <q-toggle
+          :label="t('shareSeach')"
+          :value="!!sharePlace"
+          @input="sharePlace = $event"
+        />
+        <br>
+        <q-toggle
           :label="t('markerAtCenter')"
           :value="!!options.mc"
           @input="setFlag(options, 'mc', $event)"
@@ -131,7 +143,9 @@ export default {
       message: '',
       options: {},
       extraOptions: [],
-      urlBase
+      urlBase,
+      sharePlace: false,
+      lastPlace: null
     }
   },
   computed: {
@@ -164,6 +178,7 @@ export default {
         closeSidebar: this.closeSidebar,
         clusterMarkers: this.clusterMarkers,
         hideLayersControl: this.hideLayersControl,
+        place: this.sharePlace ? this.lastPlace : '',
         giscube_id: this.layerId,
         geom: [
           ...this.sharedLayer.getLayers(),
@@ -187,6 +202,9 @@ export default {
     next(vm => {
       vm.$store.dispatch('catalogTree/checkCategories')
       vm.$store.commit('setCurrentTool', 'share')
+      if (from.name === 'place' && from.params.q) {
+        vm.lastPlace = from.params.q
+      }
 
       if (Object.keys(to.query).length > 0) {
         vm.$store.commit('layout/isCustomView', true)
@@ -263,6 +281,12 @@ export default {
         if (redirectTo) {
           this.$router.replace({ name: redirectTo, params })
         }
+
+        const sharePlace = ShareQuery.extract(query, 'p')
+
+        if (sharePlace) {
+          this.$router.push({ name: 'place', params: { q: sharePlace } })
+        }
       })
     },
     async applyMapQuery (query, map) {
@@ -335,6 +359,11 @@ export default {
         )
         for (let k of Object.keys(overlays).reverse()) {
           this.$root.$store.dispatch('map/addOverlay', overlays[k])
+          if (this.options.showt) {
+            overlays[k].layer.getLayers().forEach((l) => {
+              this.showTooltip(l)
+            })
+          }
         }
         this.$store.dispatch('map/reorderOverlay')
       }
@@ -349,9 +378,26 @@ export default {
           layer.bindPopup(layer.sharedMessage)
         }
         layers.addLayer(layer)
+        if (this.options.showt) {
+          this.openPopup(layer)
+        }
       })
       if (clusterMarkers) {
         this.sharedLayer.addLayer(layers)
+      }
+    },
+    openPopup (layer) {
+      if (layer._popup) {
+        layer._popup.options.autoClose = false
+        layer.openPopup()
+      }
+    },
+    showTooltip (layer) {
+      if (layer.getTooltip()) {
+        var tooltip = layer.getTooltip()
+        layer.unbindTooltip().bindTooltip(tooltip, {
+          permanent: true
+        })
       }
     },
     getRouteParams (query) {

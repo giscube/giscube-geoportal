@@ -22,6 +22,7 @@ The link must follow this format:
      * [[o] Options](#o-options)
      * [[z] Zoom level](#z-zoom-level)
      * [[s] Search points](#s-search)
+     * [[p] Share Search](#p-place)
   * [Types](#types)
      * [BaseMap](#basemap)
      * [Coordinates](#coordinates)
@@ -45,6 +46,9 @@ Which layer is being used as a base layer.
  - Type: [BaseMap](#basemap)
  - Multiple: overrides
  - Example: `b=cEE1`
+
+### [p] Share Search
+Share the last search.
 
 ### [c] Center
 Point to center the map to.
@@ -93,6 +97,7 @@ Option flags.
 
 List of flags:
   - `om` (open message): If the message should be automatically opened
+  - `showt`(show tooltips): Show tooltips of the markers on the map
   - `mc` (marker at the center): If a marker should be added at the center of the shared view.
   - `ctrl` (controlled map): The map can only be zoomed in when you click ctrl or command
   - `zd` (zoom drawing layers): Fit zoom to drawn elements

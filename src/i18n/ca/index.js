@@ -273,6 +273,8 @@ export default {
       message: '@:names.message',
       options: '@:names.options',
       openMessage: 'Obrir @:names.message',
+      showTooltips: 'Mostrar etiquetes',
+      shareSeach: 'Compartir la cerca',
       markerAtCenter: 'Marcador al centre',
       simpleView: 'Vista simple',
       hideLayersControl: 'Amaga el control de capes',
