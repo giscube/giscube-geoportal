@@ -64,6 +64,12 @@
                   <q-item-label>{{ $t('actions.download') | capitalize }} DXF</q-item-label>
                 </q-item-section>
               </q-item>
+
+              <q-item clickable v-close-popup @click="download('wkt')">
+                <q-item-section>
+                  <q-item-label>{{ $t('actions.download') | capitalize }} WKT</q-item-label>
+                </q-item-section>
+              </q-item>
             </q-list>
           </q-btn-dropdown>
           <q-btn
@@ -136,7 +142,7 @@ import length from '@turf/length'
 import area from '@turf/area'
 import L from 'src/lib/leaflet'
 import { createLayer } from 'src/lib/geomUtils'
-import { convertGeoJsonToDXF, downloadDXF } from 'src/lib/fileutils'
+import { convertGeoJsonToDXF, downloadDXF, convertFeatureToWKT, downloadWKT } from 'src/lib/fileutils'
 import { onToolClick } from '../lib/toolUtils'
 import geoportalApi from 'src/api/geoportal'
 
@@ -390,6 +396,10 @@ export default {
         const data = { features }
         const dataDXF = convertGeoJsonToDXF(data)
         downloadDXF(dataDXF)
+      } else if (fileType === 'wkt') {
+        const data = { features }
+        const txtWkt = convertDataToWKT(data)
+        downloadWKT(txtWkt)
       }
     },
     goToShare () {
