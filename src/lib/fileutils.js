@@ -56,6 +56,10 @@ function _convertGeometryToDXF (geometry, epsg) {
   // Geometry type
   if (geometry.type === 'Point') {
     output += _convertPoint(geometry.coordinates, epsg)
+  } else if (geometry.type === 'MultiPoint') {
+    for (let i = 0; i < geometry.coordinates.length; i++) {
+      output += _convertPoint(geometry.coordinates[i], epsg)
+    }
   } else {
     output += _convertTraversable(geometry.type, geometry.coordinates, epsg)
   }
