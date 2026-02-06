@@ -338,7 +338,8 @@ export default {
               const dataBlob = new Blob([JSON.stringify(data)], { type: 'application/json' })
               saveAs(dataBlob, 'result.geojson')
             } else if (fileType === 'dxf') {
-              const dataDXF = convertGeoJsonToDXF(data)
+              const epsg = this.$config.epsgs.length > 1 ? this.$config.epsgs[1] : this.$config.epsgs[0]
+              const dataDXF = convertGeoJsonToDXF(data, epsg)
               downloadDXF(dataDXF)
             }
           })
