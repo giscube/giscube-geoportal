@@ -269,7 +269,7 @@ export default class Field {
 
   compareFilter (data, filter) {
     let v = this.getValue(data)
-    if (typeof val === 'string') {
+    if (typeof v === 'string') {
       v = v.toLowerCase()
     }
     return this.compareValues(v, filter)
@@ -295,8 +295,10 @@ export default class Field {
         return this.getNumberValue(v) <= val
       case 'CONTAINS':
         return v && v.includes(val)
-      case 'EXACT': return v === val
-      case '=': return v === val
+      case 'EXACT':
+        return this.getNumberValue(v) === this.getNumberValue(val)
+      case '=':
+        return this.getNumberValue(v) === this.getNumberValue(val)
       case 'LIKE':
         if (val.startsWith('%') && val.endsWith('%')) {
           return v && v.includes(val.slice(1, -1))
