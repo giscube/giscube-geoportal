@@ -61,6 +61,11 @@ export function setLayout (state, value) {
     state.sidebarVisible = false
     state.sidebarOpen = false
     state.toolsControlVisible = false
+  } else if (value === 'hidetoolb') {
+    state.headerVisible = false
+    state.sidebarVisible = true
+    state.sidebarOpen = true
+    state.toolsControlVisible = false
   } else {
     state.headerVisible = true
     state.sidebarVisible = true

@@ -46,6 +46,12 @@
         />
         <br>
         <q-toggle
+          :label="t('hideToolbar')"
+          :value="layout === 'hidetoolb'"
+           @input="layout = $event ? 'hidetoolb' : null"
+        />
+        <br>
+        <q-toggle
           :label="t('controlledMap')"
           :value="!!options.ctrl"
            @input="setFlag(options, 'ctrl', $event)"
@@ -106,6 +112,26 @@
             :label="t('selectLayer')"
           />
         </div>
+        <div class="row">
+          <q-toggle
+            :label="t('openRoutePanel')"
+            v-model="goToRoute"
+          />
+          <q-select
+            outlined dense
+            :class="goToRoute ? 'q-ml-sm bg-white' : 'q-ml-sm'"
+            style="min-width: 250px"
+            :disable="!goToRoute"
+            v-model="route"
+            use-input
+            input-debounce="0"
+            :options="routeOptions"
+            @filter="filterRouteOption"
+            emit-value
+            map-options
+            :label="t('selectRoute')"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -137,9 +163,12 @@ export default {
       hideLayersControl: false,
       catalogState: false,
       goToLayerPanel: false,
+      goToRoute: false,
       layerId: null,
+      route: null,
       layerIdOptions: [],
       catalogOptions: [],
+      routeOptions: [],
       message: '',
       options: {},
       extraOptions: [],
@@ -180,6 +209,7 @@ export default {
         hideLayersControl: this.hideLayersControl,
         place: this.sharePlace ? this.lastPlace : '',
         giscube_id: this.layerId,
+        route: this.route,
         geom: [
           ...this.sharedLayer.getLayers(),
           ...(this.$store.getters['map/drawnLayers']() || [])
@@ -257,13 +287,14 @@ export default {
 
         const map = this.$store.state.map.mapObject
         const giscubeId = ShareQuery.extract(query, 'id')
+        const route = ShareQuery.extract(query, 'r')
         if (!map) {
           // Watch map until is set and then apply map-related queries
           this.waitFor('$store.state.map.mapObject', async newMap => {
-            giscubeId ? await this.applyMapQuery(query, newMap) : this.applyMapQuery(query, newMap)
+            giscubeId || route ? await this.applyMapQuery(query, newMap) : this.applyMapQuery(query, newMap)
           })
         } else {
-          giscubeId ? await this.applyMapQuery(query, map) : this.applyMapQuery(query, map)
+          giscubeId || route ? await this.applyMapQuery(query, map) : this.applyMapQuery(query, map)
         }
 
         const catalogState = ShareQuery.extract(query, 'ca')
@@ -275,6 +306,11 @@ export default {
 
         if (giscubeId) {
           this.$router.replace({ name: 'search', query: { giscube_id: giscubeId }, params })
+          return
+        }
+
+        if (route) {
+          this.$router.replace({ name: route })
           return
         }
 
@@ -446,6 +482,17 @@ export default {
         this.layerIdOptions = this.catalogOptions.filter(v => v.label.toLowerCase().indexOf(needle) > -1)
       })
     },
+    filterRouteOption (val, update) {
+      if (!val) {
+        update(() => {
+          this.getRouteOptions()
+        })
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        this.routeOptions = this.routeOptions.filter(v => v.label.toLowerCase().indexOf(needle) > -1)
+      })
+    },
     getCatalogLeaves (node, parentRoute) {
       if (!node.header.includes('leaf')) {
         for (let child of node.children) {
@@ -463,6 +510,19 @@ export default {
       for (let root of this.$store.state.catalogTree.catalog) {
         this.getCatalogLeaves(root, root.label)
       }
+    },
+    getRouteOptions () {
+      this.routeOptions = []
+      this.$router.options.routes.forEach(routes => {
+        routes.children.forEach(childRoute => {
+          if (childRoute.name && this.$te('tools.' + childRoute.name + '.headerName')) {
+            this.routeOptions.push({
+              label: this.$t('tools.' + childRoute.name + '.headerName'),
+              value: childRoute.name
+            })
+          }
+        })
+      })
     }
   },
   watch: {
@@ -471,6 +531,13 @@ export default {
         this.getCatalogOptions()
       } else {
         this.layerId = null
+      }
+    },
+    goToRoute (value) {
+      if (value) {
+        this.getRouteOptions()
+      } else {
+        this.route = null
       }
     }
   }

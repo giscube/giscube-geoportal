@@ -277,9 +277,12 @@ export default {
       shareSeach: 'Compartir la cerca',
       markerAtCenter: 'Marcador al centre',
       simpleView: 'Vista simple',
+      hideToolbar: 'Amaga la barra d\'eines',
       hideLayersControl: 'Amaga el control de capes',
       selectLayer: 'Selecciona una capa',
-      openLayerPanel: 'Obrir el panell d\'informació d\'una capa'
+      selectRoute: 'Selecciona una ruta',
+      openLayerPanel: 'Obrir el panell d\'informació d\'una capa',
+      openRoutePanel: 'Obrir visor a una eina'
     },
     statistics: {
       columnCount: 'Recompte',
