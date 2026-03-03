@@ -277,9 +277,12 @@ export default {
       shareSeach: 'Compartir la búsqueda',
       markerAtCenter: 'Marcador en el centro',
       simpleView: 'Vista simple',
+      hideToolbar: 'Esconder la barra de herramientas',
       hideLayersControl: 'Esconde el control de capas',
       selectLayer: 'Selecciona una capa',
-      openLayerPanel: 'Abrir panel de información de una capa'
+      selectRoute: 'Selecciona una ruta',
+      openLayerPanel: 'Abrir panel de información de una capa',
+      openRoutePanel: 'Abrir visor en una herramienta'
     },
     statistics: {
       columnCount: 'Recuento',

@@ -275,9 +275,12 @@ export default {
       shareSeach: 'Share search',
       markerAtCenter: 'Marker at the center',
       simpleView: 'Simple view',
+      hideToolbar: 'Hide ToolBar',
       hideLayersControl: 'Hide layers control',
       selectLayer: 'Select one layer',
-      openLayerPanel: 'Open layer panel'
+      selectRoute: 'Select one route',
+      openLayerPanel: 'Open layer panel',
+      openRoutePanel: 'Open tool'
     },
     statistics: {
       columnCount: 'Count',

@@ -87,6 +87,7 @@ Layout configuration.
 
 List of flags:
   - `simple`: Sidebar hidden and without header (used to embed the geoportal in an iframe in other websites)
+  - `hidetoolb`: Header and tools control hidden
 
 ### [o] Options
 Option flags.

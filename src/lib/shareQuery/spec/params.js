@@ -99,5 +99,11 @@ params.place = params.p = {
   multi: behaviors.overrides
 }
 
+params.route = params.r = {
+  key: 'r',
+  type: types.string,
+  multi: behaviors.overrides
+}
+
 // export values
 export { params as default, params }
