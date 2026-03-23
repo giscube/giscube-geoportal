@@ -252,8 +252,15 @@ export default class Field {
     if (!Array.isArray(listFilter) || listFilter.length === 0) return true
 
     return listFilter.every(filter => {
-      let val = data.from?.feature.properties[filter.field]
-      if (val) {
+      const properties = data.from?.feature.properties || {}
+
+      const key = Object.keys(properties).find(
+        k => k.toLowerCase() === filter.field.toLowerCase()
+      )
+
+      let val = key ? properties[key] : undefined
+
+      if (val !== undefined && val !== null) {
         if (typeof val === 'string') {
           val = val.toLowerCase()
         }
