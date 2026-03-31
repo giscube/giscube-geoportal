@@ -105,5 +105,11 @@ params.route = params.r = {
   multi: behaviors.overrides
 }
 
+params.showFloatingSearchBar = params.sfsb = {
+  key: 'sfsb',
+  type: types.string,
+  multi: behaviors.overrides
+}
+
 // export values
 export { params as default, params }

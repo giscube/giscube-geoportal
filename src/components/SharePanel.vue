@@ -52,6 +52,13 @@
         />
         <br>
         <q-toggle
+          :label="t('showFloatingSearchBar')"
+          :value="showFloatingSearchBar"
+          :disable="layout !=='simple' && layout !== 'hidetoolb'"
+          v-model="showFloatingSearchBar"
+        />
+        <br>
+        <q-toggle
           :label="t('controlledMap')"
           :value="!!options.ctrl"
            @input="setFlag(options, 'ctrl', $event)"
@@ -174,6 +181,7 @@ export default {
       extraOptions: [],
       urlBase,
       sharePlace: false,
+      showFloatingSearchBar: false,
       lastPlace: null
     }
   },
@@ -215,6 +223,7 @@ export default {
           ...(this.$store.getters['map/drawnLayers']() || [])
         ],
         search: this.pinLayers,
+        showFloatingSearchBar: this.showFloatingSearchBar,
         results: this.results
       })
     },
@@ -283,6 +292,11 @@ export default {
         const layersControl = ShareQuery.extract(query, 'hlc')
         if (layersControl === 'true') {
           this.$store.commit('map/hideLayersControl', true)
+        }
+
+        const showFloatingSearchBar = ShareQuery.extract(query, 'sfsb')
+        if (showFloatingSearchBar === 'true') {
+          this.$store.commit('layout/setShowFloatingSearchBar', true)
         }
 
         const map = this.$store.state.map.mapObject
@@ -538,6 +552,11 @@ export default {
         this.getRouteOptions()
       } else {
         this.route = null
+      }
+    },
+    layout (value) {
+      if (value === null) {
+        this.showFloatingSearchBar = false
       }
     }
   }

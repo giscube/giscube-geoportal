@@ -274,6 +274,7 @@ export default {
       options: '@:names.options',
       openMessage: 'Obrir @:names.message',
       showTooltips: 'Mostrar etiquetes',
+      showFloatingSearchBar: 'Mostrar cercador',
       shareSeach: 'Compartir la cerca',
       markerAtCenter: 'Marcador al centre',
       simpleView: 'Vista simple',

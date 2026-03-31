@@ -72,3 +72,7 @@ export function setLayout (state, value) {
     state.toolsControlVisible = true
   }
 }
+
+export function setShowFloatingSearchBar (state, value) {
+  state.showFloatingSearchBar = value
+}

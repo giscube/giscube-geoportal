@@ -273,6 +273,7 @@ export default {
       openMessage: 'Open @:names.message',
       showTooltips: 'Show tooltips',
       shareSeach: 'Share search',
+      showFloatingSearchBar: 'Show search bar',
       markerAtCenter: 'Marker at the center',
       simpleView: 'Simple view',
       hideToolbar: 'Hide ToolBar',

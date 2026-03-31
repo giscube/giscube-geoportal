@@ -12,5 +12,6 @@ export default {
   dialogs: [],
   toolsControlVisible: true,
   mapControlled: false,
-  deactivateClick: false
+  deactivateClick: false,
+  showFloatingSearchBar: false
 }

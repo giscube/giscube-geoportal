@@ -275,6 +275,7 @@ export default {
       openMessage: 'Abrir @:names.message',
       showTooltips: 'Mostrar etiquetas',
       shareSeach: 'Compartir la búsqueda',
+      showFloatingSearchBar: 'Mostrar buscador',
       markerAtCenter: 'Marcador en el centro',
       simpleView: 'Vista simple',
       hideToolbar: 'Esconder la barra de herramientas',
