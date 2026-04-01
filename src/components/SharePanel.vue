@@ -148,6 +148,8 @@
 import { QInput, QSelect, QToggle } from 'quasar'
 import Vue from 'vue'
 import L from 'src/lib/leaflet'
+import length from '@turf/length'
+import area from '@turf/area'
 import ShareQuery from 'src/lib/shareQuery'
 
 import CopyToClipboard from './CopyToClipboard'
@@ -358,10 +360,10 @@ export default {
         this.sharedLayer.addLayer(marker)
       }
       if (g) {
-        this.addLayers(g, clusterMarkers)
+        this.addLayers(g, clusterMarkers, true)
       }
       if (s) {
-        this.addLayers(s, clusterMarkers)
+        this.addLayers(s, clusterMarkers, false)
       }
 
       if (this.message) {
@@ -418,12 +420,15 @@ export default {
         this.$store.dispatch('map/reorderOverlay')
       }
     },
-    addLayers (geom, clusterMarkers) {
+    addLayers (geom, clusterMarkers, measuring = false) {
       let layers = this.sharedLayer
       if (clusterMarkers) {
         layers = L.markerClusterGroup()
       }
       geom.forEach(layer => {
+        if (measuring) {
+          this.addLayerWithMeasures(layer)
+        }
         if (layer.sharedMessage) {
           layer.bindPopup(layer.sharedMessage)
         }
@@ -476,6 +481,76 @@ export default {
       }
 
       return popupContainer
+    },
+    addLayerWithMeasures (layer) {
+      layer.tooltips = []
+      if (layer instanceof L.Polygon) {
+        const areaPolygon = Math.round(area(layer.toGeoJSON()))
+        const position = layer.getBounds().getCenter()
+        const tooltip = this.createTooltip(position, this.$store.state.map.mapObject)
+        this.updateTooltipArea(tooltip, areaPolygon)
+        layer.tooltips.push(tooltip)
+      } else if (layer.getLatLngs && layer.getLatLngs().length > 1) {
+        const latlng = layer.getLatLngs()
+        const distances = this.calcDistanceBetweenPoints(latlng)
+        const points = latlng
+
+        let totalDistance = 0
+        for (let i = 1; i < points.length; i++) {
+          var tooltip = this.createTooltip(points[i], this.$store.state.map.mapObject)
+          totalDistance += distances[i - 1]
+          this.updateTooltipDistance(tooltip, totalDistance, distances[i - 1])
+          layer.tooltips.push(tooltip)
+        }
+      }
+    },
+    calc (path) {
+      const polyline = L.polyline(path)
+
+      const meters = length(polyline.toGeoJSON(), { units: 'kilometers' }) * 1000
+      let sqMeters = null
+
+      return {
+        length: meters,
+        area: sqMeters
+      }
+    },
+    calcDistanceBetweenPoints (geometry) {
+      const distances = []
+      const points = geometry
+      for (let i = 1; i < points.length; i++) {
+        let distance = this.calc([points[i - 1], points[i]]).length
+        distance = Math.floor(distance)
+        distances.push(distance)
+      }
+      return distances
+    },
+    createTooltip (position, map) {
+      const icon = L.divIcon({
+        className: 'leaflet-measure-tooltip',
+        iconAnchor: [-5, -5]
+      })
+      const tooltip = L.marker(position, {
+        icon: icon,
+        clickable: false
+      })
+
+      tooltip.addTo(map)
+      return tooltip
+    },
+    updateTooltipArea (tooltip, sqMeters) {
+      const text = '<div class="leaflet-measure-tooltip-total">' + this.$n(sqMeters) + ' meters<sup>2</sup></div>'
+      tooltip._icon.innerHTML = text
+    },
+    updateTooltipDistance (tooltip, total, difference) {
+      const units = 'metres'
+      let text = '<div class="leaflet-measure-tooltip-total">'
+      text += ' ' + total + ' ' + units + '</div>'
+      if (difference > 0 && total !== difference) {
+        text += '<div class="leaflet-measure-tooltip-difference">(+'
+        text += difference + ' ' + units + ')</div>'
+      }
+      tooltip._icon.innerHTML = text
     },
     setFlag (obj, key, value) {
       if (value) {
