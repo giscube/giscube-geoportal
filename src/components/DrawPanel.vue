@@ -349,7 +349,16 @@ export default {
     removeMeasure (measure) {
       measure.layer.remove()
     },
+    removeTooltips (layer) {
+      if (!layer || !layer.tooltips) {
+        return
+      }
+      for (let i = 0; i < layer.tooltips.length; i++) {
+        layer.tooltips[i].remove()
+      }
+    },
     removeFromShared (layer) {
+      this.removeTooltips(layer)
       this.shared.removeLayer(layer)
       this.updateSharedLayers()
     },
