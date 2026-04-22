@@ -8,8 +8,11 @@ services:
       - "8080:8080"
     volumes:
       - .:/app
-      - /app/node_modules
+      - geoportal-github-quasar1:/app/node_modules
     environment:
       - NODE_ENV=development
       - CONFIG=${CONFIG}
     command: bash -c "quasar dev"
+
+volumes:
+  geoportal-github-quasar1:
