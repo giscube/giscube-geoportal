@@ -411,7 +411,11 @@ export default {
         )
         for (let k of Object.keys(overlays).reverse()) {
           this.$root.$store.dispatch('map/addOverlay', overlays[k])
-          if (this.options.showt) {
+          if (
+            this.options.showt && overlays[k] &&
+            overlays[k].layer &&
+            typeof overlays[k].layer.getLayers === 'function'
+          ) {
             overlays[k].layer.getLayers().forEach((l) => {
               this.showTooltip(l)
             })
