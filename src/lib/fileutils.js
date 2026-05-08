@@ -222,10 +222,10 @@ export function wrapCsvValue (val, formatFn) {
 export function convertFeatureToWKT (data) {
   const txtWkt = []
   for (let i = 0; i < data.features.length; i++) {
-    const wktFeature = convertFeatureToWKT(data.features[i])
-    wkt.push(wktFeature)
+    const wktFeature = convertFeatureToWKTByTypes(data.features[i])
+    txtWkt.push(wktFeature)
   }
-  return wkt.join('\n')
+  return txtWkt.join('\n')
 }
 
 export function downloadWKT (txtWkt) {
@@ -233,7 +233,7 @@ export function downloadWKT (txtWkt) {
   saveAs(blob, 'drawn-in-geoportal.txt')
 }
 
-function convertFeatureToWKT (feature) {
+function convertFeatureToWKTByTypes (feature) {
   const type = feature.geometry.type.toUpperCase()
   let coordinatesString = JSON.stringify(feature.geometry.coordinates)
   coordinatesString = coordinatesString.replaceAll('[', '(').replaceAll(']', ')')

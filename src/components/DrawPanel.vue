@@ -398,7 +398,7 @@ export default {
         downloadDXF(dataDXF)
       } else if (fileType === 'wkt') {
         const data = { features }
-        const txtWkt = convertDataToWKT(data)
+        const txtWkt = convertFeatureToWKT(data)
         downloadWKT(txtWkt)
       }
     },
