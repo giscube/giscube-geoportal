@@ -7,7 +7,10 @@
       <div v-if="subtitle" class="info">
         {{ subtitle }}
       </div>
-      <div v-if="catalog" class="info">
+      <div v-if="categories" class="info">
+        <q-icon :name="$config.tools.catalog.icon" /> {{ categories }}
+      </div>
+      <div v-else-if="catalog" class="info">
         <q-icon :name="$config.tools.catalog.icon" /> {{ catalog }}
       </div>
       <div v-if="address" class="info">
@@ -50,6 +53,18 @@ export default {
     },
     address () {
       return (this.result && this.result.address) || (this.properties && this.properties.address)
+    },
+    categories () {
+      let categories = this.catalog
+      if (this.result && this.result.additional_categories) {
+        this.result.additional_categories.forEach(category => {
+          if (categories) {
+            categories += ' | '
+          }
+          categories += Array.isArray(category) && category.join(' > ')
+        })
+      }
+      return categories
     },
     catalog () {
       return this.result && this.result.catalog && Array.isArray(this.result.catalog) && this.result.catalog.join(' > ')
