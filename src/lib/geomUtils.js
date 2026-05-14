@@ -498,10 +498,14 @@ export function layersBounds (layers) {
   return bounds
 }
 
+export function projectCoords ({ lat, lng }, epsg) {
+  return proj4('EPSG:4326', epsg.code, [lng, lat])
+}
+
 const defaultFormat = ([x, y]) => `${Math.floor(x)}, ${Math.floor(y)}`
 export function formatCoords ({ lat, lng }, epsg) {
   const format = epsg.format ? epsg.format : defaultFormat
-  return format(proj4('EPSG:4326', epsg.code, [lng, lat]))
+  return format(projectCoords({ lat, lng }, epsg))
 }
 
 export function makeReactiveTooltip (Component, componentConfig = {}, tooltipConfig = {}) {
