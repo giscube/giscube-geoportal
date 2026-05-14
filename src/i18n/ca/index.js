@@ -11,6 +11,8 @@ export default {
     clip: 'retalla',
     close: 'tanca',
     copy: 'copia',
+    copyCoordinates: 'Clica per copiar les coordenades',
+    copiedCoordinates: 'Coordenades copiades al portapapers!',
     delete: 'elimina',
     discard: 'descarta',
     explore: 'explora',

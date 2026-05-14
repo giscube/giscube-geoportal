@@ -10,6 +10,8 @@ export default {
     close: 'close',
     cancel: 'cancel',
     copy: 'copy',
+    copyCoordinates: 'Click to copy coordinates',
+    copiedCoordinates: 'Coordintes copied to clipboard!',
     download: 'download',
     delete: 'delete',
     discard: 'discard',
