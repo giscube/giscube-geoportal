@@ -32,7 +32,8 @@ export default class CatalogResult {
       metaOptions: {
         root
       },
-      auth: this.private
+      auth: this.private,
+      legend: this.legend
     }
   }
 

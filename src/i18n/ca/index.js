@@ -70,6 +70,8 @@ export default {
     lat: 'latitud',
     lng: 'longitud',
     legend: 'llegenda',
+    legends: 'llegendes',
+    noVisibleLayers: 'No hi ha capes actives',
     message: 'missatge',
     metadata: 'metadades',
     publicLayer: 'capa pública',

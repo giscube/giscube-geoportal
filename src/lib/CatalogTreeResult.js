@@ -33,7 +33,8 @@ export default class CatalogResult {
         root
       },
       auth: this.data.private,
-      filters: this.filters
+      filters: this.filters,
+      legend: this.data.legend
     }
   }
 

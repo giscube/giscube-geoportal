@@ -240,6 +240,7 @@ export default {
         layerType: this.layerType,
         options: this.layerOptions.options,
         getfeatureinfoSupport,
+        legend: this.result && this.result.legend,
         name
       }
       this.$store.dispatch('map/addOverlay', overlay)
