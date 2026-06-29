@@ -85,7 +85,7 @@ export function setOverlays (context, overlays) {
   context.dispatch('reorderOverlay')
 }
 
-export function addOverlay (context, { id, layer, layerType, name, opacity, options, getfeatureinfoSupport }) {
+export function addOverlay (context, { id, layer, layerType, name, opacity, options, getfeatureinfoSupport, legend }) {
   const overlays = context.state.layers.overlays
   const overlaysGroup = context.state.layers._overlaysGroup
   const popup = options?.popup
@@ -97,6 +97,9 @@ export function addOverlay (context, { id, layer, layerType, name, opacity, opti
   if (existing) {
     if (name) {
       existing.name = name
+    }
+    if (legend !== void 0) {
+      existing.legend = legend
     }
     if (opacity === void 0) {
       opacity = existing.getOpacity()
@@ -118,6 +121,7 @@ export function addOverlay (context, { id, layer, layerType, name, opacity, opti
       layerType,
       options,
       getfeatureinfoSupport,
+      legend,
       popup,
       visible: false,
       setVisible (value) {
@@ -240,7 +244,7 @@ export function enableDoubleClickZoom (context) {
   context.state.mapObject.doubleClickZoom.enable()
 }
 
-export async function addLayer (context, { id, layerDescriptor, title, options, metaOptions, auth = false, filters }) {
+export async function addLayer (context, { id, layerDescriptor, title, options, metaOptions, auth = false, filters, legend }) {
   const map = context.state.mapObject
   const headers = auth ? context.rootGetters['auth/headers'] : void 0
   try {
@@ -252,7 +256,7 @@ export async function addLayer (context, { id, layerDescriptor, title, options, 
 
     const name = type.toLowerCase() === 'wms' ? layerDescriptor.title : title
     const getfeatureinfoSupport = layerDescriptor.giscube && layerDescriptor.giscube.getfeatureinfo_support
-    context.dispatch('addOverlay', { id, layer, layerType: type, name, options, getfeatureinfoSupport })
+    context.dispatch('addOverlay', { id, layer, layerType: type, name, options, getfeatureinfoSupport, legend })
     return true
   } catch (e) {
     if (e) {

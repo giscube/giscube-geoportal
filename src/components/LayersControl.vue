@@ -58,6 +58,46 @@
 
       <div v-show="layers.length > 0" class="sep"></div>
 
+      <ul v-show="layers.length > 0">
+        <li class="flex-nowrap-start link" @click="legendsOpen = !legendsOpen">
+          <a class="flex-icon"
+             ><q-icon size="1.5em" name="las la-list-alt" label="legends"></q-icon></a>
+          <a class="flex-label">{{ $t('names.legends') | capitalize }}</a>
+          <span class="text-right q-pr-md">
+            <q-icon
+              size="1.2em"
+              :name="legendsOpen ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
+            />
+          </span>
+        </li>
+      </ul>
+
+      <div v-show="legendsOpen && layers.length > 0" class="legends-panel">
+        <div v-if="legendLayers.length === 0" class="legends-empty text-grey-6">
+          {{ $t('names.noVisibleLayers') }}
+        </div>
+        <div
+          v-for="overlay in legendLayers"
+          :key="key(overlay)"
+          class="legend-entry"
+        >
+          <div class="legend-name">{{ overlay.name }}</div>
+          <div
+            v-if="overlay.legend"
+            class="legend-html"
+            v-html="overlay.legend"
+          ></div>
+          <img
+            v-else
+            :src="legendUrl(overlay)"
+            :alt="overlay.name"
+            class="legend-img"
+          />
+        </div>
+      </div>
+
+      <div v-show="legendsOpen && layers.length > 0" class="sep"></div>
+
       <q-scroll-area
         :style="{ 'height': layersHeight, 'width': '300px' }"
         :visible="true"
@@ -104,6 +144,7 @@ export default {
   data () {
     return {
       baseLayerSelect: false,
+      legendsOpen: false,
       collapsed: true,
       showActions: false,
       layerLastId: 0,
@@ -130,6 +171,11 @@ export default {
     layersHeight () {
       let height = 36 * this.layers.length + 73 * this.opacityOpenCount
       return height < 259 ? height + 'px' : '265px'
+    },
+    legendLayers () {
+      return this.layers.filter(overlay =>
+        overlay.visible && (overlay.legend || this.legendUrl(overlay))
+      )
     },
     layersComponent () {
       return this.$q.platform.is.mobile ? 'ul' : draggable
@@ -173,6 +219,32 @@ export default {
     key (overlay) {
       const id = overlay.id
       return id.toPlainRef ? id.toPlainRef() : id
+    },
+    legendUrl (overlay) {
+      if (!overlay || !overlay.layerType || overlay.layerType.toLowerCase() !== 'wms') {
+        return null
+      }
+      const layer = overlay.layer
+      const baseUrl = layer && layer._url
+      const wmsParams = layer && layer.wmsParams
+      if (!baseUrl || !wmsParams || !wmsParams.layers) {
+        return null
+      }
+      const params = {
+        SERVICE: 'WMS',
+        VERSION: wmsParams.version || '1.1.1',
+        REQUEST: 'GetLegendGraphic',
+        LAYER: wmsParams.layers,
+        FORMAT: 'image/png',
+        TRANSPARENT: true
+      }
+      if (wmsParams.styles) {
+        params.STYLE = wmsParams.styles
+      }
+      const query = Object.keys(params)
+        .map(p => `${p}=${encodeURIComponent(params[p])}`)
+        .join('&')
+      return baseUrl + (baseUrl.includes('?') ? '&' : '?') + query
     }
   }
 }
@@ -244,6 +316,56 @@ export default {
   div.sep {
     height: 1px;
     border-bottom: 1px solid #d6d6d6;
+  }
+
+  .legends-panel {
+    max-height: 260px;
+    overflow-y: auto;
+    padding: 8px 16px;
+    background-color: #f7f7f7;
+
+    .legends-empty {
+      padding: 4px 0;
+      font-style: italic;
+    }
+
+    .legend-entry {
+      padding: 6px 0;
+
+      & + .legend-entry {
+        border-top: 1px dashed #d6d6d6;
+      }
+    }
+
+    .legend-name {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .legend-img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .legend-html {
+      font-size: 12px;
+      line-height: 1.3;
+      word-wrap: break-word;
+
+      table {
+        border-collapse: collapse;
+        max-width: 100%;
+      }
+
+      td {
+        padding: 1px 4px;
+        vertical-align: top;
+      }
+
+      img {
+        max-width: 100%;
+      }
+    }
   }
 
   .gray-svg svg {
