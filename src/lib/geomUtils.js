@@ -284,7 +284,7 @@ function createExternalLayerTMS ({ layerDescriptor, title, options, headers }) {
   })
 }
 
-function createExternalLayerGeoJSON ({ layerDescriptor, title, options, map, popupComponent = FeaturePopup, dialogComponent = FeaturePopupDialog, headers, metaOptions = {}, filters }) {
+function createExternalLayerGeoJSON ({ layerDescriptor, title, options, map, popupComponent = FeaturePopup, dialogComponent = FeaturePopupDialog, headers, metaOptions = {}, filters, overlappingGeometries }) {
   const { root } = metaOptions
   return new Promise((resolve, reject) => {
     axios.get(layerDescriptor.url, { headers })
@@ -301,7 +301,8 @@ function createExternalLayerGeoJSON ({ layerDescriptor, title, options, map, pop
             component: popupComponent,
             dialog: dialogComponent
           },
-          root
+          root,
+          overlappingGeometries
         })
 
         let data = response.data

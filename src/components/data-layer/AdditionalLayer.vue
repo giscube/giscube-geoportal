@@ -102,7 +102,8 @@ export default {
         },
         headers: isAuthenticated ? this.$store.getters['auth/headers'] : void 0,
         downloads,
-        getfeatureinfoSupport
+        getfeatureinfoSupport,
+        overlappingGeometries: !!this.result.overlapping_geometries
       }
     },
     overlay () {
