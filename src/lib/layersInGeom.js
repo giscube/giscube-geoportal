@@ -65,6 +65,21 @@ function containsWithHoles (point, multipolygon) {
   return true
 }
 
+export function polygonContainsLatLng (layer, latlng) {
+  if (!(layer instanceof L.Polygon) || !layer.getBounds().contains(latlng)) {
+    return false
+  }
+
+  const point = toRaw(latlng)
+  const latLngs = layer.getLatLngs()
+  const multiPolygon = (latLngs.length > 0 && L.LineUtil.isFlat(latLngs[0])) ? [latLngs] : latLngs
+
+  return multiPolygon.some(polygon => polygon.every((ring, i) => {
+    const inRing = pointInPolygon(point, ring.map(toRaw))
+    return i === 0 ? inRing : !inRing
+  }))
+}
+
 export function groupPointsByPolygons (points, polygons) {
   const result = new Map(
     map(

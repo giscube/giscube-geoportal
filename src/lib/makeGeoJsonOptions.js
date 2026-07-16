@@ -6,6 +6,9 @@ import forOwn from 'lodash/forOwn.js'
 import template from 'lodash/template.js'
 import L from './leaflet'
 import IconsGenerator from './table/geom-styles/icons/IconsGenerator'
+import { polygonContainsLatLng } from './layersInGeom'
+
+import OverlappingFeaturesPopup from 'components/OverlappingFeaturesPopup'
 
 function transform (t, value, ...args) {
   return t ? t(value, ...args) : value
@@ -140,7 +143,7 @@ function toNumber (value, d) {
   return d
 }
 
-export default function makeGeoJsonOptions ({ style, styleRules, design }, { parent, map, popup = {}, afterEachSelect, modStyle, root }) {
+export default function makeGeoJsonOptions ({ style, styleRules, design }, { parent, map, popup = {}, afterEachSelect, modStyle, root, overlappingGeometries = false }) {
   /* popup = { component, propsData, onEachPopup, openCondition } */
   const isMarker = (style.shapetype.toLowerCase() === 'marker')
   const isImage = (style.shapetype.toLowerCase() === 'image')
@@ -193,6 +196,87 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
   const PopupContent = popup.component && (typeof popup.component === 'object' ? Vue.extend(popup.component) : popup.component)
   const renderContents = design.popup && (typeof design.popup === 'function' ? design.popup : makeTemplate(design.popup))
   const renderTooltip = design.tooltip && (typeof design.tooltip === 'function' ? design.tooltip : makeTemplate(design.tooltip))
+
+  const originalStyle = (sourceTarget) => {
+    const baseStyle = transform(modStyle, rules.getResult(sourceTarget.feature), sourceTarget.feature)
+    const currentOpacity = sourceTarget.options.activeOpacity || baseStyle.opacity
+    const currentFillOpacity = sourceTarget.options.activeOpacity || baseStyle.fillOpacity
+
+    return {
+      ...baseStyle,
+      opacity: currentOpacity,
+      fillOpacity: currentFillOpacity
+    }
+  }
+
+  const highlightStyle = (sourceTarget) => {
+    let style = transform(modStyle, rules.getResult(sourceTarget.feature), sourceTarget.feature)
+    style['weight'] = style['weight'] * 3
+    style['color'] = 'yellow'
+    style['fillColor'] = 'yellow'
+    return style
+  }
+
+  const canOverlap = overlappingGeometries && !(isImage || isMarker)
+  const OverlappingContent = canOverlap && Vue.extend(OverlappingFeaturesPopup)
+  const featureLayers = []
+  let overlappingContainer = null
+
+  function overlappingAt (latlng, clicked) {
+    const entries = []
+    const seen = new Set()
+    featureLayers.forEach(entry => {
+      if (seen.has(entry.feature) || !polygonContainsLatLng(entry.layer, latlng)) {
+        return
+      }
+      seen.add(entry.feature)
+      entries.push(entry)
+    })
+
+    const clickedIndex = entries.findIndex(entry => entry.layer === clicked)
+    if (clickedIndex < 0) {
+      return []
+    }
+    if (clickedIndex > 0) {
+      entries.unshift(...entries.splice(clickedIndex, 1))
+    }
+
+    return entries
+  }
+
+  function openOverlappingPopup (entries, latlng) {
+    const content = new OverlappingContent({
+      parent: parent || root,
+      propsData: {
+        ...(popup.propsData || {}),
+        features: entries.map(entry => entry.feature),
+        popupComponent: popup.component,
+        renderContents
+      }
+    }).$mount()
+
+    const container = L.popup({
+      closeOnClick: true,
+      closeOnEscapeKey: true
+    })
+    container.setContent(content.$el)
+    content.$on('update-popup-size', _ => container.update())
+    container.on('add', (...args) => content.onOpen && content.onOpen(...args))
+    container.on('remove', (...args) => {
+      content.onClose && content.onClose(...args)
+      entries.forEach(({ layer }) => {
+        layer.setStyle(originalStyle(layer))
+        layer.selected = false
+      })
+      if (overlappingContainer === container) {
+        overlappingContainer = null
+      }
+      content.$destroy()
+    })
+
+    overlappingContainer = container
+    map.openPopup(container, latlng)
+  }
 
   // Setup feature to have a single popup and, if using markes, a single icon which are reused
   function prepareFeature (feature) {
@@ -328,24 +412,8 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
               })
             }
 
-            const originalStyle = (sourceTarget) => {
-              const baseStyle = transform(modStyle, rules.getResult(sourceTarget.feature), sourceTarget.feature)
-              const currentOpacity = sourceTarget.options.activeOpacity || baseStyle.opacity
-              const currentFillOpacity = sourceTarget.options.activeOpacity || baseStyle.fillOpacity
-
-              return {
-                ...baseStyle,
-                opacity: currentOpacity,
-                fillOpacity: currentFillOpacity
-              }
-            }
-
-            const highlightStyle = (sourceTarget) => {
-              let style = transform(modStyle, rules.getResult(sourceTarget.feature), sourceTarget.feature)
-              style['weight'] = style['weight'] * 3
-              style['color'] = 'yellow'
-              style['fillColor'] = 'yellow'
-              return style
+            if (canOverlap) {
+              featureLayers.push({ feature: this, layer })
             }
 
             layer.on('click', ({ latlng, sourceTarget }) => {
@@ -353,8 +421,13 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
                 return
               }
 
+              const overlapping = (canOverlap && !Platform.is.mobile) ? overlappingAt(latlng, sourceTarget) : []
+              const isOverlapped = overlapping.length > 1
+
               if (Platform.is.mobile) {
                 this._openDialog()
+              } else if (isOverlapped) {
+                openOverlappingPopup(overlapping, latlng)
               } else {
                 this._setUpPopup()
 
@@ -371,8 +444,11 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
                 }
               }
               if (!(isImage || isMarker)) {
-                sourceTarget.setStyle(highlightStyle(sourceTarget))
-                sourceTarget.selected = true
+                const selected = isOverlapped ? overlapping.map(entry => entry.layer) : [sourceTarget]
+                selected.forEach(l => {
+                  l.setStyle(highlightStyle(l))
+                  l.selected = true
+                })
               }
             })
             if (!(isImage || isMarker)) {
@@ -388,6 +464,9 @@ export default function makeGeoJsonOptions ({ style, styleRules, design }, { par
               if (this._content) {
                 this._content.$destroy()
                 this._content = void 0
+              }
+              if (overlappingContainer) {
+                map.closePopup(overlappingContainer)
               }
             })
 
