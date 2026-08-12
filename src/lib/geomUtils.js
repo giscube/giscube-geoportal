@@ -248,10 +248,25 @@ function createExternalLayerWMTS ({ layerDescriptor, title, options, headers }) 
   }
 
   url += 'SERVICE=WMTS&REQUEST=GetTile' +
-         '&LAYER=' + encodeURIComponent(layerDescriptor.layers) +
-         '&FORMAT=image/png' +
-         '&TILEMATRIXSET=EPSG:3857' +
-         '&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}'
+        '&LAYER=' + encodeURIComponent(layerDescriptor.layers)
+
+  let wmtsOptions = {
+    format: 'image/png',
+    tileMatrixSet: 'EPSG:3857'
+  }
+  if (layerDescriptor.giscube && layerDescriptor.giscube.style) {
+    url += '&STYLE=' + layerDescriptor.giscube.style
+  }
+  if (layerDescriptor.giscube && layerDescriptor.giscube.format) {
+    wmtsOptions.format = layerDescriptor.giscube.content_type
+  }
+  if (layerDescriptor.giscube && layerDescriptor.giscube.tile_matrix_set) {
+    wmtsOptions.tileMatrixSet = layerDescriptor.giscube.tile_matrix_set
+  }
+
+  url += '&FORMAT=' + wmtsOptions.format +
+        '&TILEMATRIXSET=' + wmtsOptions.tileMatrixSet +
+        '&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}'
 
   const wmts = setTileLayerBoundary(L.tileLayer(url), options)
 
