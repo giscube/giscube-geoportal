@@ -87,12 +87,6 @@
             class="legend-html"
             v-html="overlay.legend"
           ></div>
-          <img
-            v-else
-            :src="legendUrl(overlay)"
-            :alt="overlay.name"
-            class="legend-img"
-          />
         </div>
       </div>
 
@@ -174,7 +168,7 @@ export default {
     },
     legendLayers () {
       return this.layers.filter(overlay =>
-        overlay.visible && (overlay.legend || this.legendUrl(overlay))
+        overlay.visible && overlay.legend
       )
     },
     layersComponent () {
