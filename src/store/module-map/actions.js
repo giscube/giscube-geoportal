@@ -244,11 +244,11 @@ export function enableDoubleClickZoom (context) {
   context.state.mapObject.doubleClickZoom.enable()
 }
 
-export async function addLayer (context, { id, layerDescriptor, title, options, metaOptions, auth = false, filters, legend }) {
+export async function addLayer (context, { id, layerDescriptor, title, options, metaOptions, auth = false, filters, legend, overlappingGeometries }) {
   const map = context.state.mapObject
   const headers = auth ? context.rootGetters['auth/headers'] : void 0
   try {
-    const { type, layer } = await createExternalLayer({ layerDescriptor, title, options, map, metaOptions, headers, filters })
+    const { type, layer } = await createExternalLayer({ layerDescriptor, title, options, map, metaOptions, headers, filters, overlappingGeometries })
     if (!type || !layer) {
       return false
     }

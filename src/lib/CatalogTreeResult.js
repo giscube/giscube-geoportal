@@ -34,7 +34,8 @@ export default class CatalogResult {
       },
       auth: this.data.private,
       filters: this.filters,
-      legend: this.data.legend
+      legend: this.data.legend,
+      overlappingGeometries: this.data.overlapping_geometries
     }
   }
 
