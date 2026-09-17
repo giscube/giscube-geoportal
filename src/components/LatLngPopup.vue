@@ -5,7 +5,7 @@
       v-for="epsg in $config.epsgs"
       :key="epsg.code"
       class="latlng--values row justify-between"
-      @click="copyEpsg(projected(epsg))"
+      @click="copyEpsg(epsg)"
       @mouseover="copied = false"
     >
       <div><b :key="epsg.code + '--label'">{{ epsg.label }}:</b></div>
@@ -50,7 +50,9 @@ export default {
     },
     copyEpsg (epsg) {
       this.copied = true
-      navigator.clipboard.writeText(epsg)
+      // remove all letters and symbols except numbers, commas and periods
+      const textToCopy = this.projectedWithFormat(epsg).replace(/[^0-9.,\s]/g, '').replace(/\s/g, '')
+      navigator.clipboard.writeText(textToCopy)
       setTimeout(() => {
         this.copied = false
       }, 3000)
