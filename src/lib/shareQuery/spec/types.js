@@ -336,5 +336,17 @@ types.string = {
   toQuery: v => v ? encodeURIComponent(v) : void 0
 }
 
+// vue-router already decodes the query, so a second decode may fail on a literal '%'
+types.url = {
+  fromQuery (str) {
+    try {
+      return decodeURIComponent(str)
+    } catch (e) {
+      return str
+    }
+  },
+  toQuery: types.string.toQuery
+}
+
 // Export types
 export { types as default, types }
