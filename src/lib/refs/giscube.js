@@ -24,13 +24,15 @@ function extractResultOptions (result, $root) {
     metaOptions: {
       root: $root
     },
-    headers: isAuthenticated ? $root.$store.getters['auth/headers'] : void 0
+    headers: isAuthenticated ? $root.$store.getters['auth/headers'] : void 0,
+    overlappingGeometries: result.overlapping_geometries
   }
 }
 
 export default class GiscubeRef {
-  constructor (id) {
+  constructor (id, activeFilters = null) {
     this.plainRef = id.toString()
+    this.activeFilters = activeFilters && activeFilters.length > 0 ? activeFilters : null
   }
 
   toPlainRef () {
@@ -45,6 +47,22 @@ export default class GiscubeRef {
     return true
   }
 
+  async syncCatalogFilters ($root) {
+    if (!this.activeFilters) {
+      return
+    }
+    const leaf = await $root.$store.dispatch('catalogTree/searchInCatalog', this.plainRef)
+    if (leaf && leaf.filters && leaf.filters.length > 0) {
+      const value = leaf.filters.map((filter, index) => ({
+        ...filter,
+        active: this.activeFilters.includes(index)
+      }))
+      $root.$store.dispatch('catalogTree/setNodePropertyValue', { id: this.plainRef, property: 'filters', value })
+      $root.$store.dispatch('catalogTree/setNodePropertyValue', { id: this.plainRef, property: 'expandFilters', value: true })
+      $root.$store.dispatch('catalogTree/expandToNode', this.plainRef)
+    }
+  }
+
   async openInSidebar ({ context, $router }) {
     const result = await context.dispatch('catalogTree/getResultById', this.plainRef, { root: true })
     if (result) {
@@ -54,6 +72,12 @@ export default class GiscubeRef {
 
   async overlayerAsResult (result, opacity, $root) {
     const layerOptions = extractResultOptions(result, $root)
+    if (this.activeFilters && result.filters && result.filters.length > 0) {
+      layerOptions.filters = result.filters.map((filter, index) => ({
+        ...filter,
+        active: this.activeFilters.includes(index)
+      }))
+    }
     const { type, layer } = await createLayerFromConfig(layerOptions) // TODO save table
     const name = type === 'WMS' ? layerOptions.layerDescriptor.title : layerOptions.title
 

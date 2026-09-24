@@ -19,6 +19,16 @@ export function checkCategories (context, forceRefresh = false) {
     })
 }
 
+function _overlaysActiveFilters (context) {
+  const activeFilters = {}
+  context.rootState.map.layers.overlays.forEach(overlay => {
+    if (overlay.id && overlay.id.activeFilters) {
+      activeFilters[overlay.id.plainRef] = overlay.id.activeFilters
+    }
+  })
+  return activeFilters
+}
+
 export function createCatalog (context) {
   let catalog = []
   const categoriesPromises = []
@@ -36,7 +46,7 @@ export function createCatalog (context) {
           }
 
           if (category.content) {
-            node.children.push(..._createLeaves(category.content))
+            node.children.push(..._createLeaves(category.content, _overlaysActiveFilters(context)))
           }
 
           catalog.push(node)
@@ -49,22 +59,24 @@ export function createCatalog (context) {
       this.$config.catalog.filter(this, catalog)
     }
     context.commit('setCatalog', catalog)
+    Object.keys(_overlaysActiveFilters(context)).forEach(id => context.dispatch('expandToNode', id))
     return catalog
   })
 }
 
-function _createLeaves (contents) {
+function _createLeaves (contents, activeFilters = {}) {
   return contents.map(content => {
     const hasFilters = content.filters && content.filters.length > 0
+    const active = activeFilters[content.giscube_id]
     return CatalogTreeResult.create({
       data: content,
       header: hasFilters ? 'leaf-filters' : 'leaf',
       body: hasFilters ? 'leaf-filters' : 'leaf',
-      expandFilters: false,
+      expandFilters: !!(hasFilters && active),
       id: content.giscube_id,
       label: content.title,
-      filters: hasFilters && content.filters.map(filter => {
-        filter['active'] = false
+      filters: hasFilters && content.filters.map((filter, index) => {
+        filter['active'] = !!active && active.includes(index)
         return filter
       })
     })
@@ -78,32 +90,26 @@ function _createLeaves (contents) {
   })
 }
 
-export function getChildren (context, parent) {
-  let subcategories = context.state.categories.filter(child => child.parent === parent.id)
-  if (subcategories.length > 0) {
-    subcategories = subcategories.reduce(function (_children, child) {
-      context.dispatch('getChildren', child).then(children => {
-        const node = {
-          children: children,
-          data: child,
-          header: 'branch',
-          id: child.id,
-          label: child.name
-        }
+export async function getChildren (context, parent) {
+  const subcategories = context.state.categories.filter(child => child.parent === parent.id)
+  const nodes = await Promise.all(subcategories.map(async child => {
+    const children = await context.dispatch('getChildren', child)
+    const node = {
+      children: children,
+      data: child,
+      header: 'branch',
+      id: child.id,
+      label: child.name
+    }
 
-        if (child.content) {
-          node.children.push(..._createLeaves(child.content))
-        }
+    if (child.content) {
+      node.children.push(..._createLeaves(child.content, _overlaysActiveFilters(context)))
+    }
 
-        if (node.children.length > 0) {
-          _children.push(node)
-        }
-      })
-      return _children
-    }, [])
-  }
+    return node
+  }))
 
-  return subcategories
+  return nodes.filter(node => node.children.length > 0)
 }
 
 export async function getResultById (context, id) {
@@ -124,6 +130,35 @@ export function searchInCatalog (context, id) {
     const leaf = _searchInCatalogRecursive(id, catalog[i])
     if (leaf) {
       return leaf
+    }
+  }
+}
+
+function _searchPathRecursive (id, branch) {
+  if (branch.id === id) {
+    return [branch]
+  } else if (branch.children) {
+    for (let i = 0; i < branch.children.length; i++) {
+      const path = _searchPathRecursive(id, branch.children[i])
+      if (path) {
+        return [branch, ...path]
+      }
+    }
+  }
+}
+
+export function expandToNode (context, id) {
+  const catalog = context.state.catalog
+  for (let i = 0; i < catalog.length; i++) {
+    const path = _searchPathRecursive(id, catalog[i])
+    if (path) {
+      const ancestors = path.slice(0, -1).map(node => node.id)
+      const open = context.state.categoriesOpen
+      const missing = ancestors.filter(ancestor => !open.includes(ancestor))
+      if (missing.length > 0) {
+        context.commit('setCategoriesOpen', [...open, ...missing])
+      }
+      return
     }
   }
 }
