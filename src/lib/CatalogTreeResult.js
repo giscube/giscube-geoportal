@@ -25,7 +25,7 @@ export default class CatalogResult {
     }
 
     return {
-      id: !isVoid(this.data.giscube_id) && new GiscubeRef(this.data.giscube_id),
+      id: !isVoid(this.data.giscube_id) && new GiscubeRef(this.data.giscube_id, this.activeFilterIndexes()),
       layerDescriptor,
       title: this.data.title,
       options,
@@ -37,6 +37,15 @@ export default class CatalogResult {
       legend: this.data.legend,
       overlappingGeometries: this.data.overlapping_geometries
     }
+  }
+
+  activeFilterIndexes () {
+    if (!this.filters || this.filters.length === 0) {
+      return null
+    }
+    return this.filters
+      .map((filter, index) => filter.active ? index : null)
+      .filter(index => index !== null)
   }
 
   static create (data) {

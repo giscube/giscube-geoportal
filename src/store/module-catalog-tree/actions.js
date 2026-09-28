@@ -19,6 +19,16 @@ export function checkCategories (context, forceRefresh = false) {
     })
 }
 
+function _overlaysActiveFilters (context) {
+  const activeFilters = {}
+  context.rootState.map.layers.overlays.forEach(overlay => {
+    if (overlay.id && overlay.id.activeFilters) {
+      activeFilters[overlay.id.plainRef] = overlay.id.activeFilters
+    }
+  })
+  return activeFilters
+}
+
 export function createCatalog (context) {
   let catalog = []
   const categoriesPromises = []
@@ -36,7 +46,7 @@ export function createCatalog (context) {
           }
 
           if (category.content) {
-            node.children.push(..._createLeaves(category.content))
+            node.children.push(..._createLeaves(category.content, _overlaysActiveFilters(context)))
           }
 
           catalog.push(node)
@@ -53,18 +63,19 @@ export function createCatalog (context) {
   })
 }
 
-function _createLeaves (contents) {
+function _createLeaves (contents, activeFilters = {}) {
   return contents.map(content => {
     const hasFilters = content.filters && content.filters.length > 0
+    const active = activeFilters[content.giscube_id]
     return CatalogTreeResult.create({
       data: content,
       header: hasFilters ? 'leaf-filters' : 'leaf',
       body: hasFilters ? 'leaf-filters' : 'leaf',
-      expandFilters: false,
+      expandFilters: !!(hasFilters && active),
       id: content.giscube_id,
       label: content.title,
-      filters: hasFilters && content.filters.map(filter => {
-        filter['active'] = false
+      filters: hasFilters && content.filters.map((filter, index) => {
+        filter['active'] = !!active && active.includes(index)
         return filter
       })
     })
@@ -92,7 +103,7 @@ export function getChildren (context, parent) {
         }
 
         if (child.content) {
-          node.children.push(..._createLeaves(child.content))
+          node.children.push(..._createLeaves(child.content, _overlaysActiveFilters(context)))
         }
 
         if (node.children.length > 0) {
