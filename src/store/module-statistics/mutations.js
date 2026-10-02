@@ -29,6 +29,17 @@ export function filterPolygon (state, layer) {
   state.filterPolygon = layer
 }
 
+export function filterCircle (state, layer) {
+  if (state.filterCircle) {
+    state.filterCircle.remove()
+  }
+  state.filterCircle = layer
+}
+
+export function filterCircleRadius (state, value) {
+  state.filterCircleRadius = value
+}
+
 export function byOption (state, value) {
   state.byOption = value
 }

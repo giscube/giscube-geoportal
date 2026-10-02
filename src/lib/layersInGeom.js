@@ -39,7 +39,17 @@ export function rowsInGeom (rows, geom) {
   return rows.filter(row => row.layer && contains(row.layer, latLngs, bounds))
 }
 
+function containsInCircle (layer, circle) {
+  const center = circle.getLatLng()
+  const radius = circle.getRadius()
+  const inCircle = p => center.distanceTo(p) <= radius
+  return somePoint(layer, p => Array.isArray(p) ? p.some(inCircle) : inCircle(p))
+}
+
 export function layerInGeom (layer, geom) {
+  if (geom instanceof L.Circle) {
+    return !!layer && containsInCircle(layer, geom)
+  }
   const latLngs = geom.getLatLngs()
   const bounds = geom.getBounds()
 
