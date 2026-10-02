@@ -10,6 +10,8 @@ export default {
   filter: '',
   colFilters: {},
   filterPolygon: null,
+  filterCircle: null,
+  filterCircleRadius: null,
   processes: {
     loading: {
       current: 0,

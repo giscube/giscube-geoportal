@@ -27,6 +27,7 @@ export function clearFilters ({ commit }) {
   commit('filter', '')
   commit('colFilters', {})
   commit('filterPolygon', null)
+  commit('filterCircle', null)
 }
 
 export function clearStats ({ commit, dispatch }) {
@@ -124,6 +125,48 @@ export function setFilterPolygon (context, layerPolygon) {
   if (layerPolygon) {
     layerPolygon.setStyle({ opacity: 0.5 })
     layerPolygon.addTo(context.rootState.map.mapObject)
+  }
+}
+
+export function toggleFilterCircle (context) {
+  if (context.state.filterCircle) {
+    context.dispatch('setFilterCircle', null)
+  } else {
+    const radius = context.state.filterCircleRadius
+    const config = radius > 0 ? { radius } : void 0
+    context.dispatch('map/draw', { type: 'circle', config }, { root: true })
+      .then(layerCircle => {
+        context.dispatch('setFilterCircle', layerCircle)
+      })
+      .catch(e => {
+        if (!(e instanceof CancelError)) {
+          this.$except(e)
+        }
+      })
+  }
+}
+
+export function setFilterCircle (context, layerCircle) {
+  if (layerCircle) {
+    layerCircle.disableEdit()
+  }
+  context.commit('filterCircle', layerCircle)
+
+  if (layerCircle) {
+    context.commit('filterCircleRadius', Math.round(layerCircle.getRadius()))
+    layerCircle.setStyle({ opacity: 0.5 })
+    layerCircle.addTo(context.rootState.map.mapObject)
+  }
+}
+
+export function setFilterCircleRadius (context, radius) {
+  radius = Number(radius)
+  if (!(radius > 0)) {
+    radius = null
+  }
+  context.commit('filterCircleRadius', radius)
+  if (radius && context.state.filterCircle) {
+    context.state.filterCircle.setRadius(radius)
   }
 }
 

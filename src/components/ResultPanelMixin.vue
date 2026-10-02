@@ -236,6 +236,7 @@ export default {
       this.overlay.layer.options.filter = this.$store.state.statistics.filter
       this.overlay.layer.options.colFilters = this.$store.state.statistics.colFilters
       this.overlay.layer.options.filterPolygon = this.$store.state.statistics.filterPolygon
+      this.overlay.layer.options.filterCircle = this.$store.state.statistics.filterCircle
       this.overlay.aggregatedData = this.aggregatedData
       this.overlay.statsOption = this.byOption
     }
@@ -367,6 +368,7 @@ export default {
         this.$store.commit('statistics/filter', layer.options.filter || '')
         this.$store.commit('statistics/colFilters', layer.options.colFilters || {})
         this.$store.dispatch('statistics/setFilterPolygon', layer.options.filterPolygon)
+        this.$store.dispatch('statistics/setFilterCircle', layer.options.filterCircle)
         if (this.overlay.aggregatedData) {
           this.$store.commit('statistics/aggregatedData', this.overlay.aggregatedData)
         } else if (!this.table_) {

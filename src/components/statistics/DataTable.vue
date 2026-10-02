@@ -62,6 +62,30 @@
             <q-tooltip v-if="!filterPolygon">Filter by polygon</q-tooltip>
             <q-tooltip v-else>Remove polygon filter</q-tooltip>
           </q-btn>
+          <q-btn-dropdown
+            flat
+            split
+            no-caps
+            :icon="isDrawing ? 'pause' : filterCircle ? 'fas fa-times' : 'far fa-dot-circle'"
+            @click="toggleFilterCircle"
+          >
+            <template v-slot:label>
+              <q-tooltip v-if="isDrawing">Stop drawing</q-tooltip>
+              <q-tooltip v-else-if="!filterCircle">Filter by circle</q-tooltip>
+              <q-tooltip v-else>Remove circle filter</q-tooltip>
+            </template>
+            <div class="q-pa-sm" style="width: 180px">
+              <q-input
+                v-model.number="filterCircleRadius"
+                type="number"
+                min="0"
+                dense
+                outlined
+                debounce="500"
+                :label="$t('tools.draw.radius') + ' (m)'"
+              />
+            </div>
+          </q-btn-dropdown>
           <q-btn
             flat
             icon-right="save_alt"
@@ -96,7 +120,7 @@
 
 <script>
 import debounce from 'lodash/debounce.js'
-import { QBtn, QBtnGroup, QIcon, QInput, QTable, QTd, QTh, QTooltip, exportFile } from 'quasar'
+import { QBtn, QBtnDropdown, QBtnGroup, QIcon, QInput, QTable, QTd, QTh, QTooltip, exportFile } from 'quasar'
 
 import { every, some } from 'src/lib/itertools'
 import { layerInGeom } from 'src/lib/layersInGeom'
@@ -122,6 +146,7 @@ export default {
     ColumnFilter,
     DataCell,
     QBtn,
+    QBtnDropdown,
     QBtnGroup,
     QIcon,
     QInput,
@@ -166,7 +191,13 @@ export default {
       handler: debounceComputeData,
       deep: true
     },
-    filterPolygon: debounceComputeData
+    filterPolygon: debounceComputeData,
+    filterCircle: debounceComputeData,
+    filterCircleRadius () {
+      if (this.filterCircle) {
+        debounceComputeData.call(this)
+      }
+    }
   },
   computed: {
     filter: {
@@ -193,6 +224,17 @@ export default {
     },
     filterPolygon () {
       return this.$store.state.statistics.filterPolygon
+    },
+    filterCircle () {
+      return this.$store.state.statistics.filterCircle
+    },
+    filterCircleRadius: {
+      set (value) {
+        this.$store.dispatch('statistics/setFilterCircleRadius', value)
+      },
+      get () {
+        return this.$store.state.statistics.filterCircleRadius
+      }
     },
     columns () {
       let listColumns = this.fields.map(field => ({
@@ -289,6 +331,7 @@ export default {
           return field.colFilter(data, colFilter)
         })
         result = result && (!this.filterPolygon || layerInGeom(row, this.filterPolygon))
+        result = result && (!this.filterCircle || layerInGeom(row, this.filterCircle))
         return result
       })
 
@@ -326,6 +369,13 @@ export default {
         this.$store.dispatch('map/stopDrawing')
       } else {
         this.$store.dispatch('statistics/toggleFilterPolygon')
+      }
+    },
+    toggleFilterCircle () {
+      if (this.isDrawing) {
+        this.$store.dispatch('map/stopDrawing')
+      } else {
+        this.$store.dispatch('statistics/toggleFilterCircle')
       }
     },
     sort (rows, sortBy, descending) {

@@ -219,11 +219,12 @@ export function reorderOverlay (context) {
   }
 }
 
-export function draw (context, type) {
+export function draw (context, payload) {
+  const { type, config } = typeof payload === 'string' ? { type: payload } : payload
   const oldTool = context.rootState.root.currentTool
   context.commit('setCurrentTool', 'draw', { root: true })
 
-  const promise = createLayer({ map: context.state.mapObject, type: type.toLowerCase() })
+  const promise = createLayer({ map: context.state.mapObject, type: type.toLowerCase(), config })
   promise.then(() => {}, () => {}).then(() => {
     context.commit('setCurrentTool', oldTool, { root: true })
   })
