@@ -297,7 +297,7 @@ types.result = {
     }
 
     const type = str.charAt(0)
-    let [ref, opacity = '1'] = str.slice(1).split(':')
+    let [ref, opacity = '1', filters] = str.slice(1).split(':')
     opacity = types.number.fromQuery(opacity)
 
     if (type === 'c') {
@@ -309,8 +309,11 @@ types.result = {
       }
     } else if (type === 'g') {
       ref = types.string.fromQuery(ref)
+      const activeFilters = filters
+        ? filters.split(',').map(Number).filter(index => Number.isInteger(index) && index >= 0)
+        : null
       return {
-        ref: new GiscubeRef(ref),
+        ref: new GiscubeRef(ref, activeFilters),
         opacity
       }
     } else {
@@ -324,7 +327,8 @@ types.result = {
     if (ref instanceof CoordinatesRef) {
       return 'c' + types.coords.toQuery(ref.latlng) + o
     } else if (ref instanceof GiscubeRef) {
-      return 'g' + types.string.toQuery(ref.toPlainRef()) + o
+      const f = ref.activeFilters ? ':' + (o ? o.slice(1) : '1') + ':' + ref.activeFilters.join(',') : o
+      return 'g' + types.string.toQuery(ref.toPlainRef()) + f
     } else {
       throw new UnsupportedTypeError('result', ref)
     }
@@ -334,6 +338,18 @@ types.result = {
 types.string = {
   fromQuery: decodeURIComponent,
   toQuery: v => v ? encodeURIComponent(v) : void 0
+}
+
+// vue-router already decodes the query, so a second decode may fail on a literal '%'
+types.url = {
+  fromQuery (str) {
+    try {
+      return decodeURIComponent(str)
+    } catch (e) {
+      return str
+    }
+  },
+  toQuery: types.string.toQuery
 }
 
 // Export types

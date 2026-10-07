@@ -411,6 +411,9 @@ export default {
         )
         for (let k of Object.keys(overlays).reverse()) {
           this.$root.$store.dispatch('map/addOverlay', overlays[k])
+          if (overlays[k] && overlays[k].id && overlays[k].id.syncCatalogFilters) {
+            overlays[k].id.syncCatalogFilters(this.$root)
+          }
           if (
             this.options.showt && overlays[k] &&
             overlays[k].layer &&
