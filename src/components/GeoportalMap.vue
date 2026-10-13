@@ -299,11 +299,19 @@ export default {
       }).addTo(this.map)
     },
     addMeasureControl () {
-      this.map.measureControl = L.control.measure({
+      const measureControl = L.control.measure({
         measureUnit: 'meters',
         createButton: false
       })
-        .addTo(this.map)
+      const decimalPlaces = 2
+      measureControl._roundValue = function (value) {
+        return value.toLocaleString(undefined, {
+          minimumFractionDigits: decimalPlaces,
+          maximumFractionDigits: decimalPlaces
+        })
+      }
+      measureControl.addTo(this.map)
+      this.map.measureControl = measureControl
     },
     addScaleControl () {
       L.control.scale({ metric: true, imperial: false, 'position': 'bottomright' })
