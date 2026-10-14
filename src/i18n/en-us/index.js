@@ -189,6 +189,8 @@ export default {
       circle: 'Circle',
       drawMulti: 'Continue drawing',
       drawMultiCaption: 'Allow drawing new measurements when finishing the element',
+      showMeasures: 'Show measurements',
+      hideMeasures: 'Hide measurements',
       explanation: 'Please select geometry type, then click on the map. Double-click to finish drawing.',
       explanationCircle: 'Click onto the map to draw a circle. Define a radius and click or click and drag.',
       marker: 'Point',

@@ -191,6 +191,8 @@ export default {
       circle: 'Círculo',
       drawMulti: 'Continuar dibujando',
       drawMultiCaption: 'Permite dibujar nuevas medidas al finalizar el elemento',
+      showMeasures: 'Mostrar medidas',
+      hideMeasures: 'Ocultar medidas',
       explanation: 'Escoged tipo de geometría, y seguidamente clicad al mapa. Podéis hacer doble clic para acabar de dibujar',
       explanationCircle: 'Haced clic sobre el mapa para dibjar un círculo. Definid el radio y clicad sobre el mapa o clicad y arrastrad el puntero',
       marker: 'Punto',

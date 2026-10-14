@@ -74,6 +74,13 @@
           </q-btn-dropdown>
           <q-btn
             flat
+            icon="straighten"
+            @click="showMeasures = !showMeasures"
+          >
+            <q-tooltip>{{ t(showMeasures ? 'hideMeasures' : 'showMeasures') }}</q-tooltip>
+          </q-btn>
+          <q-btn
+            flat
             icon="las la-tag"
             @click="showAllPopups()"
           >
@@ -168,6 +175,7 @@ export default {
   data () {
     return {
       multi: false,
+      showMeasures: true,
       measuring: false,
       measureArea: null,
       measureCircle: false,
@@ -193,6 +201,24 @@ export default {
     }
   },
   watch: {
+    map: {
+      handler (map) {
+        if (map) {
+          this.showMeasures = !L.DomUtil.hasClass(map.getContainer(), 'hide-measures')
+        }
+      },
+      immediate: true
+    },
+    showMeasures (value) {
+      if (!this.map) {
+        return
+      }
+      if (value) {
+        L.DomUtil.removeClass(this.map.getContainer(), 'hide-measures')
+      } else {
+        L.DomUtil.addClass(this.map.getContainer(), 'hide-measures')
+      }
+    },
     radius: function () {
       this.stopMapMeasuring()
       requestAnimationFrame(() => this.addMeasure('circle'))
@@ -409,3 +435,9 @@ export default {
   }
 }
 </script>
+
+<style>
+.hide-measures .leaflet-measure-tooltip {
+  display: none;
+}
+</style>
